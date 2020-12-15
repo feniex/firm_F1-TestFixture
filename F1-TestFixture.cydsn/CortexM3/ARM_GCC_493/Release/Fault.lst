@@ -1,0 +1,899 @@
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWj2KI0.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"Fault.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.rodata
+  19              		.type	WAIT_TIME_IN_HALF_SECONDS, %object
+  20              		.size	WAIT_TIME_IN_HALF_SECONDS, 1
+  21              	WAIT_TIME_IN_HALF_SECONDS:
+  22 0000 0A       		.byte	10
+  23              		.bss
+  24              	bOverloadFlag:
+  25 0000 00       		.space	1
+  26              		.section	.text.isThereOverload,"ax",%progbits
+  27              		.align	2
+  28              		.global	isThereOverload
+  29              		.thumb
+  30              		.thumb_func
+  31              		.type	isThereOverload, %function
+  32              	isThereOverload:
+  33              	.LFB63:
+  34              		.file 1 ".\\Fault.c"
+   1:.\Fault.c     **** /* ========================================
+   2:.\Fault.c     ****  *
+   3:.\Fault.c     ****  * Copyright YOUR COMPANY, THE YEAR
+   4:.\Fault.c     ****  * All Rights Reserved
+   5:.\Fault.c     ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:.\Fault.c     ****  *
+   7:.\Fault.c     ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:.\Fault.c     ****  * WHICH IS THE PROPERTY OF your company.
+   9:.\Fault.c     ****  *
+  10:.\Fault.c     ****  * ========================================
+  11:.\Fault.c     **** */
+  12:.\Fault.c     **** 
+  13:.\Fault.c     **** /**********PREPROCESSOR DIRECTIVES**********/
+  14:.\Fault.c     **** #include "CommonVariables.h"
+  15:.\Fault.c     **** #include "Fault.h"
+  16:.\Fault.c     **** #include "Tones.h"
+  17:.\Fault.c     **** #include "DACaudio.h"
+  18:.\Fault.c     **** 
+  19:.\Fault.c     **** /**********DEFINED CONSTANTS**********/
+  20:.\Fault.c     **** static const uint8 WAIT_TIME_IN_HALF_SECONDS = 10;
+  21:.\Fault.c     **** 
+  22:.\Fault.c     **** /**********DATA STRUCTURES**********/
+  23:.\Fault.c     **** 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWj2KI0.s 			page 2
+
+
+  24:.\Fault.c     **** /**********GLOBAL VARIABLES**********/
+  25:.\Fault.c     **** static uint8 bOverloadFlag = false;
+  26:.\Fault.c     **** 
+  27:.\Fault.c     **** /**********FUNCTION PROTOTYPES**********/
+  28:.\Fault.c     **** 
+  29:.\Fault.c     **** /**********DEFINED FUNCTIONS**********/
+  30:.\Fault.c     **** 
+  31:.\Fault.c     **** /*******************************************************************************
+  32:.\Fault.c     **** * Function Name: isThereOverload
+  33:.\Fault.c     **** ********************************************************************************
+  34:.\Fault.c     **** *
+  35:.\Fault.c     **** * Summary:
+  36:.\Fault.c     **** *  Returns the boolean for overload detection
+  37:.\Fault.c     **** *
+  38:.\Fault.c     **** * Parameters:  
+  39:.\Fault.c     **** *   None
+  40:.\Fault.c     **** *
+  41:.\Fault.c     **** * Return:
+  42:.\Fault.c     **** *   The boolean for overload detection
+  43:.\Fault.c     **** *
+  44:.\Fault.c     **** *******************************************************************************/
+  45:.\Fault.c     **** uint8 isThereOverload(void)
+  46:.\Fault.c     **** {   
+  35              		.loc 1 46 0
+  36              		.cfi_startproc
+  37              		@ args = 0, pretend = 0, frame = 0
+  38              		@ frame_needed = 1, uses_anonymous_args = 0
+  39              		@ link register save eliminated.
+  40 0000 80B4     		push	{r7}
+  41              		.cfi_def_cfa_offset 4
+  42              		.cfi_offset 7, -4
+  43 0002 00AF     		add	r7, sp, #0
+  44              		.cfi_def_cfa_register 7
+  47:.\Fault.c     ****     return bOverloadFlag;
+  45              		.loc 1 47 0
+  46 0004 034B     		ldr	r3, .L3
+  47 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  48:.\Fault.c     **** }
+  48              		.loc 1 48 0
+  49 0008 1846     		mov	r0, r3
+  50 000a BD46     		mov	sp, r7
+  51              		.cfi_def_cfa_register 13
+  52              		@ sp needed
+  53 000c 5DF8047B 		ldr	r7, [sp], #4
+  54              		.cfi_restore 7
+  55              		.cfi_def_cfa_offset 0
+  56 0010 7047     		bx	lr
+  57              	.L4:
+  58 0012 00BF     		.align	2
+  59              	.L3:
+  60 0014 00000000 		.word	bOverloadFlag
+  61              		.cfi_endproc
+  62              	.LFE63:
+  63              		.size	isThereOverload, .-isThereOverload
+  64              		.section	.text.processOverloadRoutine,"ax",%progbits
+  65              		.align	2
+  66              		.global	processOverloadRoutine
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWj2KI0.s 			page 3
+
+
+  67              		.thumb
+  68              		.thumb_func
+  69              		.type	processOverloadRoutine, %function
+  70              	processOverloadRoutine:
+  71              	.LFB64:
+  49:.\Fault.c     **** 
+  50:.\Fault.c     **** /*******************************************************************************
+  51:.\Fault.c     **** * Function Name: processOverloadRoutine
+  52:.\Fault.c     **** ********************************************************************************
+  53:.\Fault.c     **** *
+  54:.\Fault.c     **** * Summary:
+  55:.\Fault.c     **** *  Waits for overload signal to clear before restarting the siren system,
+  56:.\Fault.c     **** *  called in main
+  57:.\Fault.c     **** *
+  58:.\Fault.c     **** * Parameters:  
+  59:.\Fault.c     **** *   None
+  60:.\Fault.c     **** *
+  61:.\Fault.c     **** * Return:
+  62:.\Fault.c     **** *   None
+  63:.\Fault.c     **** *
+  64:.\Fault.c     **** *******************************************************************************/
+  65:.\Fault.c     **** void processOverloadRoutine(void)
+  66:.\Fault.c     **** {
+  72              		.loc 1 66 0
+  73              		.cfi_startproc
+  74              		@ args = 0, pretend = 0, frame = 8
+  75              		@ frame_needed = 1, uses_anonymous_args = 0
+  76 0000 80B5     		push	{r7, lr}
+  77              		.cfi_def_cfa_offset 8
+  78              		.cfi_offset 7, -8
+  79              		.cfi_offset 14, -4
+  80 0002 82B0     		sub	sp, sp, #8
+  81              		.cfi_def_cfa_offset 16
+  82 0004 00AF     		add	r7, sp, #0
+  83              		.cfi_def_cfa_register 7
+  67:.\Fault.c     ****     uint8 index = 0;
+  84              		.loc 1 67 0
+  85 0006 0023     		movs	r3, #0
+  86 0008 FB71     		strb	r3, [r7, #7]
+  68:.\Fault.c     ****     CyGlobalIntDisable;
+  87              		.loc 1 68 0
+  88              	@ 68 ".\Fault.c" 1
+  89 000a 72B6     		CPSID   i
+  90              	@ 0 "" 2
+  69:.\Fault.c     ****     
+  70:.\Fault.c     ****     while(!OverloadInput1_Read() || !OverloadInput2_Read())
+  91              		.loc 1 70 0
+  92              		.thumb
+  93 000c 1DE0     		b	.L6
+  94              	.L9:
+  71:.\Fault.c     ****     {   //Cannot use do-while loop to prevent cool-down at startup
+  72:.\Fault.c     ****         PowerAmpOutput1_Write(false);
+  95              		.loc 1 72 0
+  96 000e 0020     		movs	r0, #0
+  97 0010 FFF7FEFF 		bl	PowerAmpOutput1_Write
+  73:.\Fault.c     ****         PowerAmpOutput2_Write(false);
+  98              		.loc 1 73 0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWj2KI0.s 			page 4
+
+
+  99 0014 0020     		movs	r0, #0
+ 100 0016 FFF7FEFF 		bl	PowerAmpOutput2_Write
+  74:.\Fault.c     ****         for(index = 0; index < WAIT_TIME_IN_HALF_SECONDS; index++)
+ 101              		.loc 1 74 0
+ 102 001a 0023     		movs	r3, #0
+ 103 001c FB71     		strb	r3, [r7, #7]
+ 104 001e 10E0     		b	.L7
+ 105              	.L8:
+  75:.\Fault.c     ****         {
+  76:.\Fault.c     ****             CyWdtClear();
+ 106              		.loc 1 76 0 discriminator 3
+ 107 0020 FFF7FEFF 		bl	CyWdtClear
+  77:.\Fault.c     ****             LEDoutput_Write(true);
+ 108              		.loc 1 77 0 discriminator 3
+ 109 0024 0120     		movs	r0, #1
+ 110 0026 FFF7FEFF 		bl	LEDoutput_Write
+  78:.\Fault.c     ****             CyDelay(250);
+ 111              		.loc 1 78 0 discriminator 3
+ 112 002a FA20     		movs	r0, #250
+ 113 002c FFF7FEFF 		bl	CyDelay
+  79:.\Fault.c     ****             LEDoutput_Write(false);
+ 114              		.loc 1 79 0 discriminator 3
+ 115 0030 0020     		movs	r0, #0
+ 116 0032 FFF7FEFF 		bl	LEDoutput_Write
+  80:.\Fault.c     ****             CyDelay(250);
+ 117              		.loc 1 80 0 discriminator 3
+ 118 0036 FA20     		movs	r0, #250
+ 119 0038 FFF7FEFF 		bl	CyDelay
+  74:.\Fault.c     ****         {
+ 120              		.loc 1 74 0 discriminator 3
+ 121 003c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 122 003e 0133     		adds	r3, r3, #1
+ 123 0040 FB71     		strb	r3, [r7, #7]
+ 124              	.L7:
+  74:.\Fault.c     ****         {
+ 125              		.loc 1 74 0 is_stmt 0 discriminator 1
+ 126 0042 0A22     		movs	r2, #10
+ 127 0044 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 128 0046 9342     		cmp	r3, r2
+ 129 0048 EAD3     		bcc	.L8
+ 130              	.L6:
+  70:.\Fault.c     ****     {   //Cannot use do-while loop to prevent cool-down at startup
+ 131              		.loc 1 70 0 is_stmt 1
+ 132 004a FFF7FEFF 		bl	OverloadInput1_Read
+ 133 004e 0346     		mov	r3, r0
+ 134 0050 002B     		cmp	r3, #0
+ 135 0052 DCD0     		beq	.L9
+  70:.\Fault.c     ****     {   //Cannot use do-while loop to prevent cool-down at startup
+ 136              		.loc 1 70 0 is_stmt 0 discriminator 1
+ 137 0054 FFF7FEFF 		bl	OverloadInput2_Read
+ 138 0058 0346     		mov	r3, r0
+ 139 005a 002B     		cmp	r3, #0
+ 140 005c D7D0     		beq	.L9
+  81:.\Fault.c     ****         }
+  82:.\Fault.c     ****     }
+  83:.\Fault.c     ****     
+  84:.\Fault.c     ****     bOverloadFlag = false;   
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWj2KI0.s 			page 5
+
+
+ 141              		.loc 1 84 0 is_stmt 1
+ 142 005e 094B     		ldr	r3, .L10
+ 143 0060 0022     		movs	r2, #0
+ 144 0062 1A70     		strb	r2, [r3]
+  85:.\Fault.c     ****     RadioMicKeyISR_ClearPending();   
+ 145              		.loc 1 85 0
+ 146 0064 FFF7FEFF 		bl	RadioMicKeyISR_ClearPending
+  86:.\Fault.c     ****     ParkKillISR_ClearPending(); 
+ 147              		.loc 1 86 0
+ 148 0068 FFF7FEFF 		bl	ParkKillISR_ClearPending
+  87:.\Fault.c     ****     TackSwitchISR_ClearPending();
+ 149              		.loc 1 87 0
+ 150 006c FFF7FEFF 		bl	TackSwitchISR_ClearPending
+  88:.\Fault.c     ****     DualDelayISR_ClearPending();
+ 151              		.loc 1 88 0
+ 152 0070 FFF7FEFF 		bl	DualDelayISR_ClearPending
+  89:.\Fault.c     ****     HornRingISR_ClearPending();
+ 153              		.loc 1 89 0
+ 154 0074 FFF7FEFF 		bl	HornRingISR_ClearPending
+  90:.\Fault.c     ****     ModeStatusISR_ClearPending();
+ 155              		.loc 1 90 0
+ 156 0078 FFF7FEFF 		bl	ModeStatusISR_ClearPending
+  91:.\Fault.c     ****     CyGlobalIntEnable;
+ 157              		.loc 1 91 0
+ 158              	@ 91 ".\Fault.c" 1
+ 159 007c 62B6     		CPSIE   i
+ 160              	@ 0 "" 2
+  92:.\Fault.c     **** }
+ 161              		.loc 1 92 0
+ 162              		.thumb
+ 163 007e 0837     		adds	r7, r7, #8
+ 164              		.cfi_def_cfa_offset 8
+ 165 0080 BD46     		mov	sp, r7
+ 166              		.cfi_def_cfa_register 13
+ 167              		@ sp needed
+ 168 0082 80BD     		pop	{r7, pc}
+ 169              	.L11:
+ 170              		.align	2
+ 171              	.L10:
+ 172 0084 00000000 		.word	bOverloadFlag
+ 173              		.cfi_endproc
+ 174              	.LFE64:
+ 175              		.size	processOverloadRoutine, .-processOverloadRoutine
+ 176              		.section	.text.deactivatePoweredFunctions,"ax",%progbits
+ 177              		.align	2
+ 178              		.global	deactivatePoweredFunctions
+ 179              		.thumb
+ 180              		.thumb_func
+ 181              		.type	deactivatePoweredFunctions, %function
+ 182              	deactivatePoweredFunctions:
+ 183              	.LFB65:
+  93:.\Fault.c     **** 
+  94:.\Fault.c     **** /*******************************************************************************
+  95:.\Fault.c     **** * Function Name: deactivatePoweredFunctions
+  96:.\Fault.c     **** ********************************************************************************
+  97:.\Fault.c     **** *
+  98:.\Fault.c     **** * Summary:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWj2KI0.s 			page 6
+
+
+  99:.\Fault.c     **** *  Turns off PWM, power amps, and tone due to overload detection, called in
+ 100:.\Fault.c     **** *  OverloadISR
+ 101:.\Fault.c     **** *
+ 102:.\Fault.c     **** * Parameters:  
+ 103:.\Fault.c     **** *   None
+ 104:.\Fault.c     **** *
+ 105:.\Fault.c     **** * Return:
+ 106:.\Fault.c     **** *   None
+ 107:.\Fault.c     **** *
+ 108:.\Fault.c     **** *******************************************************************************/
+ 109:.\Fault.c     **** void deactivatePoweredFunctions(void)
+ 110:.\Fault.c     **** {
+ 184              		.loc 1 110 0
+ 185              		.cfi_startproc
+ 186              		@ args = 0, pretend = 0, frame = 0
+ 187              		@ frame_needed = 1, uses_anonymous_args = 0
+ 188 0000 80B5     		push	{r7, lr}
+ 189              		.cfi_def_cfa_offset 8
+ 190              		.cfi_offset 7, -8
+ 191              		.cfi_offset 14, -4
+ 192 0002 00AF     		add	r7, sp, #0
+ 193              		.cfi_def_cfa_register 7
+ 111:.\Fault.c     ****     CyGlobalIntDisable;    
+ 194              		.loc 1 111 0
+ 195              	@ 111 ".\Fault.c" 1
+ 196 0004 72B6     		CPSID   i
+ 197              	@ 0 "" 2
+ 112:.\Fault.c     ****     PowerAmpOutput1_Write(false);
+ 198              		.loc 1 112 0
+ 199              		.thumb
+ 200 0006 0020     		movs	r0, #0
+ 201 0008 FFF7FEFF 		bl	PowerAmpOutput1_Write
+ 113:.\Fault.c     ****     PowerAmpOutput2_Write(false);
+ 202              		.loc 1 113 0
+ 203 000c 0020     		movs	r0, #0
+ 204 000e FFF7FEFF 		bl	PowerAmpOutput2_Write
+ 114:.\Fault.c     ****     stopPWMTone(SPEAKER_1);
+ 205              		.loc 1 114 0
+ 206 0012 0020     		movs	r0, #0
+ 207 0014 FFF7FEFF 		bl	stopPWMTone
+ 115:.\Fault.c     ****     stopPWMTone(SPEAKER_2);
+ 208              		.loc 1 115 0
+ 209 0018 0120     		movs	r0, #1
+ 210 001a FFF7FEFF 		bl	stopPWMTone
+ 116:.\Fault.c     ****     stopAudioTone(SPEAKER_1);
+ 211              		.loc 1 116 0
+ 212 001e 0020     		movs	r0, #0
+ 213 0020 FFF7FEFF 		bl	stopAudioTone
+ 117:.\Fault.c     ****     stopAudioTone(SPEAKER_2);
+ 214              		.loc 1 117 0
+ 215 0024 0120     		movs	r0, #1
+ 216 0026 FFF7FEFF 		bl	stopAudioTone
+ 118:.\Fault.c     ****     bOverloadFlag = true;
+ 217              		.loc 1 118 0
+ 218 002a 024B     		ldr	r3, .L13
+ 219 002c 0122     		movs	r2, #1
+ 220 002e 1A70     		strb	r2, [r3]
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWj2KI0.s 			page 7
+
+
+ 119:.\Fault.c     **** }
+ 221              		.loc 1 119 0
+ 222 0030 80BD     		pop	{r7, pc}
+ 223              	.L14:
+ 224 0032 00BF     		.align	2
+ 225              	.L13:
+ 226 0034 00000000 		.word	bOverloadFlag
+ 227              		.cfi_endproc
+ 228              	.LFE65:
+ 229              		.size	deactivatePoweredFunctions, .-deactivatePoweredFunctions
+ 230              		.text
+ 231              	.Letext0:
+ 232              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 233              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 234              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 235              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 236              		.section	.debug_info,"",%progbits
+ 237              	.Ldebug_info0:
+ 238 0000 27010000 		.4byte	0x127
+ 239 0004 0400     		.2byte	0x4
+ 240 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 241 000a 04       		.byte	0x4
+ 242 000b 01       		.uleb128 0x1
+ 243 000c 45010000 		.4byte	.LASF19
+ 244 0010 01       		.byte	0x1
+ 245 0011 1F010000 		.4byte	.LASF20
+ 246 0015 82000000 		.4byte	.LASF21
+ 247 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 248 001d 00000000 		.4byte	0
+ 249 0021 00000000 		.4byte	.Ldebug_line0
+ 250 0025 02       		.uleb128 0x2
+ 251 0026 01       		.byte	0x1
+ 252 0027 06       		.byte	0x6
+ 253 0028 FB010000 		.4byte	.LASF0
+ 254 002c 02       		.uleb128 0x2
+ 255 002d 01       		.byte	0x1
+ 256 002e 08       		.byte	0x8
+ 257 002f 29010000 		.4byte	.LASF1
+ 258 0033 02       		.uleb128 0x2
+ 259 0034 02       		.byte	0x2
+ 260 0035 05       		.byte	0x5
+ 261 0036 25020000 		.4byte	.LASF2
+ 262 003a 02       		.uleb128 0x2
+ 263 003b 02       		.byte	0x2
+ 264 003c 07       		.byte	0x7
+ 265 003d 1B000000 		.4byte	.LASF3
+ 266 0041 03       		.uleb128 0x3
+ 267 0042 15020000 		.4byte	.LASF9
+ 268 0046 02       		.byte	0x2
+ 269 0047 3F       		.byte	0x3f
+ 270 0048 4C000000 		.4byte	0x4c
+ 271 004c 02       		.uleb128 0x2
+ 272 004d 04       		.byte	0x4
+ 273 004e 05       		.byte	0x5
+ 274 004f 3C010000 		.4byte	.LASF4
+ 275 0053 02       		.uleb128 0x2
+ 276 0054 04       		.byte	0x4
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWj2KI0.s 			page 8
+
+
+ 277 0055 07       		.byte	0x7
+ 278 0056 59000000 		.4byte	.LASF5
+ 279 005a 02       		.uleb128 0x2
+ 280 005b 08       		.byte	0x8
+ 281 005c 05       		.byte	0x5
+ 282 005d E0010000 		.4byte	.LASF6
+ 283 0061 02       		.uleb128 0x2
+ 284 0062 08       		.byte	0x8
+ 285 0063 07       		.byte	0x7
+ 286 0064 6B000000 		.4byte	.LASF7
+ 287 0068 04       		.uleb128 0x4
+ 288 0069 04       		.byte	0x4
+ 289 006a 05       		.byte	0x5
+ 290 006b 696E7400 		.ascii	"int\000"
+ 291 006f 02       		.uleb128 0x2
+ 292 0070 04       		.byte	0x4
+ 293 0071 07       		.byte	0x7
+ 294 0072 2E000000 		.4byte	.LASF8
+ 295 0076 03       		.uleb128 0x3
+ 296 0077 51000000 		.4byte	.LASF10
+ 297 007b 03       		.byte	0x3
+ 298 007c 2C       		.byte	0x2c
+ 299 007d 41000000 		.4byte	0x41
+ 300 0081 03       		.uleb128 0x3
+ 301 0082 4B000000 		.4byte	.LASF11
+ 302 0086 04       		.byte	0x4
+ 303 0087 C2       		.byte	0xc2
+ 304 0088 2C000000 		.4byte	0x2c
+ 305 008c 02       		.uleb128 0x2
+ 306 008d 04       		.byte	0x4
+ 307 008e 04       		.byte	0x4
+ 308 008f 1F020000 		.4byte	.LASF12
+ 309 0093 02       		.uleb128 0x2
+ 310 0094 08       		.byte	0x8
+ 311 0095 04       		.byte	0x4
+ 312 0096 D9010000 		.4byte	.LASF13
+ 313 009a 02       		.uleb128 0x2
+ 314 009b 01       		.byte	0x1
+ 315 009c 08       		.byte	0x8
+ 316 009d 37010000 		.4byte	.LASF14
+ 317 00a1 02       		.uleb128 0x2
+ 318 00a2 04       		.byte	0x4
+ 319 00a3 07       		.byte	0x7
+ 320 00a4 46020000 		.4byte	.LASF15
+ 321 00a8 05       		.uleb128 0x5
+ 322 00a9 3B000000 		.4byte	.LASF22
+ 323 00ad 01       		.byte	0x1
+ 324 00ae 2D       		.byte	0x2d
+ 325 00af 81000000 		.4byte	0x81
+ 326 00b3 00000000 		.4byte	.LFB63
+ 327 00b7 18000000 		.4byte	.LFE63-.LFB63
+ 328 00bb 01       		.uleb128 0x1
+ 329 00bc 9C       		.byte	0x9c
+ 330 00bd 06       		.uleb128 0x6
+ 331 00be 2F020000 		.4byte	.LASF23
+ 332 00c2 01       		.byte	0x1
+ 333 00c3 41       		.byte	0x41
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWj2KI0.s 			page 9
+
+
+ 334 00c4 00000000 		.4byte	.LFB64
+ 335 00c8 88000000 		.4byte	.LFE64-.LFB64
+ 336 00cc 01       		.uleb128 0x1
+ 337 00cd 9C       		.byte	0x9c
+ 338 00ce E1000000 		.4byte	0xe1
+ 339 00d2 07       		.uleb128 0x7
+ 340 00d3 D3010000 		.4byte	.LASF16
+ 341 00d7 01       		.byte	0x1
+ 342 00d8 43       		.byte	0x43
+ 343 00d9 81000000 		.4byte	0x81
+ 344 00dd 02       		.uleb128 0x2
+ 345 00de 91       		.byte	0x91
+ 346 00df 77       		.sleb128 -9
+ 347 00e0 00       		.byte	0
+ 348 00e1 08       		.uleb128 0x8
+ 349 00e2 00000000 		.4byte	.LASF24
+ 350 00e6 01       		.byte	0x1
+ 351 00e7 6D       		.byte	0x6d
+ 352 00e8 00000000 		.4byte	.LFB65
+ 353 00ec 38000000 		.4byte	.LFE65-.LFB65
+ 354 00f0 01       		.uleb128 0x1
+ 355 00f1 9C       		.byte	0x9c
+ 356 00f2 07       		.uleb128 0x7
+ 357 00f3 05010000 		.4byte	.LASF17
+ 358 00f7 01       		.byte	0x1
+ 359 00f8 14       		.byte	0x14
+ 360 00f9 03010000 		.4byte	0x103
+ 361 00fd 05       		.uleb128 0x5
+ 362 00fe 03       		.byte	0x3
+ 363 00ff 00000000 		.4byte	WAIT_TIME_IN_HALF_SECONDS
+ 364 0103 09       		.uleb128 0x9
+ 365 0104 81000000 		.4byte	0x81
+ 366 0108 07       		.uleb128 0x7
+ 367 0109 07020000 		.4byte	.LASF18
+ 368 010d 01       		.byte	0x1
+ 369 010e 19       		.byte	0x19
+ 370 010f 81000000 		.4byte	0x81
+ 371 0113 05       		.uleb128 0x5
+ 372 0114 03       		.byte	0x3
+ 373 0115 00000000 		.4byte	bOverloadFlag
+ 374 0119 0A       		.uleb128 0xa
+ 375 011a EE010000 		.4byte	.LASF25
+ 376 011e 05       		.byte	0x5
+ 377 011f 2A06     		.2byte	0x62a
+ 378 0121 25010000 		.4byte	0x125
+ 379 0125 0B       		.uleb128 0xb
+ 380 0126 76000000 		.4byte	0x76
+ 381 012a 00       		.byte	0
+ 382              		.section	.debug_abbrev,"",%progbits
+ 383              	.Ldebug_abbrev0:
+ 384 0000 01       		.uleb128 0x1
+ 385 0001 11       		.uleb128 0x11
+ 386 0002 01       		.byte	0x1
+ 387 0003 25       		.uleb128 0x25
+ 388 0004 0E       		.uleb128 0xe
+ 389 0005 13       		.uleb128 0x13
+ 390 0006 0B       		.uleb128 0xb
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWj2KI0.s 			page 10
+
+
+ 391 0007 03       		.uleb128 0x3
+ 392 0008 0E       		.uleb128 0xe
+ 393 0009 1B       		.uleb128 0x1b
+ 394 000a 0E       		.uleb128 0xe
+ 395 000b 55       		.uleb128 0x55
+ 396 000c 17       		.uleb128 0x17
+ 397 000d 11       		.uleb128 0x11
+ 398 000e 01       		.uleb128 0x1
+ 399 000f 10       		.uleb128 0x10
+ 400 0010 17       		.uleb128 0x17
+ 401 0011 00       		.byte	0
+ 402 0012 00       		.byte	0
+ 403 0013 02       		.uleb128 0x2
+ 404 0014 24       		.uleb128 0x24
+ 405 0015 00       		.byte	0
+ 406 0016 0B       		.uleb128 0xb
+ 407 0017 0B       		.uleb128 0xb
+ 408 0018 3E       		.uleb128 0x3e
+ 409 0019 0B       		.uleb128 0xb
+ 410 001a 03       		.uleb128 0x3
+ 411 001b 0E       		.uleb128 0xe
+ 412 001c 00       		.byte	0
+ 413 001d 00       		.byte	0
+ 414 001e 03       		.uleb128 0x3
+ 415 001f 16       		.uleb128 0x16
+ 416 0020 00       		.byte	0
+ 417 0021 03       		.uleb128 0x3
+ 418 0022 0E       		.uleb128 0xe
+ 419 0023 3A       		.uleb128 0x3a
+ 420 0024 0B       		.uleb128 0xb
+ 421 0025 3B       		.uleb128 0x3b
+ 422 0026 0B       		.uleb128 0xb
+ 423 0027 49       		.uleb128 0x49
+ 424 0028 13       		.uleb128 0x13
+ 425 0029 00       		.byte	0
+ 426 002a 00       		.byte	0
+ 427 002b 04       		.uleb128 0x4
+ 428 002c 24       		.uleb128 0x24
+ 429 002d 00       		.byte	0
+ 430 002e 0B       		.uleb128 0xb
+ 431 002f 0B       		.uleb128 0xb
+ 432 0030 3E       		.uleb128 0x3e
+ 433 0031 0B       		.uleb128 0xb
+ 434 0032 03       		.uleb128 0x3
+ 435 0033 08       		.uleb128 0x8
+ 436 0034 00       		.byte	0
+ 437 0035 00       		.byte	0
+ 438 0036 05       		.uleb128 0x5
+ 439 0037 2E       		.uleb128 0x2e
+ 440 0038 00       		.byte	0
+ 441 0039 3F       		.uleb128 0x3f
+ 442 003a 19       		.uleb128 0x19
+ 443 003b 03       		.uleb128 0x3
+ 444 003c 0E       		.uleb128 0xe
+ 445 003d 3A       		.uleb128 0x3a
+ 446 003e 0B       		.uleb128 0xb
+ 447 003f 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWj2KI0.s 			page 11
+
+
+ 448 0040 0B       		.uleb128 0xb
+ 449 0041 27       		.uleb128 0x27
+ 450 0042 19       		.uleb128 0x19
+ 451 0043 49       		.uleb128 0x49
+ 452 0044 13       		.uleb128 0x13
+ 453 0045 11       		.uleb128 0x11
+ 454 0046 01       		.uleb128 0x1
+ 455 0047 12       		.uleb128 0x12
+ 456 0048 06       		.uleb128 0x6
+ 457 0049 40       		.uleb128 0x40
+ 458 004a 18       		.uleb128 0x18
+ 459 004b 9742     		.uleb128 0x2117
+ 460 004d 19       		.uleb128 0x19
+ 461 004e 00       		.byte	0
+ 462 004f 00       		.byte	0
+ 463 0050 06       		.uleb128 0x6
+ 464 0051 2E       		.uleb128 0x2e
+ 465 0052 01       		.byte	0x1
+ 466 0053 3F       		.uleb128 0x3f
+ 467 0054 19       		.uleb128 0x19
+ 468 0055 03       		.uleb128 0x3
+ 469 0056 0E       		.uleb128 0xe
+ 470 0057 3A       		.uleb128 0x3a
+ 471 0058 0B       		.uleb128 0xb
+ 472 0059 3B       		.uleb128 0x3b
+ 473 005a 0B       		.uleb128 0xb
+ 474 005b 27       		.uleb128 0x27
+ 475 005c 19       		.uleb128 0x19
+ 476 005d 11       		.uleb128 0x11
+ 477 005e 01       		.uleb128 0x1
+ 478 005f 12       		.uleb128 0x12
+ 479 0060 06       		.uleb128 0x6
+ 480 0061 40       		.uleb128 0x40
+ 481 0062 18       		.uleb128 0x18
+ 482 0063 9642     		.uleb128 0x2116
+ 483 0065 19       		.uleb128 0x19
+ 484 0066 01       		.uleb128 0x1
+ 485 0067 13       		.uleb128 0x13
+ 486 0068 00       		.byte	0
+ 487 0069 00       		.byte	0
+ 488 006a 07       		.uleb128 0x7
+ 489 006b 34       		.uleb128 0x34
+ 490 006c 00       		.byte	0
+ 491 006d 03       		.uleb128 0x3
+ 492 006e 0E       		.uleb128 0xe
+ 493 006f 3A       		.uleb128 0x3a
+ 494 0070 0B       		.uleb128 0xb
+ 495 0071 3B       		.uleb128 0x3b
+ 496 0072 0B       		.uleb128 0xb
+ 497 0073 49       		.uleb128 0x49
+ 498 0074 13       		.uleb128 0x13
+ 499 0075 02       		.uleb128 0x2
+ 500 0076 18       		.uleb128 0x18
+ 501 0077 00       		.byte	0
+ 502 0078 00       		.byte	0
+ 503 0079 08       		.uleb128 0x8
+ 504 007a 2E       		.uleb128 0x2e
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWj2KI0.s 			page 12
+
+
+ 505 007b 00       		.byte	0
+ 506 007c 3F       		.uleb128 0x3f
+ 507 007d 19       		.uleb128 0x19
+ 508 007e 03       		.uleb128 0x3
+ 509 007f 0E       		.uleb128 0xe
+ 510 0080 3A       		.uleb128 0x3a
+ 511 0081 0B       		.uleb128 0xb
+ 512 0082 3B       		.uleb128 0x3b
+ 513 0083 0B       		.uleb128 0xb
+ 514 0084 27       		.uleb128 0x27
+ 515 0085 19       		.uleb128 0x19
+ 516 0086 11       		.uleb128 0x11
+ 517 0087 01       		.uleb128 0x1
+ 518 0088 12       		.uleb128 0x12
+ 519 0089 06       		.uleb128 0x6
+ 520 008a 40       		.uleb128 0x40
+ 521 008b 18       		.uleb128 0x18
+ 522 008c 9642     		.uleb128 0x2116
+ 523 008e 19       		.uleb128 0x19
+ 524 008f 00       		.byte	0
+ 525 0090 00       		.byte	0
+ 526 0091 09       		.uleb128 0x9
+ 527 0092 26       		.uleb128 0x26
+ 528 0093 00       		.byte	0
+ 529 0094 49       		.uleb128 0x49
+ 530 0095 13       		.uleb128 0x13
+ 531 0096 00       		.byte	0
+ 532 0097 00       		.byte	0
+ 533 0098 0A       		.uleb128 0xa
+ 534 0099 34       		.uleb128 0x34
+ 535 009a 00       		.byte	0
+ 536 009b 03       		.uleb128 0x3
+ 537 009c 0E       		.uleb128 0xe
+ 538 009d 3A       		.uleb128 0x3a
+ 539 009e 0B       		.uleb128 0xb
+ 540 009f 3B       		.uleb128 0x3b
+ 541 00a0 05       		.uleb128 0x5
+ 542 00a1 49       		.uleb128 0x49
+ 543 00a2 13       		.uleb128 0x13
+ 544 00a3 3F       		.uleb128 0x3f
+ 545 00a4 19       		.uleb128 0x19
+ 546 00a5 3C       		.uleb128 0x3c
+ 547 00a6 19       		.uleb128 0x19
+ 548 00a7 00       		.byte	0
+ 549 00a8 00       		.byte	0
+ 550 00a9 0B       		.uleb128 0xb
+ 551 00aa 35       		.uleb128 0x35
+ 552 00ab 00       		.byte	0
+ 553 00ac 49       		.uleb128 0x49
+ 554 00ad 13       		.uleb128 0x13
+ 555 00ae 00       		.byte	0
+ 556 00af 00       		.byte	0
+ 557 00b0 00       		.byte	0
+ 558              		.section	.debug_aranges,"",%progbits
+ 559 0000 2C000000 		.4byte	0x2c
+ 560 0004 0200     		.2byte	0x2
+ 561 0006 00000000 		.4byte	.Ldebug_info0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWj2KI0.s 			page 13
+
+
+ 562 000a 04       		.byte	0x4
+ 563 000b 00       		.byte	0
+ 564 000c 0000     		.2byte	0
+ 565 000e 0000     		.2byte	0
+ 566 0010 00000000 		.4byte	.LFB63
+ 567 0014 18000000 		.4byte	.LFE63-.LFB63
+ 568 0018 00000000 		.4byte	.LFB64
+ 569 001c 88000000 		.4byte	.LFE64-.LFB64
+ 570 0020 00000000 		.4byte	.LFB65
+ 571 0024 38000000 		.4byte	.LFE65-.LFB65
+ 572 0028 00000000 		.4byte	0
+ 573 002c 00000000 		.4byte	0
+ 574              		.section	.debug_ranges,"",%progbits
+ 575              	.Ldebug_ranges0:
+ 576 0000 00000000 		.4byte	.LFB63
+ 577 0004 18000000 		.4byte	.LFE63
+ 578 0008 00000000 		.4byte	.LFB64
+ 579 000c 88000000 		.4byte	.LFE64
+ 580 0010 00000000 		.4byte	.LFB65
+ 581 0014 38000000 		.4byte	.LFE65
+ 582 0018 00000000 		.4byte	0
+ 583 001c 00000000 		.4byte	0
+ 584              		.section	.debug_line,"",%progbits
+ 585              	.Ldebug_line0:
+ 586 0000 CA010000 		.section	.debug_str,"MS",%progbits,1
+ 586      02004A01 
+ 586      00000201 
+ 586      FB0E0D00 
+ 586      01010101 
+ 587              	.LASF24:
+ 588 0000 64656163 		.ascii	"deactivatePoweredFunctions\000"
+ 588      74697661 
+ 588      7465506F 
+ 588      77657265 
+ 588      6446756E 
+ 589              	.LASF3:
+ 590 001b 73686F72 		.ascii	"short unsigned int\000"
+ 590      7420756E 
+ 590      7369676E 
+ 590      65642069 
+ 590      6E7400
+ 591              	.LASF8:
+ 592 002e 756E7369 		.ascii	"unsigned int\000"
+ 592      676E6564 
+ 592      20696E74 
+ 592      00
+ 593              	.LASF22:
+ 594 003b 69735468 		.ascii	"isThereOverload\000"
+ 594      6572654F 
+ 594      7665726C 
+ 594      6F616400 
+ 595              	.LASF11:
+ 596 004b 75696E74 		.ascii	"uint8\000"
+ 596      3800
+ 597              	.LASF10:
+ 598 0051 696E7433 		.ascii	"int32_t\000"
+ 598      325F7400 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWj2KI0.s 			page 14
+
+
+ 599              	.LASF5:
+ 600 0059 6C6F6E67 		.ascii	"long unsigned int\000"
+ 600      20756E73 
+ 600      69676E65 
+ 600      6420696E 
+ 600      7400
+ 601              	.LASF7:
+ 602 006b 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 602      206C6F6E 
+ 602      6720756E 
+ 602      7369676E 
+ 602      65642069 
+ 603              	.LASF21:
+ 604 0082 5C5C4441 		.ascii	"\\\\DATA\\Folder Redirection\\faithc\\Desktop\\FAIT"
+ 604      54415C46 
+ 604      6F6C6465 
+ 604      72205265 
+ 604      64697265 
+ 605 00af 48532052 		.ascii	"HS RELEASED FIRMWARE\\SirenProject200W_RevF\\SirenP"
+ 605      454C4541 
+ 605      53454420 
+ 605      4649524D 
+ 605      57415245 
+ 606 00e0 726F6A65 		.ascii	"roject200W_RevD\\ReleaseVersion.cydsn\000"
+ 606      63743230 
+ 606      30575F52 
+ 606      6576445C 
+ 606      52656C65 
+ 607              	.LASF17:
+ 608 0105 57414954 		.ascii	"WAIT_TIME_IN_HALF_SECONDS\000"
+ 608      5F54494D 
+ 608      455F494E 
+ 608      5F48414C 
+ 608      465F5345 
+ 609              	.LASF20:
+ 610 011f 2E5C4661 		.ascii	".\\Fault.c\000"
+ 610      756C742E 
+ 610      6300
+ 611              	.LASF1:
+ 612 0129 756E7369 		.ascii	"unsigned char\000"
+ 612      676E6564 
+ 612      20636861 
+ 612      7200
+ 613              	.LASF14:
+ 614 0137 63686172 		.ascii	"char\000"
+ 614      00
+ 615              	.LASF4:
+ 616 013c 6C6F6E67 		.ascii	"long int\000"
+ 616      20696E74 
+ 616      00
+ 617              	.LASF19:
+ 618 0145 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 618      4320342E 
+ 618      392E3320 
+ 618      32303135 
+ 618      30333033 
+ 619 0178 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m3 -mthumb -g -O"
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWj2KI0.s 			page 15
+
+
+ 619      20726576 
+ 619      6973696F 
+ 619      6E203232 
+ 619      31323230 
+ 620 01ab 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 620      66756E63 
+ 620      74696F6E 
+ 620      2D736563 
+ 620      74696F6E 
+ 621              	.LASF16:
+ 622 01d3 696E6465 		.ascii	"index\000"
+ 622      7800
+ 623              	.LASF13:
+ 624 01d9 646F7562 		.ascii	"double\000"
+ 624      6C6500
+ 625              	.LASF6:
+ 626 01e0 6C6F6E67 		.ascii	"long long int\000"
+ 626      206C6F6E 
+ 626      6720696E 
+ 626      7400
+ 627              	.LASF25:
+ 628 01ee 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 628      52784275 
+ 628      66666572 
+ 628      00
+ 629              	.LASF0:
+ 630 01fb 7369676E 		.ascii	"signed char\000"
+ 630      65642063 
+ 630      68617200 
+ 631              	.LASF18:
+ 632 0207 624F7665 		.ascii	"bOverloadFlag\000"
+ 632      726C6F61 
+ 632      64466C61 
+ 632      6700
+ 633              	.LASF9:
+ 634 0215 5F5F696E 		.ascii	"__int32_t\000"
+ 634      7433325F 
+ 634      7400
+ 635              	.LASF12:
+ 636 021f 666C6F61 		.ascii	"float\000"
+ 636      7400
+ 637              	.LASF2:
+ 638 0225 73686F72 		.ascii	"short int\000"
+ 638      7420696E 
+ 638      7400
+ 639              	.LASF23:
+ 640 022f 70726F63 		.ascii	"processOverloadRoutine\000"
+ 640      6573734F 
+ 640      7665726C 
+ 640      6F616452 
+ 640      6F757469 
+ 641              	.LASF15:
+ 642 0246 73697A65 		.ascii	"sizetype\000"
+ 642      74797065 
+ 642      00
+ 643              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

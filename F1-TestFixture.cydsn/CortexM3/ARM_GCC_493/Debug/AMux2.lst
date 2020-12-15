@@ -1,0 +1,940 @@
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWQlYHq.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"AMux2.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.AMux2_Start,"ax",%progbits
+  19              		.align	2
+  20              		.global	AMux2_Start
+  21              		.thumb
+  22              		.thumb_func
+  23              		.type	AMux2_Start, %function
+  24              	AMux2_Start:
+  25              	.LFB0:
+  26              		.file 1 ".\\Generated_Source\\PSoC5\\AMux2.c"
+   1:.\Generated_Source\PSoC5/AMux2.c **** /*******************************************************************************
+   2:.\Generated_Source\PSoC5/AMux2.c **** * File Name: AMux2.c
+   3:.\Generated_Source\PSoC5/AMux2.c **** * Version 1.80
+   4:.\Generated_Source\PSoC5/AMux2.c **** *
+   5:.\Generated_Source\PSoC5/AMux2.c **** *  Description:
+   6:.\Generated_Source\PSoC5/AMux2.c **** *    This file contains all functions required for the analog multiplexer
+   7:.\Generated_Source\PSoC5/AMux2.c **** *    AMux User Module.
+   8:.\Generated_Source\PSoC5/AMux2.c **** *
+   9:.\Generated_Source\PSoC5/AMux2.c **** *   Note:
+  10:.\Generated_Source\PSoC5/AMux2.c **** *
+  11:.\Generated_Source\PSoC5/AMux2.c **** *******************************************************************************
+  12:.\Generated_Source\PSoC5/AMux2.c **** * Copyright 2008-2010, Cypress Semiconductor Corporation.  All rights reserved.
+  13:.\Generated_Source\PSoC5/AMux2.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  14:.\Generated_Source\PSoC5/AMux2.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  15:.\Generated_Source\PSoC5/AMux2.c **** * the software package with which this file was provided.
+  16:.\Generated_Source\PSoC5/AMux2.c **** ********************************************************************************/
+  17:.\Generated_Source\PSoC5/AMux2.c **** 
+  18:.\Generated_Source\PSoC5/AMux2.c **** #include "AMux2.h"
+  19:.\Generated_Source\PSoC5/AMux2.c **** 
+  20:.\Generated_Source\PSoC5/AMux2.c **** static uint8 AMux2_lastChannel = AMux2_NULL_CHANNEL;
+  21:.\Generated_Source\PSoC5/AMux2.c **** 
+  22:.\Generated_Source\PSoC5/AMux2.c **** 
+  23:.\Generated_Source\PSoC5/AMux2.c **** /*******************************************************************************
+  24:.\Generated_Source\PSoC5/AMux2.c **** * Function Name: AMux2_Start
+  25:.\Generated_Source\PSoC5/AMux2.c **** ********************************************************************************
+  26:.\Generated_Source\PSoC5/AMux2.c **** * Summary:
+  27:.\Generated_Source\PSoC5/AMux2.c **** *  Disconnect all channels.
+  28:.\Generated_Source\PSoC5/AMux2.c **** *
+  29:.\Generated_Source\PSoC5/AMux2.c **** * Parameters:
+  30:.\Generated_Source\PSoC5/AMux2.c **** *  void
+  31:.\Generated_Source\PSoC5/AMux2.c **** *
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWQlYHq.s 			page 2
+
+
+  32:.\Generated_Source\PSoC5/AMux2.c **** * Return:
+  33:.\Generated_Source\PSoC5/AMux2.c **** *  void
+  34:.\Generated_Source\PSoC5/AMux2.c **** *
+  35:.\Generated_Source\PSoC5/AMux2.c **** *******************************************************************************/
+  36:.\Generated_Source\PSoC5/AMux2.c **** void AMux2_Start(void) 
+  37:.\Generated_Source\PSoC5/AMux2.c **** {
+  27              		.loc 1 37 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 10B5     		push	{r4, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 4, -8
+  34              		.cfi_offset 14, -4
+  35              	.LVL0:
+  38:.\Generated_Source\PSoC5/AMux2.c ****     uint8 chan;
+  39:.\Generated_Source\PSoC5/AMux2.c **** 
+  40:.\Generated_Source\PSoC5/AMux2.c ****     for(chan = 0u; chan < AMux2_CHANNELS ; chan++)
+  36              		.loc 1 40 0
+  37 0002 0024     		movs	r4, #0
+  38 0004 04E0     		b	.L2
+  39              	.LVL1:
+  40              	.L3:
+  41:.\Generated_Source\PSoC5/AMux2.c ****     {
+  42:.\Generated_Source\PSoC5/AMux2.c **** #if (AMux2_MUXTYPE == AMux2_MUX_SINGLE)
+  43:.\Generated_Source\PSoC5/AMux2.c ****         AMux2_Unset(chan);
+  41              		.loc 1 43 0 discriminator 3
+  42 0006 2046     		mov	r0, r4
+  43 0008 FFF7FEFF 		bl	AMux2_Unset
+  44              	.LVL2:
+  40:.\Generated_Source\PSoC5/AMux2.c ****     {
+  45              		.loc 1 40 0 discriminator 3
+  46 000c 0134     		adds	r4, r4, #1
+  47              	.LVL3:
+  48 000e E4B2     		uxtb	r4, r4
+  49              	.LVL4:
+  50              	.L2:
+  40:.\Generated_Source\PSoC5/AMux2.c ****     {
+  51              		.loc 1 40 0 is_stmt 0 discriminator 1
+  52 0010 012C     		cmp	r4, #1
+  53 0012 F8D9     		bls	.L3
+  44:.\Generated_Source\PSoC5/AMux2.c **** #else
+  45:.\Generated_Source\PSoC5/AMux2.c ****         AMux2_CYAMUXSIDE_A_Unset(chan);
+  46:.\Generated_Source\PSoC5/AMux2.c ****         AMux2_CYAMUXSIDE_B_Unset(chan);
+  47:.\Generated_Source\PSoC5/AMux2.c **** #endif
+  48:.\Generated_Source\PSoC5/AMux2.c ****     }
+  49:.\Generated_Source\PSoC5/AMux2.c **** 
+  50:.\Generated_Source\PSoC5/AMux2.c ****     AMux2_lastChannel = AMux2_NULL_CHANNEL;
+  54              		.loc 1 50 0 is_stmt 1
+  55 0014 FF22     		movs	r2, #255
+  56 0016 014B     		ldr	r3, .L5
+  57 0018 1A70     		strb	r2, [r3]
+  58 001a 10BD     		pop	{r4, pc}
+  59              	.LVL5:
+  60              	.L6:
+  61              		.align	2
+  62              	.L5:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWQlYHq.s 			page 3
+
+
+  63 001c 00000000 		.word	.LANCHOR0
+  64              		.cfi_endproc
+  65              	.LFE0:
+  66              		.size	AMux2_Start, .-AMux2_Start
+  67              		.section	.text.AMux2_FastSelect,"ax",%progbits
+  68              		.align	2
+  69              		.global	AMux2_FastSelect
+  70              		.thumb
+  71              		.thumb_func
+  72              		.type	AMux2_FastSelect, %function
+  73              	AMux2_FastSelect:
+  74              	.LFB1:
+  51:.\Generated_Source\PSoC5/AMux2.c **** }
+  52:.\Generated_Source\PSoC5/AMux2.c **** 
+  53:.\Generated_Source\PSoC5/AMux2.c **** 
+  54:.\Generated_Source\PSoC5/AMux2.c **** #if (!AMux2_ATMOSTONE)
+  55:.\Generated_Source\PSoC5/AMux2.c **** /*******************************************************************************
+  56:.\Generated_Source\PSoC5/AMux2.c **** * Function Name: AMux2_Select
+  57:.\Generated_Source\PSoC5/AMux2.c **** ********************************************************************************
+  58:.\Generated_Source\PSoC5/AMux2.c **** * Summary:
+  59:.\Generated_Source\PSoC5/AMux2.c **** *  This functions first disconnects all channels then connects the given
+  60:.\Generated_Source\PSoC5/AMux2.c **** *  channel.
+  61:.\Generated_Source\PSoC5/AMux2.c **** *
+  62:.\Generated_Source\PSoC5/AMux2.c **** * Parameters:
+  63:.\Generated_Source\PSoC5/AMux2.c **** *  channel:  The channel to connect to the common terminal.
+  64:.\Generated_Source\PSoC5/AMux2.c **** *
+  65:.\Generated_Source\PSoC5/AMux2.c **** * Return:
+  66:.\Generated_Source\PSoC5/AMux2.c **** *  void
+  67:.\Generated_Source\PSoC5/AMux2.c **** *
+  68:.\Generated_Source\PSoC5/AMux2.c **** *******************************************************************************/
+  69:.\Generated_Source\PSoC5/AMux2.c **** void AMux2_Select(uint8 channel) 
+  70:.\Generated_Source\PSoC5/AMux2.c **** {
+  71:.\Generated_Source\PSoC5/AMux2.c ****     AMux2_DisconnectAll();        /* Disconnect all previous connections */
+  72:.\Generated_Source\PSoC5/AMux2.c ****     AMux2_Connect(channel);       /* Make the given selection */
+  73:.\Generated_Source\PSoC5/AMux2.c ****     AMux2_lastChannel = channel;  /* Update last channel */
+  74:.\Generated_Source\PSoC5/AMux2.c **** }
+  75:.\Generated_Source\PSoC5/AMux2.c **** #endif
+  76:.\Generated_Source\PSoC5/AMux2.c **** 
+  77:.\Generated_Source\PSoC5/AMux2.c **** 
+  78:.\Generated_Source\PSoC5/AMux2.c **** /*******************************************************************************
+  79:.\Generated_Source\PSoC5/AMux2.c **** * Function Name: AMux2_FastSelect
+  80:.\Generated_Source\PSoC5/AMux2.c **** ********************************************************************************
+  81:.\Generated_Source\PSoC5/AMux2.c **** * Summary:
+  82:.\Generated_Source\PSoC5/AMux2.c **** *  This function first disconnects the last connection made with FastSelect or
+  83:.\Generated_Source\PSoC5/AMux2.c **** *  Select, then connects the given channel. The FastSelect function is similar
+  84:.\Generated_Source\PSoC5/AMux2.c **** *  to the Select function, except it is faster since it only disconnects the
+  85:.\Generated_Source\PSoC5/AMux2.c **** *  last channel selected rather than all channels.
+  86:.\Generated_Source\PSoC5/AMux2.c **** *
+  87:.\Generated_Source\PSoC5/AMux2.c **** * Parameters:
+  88:.\Generated_Source\PSoC5/AMux2.c **** *  channel:  The channel to connect to the common terminal.
+  89:.\Generated_Source\PSoC5/AMux2.c **** *
+  90:.\Generated_Source\PSoC5/AMux2.c **** * Return:
+  91:.\Generated_Source\PSoC5/AMux2.c **** *  void
+  92:.\Generated_Source\PSoC5/AMux2.c **** *
+  93:.\Generated_Source\PSoC5/AMux2.c **** *******************************************************************************/
+  94:.\Generated_Source\PSoC5/AMux2.c **** void AMux2_FastSelect(uint8 channel) 
+  95:.\Generated_Source\PSoC5/AMux2.c **** {
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWQlYHq.s 			page 4
+
+
+  75              		.loc 1 95 0
+  76              		.cfi_startproc
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 0, uses_anonymous_args = 0
+  79              	.LVL6:
+  80 0000 10B5     		push	{r4, lr}
+  81              		.cfi_def_cfa_offset 8
+  82              		.cfi_offset 4, -8
+  83              		.cfi_offset 14, -4
+  84 0002 0446     		mov	r4, r0
+  96:.\Generated_Source\PSoC5/AMux2.c ****     /* Disconnect the last valid channel */
+  97:.\Generated_Source\PSoC5/AMux2.c ****     if( AMux2_lastChannel != AMux2_NULL_CHANNEL)
+  85              		.loc 1 97 0
+  86 0004 054B     		ldr	r3, .L10
+  87 0006 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+  88              	.LVL7:
+  89 0008 FF28     		cmp	r0, #255
+  90 000a 01D0     		beq	.L8
+  98:.\Generated_Source\PSoC5/AMux2.c ****     {
+  99:.\Generated_Source\PSoC5/AMux2.c ****         AMux2_Disconnect(AMux2_lastChannel);
+  91              		.loc 1 99 0
+  92 000c FFF7FEFF 		bl	AMux2_Unset
+  93              	.LVL8:
+  94              	.L8:
+ 100:.\Generated_Source\PSoC5/AMux2.c ****     }
+ 101:.\Generated_Source\PSoC5/AMux2.c **** 
+ 102:.\Generated_Source\PSoC5/AMux2.c ****     /* Make the new channel connection */
+ 103:.\Generated_Source\PSoC5/AMux2.c **** #if (AMux2_MUXTYPE == AMux2_MUX_SINGLE)
+ 104:.\Generated_Source\PSoC5/AMux2.c ****     AMux2_Set(channel);
+  95              		.loc 1 104 0
+  96 0010 2046     		mov	r0, r4
+  97 0012 FFF7FEFF 		bl	AMux2_Set
+  98              	.LVL9:
+ 105:.\Generated_Source\PSoC5/AMux2.c **** #else
+ 106:.\Generated_Source\PSoC5/AMux2.c ****     AMux2_CYAMUXSIDE_A_Set(channel);
+ 107:.\Generated_Source\PSoC5/AMux2.c ****     AMux2_CYAMUXSIDE_B_Set(channel);
+ 108:.\Generated_Source\PSoC5/AMux2.c **** #endif
+ 109:.\Generated_Source\PSoC5/AMux2.c **** 
+ 110:.\Generated_Source\PSoC5/AMux2.c **** 
+ 111:.\Generated_Source\PSoC5/AMux2.c ****     AMux2_lastChannel = channel;   /* Update last channel */
+  99              		.loc 1 111 0
+ 100 0016 014B     		ldr	r3, .L10
+ 101 0018 1C70     		strb	r4, [r3]
+ 102 001a 10BD     		pop	{r4, pc}
+ 103              	.L11:
+ 104              		.align	2
+ 105              	.L10:
+ 106 001c 00000000 		.word	.LANCHOR0
+ 107              		.cfi_endproc
+ 108              	.LFE1:
+ 109              		.size	AMux2_FastSelect, .-AMux2_FastSelect
+ 110              		.section	.text.AMux2_DisconnectAll,"ax",%progbits
+ 111              		.align	2
+ 112              		.global	AMux2_DisconnectAll
+ 113              		.thumb
+ 114              		.thumb_func
+ 115              		.type	AMux2_DisconnectAll, %function
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWQlYHq.s 			page 5
+
+
+ 116              	AMux2_DisconnectAll:
+ 117              	.LFB2:
+ 112:.\Generated_Source\PSoC5/AMux2.c **** }
+ 113:.\Generated_Source\PSoC5/AMux2.c **** 
+ 114:.\Generated_Source\PSoC5/AMux2.c **** 
+ 115:.\Generated_Source\PSoC5/AMux2.c **** #if (AMux2_MUXTYPE == AMux2_MUX_DIFF)
+ 116:.\Generated_Source\PSoC5/AMux2.c **** #if (!AMux2_ATMOSTONE)
+ 117:.\Generated_Source\PSoC5/AMux2.c **** /*******************************************************************************
+ 118:.\Generated_Source\PSoC5/AMux2.c **** * Function Name: AMux2_Connect
+ 119:.\Generated_Source\PSoC5/AMux2.c **** ********************************************************************************
+ 120:.\Generated_Source\PSoC5/AMux2.c **** * Summary:
+ 121:.\Generated_Source\PSoC5/AMux2.c **** *  This function connects the given channel without affecting other connections.
+ 122:.\Generated_Source\PSoC5/AMux2.c **** *
+ 123:.\Generated_Source\PSoC5/AMux2.c **** * Parameters:
+ 124:.\Generated_Source\PSoC5/AMux2.c **** *  channel:  The channel to connect to the common terminal.
+ 125:.\Generated_Source\PSoC5/AMux2.c **** *
+ 126:.\Generated_Source\PSoC5/AMux2.c **** * Return:
+ 127:.\Generated_Source\PSoC5/AMux2.c **** *  void
+ 128:.\Generated_Source\PSoC5/AMux2.c **** *
+ 129:.\Generated_Source\PSoC5/AMux2.c **** *******************************************************************************/
+ 130:.\Generated_Source\PSoC5/AMux2.c **** void AMux2_Connect(uint8 channel) 
+ 131:.\Generated_Source\PSoC5/AMux2.c **** {
+ 132:.\Generated_Source\PSoC5/AMux2.c ****     AMux2_CYAMUXSIDE_A_Set(channel);
+ 133:.\Generated_Source\PSoC5/AMux2.c ****     AMux2_CYAMUXSIDE_B_Set(channel);
+ 134:.\Generated_Source\PSoC5/AMux2.c **** }
+ 135:.\Generated_Source\PSoC5/AMux2.c **** #endif
+ 136:.\Generated_Source\PSoC5/AMux2.c **** 
+ 137:.\Generated_Source\PSoC5/AMux2.c **** /*******************************************************************************
+ 138:.\Generated_Source\PSoC5/AMux2.c **** * Function Name: AMux2_Disconnect
+ 139:.\Generated_Source\PSoC5/AMux2.c **** ********************************************************************************
+ 140:.\Generated_Source\PSoC5/AMux2.c **** * Summary:
+ 141:.\Generated_Source\PSoC5/AMux2.c **** *  This function disconnects the given channel from the common or output
+ 142:.\Generated_Source\PSoC5/AMux2.c **** *  terminal without affecting other connections.
+ 143:.\Generated_Source\PSoC5/AMux2.c **** *
+ 144:.\Generated_Source\PSoC5/AMux2.c **** * Parameters:
+ 145:.\Generated_Source\PSoC5/AMux2.c **** *  channel:  The channel to disconnect from the common terminal.
+ 146:.\Generated_Source\PSoC5/AMux2.c **** *
+ 147:.\Generated_Source\PSoC5/AMux2.c **** * Return:
+ 148:.\Generated_Source\PSoC5/AMux2.c **** *  void
+ 149:.\Generated_Source\PSoC5/AMux2.c **** *
+ 150:.\Generated_Source\PSoC5/AMux2.c **** *******************************************************************************/
+ 151:.\Generated_Source\PSoC5/AMux2.c **** void AMux2_Disconnect(uint8 channel) 
+ 152:.\Generated_Source\PSoC5/AMux2.c **** {
+ 153:.\Generated_Source\PSoC5/AMux2.c ****     AMux2_CYAMUXSIDE_A_Unset(channel);
+ 154:.\Generated_Source\PSoC5/AMux2.c ****     AMux2_CYAMUXSIDE_B_Unset(channel);
+ 155:.\Generated_Source\PSoC5/AMux2.c **** }
+ 156:.\Generated_Source\PSoC5/AMux2.c **** #endif
+ 157:.\Generated_Source\PSoC5/AMux2.c **** 
+ 158:.\Generated_Source\PSoC5/AMux2.c **** #if (AMux2_ATMOSTONE)
+ 159:.\Generated_Source\PSoC5/AMux2.c **** /*******************************************************************************
+ 160:.\Generated_Source\PSoC5/AMux2.c **** * Function Name: AMux2_DisconnectAll
+ 161:.\Generated_Source\PSoC5/AMux2.c **** ********************************************************************************
+ 162:.\Generated_Source\PSoC5/AMux2.c **** * Summary:
+ 163:.\Generated_Source\PSoC5/AMux2.c **** *  This function disconnects all channels.
+ 164:.\Generated_Source\PSoC5/AMux2.c **** *
+ 165:.\Generated_Source\PSoC5/AMux2.c **** * Parameters:
+ 166:.\Generated_Source\PSoC5/AMux2.c **** *  void
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWQlYHq.s 			page 6
+
+
+ 167:.\Generated_Source\PSoC5/AMux2.c **** *
+ 168:.\Generated_Source\PSoC5/AMux2.c **** * Return:
+ 169:.\Generated_Source\PSoC5/AMux2.c **** *  void
+ 170:.\Generated_Source\PSoC5/AMux2.c **** *
+ 171:.\Generated_Source\PSoC5/AMux2.c **** *******************************************************************************/
+ 172:.\Generated_Source\PSoC5/AMux2.c **** void AMux2_DisconnectAll(void) 
+ 173:.\Generated_Source\PSoC5/AMux2.c **** {
+ 118              		.loc 1 173 0
+ 119              		.cfi_startproc
+ 120              		@ args = 0, pretend = 0, frame = 0
+ 121              		@ frame_needed = 0, uses_anonymous_args = 0
+ 122 0000 08B5     		push	{r3, lr}
+ 123              		.cfi_def_cfa_offset 8
+ 124              		.cfi_offset 3, -8
+ 125              		.cfi_offset 14, -4
+ 174:.\Generated_Source\PSoC5/AMux2.c ****     if(AMux2_lastChannel != AMux2_NULL_CHANNEL) 
+ 126              		.loc 1 174 0
+ 127 0002 054B     		ldr	r3, .L15
+ 128 0004 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 129 0006 FF28     		cmp	r0, #255
+ 130 0008 04D0     		beq	.L12
+ 175:.\Generated_Source\PSoC5/AMux2.c ****     {
+ 176:.\Generated_Source\PSoC5/AMux2.c ****         AMux2_Disconnect(AMux2_lastChannel);
+ 131              		.loc 1 176 0
+ 132 000a FFF7FEFF 		bl	AMux2_Unset
+ 133              	.LVL10:
+ 177:.\Generated_Source\PSoC5/AMux2.c ****         AMux2_lastChannel = AMux2_NULL_CHANNEL;
+ 134              		.loc 1 177 0
+ 135 000e FF22     		movs	r2, #255
+ 136 0010 014B     		ldr	r3, .L15
+ 137 0012 1A70     		strb	r2, [r3]
+ 138              	.L12:
+ 139 0014 08BD     		pop	{r3, pc}
+ 140              	.L16:
+ 141 0016 00BF     		.align	2
+ 142              	.L15:
+ 143 0018 00000000 		.word	.LANCHOR0
+ 144              		.cfi_endproc
+ 145              	.LFE2:
+ 146              		.size	AMux2_DisconnectAll, .-AMux2_DisconnectAll
+ 147              		.data
+ 148              		.set	.LANCHOR0,. + 0
+ 149              		.type	AMux2_lastChannel, %object
+ 150              		.size	AMux2_lastChannel, 1
+ 151              	AMux2_lastChannel:
+ 152 0000 FF       		.byte	-1
+ 153              		.text
+ 154              	.Letext0:
+ 155              		.file 2 ".\\Generated_Source\\PSoC5\\cytypes.h"
+ 156              		.file 3 ".\\Generated_Source\\PSoC5\\cyfitter_cfg.h"
+ 157              		.section	.debug_info,"",%progbits
+ 158              	.Ldebug_info0:
+ 159 0000 49010000 		.4byte	0x149
+ 160 0004 0400     		.2byte	0x4
+ 161 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 162 000a 04       		.byte	0x4
+ 163 000b 01       		.uleb128 0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWQlYHq.s 			page 7
+
+
+ 164 000c C2000000 		.4byte	.LASF17
+ 165 0010 01       		.byte	0x1
+ 166 0011 00000000 		.4byte	.LASF18
+ 167 0015 79010000 		.4byte	.LASF19
+ 168 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 169 001d 00000000 		.4byte	0
+ 170 0021 00000000 		.4byte	.Ldebug_line0
+ 171 0025 02       		.uleb128 0x2
+ 172 0026 01       		.byte	0x1
+ 173 0027 06       		.byte	0x6
+ 174 0028 28020000 		.4byte	.LASF0
+ 175 002c 02       		.uleb128 0x2
+ 176 002d 01       		.byte	0x1
+ 177 002e 08       		.byte	0x8
+ 178 002f 7C000000 		.4byte	.LASF1
+ 179 0033 02       		.uleb128 0x2
+ 180 0034 02       		.byte	0x2
+ 181 0035 05       		.byte	0x5
+ 182 0036 0F020000 		.4byte	.LASF2
+ 183 003a 02       		.uleb128 0x2
+ 184 003b 02       		.byte	0x2
+ 185 003c 07       		.byte	0x7
+ 186 003d A8000000 		.4byte	.LASF3
+ 187 0041 02       		.uleb128 0x2
+ 188 0042 04       		.byte	0x4
+ 189 0043 05       		.byte	0x5
+ 190 0044 1F020000 		.4byte	.LASF4
+ 191 0048 02       		.uleb128 0x2
+ 192 0049 04       		.byte	0x4
+ 193 004a 07       		.byte	0x7
+ 194 004b 96000000 		.4byte	.LASF5
+ 195 004f 02       		.uleb128 0x2
+ 196 0050 08       		.byte	0x8
+ 197 0051 05       		.byte	0x5
+ 198 0052 FC010000 		.4byte	.LASF6
+ 199 0056 02       		.uleb128 0x2
+ 200 0057 08       		.byte	0x8
+ 201 0058 07       		.byte	0x7
+ 202 0059 5D010000 		.4byte	.LASF7
+ 203 005d 03       		.uleb128 0x3
+ 204 005e 04       		.byte	0x4
+ 205 005f 05       		.byte	0x5
+ 206 0060 696E7400 		.ascii	"int\000"
+ 207 0064 02       		.uleb128 0x2
+ 208 0065 04       		.byte	0x4
+ 209 0066 07       		.byte	0x7
+ 210 0067 50010000 		.4byte	.LASF8
+ 211 006b 04       		.uleb128 0x4
+ 212 006c 19020000 		.4byte	.LASF20
+ 213 0070 02       		.byte	0x2
+ 214 0071 C2       		.byte	0xc2
+ 215 0072 2C000000 		.4byte	0x2c
+ 216 0076 02       		.uleb128 0x2
+ 217 0077 04       		.byte	0x4
+ 218 0078 04       		.byte	0x4
+ 219 0079 76000000 		.4byte	.LASF9
+ 220 007d 02       		.uleb128 0x2
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWQlYHq.s 			page 8
+
+
+ 221 007e 08       		.byte	0x8
+ 222 007f 04       		.byte	0x4
+ 223 0080 BB000000 		.4byte	.LASF10
+ 224 0084 02       		.uleb128 0x2
+ 225 0085 01       		.byte	0x1
+ 226 0086 08       		.byte	0x8
+ 227 0087 0A020000 		.4byte	.LASF11
+ 228 008b 05       		.uleb128 0x5
+ 229 008c 6A000000 		.4byte	.LASF12
+ 230 0090 01       		.byte	0x1
+ 231 0091 24       		.byte	0x24
+ 232 0092 00000000 		.4byte	.LFB0
+ 233 0096 20000000 		.4byte	.LFE0-.LFB0
+ 234 009a 01       		.uleb128 0x1
+ 235 009b 9C       		.byte	0x9c
+ 236 009c C0000000 		.4byte	0xc0
+ 237 00a0 06       		.uleb128 0x6
+ 238 00a1 74010000 		.4byte	.LASF15
+ 239 00a5 01       		.byte	0x1
+ 240 00a6 26       		.byte	0x26
+ 241 00a7 6B000000 		.4byte	0x6b
+ 242 00ab 00000000 		.4byte	.LLST0
+ 243 00af 07       		.uleb128 0x7
+ 244 00b0 0C000000 		.4byte	.LVL2
+ 245 00b4 2E010000 		.4byte	0x12e
+ 246 00b8 08       		.uleb128 0x8
+ 247 00b9 01       		.uleb128 0x1
+ 248 00ba 50       		.byte	0x50
+ 249 00bb 02       		.uleb128 0x2
+ 250 00bc 74       		.byte	0x74
+ 251 00bd 00       		.sleb128 0
+ 252 00be 00       		.byte	0
+ 253 00bf 00       		.byte	0
+ 254 00c0 05       		.uleb128 0x5
+ 255 00c1 21000000 		.4byte	.LASF13
+ 256 00c5 01       		.byte	0x1
+ 257 00c6 5E       		.byte	0x5e
+ 258 00c7 00000000 		.4byte	.LFB1
+ 259 00cb 20000000 		.4byte	.LFE1-.LFB1
+ 260 00cf 01       		.uleb128 0x1
+ 261 00d0 9C       		.byte	0x9c
+ 262 00d1 FE000000 		.4byte	0xfe
+ 263 00d5 09       		.uleb128 0x9
+ 264 00d6 32000000 		.4byte	.LASF21
+ 265 00da 01       		.byte	0x1
+ 266 00db 5E       		.byte	0x5e
+ 267 00dc 6B000000 		.4byte	0x6b
+ 268 00e0 2A000000 		.4byte	.LLST1
+ 269 00e4 0A       		.uleb128 0xa
+ 270 00e5 10000000 		.4byte	.LVL8
+ 271 00e9 2E010000 		.4byte	0x12e
+ 272 00ed 07       		.uleb128 0x7
+ 273 00ee 16000000 		.4byte	.LVL9
+ 274 00f2 3F010000 		.4byte	0x13f
+ 275 00f6 08       		.uleb128 0x8
+ 276 00f7 01       		.uleb128 0x1
+ 277 00f8 50       		.byte	0x50
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWQlYHq.s 			page 9
+
+
+ 278 00f9 02       		.uleb128 0x2
+ 279 00fa 74       		.byte	0x74
+ 280 00fb 00       		.sleb128 0
+ 281 00fc 00       		.byte	0
+ 282 00fd 00       		.byte	0
+ 283 00fe 05       		.uleb128 0x5
+ 284 00ff 56000000 		.4byte	.LASF14
+ 285 0103 01       		.byte	0x1
+ 286 0104 AC       		.byte	0xac
+ 287 0105 00000000 		.4byte	.LFB2
+ 288 0109 1C000000 		.4byte	.LFE2-.LFB2
+ 289 010d 01       		.uleb128 0x1
+ 290 010e 9C       		.byte	0x9c
+ 291 010f 1D010000 		.4byte	0x11d
+ 292 0113 0A       		.uleb128 0xa
+ 293 0114 0E000000 		.4byte	.LVL10
+ 294 0118 2E010000 		.4byte	0x12e
+ 295 011c 00       		.byte	0
+ 296 011d 0B       		.uleb128 0xb
+ 297 011e 44000000 		.4byte	.LASF16
+ 298 0122 01       		.byte	0x1
+ 299 0123 14       		.byte	0x14
+ 300 0124 6B000000 		.4byte	0x6b
+ 301 0128 05       		.uleb128 0x5
+ 302 0129 03       		.byte	0x3
+ 303 012a 00000000 		.4byte	AMux2_lastChannel
+ 304 012e 0C       		.uleb128 0xc
+ 305 012f 8A000000 		.4byte	.LASF22
+ 306 0133 03       		.byte	0x3
+ 307 0134 25       		.byte	0x25
+ 308 0135 3F010000 		.4byte	0x13f
+ 309 0139 0D       		.uleb128 0xd
+ 310 013a 6B000000 		.4byte	0x6b
+ 311 013e 00       		.byte	0
+ 312 013f 0E       		.uleb128 0xe
+ 313 0140 3A000000 		.4byte	.LASF23
+ 314 0144 03       		.byte	0x3
+ 315 0145 24       		.byte	0x24
+ 316 0146 0D       		.uleb128 0xd
+ 317 0147 6B000000 		.4byte	0x6b
+ 318 014b 00       		.byte	0
+ 319 014c 00       		.byte	0
+ 320              		.section	.debug_abbrev,"",%progbits
+ 321              	.Ldebug_abbrev0:
+ 322 0000 01       		.uleb128 0x1
+ 323 0001 11       		.uleb128 0x11
+ 324 0002 01       		.byte	0x1
+ 325 0003 25       		.uleb128 0x25
+ 326 0004 0E       		.uleb128 0xe
+ 327 0005 13       		.uleb128 0x13
+ 328 0006 0B       		.uleb128 0xb
+ 329 0007 03       		.uleb128 0x3
+ 330 0008 0E       		.uleb128 0xe
+ 331 0009 1B       		.uleb128 0x1b
+ 332 000a 0E       		.uleb128 0xe
+ 333 000b 55       		.uleb128 0x55
+ 334 000c 17       		.uleb128 0x17
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWQlYHq.s 			page 10
+
+
+ 335 000d 11       		.uleb128 0x11
+ 336 000e 01       		.uleb128 0x1
+ 337 000f 10       		.uleb128 0x10
+ 338 0010 17       		.uleb128 0x17
+ 339 0011 00       		.byte	0
+ 340 0012 00       		.byte	0
+ 341 0013 02       		.uleb128 0x2
+ 342 0014 24       		.uleb128 0x24
+ 343 0015 00       		.byte	0
+ 344 0016 0B       		.uleb128 0xb
+ 345 0017 0B       		.uleb128 0xb
+ 346 0018 3E       		.uleb128 0x3e
+ 347 0019 0B       		.uleb128 0xb
+ 348 001a 03       		.uleb128 0x3
+ 349 001b 0E       		.uleb128 0xe
+ 350 001c 00       		.byte	0
+ 351 001d 00       		.byte	0
+ 352 001e 03       		.uleb128 0x3
+ 353 001f 24       		.uleb128 0x24
+ 354 0020 00       		.byte	0
+ 355 0021 0B       		.uleb128 0xb
+ 356 0022 0B       		.uleb128 0xb
+ 357 0023 3E       		.uleb128 0x3e
+ 358 0024 0B       		.uleb128 0xb
+ 359 0025 03       		.uleb128 0x3
+ 360 0026 08       		.uleb128 0x8
+ 361 0027 00       		.byte	0
+ 362 0028 00       		.byte	0
+ 363 0029 04       		.uleb128 0x4
+ 364 002a 16       		.uleb128 0x16
+ 365 002b 00       		.byte	0
+ 366 002c 03       		.uleb128 0x3
+ 367 002d 0E       		.uleb128 0xe
+ 368 002e 3A       		.uleb128 0x3a
+ 369 002f 0B       		.uleb128 0xb
+ 370 0030 3B       		.uleb128 0x3b
+ 371 0031 0B       		.uleb128 0xb
+ 372 0032 49       		.uleb128 0x49
+ 373 0033 13       		.uleb128 0x13
+ 374 0034 00       		.byte	0
+ 375 0035 00       		.byte	0
+ 376 0036 05       		.uleb128 0x5
+ 377 0037 2E       		.uleb128 0x2e
+ 378 0038 01       		.byte	0x1
+ 379 0039 3F       		.uleb128 0x3f
+ 380 003a 19       		.uleb128 0x19
+ 381 003b 03       		.uleb128 0x3
+ 382 003c 0E       		.uleb128 0xe
+ 383 003d 3A       		.uleb128 0x3a
+ 384 003e 0B       		.uleb128 0xb
+ 385 003f 3B       		.uleb128 0x3b
+ 386 0040 0B       		.uleb128 0xb
+ 387 0041 27       		.uleb128 0x27
+ 388 0042 19       		.uleb128 0x19
+ 389 0043 11       		.uleb128 0x11
+ 390 0044 01       		.uleb128 0x1
+ 391 0045 12       		.uleb128 0x12
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWQlYHq.s 			page 11
+
+
+ 392 0046 06       		.uleb128 0x6
+ 393 0047 40       		.uleb128 0x40
+ 394 0048 18       		.uleb128 0x18
+ 395 0049 9742     		.uleb128 0x2117
+ 396 004b 19       		.uleb128 0x19
+ 397 004c 01       		.uleb128 0x1
+ 398 004d 13       		.uleb128 0x13
+ 399 004e 00       		.byte	0
+ 400 004f 00       		.byte	0
+ 401 0050 06       		.uleb128 0x6
+ 402 0051 34       		.uleb128 0x34
+ 403 0052 00       		.byte	0
+ 404 0053 03       		.uleb128 0x3
+ 405 0054 0E       		.uleb128 0xe
+ 406 0055 3A       		.uleb128 0x3a
+ 407 0056 0B       		.uleb128 0xb
+ 408 0057 3B       		.uleb128 0x3b
+ 409 0058 0B       		.uleb128 0xb
+ 410 0059 49       		.uleb128 0x49
+ 411 005a 13       		.uleb128 0x13
+ 412 005b 02       		.uleb128 0x2
+ 413 005c 17       		.uleb128 0x17
+ 414 005d 00       		.byte	0
+ 415 005e 00       		.byte	0
+ 416 005f 07       		.uleb128 0x7
+ 417 0060 898201   		.uleb128 0x4109
+ 418 0063 01       		.byte	0x1
+ 419 0064 11       		.uleb128 0x11
+ 420 0065 01       		.uleb128 0x1
+ 421 0066 31       		.uleb128 0x31
+ 422 0067 13       		.uleb128 0x13
+ 423 0068 00       		.byte	0
+ 424 0069 00       		.byte	0
+ 425 006a 08       		.uleb128 0x8
+ 426 006b 8A8201   		.uleb128 0x410a
+ 427 006e 00       		.byte	0
+ 428 006f 02       		.uleb128 0x2
+ 429 0070 18       		.uleb128 0x18
+ 430 0071 9142     		.uleb128 0x2111
+ 431 0073 18       		.uleb128 0x18
+ 432 0074 00       		.byte	0
+ 433 0075 00       		.byte	0
+ 434 0076 09       		.uleb128 0x9
+ 435 0077 05       		.uleb128 0x5
+ 436 0078 00       		.byte	0
+ 437 0079 03       		.uleb128 0x3
+ 438 007a 0E       		.uleb128 0xe
+ 439 007b 3A       		.uleb128 0x3a
+ 440 007c 0B       		.uleb128 0xb
+ 441 007d 3B       		.uleb128 0x3b
+ 442 007e 0B       		.uleb128 0xb
+ 443 007f 49       		.uleb128 0x49
+ 444 0080 13       		.uleb128 0x13
+ 445 0081 02       		.uleb128 0x2
+ 446 0082 17       		.uleb128 0x17
+ 447 0083 00       		.byte	0
+ 448 0084 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWQlYHq.s 			page 12
+
+
+ 449 0085 0A       		.uleb128 0xa
+ 450 0086 898201   		.uleb128 0x4109
+ 451 0089 00       		.byte	0
+ 452 008a 11       		.uleb128 0x11
+ 453 008b 01       		.uleb128 0x1
+ 454 008c 31       		.uleb128 0x31
+ 455 008d 13       		.uleb128 0x13
+ 456 008e 00       		.byte	0
+ 457 008f 00       		.byte	0
+ 458 0090 0B       		.uleb128 0xb
+ 459 0091 34       		.uleb128 0x34
+ 460 0092 00       		.byte	0
+ 461 0093 03       		.uleb128 0x3
+ 462 0094 0E       		.uleb128 0xe
+ 463 0095 3A       		.uleb128 0x3a
+ 464 0096 0B       		.uleb128 0xb
+ 465 0097 3B       		.uleb128 0x3b
+ 466 0098 0B       		.uleb128 0xb
+ 467 0099 49       		.uleb128 0x49
+ 468 009a 13       		.uleb128 0x13
+ 469 009b 02       		.uleb128 0x2
+ 470 009c 18       		.uleb128 0x18
+ 471 009d 00       		.byte	0
+ 472 009e 00       		.byte	0
+ 473 009f 0C       		.uleb128 0xc
+ 474 00a0 2E       		.uleb128 0x2e
+ 475 00a1 01       		.byte	0x1
+ 476 00a2 3F       		.uleb128 0x3f
+ 477 00a3 19       		.uleb128 0x19
+ 478 00a4 03       		.uleb128 0x3
+ 479 00a5 0E       		.uleb128 0xe
+ 480 00a6 3A       		.uleb128 0x3a
+ 481 00a7 0B       		.uleb128 0xb
+ 482 00a8 3B       		.uleb128 0x3b
+ 483 00a9 0B       		.uleb128 0xb
+ 484 00aa 27       		.uleb128 0x27
+ 485 00ab 19       		.uleb128 0x19
+ 486 00ac 3C       		.uleb128 0x3c
+ 487 00ad 19       		.uleb128 0x19
+ 488 00ae 01       		.uleb128 0x1
+ 489 00af 13       		.uleb128 0x13
+ 490 00b0 00       		.byte	0
+ 491 00b1 00       		.byte	0
+ 492 00b2 0D       		.uleb128 0xd
+ 493 00b3 05       		.uleb128 0x5
+ 494 00b4 00       		.byte	0
+ 495 00b5 49       		.uleb128 0x49
+ 496 00b6 13       		.uleb128 0x13
+ 497 00b7 00       		.byte	0
+ 498 00b8 00       		.byte	0
+ 499 00b9 0E       		.uleb128 0xe
+ 500 00ba 2E       		.uleb128 0x2e
+ 501 00bb 01       		.byte	0x1
+ 502 00bc 3F       		.uleb128 0x3f
+ 503 00bd 19       		.uleb128 0x19
+ 504 00be 03       		.uleb128 0x3
+ 505 00bf 0E       		.uleb128 0xe
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWQlYHq.s 			page 13
+
+
+ 506 00c0 3A       		.uleb128 0x3a
+ 507 00c1 0B       		.uleb128 0xb
+ 508 00c2 3B       		.uleb128 0x3b
+ 509 00c3 0B       		.uleb128 0xb
+ 510 00c4 27       		.uleb128 0x27
+ 511 00c5 19       		.uleb128 0x19
+ 512 00c6 3C       		.uleb128 0x3c
+ 513 00c7 19       		.uleb128 0x19
+ 514 00c8 00       		.byte	0
+ 515 00c9 00       		.byte	0
+ 516 00ca 00       		.byte	0
+ 517              		.section	.debug_loc,"",%progbits
+ 518              	.Ldebug_loc0:
+ 519              	.LLST0:
+ 520 0000 02000000 		.4byte	.LVL0
+ 521 0004 06000000 		.4byte	.LVL1
+ 522 0008 0200     		.2byte	0x2
+ 523 000a 30       		.byte	0x30
+ 524 000b 9F       		.byte	0x9f
+ 525 000c 06000000 		.4byte	.LVL1
+ 526 0010 0E000000 		.4byte	.LVL3
+ 527 0014 0100     		.2byte	0x1
+ 528 0016 54       		.byte	0x54
+ 529 0017 10000000 		.4byte	.LVL4
+ 530 001b 1C000000 		.4byte	.LVL5
+ 531 001f 0100     		.2byte	0x1
+ 532 0021 54       		.byte	0x54
+ 533 0022 00000000 		.4byte	0
+ 534 0026 00000000 		.4byte	0
+ 535              	.LLST1:
+ 536 002a 00000000 		.4byte	.LVL6
+ 537 002e 08000000 		.4byte	.LVL7
+ 538 0032 0100     		.2byte	0x1
+ 539 0034 50       		.byte	0x50
+ 540 0035 08000000 		.4byte	.LVL7
+ 541 0039 20000000 		.4byte	.LFE1
+ 542 003d 0400     		.2byte	0x4
+ 543 003f F3       		.byte	0xf3
+ 544 0040 01       		.uleb128 0x1
+ 545 0041 50       		.byte	0x50
+ 546 0042 9F       		.byte	0x9f
+ 547 0043 00000000 		.4byte	0
+ 548 0047 00000000 		.4byte	0
+ 549              		.section	.debug_aranges,"",%progbits
+ 550 0000 2C000000 		.4byte	0x2c
+ 551 0004 0200     		.2byte	0x2
+ 552 0006 00000000 		.4byte	.Ldebug_info0
+ 553 000a 04       		.byte	0x4
+ 554 000b 00       		.byte	0
+ 555 000c 0000     		.2byte	0
+ 556 000e 0000     		.2byte	0
+ 557 0010 00000000 		.4byte	.LFB0
+ 558 0014 20000000 		.4byte	.LFE0-.LFB0
+ 559 0018 00000000 		.4byte	.LFB1
+ 560 001c 20000000 		.4byte	.LFE1-.LFB1
+ 561 0020 00000000 		.4byte	.LFB2
+ 562 0024 1C000000 		.4byte	.LFE2-.LFB2
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWQlYHq.s 			page 14
+
+
+ 563 0028 00000000 		.4byte	0
+ 564 002c 00000000 		.4byte	0
+ 565              		.section	.debug_ranges,"",%progbits
+ 566              	.Ldebug_ranges0:
+ 567 0000 00000000 		.4byte	.LFB0
+ 568 0004 20000000 		.4byte	.LFE0
+ 569 0008 00000000 		.4byte	.LFB1
+ 570 000c 20000000 		.4byte	.LFE1
+ 571 0010 00000000 		.4byte	.LFB2
+ 572 0014 1C000000 		.4byte	.LFE2
+ 573 0018 00000000 		.4byte	0
+ 574 001c 00000000 		.4byte	0
+ 575              		.section	.debug_line,"",%progbits
+ 576              	.Ldebug_line0:
+ 577 0000 A7000000 		.section	.debug_str,"MS",%progbits,1
+ 577      02005600 
+ 577      00000201 
+ 577      FB0E0D00 
+ 577      01010101 
+ 578              	.LASF18:
+ 579 0000 2E5C4765 		.ascii	".\\Generated_Source\\PSoC5\\AMux2.c\000"
+ 579      6E657261 
+ 579      7465645F 
+ 579      536F7572 
+ 579      63655C50 
+ 580              	.LASF13:
+ 581 0021 414D7578 		.ascii	"AMux2_FastSelect\000"
+ 581      325F4661 
+ 581      73745365 
+ 581      6C656374 
+ 581      00
+ 582              	.LASF21:
+ 583 0032 6368616E 		.ascii	"channel\000"
+ 583      6E656C00 
+ 584              	.LASF23:
+ 585 003a 414D7578 		.ascii	"AMux2_Set\000"
+ 585      325F5365 
+ 585      7400
+ 586              	.LASF16:
+ 587 0044 414D7578 		.ascii	"AMux2_lastChannel\000"
+ 587      325F6C61 
+ 587      73744368 
+ 587      616E6E65 
+ 587      6C00
+ 588              	.LASF14:
+ 589 0056 414D7578 		.ascii	"AMux2_DisconnectAll\000"
+ 589      325F4469 
+ 589      73636F6E 
+ 589      6E656374 
+ 589      416C6C00 
+ 590              	.LASF12:
+ 591 006a 414D7578 		.ascii	"AMux2_Start\000"
+ 591      325F5374 
+ 591      61727400 
+ 592              	.LASF9:
+ 593 0076 666C6F61 		.ascii	"float\000"
+ 593      7400
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWQlYHq.s 			page 15
+
+
+ 594              	.LASF1:
+ 595 007c 756E7369 		.ascii	"unsigned char\000"
+ 595      676E6564 
+ 595      20636861 
+ 595      7200
+ 596              	.LASF22:
+ 597 008a 414D7578 		.ascii	"AMux2_Unset\000"
+ 597      325F556E 
+ 597      73657400 
+ 598              	.LASF5:
+ 599 0096 6C6F6E67 		.ascii	"long unsigned int\000"
+ 599      20756E73 
+ 599      69676E65 
+ 599      6420696E 
+ 599      7400
+ 600              	.LASF3:
+ 601 00a8 73686F72 		.ascii	"short unsigned int\000"
+ 601      7420756E 
+ 601      7369676E 
+ 601      65642069 
+ 601      6E7400
+ 602              	.LASF10:
+ 603 00bb 646F7562 		.ascii	"double\000"
+ 603      6C6500
+ 604              	.LASF17:
+ 605 00c2 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 605      4320342E 
+ 605      392E3320 
+ 605      32303135 
+ 605      30333033 
+ 606 00f5 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m3 -mthumb -g -O"
+ 606      20726576 
+ 606      6973696F 
+ 606      6E203232 
+ 606      31323230 
+ 607 0128 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 607      66756E63 
+ 607      74696F6E 
+ 607      2D736563 
+ 607      74696F6E 
+ 608              	.LASF8:
+ 609 0150 756E7369 		.ascii	"unsigned int\000"
+ 609      676E6564 
+ 609      20696E74 
+ 609      00
+ 610              	.LASF7:
+ 611 015d 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 611      206C6F6E 
+ 611      6720756E 
+ 611      7369676E 
+ 611      65642069 
+ 612              	.LASF15:
+ 613 0174 6368616E 		.ascii	"chan\000"
+ 613      00
+ 614              	.LASF19:
+ 615 0179 5C5C4441 		.ascii	"\\\\DATA\\Folder Redirection\\faithc\\Desktop\\FAIT"
+ 615      54415C46 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccWQlYHq.s 			page 16
+
+
+ 615      6F6C6465 
+ 615      72205265 
+ 615      64697265 
+ 616 01a6 48532052 		.ascii	"HS RELEASED FIRMWARE\\SirenProject200W_RevF\\SirenP"
+ 616      454C4541 
+ 616      53454420 
+ 616      4649524D 
+ 616      57415245 
+ 617 01d7 726F6A65 		.ascii	"roject200W_RevD\\ReleaseVersion.cydsn\000"
+ 617      63743230 
+ 617      30575F52 
+ 617      6576445C 
+ 617      52656C65 
+ 618              	.LASF6:
+ 619 01fc 6C6F6E67 		.ascii	"long long int\000"
+ 619      206C6F6E 
+ 619      6720696E 
+ 619      7400
+ 620              	.LASF11:
+ 621 020a 63686172 		.ascii	"char\000"
+ 621      00
+ 622              	.LASF2:
+ 623 020f 73686F72 		.ascii	"short int\000"
+ 623      7420696E 
+ 623      7400
+ 624              	.LASF20:
+ 625 0219 75696E74 		.ascii	"uint8\000"
+ 625      3800
+ 626              	.LASF4:
+ 627 021f 6C6F6E67 		.ascii	"long int\000"
+ 627      20696E74 
+ 627      00
+ 628              	.LASF0:
+ 629 0228 7369676E 		.ascii	"signed char\000"
+ 629      65642063 
+ 629      68617200 
+ 630              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

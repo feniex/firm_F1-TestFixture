@@ -1,0 +1,2828 @@
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"DACaudio.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.rodata
+  19              		.type	INITIAL_DAC_VALUE, %object
+  20              		.size	INITIAL_DAC_VALUE, 1
+  21              	INITIAL_DAC_VALUE:
+  22 0000 80       		.byte	-128
+  23              		.type	DEFAULT_CHANNEL_COUNT, %object
+  24              		.size	DEFAULT_CHANNEL_COUNT, 1
+  25              	DEFAULT_CHANNEL_COUNT:
+  26 0001 01       		.byte	1
+  27 0002 0000     		.align	2
+  28              		.type	DEFAULT_SAMPLING_RATE, %object
+  29              		.size	DEFAULT_SAMPLING_RATE, 4
+  30              	DEFAULT_SAMPLING_RATE:
+  31 0004 401F0000 		.word	8000
+  32              		.align	2
+  33              		.type	ECTO_CYCLE_START_INDEX, %object
+  34              		.size	ECTO_CYCLE_START_INDEX, 4
+  35              	ECTO_CYCLE_START_INDEX:
+  36 0008 3A2F0000 		.word	12090
+  37              		.align	2
+  38              		.type	ECTO_CYCLE_END_INDEX, %object
+  39              		.size	ECTO_CYCLE_END_INDEX, 4
+  40              	ECTO_CYCLE_END_INDEX:
+  41 000c 845D0000 		.word	23940
+  42              		.align	2
+  43              		.type	ECTO_RAMP_DOWN_INDEX, %object
+  44              		.size	ECTO_RAMP_DOWN_INDEX, 4
+  45              	ECTO_RAMP_DOWN_INDEX:
+  46 0010 0A450100 		.word	83210
+  47              		.bss
+  48              	currentSongNumber:
+  49 0000 00       		.space	1
+  50 0001 000000   		.align	2
+  51              	dataIndex:
+  52 0004 00000000 		.space	4
+  53              	bCurrentSpeaker:
+  54 0008 00       		.space	1
+  55              	bAudioInputFlag:
+  56 0009 00       		.space	1
+  57              	bAudioActive:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 2
+
+
+  58 000a 00       		.space	1
+  59              	bSongFinishedFlag:
+  60 000b 00       		.space	1
+  61              		.align	2
+  62              	Speaker1:
+  63 000c 00000000 		.space	12
+  63      00000000 
+  63      00000000 
+  64              		.align	2
+  65              	Speaker2:
+  66 0018 00000000 		.space	12
+  66      00000000 
+  66      00000000 
+  67              		.section	.text.isSongFinished,"ax",%progbits
+  68              		.align	2
+  69              		.global	isSongFinished
+  70              		.thumb
+  71              		.thumb_func
+  72              		.type	isSongFinished, %function
+  73              	isSongFinished:
+  74              	.LFB63:
+  75              		.file 1 ".\\DACaudio.c"
+   1:.\DACaudio.c  **** /* ========================================
+   2:.\DACaudio.c  ****  *
+   3:.\DACaudio.c  ****  * Copyright YOUR COMPANY, THE YEAR
+   4:.\DACaudio.c  ****  * All Rights Reserved
+   5:.\DACaudio.c  ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:.\DACaudio.c  ****  *
+   7:.\DACaudio.c  ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:.\DACaudio.c  ****  * WHICH IS THE PROPERTY OF your company.
+   9:.\DACaudio.c  ****  *
+  10:.\DACaudio.c  ****  * ========================================
+  11:.\DACaudio.c  **** */
+  12:.\DACaudio.c  **** /**********PREPROCESSOR DIRECTIVES**********/
+  13:.\DACaudio.c  **** #include "CommonVariables.h"
+  14:.\DACaudio.c  **** #include "SirenState.h"
+  15:.\DACaudio.c  **** #include "DACaudio.h"
+  16:.\DACaudio.c  **** #include "FileDecode.h"
+  17:.\DACaudio.c  ****     
+  18:.\DACaudio.c  **** /**********DEFINED CONSTANTS**********/
+  19:.\DACaudio.c  **** static const uint8 INITIAL_DAC_VALUE = 128;
+  20:.\DACaudio.c  **** 
+  21:.\DACaudio.c  **** static const uint8 DEFAULT_CHANNEL_COUNT = 1;
+  22:.\DACaudio.c  **** static const uint32 DEFAULT_SAMPLING_RATE = 8000; 
+  23:.\DACaudio.c  **** 
+  24:.\DACaudio.c  **** static const uint32 ECTO_CYCLE_START_INDEX = 12090;
+  25:.\DACaudio.c  **** static const uint32 ECTO_CYCLE_END_INDEX = 23940;
+  26:.\DACaudio.c  **** static const uint32 ECTO_RAMP_DOWN_INDEX = 83210;
+  27:.\DACaudio.c  **** 
+  28:.\DACaudio.c  **** /**********DATA STRUCTURES**********/
+  29:.\DACaudio.c  **** typedef struct
+  30:.\DACaudio.c  **** {
+  31:.\DACaudio.c  ****     uint8 channelCount;
+  32:.\DACaudio.c  ****     uint8 bytesPerSample;
+  33:.\DACaudio.c  ****     uint32 samplingRate;
+  34:.\DACaudio.c  ****     uint32 dataSize;
+  35:.\DACaudio.c  **** }DACdata;
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 3
+
+
+  36:.\DACaudio.c  **** 
+  37:.\DACaudio.c  **** /**********GLOBAL VARIABLES**********/
+  38:.\DACaudio.c  **** static enum ToneType currentSongNumber = NO_TONE;
+  39:.\DACaudio.c  **** static uint32 dataIndex = 0;
+  40:.\DACaudio.c  **** 
+  41:.\DACaudio.c  **** static uint8 bCurrentSpeaker = SPEAKER_1;
+  42:.\DACaudio.c  **** static uint8 bAudioInputFlag = false;
+  43:.\DACaudio.c  **** 
+  44:.\DACaudio.c  **** static uint8 bAudioActive = false;
+  45:.\DACaudio.c  **** static uint8 bSongFinishedFlag = false;
+  46:.\DACaudio.c  **** 
+  47:.\DACaudio.c  **** static DACdata Speaker1 = {0, 0, 0, 0};
+  48:.\DACaudio.c  **** static DACdata Speaker2 = {0, 0, 0, 0};
+  49:.\DACaudio.c  **** 
+  50:.\DACaudio.c  **** /**********FUNCTION PROTOTYPES**********/
+  51:.\DACaudio.c  **** static uint8 isMusicReady(enum ToneType songChoice);
+  52:.\DACaudio.c  **** static uint16 getSamplingReloadValue(uint32 frequency);
+  53:.\DACaudio.c  **** 
+  54:.\DACaudio.c  **** /**********DEFINED FUNCTIONS**********/
+  55:.\DACaudio.c  **** /*******************************************************************************
+  56:.\DACaudio.c  **** * Function Name: isSongFinished
+  57:.\DACaudio.c  **** ********************************************************************************
+  58:.\DACaudio.c  **** *
+  59:.\DACaudio.c  **** * Summary:
+  60:.\DACaudio.c  **** *  Returns the status for song completion.
+  61:.\DACaudio.c  **** *
+  62:.\DACaudio.c  **** * Parameters: 
+  63:.\DACaudio.c  **** *   None
+  64:.\DACaudio.c  **** *
+  65:.\DACaudio.c  **** * Return:
+  66:.\DACaudio.c  **** *   TRUE if the song completed, FALSE if not completed
+  67:.\DACaudio.c  **** *
+  68:.\DACaudio.c  **** *******************************************************************************/
+  69:.\DACaudio.c  **** uint8 isSongFinished(void)
+  70:.\DACaudio.c  **** {
+  76              		.loc 1 70 0
+  77              		.cfi_startproc
+  78              		@ args = 0, pretend = 0, frame = 0
+  79              		@ frame_needed = 1, uses_anonymous_args = 0
+  80              		@ link register save eliminated.
+  81 0000 80B4     		push	{r7}
+  82              		.cfi_def_cfa_offset 4
+  83              		.cfi_offset 7, -4
+  84 0002 00AF     		add	r7, sp, #0
+  85              		.cfi_def_cfa_register 7
+  71:.\DACaudio.c  ****     return bSongFinishedFlag;
+  86              		.loc 1 71 0
+  87 0004 034B     		ldr	r3, .L3
+  88 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  72:.\DACaudio.c  **** }
+  89              		.loc 1 72 0
+  90 0008 1846     		mov	r0, r3
+  91 000a BD46     		mov	sp, r7
+  92              		.cfi_def_cfa_register 13
+  93              		@ sp needed
+  94 000c 5DF8047B 		ldr	r7, [sp], #4
+  95              		.cfi_restore 7
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 4
+
+
+  96              		.cfi_def_cfa_offset 0
+  97 0010 7047     		bx	lr
+  98              	.L4:
+  99 0012 00BF     		.align	2
+ 100              	.L3:
+ 101 0014 0B000000 		.word	bSongFinishedFlag
+ 102              		.cfi_endproc
+ 103              	.LFE63:
+ 104              		.size	isSongFinished, .-isSongFinished
+ 105              		.section	.text.playAudioTone,"ax",%progbits
+ 106              		.align	2
+ 107              		.global	playAudioTone
+ 108              		.thumb
+ 109              		.thumb_func
+ 110              		.type	playAudioTone, %function
+ 111              	playAudioTone:
+ 112              	.LFB64:
+  73:.\DACaudio.c  **** 
+  74:.\DACaudio.c  **** /*******************************************************************************
+  75:.\DACaudio.c  **** * Function Name: playAudioTone
+  76:.\DACaudio.c  **** ********************************************************************************
+  77:.\DACaudio.c  **** *
+  78:.\DACaudio.c  **** * Summary:
+  79:.\DACaudio.c  **** *  Starts playing file song by updating the DAC at the sampling rate
+  80:.\DACaudio.c  **** *
+  81:.\DACaudio.c  **** * Parameters: 
+  82:.\DACaudio.c  **** *   bSpeaker: The speaker to update
+  83:.\DACaudio.c  **** *   songChoice: The value that represents the song selection
+  84:.\DACaudio.c  **** *   bAudioInput: The input status for the song selection
+  85:.\DACaudio.c  **** *
+  86:.\DACaudio.c  **** * Return:
+  87:.\DACaudio.c  **** *   TRUE for valid inputs, FALSE otherwise
+  88:.\DACaudio.c  **** *
+  89:.\DACaudio.c  **** *******************************************************************************/
+  90:.\DACaudio.c  **** uint8 playAudioTone(uint8 bSpeaker, enum ToneType songChoice, uint8 bAudioInput)
+  91:.\DACaudio.c  **** {   
+ 113              		.loc 1 91 0
+ 114              		.cfi_startproc
+ 115              		@ args = 0, pretend = 0, frame = 16
+ 116              		@ frame_needed = 1, uses_anonymous_args = 0
+ 117 0000 80B5     		push	{r7, lr}
+ 118              		.cfi_def_cfa_offset 8
+ 119              		.cfi_offset 7, -8
+ 120              		.cfi_offset 14, -4
+ 121 0002 84B0     		sub	sp, sp, #16
+ 122              		.cfi_def_cfa_offset 24
+ 123 0004 00AF     		add	r7, sp, #0
+ 124              		.cfi_def_cfa_register 7
+ 125 0006 0346     		mov	r3, r0
+ 126 0008 FB71     		strb	r3, [r7, #7]
+ 127 000a 0B46     		mov	r3, r1
+ 128 000c BB71     		strb	r3, [r7, #6]
+ 129 000e 1346     		mov	r3, r2
+ 130 0010 7B71     		strb	r3, [r7, #5]
+  92:.\DACaudio.c  ****     uint16 DACreloadValue = 0;
+ 131              		.loc 1 92 0
+ 132 0012 0023     		movs	r3, #0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 5
+
+
+ 133 0014 FB81     		strh	r3, [r7, #14]	@ movhi
+  93:.\DACaudio.c  ****     
+  94:.\DACaudio.c  ****     if((bSpeaker != SPEAKER_1) && (bSpeaker != SPEAKER_2))
+ 134              		.loc 1 94 0
+ 135 0016 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 136 0018 002B     		cmp	r3, #0
+ 137 001a 04D0     		beq	.L6
+ 138              		.loc 1 94 0 is_stmt 0 discriminator 1
+ 139 001c FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 140 001e 012B     		cmp	r3, #1
+ 141 0020 01D0     		beq	.L6
+  95:.\DACaudio.c  ****         return false;
+ 142              		.loc 1 95 0 is_stmt 1
+ 143 0022 0023     		movs	r3, #0
+ 144 0024 6AE0     		b	.L7
+ 145              	.L6:
+  96:.\DACaudio.c  ****     
+  97:.\DACaudio.c  ****     if((bAudioInput != true) && (bAudioInput != false))
+ 146              		.loc 1 97 0
+ 147 0026 7B79     		ldrb	r3, [r7, #5]	@ zero_extendqisi2
+ 148 0028 012B     		cmp	r3, #1
+ 149 002a 04D0     		beq	.L8
+ 150              		.loc 1 97 0 is_stmt 0 discriminator 1
+ 151 002c 7B79     		ldrb	r3, [r7, #5]	@ zero_extendqisi2
+ 152 002e 002B     		cmp	r3, #0
+ 153 0030 01D0     		beq	.L8
+  98:.\DACaudio.c  ****         return false;
+ 154              		.loc 1 98 0 is_stmt 1
+ 155 0032 0023     		movs	r3, #0
+ 156 0034 62E0     		b	.L7
+ 157              	.L8:
+  99:.\DACaudio.c  ****     
+ 100:.\DACaudio.c  ****     if((songChoice < ECTOSIREN) || (songChoice > REMAIN_WINDOW_DOWN))
+ 158              		.loc 1 100 0
+ 159 0036 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 160 0038 0D2B     		cmp	r3, #13
+ 161 003a 02D9     		bls	.L9
+ 162              		.loc 1 100 0 is_stmt 0 discriminator 1
+ 163 003c BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 164 003e 152B     		cmp	r3, #21
+ 165 0040 07D9     		bls	.L10
+ 166              	.L9:
+ 101:.\DACaudio.c  ****     {
+ 102:.\DACaudio.c  ****         if(songChoice == NO_TONE)
+ 167              		.loc 1 102 0 is_stmt 1
+ 168 0042 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 169 0044 002B     		cmp	r3, #0
+ 170 0046 02D1     		bne	.L11
+ 103:.\DACaudio.c  ****             currentSongNumber = songChoice;
+ 171              		.loc 1 103 0
+ 172 0048 2E4A     		ldr	r2, .L16
+ 173 004a BB79     		ldrb	r3, [r7, #6]
+ 174 004c 1370     		strb	r3, [r2]
+ 175              	.L11:
+ 104:.\DACaudio.c  **** 
+ 105:.\DACaudio.c  ****         return false;
+ 176              		.loc 1 105 0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 6
+
+
+ 177 004e 0023     		movs	r3, #0
+ 178 0050 54E0     		b	.L7
+ 179              	.L10:
+ 106:.\DACaudio.c  ****     }
+ 107:.\DACaudio.c  ****     
+ 108:.\DACaudio.c  ****     if((currentSongNumber != songChoice) || ((currentSongNumber == songChoice) && (!bAudioActive)))
+ 180              		.loc 1 108 0
+ 181 0052 2C4B     		ldr	r3, .L16
+ 182 0054 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 183 0056 BA79     		ldrb	r2, [r7, #6]	@ zero_extendqisi2
+ 184 0058 9A42     		cmp	r2, r3
+ 185 005a 08D1     		bne	.L12
+ 186              		.loc 1 108 0 is_stmt 0 discriminator 1
+ 187 005c 294B     		ldr	r3, .L16
+ 188 005e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 189 0060 BA79     		ldrb	r2, [r7, #6]	@ zero_extendqisi2
+ 190 0062 9A42     		cmp	r2, r3
+ 191 0064 15D1     		bne	.L13
+ 192              		.loc 1 108 0 discriminator 2
+ 193 0066 284B     		ldr	r3, .L16+4
+ 194 0068 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 195 006a 002B     		cmp	r3, #0
+ 196 006c 11D1     		bne	.L13
+ 197              	.L12:
+ 109:.\DACaudio.c  ****     {
+ 110:.\DACaudio.c  ****         if(!isMusicReady(songChoice))
+ 198              		.loc 1 110 0 is_stmt 1
+ 199 006e BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 200 0070 1846     		mov	r0, r3
+ 201 0072 FFF7FEFF 		bl	isMusicReady
+ 202 0076 0346     		mov	r3, r0
+ 203 0078 002B     		cmp	r3, #0
+ 204 007a 01D1     		bne	.L14
+ 111:.\DACaudio.c  ****             return false;
+ 205              		.loc 1 111 0
+ 206 007c 0023     		movs	r3, #0
+ 207 007e 3DE0     		b	.L7
+ 208              	.L14:
+ 112:.\DACaudio.c  **** 
+ 113:.\DACaudio.c  ****         currentSongNumber = songChoice;
+ 209              		.loc 1 113 0
+ 210 0080 204A     		ldr	r2, .L16
+ 211 0082 BB79     		ldrb	r3, [r7, #6]
+ 212 0084 1370     		strb	r3, [r2]
+ 114:.\DACaudio.c  ****         dataIndex = 0;
+ 213              		.loc 1 114 0
+ 214 0086 214B     		ldr	r3, .L16+8
+ 215 0088 0022     		movs	r2, #0
+ 216 008a 1A60     		str	r2, [r3]
+ 115:.\DACaudio.c  ****         bSongFinishedFlag = false;
+ 217              		.loc 1 115 0
+ 218 008c 204B     		ldr	r3, .L16+12
+ 219 008e 0022     		movs	r2, #0
+ 220 0090 1A70     		strb	r2, [r3]
+ 221              	.L13:
+ 116:.\DACaudio.c  ****     }
+ 117:.\DACaudio.c  ****     
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 7
+
+
+ 118:.\DACaudio.c  ****     bCurrentSpeaker = bSpeaker;
+ 222              		.loc 1 118 0
+ 223 0092 204A     		ldr	r2, .L16+16
+ 224 0094 FB79     		ldrb	r3, [r7, #7]
+ 225 0096 1370     		strb	r3, [r2]
+ 119:.\DACaudio.c  ****     bAudioInputFlag = bAudioInput;
+ 226              		.loc 1 119 0
+ 227 0098 1F4A     		ldr	r2, .L16+20
+ 228 009a 7B79     		ldrb	r3, [r7, #5]
+ 229 009c 1370     		strb	r3, [r2]
+ 120:.\DACaudio.c  ****     
+ 121:.\DACaudio.c  ****     if((Speaker1.channelCount == DEFAULT_CHANNEL_COUNT) && 
+ 230              		.loc 1 121 0
+ 231 009e 1F4B     		ldr	r3, .L16+24
+ 232 00a0 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 233 00a2 0122     		movs	r2, #1
+ 234 00a4 9342     		cmp	r3, r2
+ 235 00a6 28D1     		bne	.L15
+ 122:.\DACaudio.c  ****         (Speaker1.samplingRate == DEFAULT_SAMPLING_RATE))
+ 236              		.loc 1 122 0 discriminator 1
+ 237 00a8 1C4B     		ldr	r3, .L16+24
+ 238 00aa 5B68     		ldr	r3, [r3, #4]
+ 239 00ac 4FF4FA52 		mov	r2, #8000
+ 121:.\DACaudio.c  ****         (Speaker1.samplingRate == DEFAULT_SAMPLING_RATE))
+ 240              		.loc 1 121 0 discriminator 1
+ 241 00b0 9342     		cmp	r3, r2
+ 242 00b2 22D1     		bne	.L15
+ 123:.\DACaudio.c  ****     {
+ 124:.\DACaudio.c  ****         AMux1_FastSelect(DAC_MODE);
+ 243              		.loc 1 124 0
+ 244 00b4 0120     		movs	r0, #1
+ 245 00b6 FFF7FEFF 		bl	AMux1_FastSelect
+ 125:.\DACaudio.c  ****         AMux2_FastSelect(DAC_MODE);
+ 246              		.loc 1 125 0
+ 247 00ba 0120     		movs	r0, #1
+ 248 00bc FFF7FEFF 		bl	AMux2_FastSelect
+ 126:.\DACaudio.c  ****         
+ 127:.\DACaudio.c  ****         DACreloadValue = getSamplingReloadValue(Speaker1.samplingRate);        
+ 249              		.loc 1 127 0
+ 250 00c0 164B     		ldr	r3, .L16+24
+ 251 00c2 5B68     		ldr	r3, [r3, #4]
+ 252 00c4 1846     		mov	r0, r3
+ 253 00c6 FFF7FEFF 		bl	getSamplingReloadValue
+ 254 00ca 0346     		mov	r3, r0
+ 255 00cc FB81     		strh	r3, [r7, #14]	@ movhi
+ 128:.\DACaudio.c  ****         DACtimer1_Start();        
+ 256              		.loc 1 128 0
+ 257 00ce FFF7FEFF 		bl	DACtimer1_Start
+ 129:.\DACaudio.c  ****         DACtimer1_WritePeriod(DACreloadValue);
+ 258              		.loc 1 129 0
+ 259 00d2 FB89     		ldrh	r3, [r7, #14]
+ 260 00d4 1846     		mov	r0, r3
+ 261 00d6 FFF7FEFF 		bl	DACtimer1_WritePeriod
+ 130:.\DACaudio.c  ****         
+ 131:.\DACaudio.c  ****         PGA_1_Start();   
+ 262              		.loc 1 131 0
+ 263 00da FFF7FEFF 		bl	PGA_1_Start
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 8
+
+
+ 132:.\DACaudio.c  ****         VDAC8_1_Start();
+ 264              		.loc 1 132 0
+ 265 00de FFF7FEFF 		bl	VDAC8_1_Start
+ 133:.\DACaudio.c  ****         VDAC8_1_SetValue(INITIAL_DAC_VALUE);
+ 266              		.loc 1 133 0
+ 267 00e2 8023     		movs	r3, #128
+ 268 00e4 1846     		mov	r0, r3
+ 269 00e6 FFF7FEFF 		bl	VDAC8_1_SetValue
+ 134:.\DACaudio.c  ****         
+ 135:.\DACaudio.c  ****         PGA_2_Start();   
+ 270              		.loc 1 135 0
+ 271 00ea FFF7FEFF 		bl	PGA_2_Start
+ 136:.\DACaudio.c  ****         VDAC8_2_Start();
+ 272              		.loc 1 136 0
+ 273 00ee FFF7FEFF 		bl	VDAC8_2_Start
+ 137:.\DACaudio.c  ****         VDAC8_2_SetValue(INITIAL_DAC_VALUE);
+ 274              		.loc 1 137 0
+ 275 00f2 8023     		movs	r3, #128
+ 276 00f4 1846     		mov	r0, r3
+ 277 00f6 FFF7FEFF 		bl	VDAC8_2_SetValue
+ 278              	.L15:
+ 138:.\DACaudio.c  ****     }
+ 139:.\DACaudio.c  ****         
+ 140:.\DACaudio.c  ****     return true;
+ 279              		.loc 1 140 0
+ 280 00fa 0123     		movs	r3, #1
+ 281              	.L7:
+ 141:.\DACaudio.c  **** }
+ 282              		.loc 1 141 0
+ 283 00fc 1846     		mov	r0, r3
+ 284 00fe 1037     		adds	r7, r7, #16
+ 285              		.cfi_def_cfa_offset 8
+ 286 0100 BD46     		mov	sp, r7
+ 287              		.cfi_def_cfa_register 13
+ 288              		@ sp needed
+ 289 0102 80BD     		pop	{r7, pc}
+ 290              	.L17:
+ 291              		.align	2
+ 292              	.L16:
+ 293 0104 00000000 		.word	currentSongNumber
+ 294 0108 0A000000 		.word	bAudioActive
+ 295 010c 04000000 		.word	dataIndex
+ 296 0110 0B000000 		.word	bSongFinishedFlag
+ 297 0114 08000000 		.word	bCurrentSpeaker
+ 298 0118 09000000 		.word	bAudioInputFlag
+ 299 011c 0C000000 		.word	Speaker1
+ 300              		.cfi_endproc
+ 301              	.LFE64:
+ 302              		.size	playAudioTone, .-playAudioTone
+ 303              		.section	.text.stopAudioTone,"ax",%progbits
+ 304              		.align	2
+ 305              		.global	stopAudioTone
+ 306              		.thumb
+ 307              		.thumb_func
+ 308              		.type	stopAudioTone, %function
+ 309              	stopAudioTone:
+ 310              	.LFB65:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 9
+
+
+ 142:.\DACaudio.c  **** 
+ 143:.\DACaudio.c  **** /*******************************************************************************
+ 144:.\DACaudio.c  **** * Function Name: stopAudioTone
+ 145:.\DACaudio.c  **** ********************************************************************************
+ 146:.\DACaudio.c  **** *
+ 147:.\DACaudio.c  **** * Summary:
+ 148:.\DACaudio.c  **** *  Stops the file song by disabling the DAC timer
+ 149:.\DACaudio.c  **** *
+ 150:.\DACaudio.c  **** * Parameters: 
+ 151:.\DACaudio.c  **** *   bSpeaker: The speaker to update
+ 152:.\DACaudio.c  **** *
+ 153:.\DACaudio.c  **** * Return:
+ 154:.\DACaudio.c  **** *   TRUE for valid inputs, FALSE otherwise
+ 155:.\DACaudio.c  **** *
+ 156:.\DACaudio.c  **** *******************************************************************************/
+ 157:.\DACaudio.c  **** uint8 stopAudioTone(uint8 bSpeaker){
+ 311              		.loc 1 157 0
+ 312              		.cfi_startproc
+ 313              		@ args = 0, pretend = 0, frame = 8
+ 314              		@ frame_needed = 1, uses_anonymous_args = 0
+ 315 0000 80B5     		push	{r7, lr}
+ 316              		.cfi_def_cfa_offset 8
+ 317              		.cfi_offset 7, -8
+ 318              		.cfi_offset 14, -4
+ 319 0002 82B0     		sub	sp, sp, #8
+ 320              		.cfi_def_cfa_offset 16
+ 321 0004 00AF     		add	r7, sp, #0
+ 322              		.cfi_def_cfa_register 7
+ 323 0006 0346     		mov	r3, r0
+ 324 0008 FB71     		strb	r3, [r7, #7]
+ 158:.\DACaudio.c  ****     
+ 159:.\DACaudio.c  ****     if((bSpeaker != SPEAKER_1) && (bSpeaker != SPEAKER_2))
+ 325              		.loc 1 159 0
+ 326 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 327 000c 002B     		cmp	r3, #0
+ 328 000e 04D0     		beq	.L19
+ 329              		.loc 1 159 0 is_stmt 0 discriminator 1
+ 330 0010 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 331 0012 012B     		cmp	r3, #1
+ 332 0014 01D0     		beq	.L19
+ 160:.\DACaudio.c  ****         return false;
+ 333              		.loc 1 160 0 is_stmt 1
+ 334 0016 0023     		movs	r3, #0
+ 335 0018 12E0     		b	.L20
+ 336              	.L19:
+ 161:.\DACaudio.c  ****     
+ 162:.\DACaudio.c  ****     DACtimer1_Stop();
+ 337              		.loc 1 162 0
+ 338 001a FFF7FEFF 		bl	DACtimer1_Stop
+ 163:.\DACaudio.c  ****     VDAC8_1_SetValue(INITIAL_DAC_VALUE);
+ 339              		.loc 1 163 0
+ 340 001e 8023     		movs	r3, #128
+ 341 0020 1846     		mov	r0, r3
+ 342 0022 FFF7FEFF 		bl	VDAC8_1_SetValue
+ 164:.\DACaudio.c  ****     VDAC8_1_Stop();
+ 343              		.loc 1 164 0
+ 344 0026 FFF7FEFF 		bl	VDAC8_1_Stop
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 10
+
+
+ 165:.\DACaudio.c  ****     PGA_1_Stop();
+ 345              		.loc 1 165 0
+ 346 002a FFF7FEFF 		bl	PGA_1_Stop
+ 166:.\DACaudio.c  ****     
+ 167:.\DACaudio.c  ****     VDAC8_2_SetValue(INITIAL_DAC_VALUE);
+ 347              		.loc 1 167 0
+ 348 002e 8023     		movs	r3, #128
+ 349 0030 1846     		mov	r0, r3
+ 350 0032 FFF7FEFF 		bl	VDAC8_2_SetValue
+ 168:.\DACaudio.c  ****     VDAC8_2_Stop();
+ 351              		.loc 1 168 0
+ 352 0036 FFF7FEFF 		bl	VDAC8_2_Stop
+ 169:.\DACaudio.c  ****     PGA_2_Stop(); 
+ 353              		.loc 1 169 0
+ 354 003a FFF7FEFF 		bl	PGA_2_Stop
+ 170:.\DACaudio.c  ****     
+ 171:.\DACaudio.c  ****     return true;
+ 355              		.loc 1 171 0
+ 356 003e 0123     		movs	r3, #1
+ 357              	.L20:
+ 172:.\DACaudio.c  **** }
+ 358              		.loc 1 172 0
+ 359 0040 1846     		mov	r0, r3
+ 360 0042 0837     		adds	r7, r7, #8
+ 361              		.cfi_def_cfa_offset 8
+ 362 0044 BD46     		mov	sp, r7
+ 363              		.cfi_def_cfa_register 13
+ 364              		@ sp needed
+ 365 0046 80BD     		pop	{r7, pc}
+ 366              		.cfi_endproc
+ 367              	.LFE65:
+ 368              		.size	stopAudioTone, .-stopAudioTone
+ 369              		.section	.text.updateDAC1,"ax",%progbits
+ 370              		.align	2
+ 371              		.global	updateDAC1
+ 372              		.thumb
+ 373              		.thumb_func
+ 374              		.type	updateDAC1, %function
+ 375              	updateDAC1:
+ 376              	.LFB66:
+ 173:.\DACaudio.c  **** 
+ 174:.\DACaudio.c  **** /*******************************************************************************
+ 175:.\DACaudio.c  **** * Function Name: updateDAC1
+ 176:.\DACaudio.c  **** ********************************************************************************
+ 177:.\DACaudio.c  **** *
+ 178:.\DACaudio.c  **** * Summary:
+ 179:.\DACaudio.c  **** *  Updates the value for DAC1 based on the file data
+ 180:.\DACaudio.c  **** *
+ 181:.\DACaudio.c  **** * Parameters: 
+ 182:.\DACaudio.c  **** *   None
+ 183:.\DACaudio.c  **** *
+ 184:.\DACaudio.c  **** * Return:
+ 185:.\DACaudio.c  **** *   None
+ 186:.\DACaudio.c  **** *
+ 187:.\DACaudio.c  **** *******************************************************************************/
+ 188:.\DACaudio.c  **** void updateDAC1(void)
+ 189:.\DACaudio.c  **** {
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 11
+
+
+ 377              		.loc 1 189 0
+ 378              		.cfi_startproc
+ 379              		@ args = 0, pretend = 0, frame = 8
+ 380              		@ frame_needed = 1, uses_anonymous_args = 0
+ 381 0000 80B5     		push	{r7, lr}
+ 382              		.cfi_def_cfa_offset 8
+ 383              		.cfi_offset 7, -8
+ 384              		.cfi_offset 14, -4
+ 385 0002 82B0     		sub	sp, sp, #8
+ 386              		.cfi_def_cfa_offset 16
+ 387 0004 00AF     		add	r7, sp, #0
+ 388              		.cfi_def_cfa_register 7
+ 190:.\DACaudio.c  ****     uint8 DACvalue = 0;
+ 389              		.loc 1 190 0
+ 390 0006 0023     		movs	r3, #0
+ 391 0008 FB71     		strb	r3, [r7, #7]
+ 191:.\DACaudio.c  ****     
+ 192:.\DACaudio.c  ****     DACtimer1_ReadStatusRegister(); 
+ 392              		.loc 1 192 0
+ 393 000a FFF7FEFF 		bl	DACtimer1_ReadStatusRegister
+ 193:.\DACaudio.c  ****     CyWdtClear();
+ 394              		.loc 1 193 0
+ 395 000e FFF7FEFF 		bl	CyWdtClear
+ 194:.\DACaudio.c  ****     
+ 195:.\DACaudio.c  ****     DACvalue = getNextWaveData(dataIndex); //Obtains next byte to send to DAC
+ 396              		.loc 1 195 0
+ 397 0012 4B4B     		ldr	r3, .L37
+ 398 0014 1B68     		ldr	r3, [r3]
+ 399 0016 1846     		mov	r0, r3
+ 400 0018 FFF7FEFF 		bl	getNextWaveData
+ 401 001c 0346     		mov	r3, r0
+ 402 001e FB71     		strb	r3, [r7, #7]
+ 196:.\DACaudio.c  ****     
+ 197:.\DACaudio.c  ****     VDAC8_1_SetValue(DACvalue); //Update both DACs at the same time for sync
+ 403              		.loc 1 197 0
+ 404 0020 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 405 0022 1846     		mov	r0, r3
+ 406 0024 FFF7FEFF 		bl	VDAC8_1_SetValue
+ 198:.\DACaudio.c  ****     VDAC8_2_SetValue(DACvalue);
+ 407              		.loc 1 198 0
+ 408 0028 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 409 002a 1846     		mov	r0, r3
+ 410 002c FFF7FEFF 		bl	VDAC8_2_SetValue
+ 199:.\DACaudio.c  ****             
+ 200:.\DACaudio.c  ****     dataIndex = (dataIndex + 1) % Speaker1.dataSize; //Increment index for song data, resets after 
+ 411              		.loc 1 200 0
+ 412 0030 434B     		ldr	r3, .L37
+ 413 0032 1B68     		ldr	r3, [r3]
+ 414 0034 0133     		adds	r3, r3, #1
+ 415 0036 434A     		ldr	r2, .L37+4
+ 416 0038 9268     		ldr	r2, [r2, #8]
+ 417 003a B3FBF2F1 		udiv	r1, r3, r2
+ 418 003e 02FB01F2 		mul	r2, r2, r1
+ 419 0042 9B1A     		subs	r3, r3, r2
+ 420 0044 3E4A     		ldr	r2, .L37
+ 421 0046 1360     		str	r3, [r2]
+ 201:.\DACaudio.c  ****     
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 12
+
+
+ 202:.\DACaudio.c  ****     switch(currentSongNumber)
+ 422              		.loc 1 202 0
+ 423 0048 3F4B     		ldr	r3, .L37+8
+ 424 004a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 425 004c 0E3B     		subs	r3, r3, #14
+ 426 004e 072B     		cmp	r3, #7
+ 427 0050 72D8     		bhi	.L36
+ 428 0052 01A2     		adr	r2, .L24
+ 429 0054 52F823F0 		ldr	pc, [r2, r3, lsl #2]
+ 430              		.p2align 2
+ 431              	.L24:
+ 432 0058 79000000 		.word	.L23+1
+ 433 005c D1000000 		.word	.L25+1
+ 434 0060 09010000 		.word	.L26+1
+ 435 0064 09010000 		.word	.L26+1
+ 436 0068 09010000 		.word	.L26+1
+ 437 006c 09010000 		.word	.L26+1
+ 438 0070 09010000 		.word	.L26+1
+ 439 0074 09010000 		.word	.L26+1
+ 440              		.p2align 1
+ 441              	.L23:
+ 203:.\DACaudio.c  ****     {
+ 204:.\DACaudio.c  ****         case ECTOSIREN:
+ 205:.\DACaudio.c  ****             if(!bAudioActive)   //Variable stays high until tone is complete
+ 442              		.loc 1 205 0
+ 443 0078 344B     		ldr	r3, .L37+12
+ 444 007a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 445 007c 002B     		cmp	r3, #0
+ 446 007e 02D1     		bne	.L27
+ 206:.\DACaudio.c  ****                 bAudioActive = true;
+ 447              		.loc 1 206 0
+ 448 0080 324B     		ldr	r3, .L37+12
+ 449 0082 0122     		movs	r2, #1
+ 450 0084 1A70     		strb	r2, [r3]
+ 451              	.L27:
+ 207:.\DACaudio.c  ****             
+ 208:.\DACaudio.c  ****             if(dataIndex == 0)
+ 452              		.loc 1 208 0
+ 453 0086 2E4B     		ldr	r3, .L37
+ 454 0088 1B68     		ldr	r3, [r3]
+ 455 008a 002B     		cmp	r3, #0
+ 456 008c 07D1     		bne	.L28
+ 209:.\DACaudio.c  ****             {   //Reached end of ramp down
+ 210:.\DACaudio.c  ****                 bAudioActive = false;
+ 457              		.loc 1 210 0
+ 458 008e 2F4B     		ldr	r3, .L37+12
+ 459 0090 0022     		movs	r2, #0
+ 460 0092 1A70     		strb	r2, [r3]
+ 211:.\DACaudio.c  ****                 //ModeStatusISR_SetPending();
+ 212:.\DACaudio.c  ****                 disableAudioAndPWM();
+ 461              		.loc 1 212 0
+ 462 0094 FFF7FEFF 		bl	disableAudioAndPWM
+ 213:.\DACaudio.c  ****                 disableBothSpeakers();
+ 463              		.loc 1 213 0
+ 464 0098 FFF7FEFF 		bl	disableBothSpeakers
+ 465 009c 17E0     		b	.L29
+ 466              	.L28:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 13
+
+
+ 214:.\DACaudio.c  ****             }
+ 215:.\DACaudio.c  ****             else if((dataIndex >= ECTO_CYCLE_END_INDEX) && (dataIndex < ECTO_RAMP_DOWN_INDEX))
+ 467              		.loc 1 215 0
+ 468 009e 284B     		ldr	r3, .L37
+ 469 00a0 1B68     		ldr	r3, [r3]
+ 470 00a2 45F68452 		movw	r2, #23940
+ 471 00a6 9342     		cmp	r3, r2
+ 472 00a8 11D3     		bcc	.L29
+ 473              		.loc 1 215 0 is_stmt 0 discriminator 1
+ 474 00aa 254B     		ldr	r3, .L37
+ 475 00ac 1B68     		ldr	r3, [r3]
+ 476 00ae 284A     		ldr	r2, .L37+16
+ 477 00b0 9342     		cmp	r3, r2
+ 478 00b2 0CD2     		bcs	.L29
+ 216:.\DACaudio.c  ****             {   //Reached end of ecto cycle
+ 217:.\DACaudio.c  ****                 if(bAudioInputFlag)
+ 479              		.loc 1 217 0 is_stmt 1
+ 480 00b4 274B     		ldr	r3, .L37+20
+ 481 00b6 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 482 00b8 002B     		cmp	r3, #0
+ 483 00ba 04D0     		beq	.L30
+ 218:.\DACaudio.c  ****                     dataIndex = ECTO_CYCLE_START_INDEX;
+ 484              		.loc 1 218 0
+ 485 00bc 42F63A72 		movw	r2, #12090
+ 486 00c0 1F4B     		ldr	r3, .L37
+ 487 00c2 1A60     		str	r2, [r3]
+ 488 00c4 03E0     		b	.L29
+ 489              	.L30:
+ 219:.\DACaudio.c  ****                 else
+ 220:.\DACaudio.c  ****                     dataIndex = ECTO_RAMP_DOWN_INDEX;
+ 490              		.loc 1 220 0
+ 491 00c6 224A     		ldr	r2, .L37+16
+ 492 00c8 1D4B     		ldr	r3, .L37
+ 493 00ca 1A60     		str	r2, [r3]
+ 221:.\DACaudio.c  ****             }
+ 222:.\DACaudio.c  ****             break;
+ 494              		.loc 1 222 0
+ 495 00cc 35E0     		b	.L21
+ 496              	.L29:
+ 497 00ce 34E0     		b	.L21
+ 498              	.L25:
+ 223:.\DACaudio.c  ****         //case GHOSTBUSTERS:
+ 224:.\DACaudio.c  ****         case COPS_SONG:
+ 225:.\DACaudio.c  ****             if(!bAudioActive)   //Variable stays high until tone is complete
+ 499              		.loc 1 225 0
+ 500 00d0 1E4B     		ldr	r3, .L37+12
+ 501 00d2 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 502 00d4 002B     		cmp	r3, #0
+ 503 00d6 02D1     		bne	.L32
+ 226:.\DACaudio.c  ****                 bAudioActive = true;
+ 504              		.loc 1 226 0
+ 505 00d8 1C4B     		ldr	r3, .L37+12
+ 506 00da 0122     		movs	r2, #1
+ 507 00dc 1A70     		strb	r2, [r3]
+ 508              	.L32:
+ 227:.\DACaudio.c  ****             
+ 228:.\DACaudio.c  ****             if(dataIndex == 0)
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 14
+
+
+ 509              		.loc 1 228 0
+ 510 00de 184B     		ldr	r3, .L37
+ 511 00e0 1B68     		ldr	r3, [r3]
+ 512 00e2 002B     		cmp	r3, #0
+ 513 00e4 0FD1     		bne	.L33
+ 229:.\DACaudio.c  ****             {   //Reached end of song
+ 230:.\DACaudio.c  ****                 bAudioActive = false;
+ 514              		.loc 1 230 0
+ 515 00e6 194B     		ldr	r3, .L37+12
+ 516 00e8 0022     		movs	r2, #0
+ 517 00ea 1A70     		strb	r2, [r3]
+ 231:.\DACaudio.c  ****                 bSongFinishedFlag = true;
+ 518              		.loc 1 231 0
+ 519 00ec 1A4B     		ldr	r3, .L37+24
+ 520 00ee 0122     		movs	r2, #1
+ 521 00f0 1A70     		strb	r2, [r3]
+ 232:.\DACaudio.c  ****                 PowerAmpOutput1_Write(false);   //Turn off song
+ 522              		.loc 1 232 0
+ 523 00f2 0020     		movs	r0, #0
+ 524 00f4 FFF7FEFF 		bl	PowerAmpOutput1_Write
+ 233:.\DACaudio.c  ****                 PowerAmpOutput2_Write(false);
+ 525              		.loc 1 233 0
+ 526 00f8 0020     		movs	r0, #0
+ 527 00fa FFF7FEFF 		bl	PowerAmpOutput2_Write
+ 234:.\DACaudio.c  ****                 stopAudioTone(SPEAKER_1);
+ 528              		.loc 1 234 0
+ 529 00fe 0020     		movs	r0, #0
+ 530 0100 FFF7FEFF 		bl	stopAudioTone
+ 235:.\DACaudio.c  ****             }
+ 236:.\DACaudio.c  ****             break;
+ 531              		.loc 1 236 0
+ 532 0104 19E0     		b	.L21
+ 533              	.L33:
+ 534 0106 18E0     		b	.L21
+ 535              	.L26:
+ 237:.\DACaudio.c  ****         case MOVE_OUT:
+ 238:.\DACaudio.c  ****         case PULL_OVER:
+ 239:.\DACaudio.c  ****         case STEP_OUT:
+ 240:.\DACaudio.c  ****         case STEP_OUT_HANDS_UP:
+ 241:.\DACaudio.c  ****         case REMAIN_IN_VEHICLE:
+ 242:.\DACaudio.c  ****         case REMAIN_WINDOW_DOWN:
+ 243:.\DACaudio.c  ****             if(!bAudioActive)
+ 536              		.loc 1 243 0
+ 537 0108 104B     		ldr	r3, .L37+12
+ 538 010a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 539 010c 002B     		cmp	r3, #0
+ 540 010e 02D1     		bne	.L34
+ 244:.\DACaudio.c  ****                 bAudioActive = true;
+ 541              		.loc 1 244 0
+ 542 0110 0E4B     		ldr	r3, .L37+12
+ 543 0112 0122     		movs	r2, #1
+ 544 0114 1A70     		strb	r2, [r3]
+ 545              	.L34:
+ 245:.\DACaudio.c  ****             
+ 246:.\DACaudio.c  ****             if((dataIndex == 0) && (!bAudioInputFlag))
+ 546              		.loc 1 246 0
+ 547 0116 0A4B     		ldr	r3, .L37
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 15
+
+
+ 548 0118 1B68     		ldr	r3, [r3]
+ 549 011a 002B     		cmp	r3, #0
+ 550 011c 0BD1     		bne	.L35
+ 551              		.loc 1 246 0 is_stmt 0 discriminator 1
+ 552 011e 0D4B     		ldr	r3, .L37+20
+ 553 0120 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 554 0122 002B     		cmp	r3, #0
+ 555 0124 07D1     		bne	.L35
+ 247:.\DACaudio.c  ****             {   //Reached end of command
+ 248:.\DACaudio.c  ****                 bAudioActive = false;
+ 556              		.loc 1 248 0 is_stmt 1
+ 557 0126 094B     		ldr	r3, .L37+12
+ 558 0128 0022     		movs	r2, #0
+ 559 012a 1A70     		strb	r2, [r3]
+ 249:.\DACaudio.c  ****                 //ModeStatusISR_SetPending();
+ 250:.\DACaudio.c  ****                 disableAudioAndPWM();
+ 560              		.loc 1 250 0
+ 561 012c FFF7FEFF 		bl	disableAudioAndPWM
+ 251:.\DACaudio.c  ****                 disableBothSpeakers();
+ 562              		.loc 1 251 0
+ 563 0130 FFF7FEFF 		bl	disableBothSpeakers
+ 252:.\DACaudio.c  ****             }
+ 253:.\DACaudio.c  ****             break;
+ 564              		.loc 1 253 0
+ 565 0134 01E0     		b	.L21
+ 566              	.L35:
+ 567 0136 00E0     		b	.L21
+ 568              	.L36:
+ 254:.\DACaudio.c  ****         default:
+ 255:.\DACaudio.c  ****             break;
+ 569              		.loc 1 255 0
+ 570 0138 00BF     		nop
+ 571              	.L21:
+ 256:.\DACaudio.c  ****     }
+ 257:.\DACaudio.c  **** }
+ 572              		.loc 1 257 0
+ 573 013a 0837     		adds	r7, r7, #8
+ 574              		.cfi_def_cfa_offset 8
+ 575 013c BD46     		mov	sp, r7
+ 576              		.cfi_def_cfa_register 13
+ 577              		@ sp needed
+ 578 013e 80BD     		pop	{r7, pc}
+ 579              	.L38:
+ 580              		.align	2
+ 581              	.L37:
+ 582 0140 04000000 		.word	dataIndex
+ 583 0144 0C000000 		.word	Speaker1
+ 584 0148 00000000 		.word	currentSongNumber
+ 585 014c 0A000000 		.word	bAudioActive
+ 586 0150 0A450100 		.word	83210
+ 587 0154 09000000 		.word	bAudioInputFlag
+ 588 0158 0B000000 		.word	bSongFinishedFlag
+ 589              		.cfi_endproc
+ 590              	.LFE66:
+ 591              		.size	updateDAC1, .-updateDAC1
+ 592              		.section	.text.updateDAC2,"ax",%progbits
+ 593              		.align	2
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 16
+
+
+ 594              		.global	updateDAC2
+ 595              		.thumb
+ 596              		.thumb_func
+ 597              		.type	updateDAC2, %function
+ 598              	updateDAC2:
+ 599              	.LFB67:
+ 258:.\DACaudio.c  **** 
+ 259:.\DACaudio.c  **** /*******************************************************************************
+ 260:.\DACaudio.c  **** * Function Name: updateDAC2
+ 261:.\DACaudio.c  **** ********************************************************************************
+ 262:.\DACaudio.c  **** *
+ 263:.\DACaudio.c  **** * Summary:
+ 264:.\DACaudio.c  **** *  Updates the value for DAC2 based on the file data
+ 265:.\DACaudio.c  **** *
+ 266:.\DACaudio.c  **** * Parameters: 
+ 267:.\DACaudio.c  **** *   None
+ 268:.\DACaudio.c  **** *
+ 269:.\DACaudio.c  **** * Return:
+ 270:.\DACaudio.c  **** *   None
+ 271:.\DACaudio.c  **** *
+ 272:.\DACaudio.c  **** *******************************************************************************/
+ 273:.\DACaudio.c  **** void updateDAC2(void)
+ 274:.\DACaudio.c  **** {
+ 600              		.loc 1 274 0
+ 601              		.cfi_startproc
+ 602              		@ args = 0, pretend = 0, frame = 8
+ 603              		@ frame_needed = 1, uses_anonymous_args = 0
+ 604 0000 80B5     		push	{r7, lr}
+ 605              		.cfi_def_cfa_offset 8
+ 606              		.cfi_offset 7, -8
+ 607              		.cfi_offset 14, -4
+ 608 0002 82B0     		sub	sp, sp, #8
+ 609              		.cfi_def_cfa_offset 16
+ 610 0004 00AF     		add	r7, sp, #0
+ 611              		.cfi_def_cfa_register 7
+ 275:.\DACaudio.c  ****     //static uint32 dataIndex = 0;
+ 276:.\DACaudio.c  ****     uint8 DACvalue = 0;
+ 612              		.loc 1 276 0
+ 613 0006 0023     		movs	r3, #0
+ 614 0008 FB71     		strb	r3, [r7, #7]
+ 277:.\DACaudio.c  ****     
+ 278:.\DACaudio.c  ****     DACtimer2_ReadStatusRegister();   
+ 615              		.loc 1 278 0
+ 616 000a FFF7FEFF 		bl	DACtimer2_ReadStatusRegister
+ 279:.\DACaudio.c  ****     CyWdtClear();
+ 617              		.loc 1 279 0
+ 618 000e FFF7FEFF 		bl	CyWdtClear
+ 280:.\DACaudio.c  ****     
+ 281:.\DACaudio.c  ****     DACvalue = getNextWaveData(dataIndex); 
+ 619              		.loc 1 281 0
+ 620 0012 2B4B     		ldr	r3, .L48
+ 621 0014 1B68     		ldr	r3, [r3]
+ 622 0016 1846     		mov	r0, r3
+ 623 0018 FFF7FEFF 		bl	getNextWaveData
+ 624 001c 0346     		mov	r3, r0
+ 625 001e FB71     		strb	r3, [r7, #7]
+ 282:.\DACaudio.c  ****     
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 17
+
+
+ 283:.\DACaudio.c  ****     if(Speaker2.bytesPerSample == 1)
+ 626              		.loc 1 283 0
+ 627 0020 284B     		ldr	r3, .L48+4
+ 628 0022 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 629 0024 012B     		cmp	r3, #1
+ 630 0026 24D1     		bne	.L40
+ 284:.\DACaudio.c  ****     {   //8-bit data
+ 285:.\DACaudio.c  ****         if(Speaker2.channelCount == 1)
+ 631              		.loc 1 285 0
+ 632 0028 264B     		ldr	r3, .L48+4
+ 633 002a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 634 002c 012B     		cmp	r3, #1
+ 635 002e 04D1     		bne	.L41
+ 286:.\DACaudio.c  ****             VDAC8_2_SetValue(DACvalue);
+ 636              		.loc 1 286 0
+ 637 0030 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 638 0032 1846     		mov	r0, r3
+ 639 0034 FFF7FEFF 		bl	VDAC8_2_SetValue
+ 640 0038 0EE0     		b	.L42
+ 641              	.L41:
+ 287:.\DACaudio.c  ****         else
+ 288:.\DACaudio.c  ****         {   //2 channels
+ 289:.\DACaudio.c  ****             if((dataIndex % 2) == 0)
+ 642              		.loc 1 289 0
+ 643 003a 214B     		ldr	r3, .L48
+ 644 003c 1B68     		ldr	r3, [r3]
+ 645 003e 03F00103 		and	r3, r3, #1
+ 646 0042 002B     		cmp	r3, #0
+ 647 0044 04D1     		bne	.L43
+ 290:.\DACaudio.c  ****                 VDAC8_1_SetValue(DACvalue);
+ 648              		.loc 1 290 0
+ 649 0046 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 650 0048 1846     		mov	r0, r3
+ 651 004a FFF7FEFF 		bl	VDAC8_1_SetValue
+ 652 004e 03E0     		b	.L42
+ 653              	.L43:
+ 291:.\DACaudio.c  ****             else
+ 292:.\DACaudio.c  ****                 VDAC8_2_SetValue(DACvalue);
+ 654              		.loc 1 292 0
+ 655 0050 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 656 0052 1846     		mov	r0, r3
+ 657 0054 FFF7FEFF 		bl	VDAC8_2_SetValue
+ 658              	.L42:
+ 293:.\DACaudio.c  ****         }
+ 294:.\DACaudio.c  ****         
+ 295:.\DACaudio.c  ****         dataIndex = (dataIndex + 1) % Speaker2.dataSize;
+ 659              		.loc 1 295 0
+ 660 0058 194B     		ldr	r3, .L48
+ 661 005a 1B68     		ldr	r3, [r3]
+ 662 005c 0133     		adds	r3, r3, #1
+ 663 005e 194A     		ldr	r2, .L48+4
+ 664 0060 9268     		ldr	r2, [r2, #8]
+ 665 0062 B3FBF2F1 		udiv	r1, r3, r2
+ 666 0066 02FB01F2 		mul	r2, r2, r1
+ 667 006a 9B1A     		subs	r3, r3, r2
+ 668 006c 144A     		ldr	r2, .L48
+ 669 006e 1360     		str	r3, [r2]
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 18
+
+
+ 670 0070 23E0     		b	.L39
+ 671              	.L40:
+ 296:.\DACaudio.c  ****     }
+ 297:.\DACaudio.c  ****     else
+ 298:.\DACaudio.c  ****     {   //16-bit data
+ 299:.\DACaudio.c  ****         if(Speaker2.channelCount == 1)
+ 672              		.loc 1 299 0
+ 673 0072 144B     		ldr	r3, .L48+4
+ 674 0074 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 675 0076 012B     		cmp	r3, #1
+ 676 0078 04D1     		bne	.L45
+ 300:.\DACaudio.c  ****             VDAC8_2_SetValue(DACvalue);
+ 677              		.loc 1 300 0
+ 678 007a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 679 007c 1846     		mov	r0, r3
+ 680 007e FFF7FEFF 		bl	VDAC8_2_SetValue
+ 681 0082 0EE0     		b	.L46
+ 682              	.L45:
+ 301:.\DACaudio.c  ****         else
+ 302:.\DACaudio.c  ****         {   //2 channels
+ 303:.\DACaudio.c  ****             if((dataIndex % 4) == 0)
+ 683              		.loc 1 303 0
+ 684 0084 0E4B     		ldr	r3, .L48
+ 685 0086 1B68     		ldr	r3, [r3]
+ 686 0088 03F00303 		and	r3, r3, #3
+ 687 008c 002B     		cmp	r3, #0
+ 688 008e 04D1     		bne	.L47
+ 304:.\DACaudio.c  ****                 VDAC8_1_SetValue(DACvalue);
+ 689              		.loc 1 304 0
+ 690 0090 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 691 0092 1846     		mov	r0, r3
+ 692 0094 FFF7FEFF 		bl	VDAC8_1_SetValue
+ 693 0098 03E0     		b	.L46
+ 694              	.L47:
+ 305:.\DACaudio.c  ****             else
+ 306:.\DACaudio.c  ****                 VDAC8_2_SetValue(DACvalue);
+ 695              		.loc 1 306 0
+ 696 009a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 697 009c 1846     		mov	r0, r3
+ 698 009e FFF7FEFF 		bl	VDAC8_2_SetValue
+ 699              	.L46:
+ 307:.\DACaudio.c  ****         }
+ 308:.\DACaudio.c  ****         
+ 309:.\DACaudio.c  ****         dataIndex = (dataIndex + 2) % Speaker2.dataSize;
+ 700              		.loc 1 309 0
+ 701 00a2 074B     		ldr	r3, .L48
+ 702 00a4 1B68     		ldr	r3, [r3]
+ 703 00a6 0233     		adds	r3, r3, #2
+ 704 00a8 064A     		ldr	r2, .L48+4
+ 705 00aa 9268     		ldr	r2, [r2, #8]
+ 706 00ac B3FBF2F1 		udiv	r1, r3, r2
+ 707 00b0 02FB01F2 		mul	r2, r2, r1
+ 708 00b4 9B1A     		subs	r3, r3, r2
+ 709 00b6 024A     		ldr	r2, .L48
+ 710 00b8 1360     		str	r3, [r2]
+ 711              	.L39:
+ 310:.\DACaudio.c  ****     }
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 19
+
+
+ 311:.\DACaudio.c  **** }
+ 712              		.loc 1 311 0
+ 713 00ba 0837     		adds	r7, r7, #8
+ 714              		.cfi_def_cfa_offset 8
+ 715 00bc BD46     		mov	sp, r7
+ 716              		.cfi_def_cfa_register 13
+ 717              		@ sp needed
+ 718 00be 80BD     		pop	{r7, pc}
+ 719              	.L49:
+ 720              		.align	2
+ 721              	.L48:
+ 722 00c0 04000000 		.word	dataIndex
+ 723 00c4 18000000 		.word	Speaker2
+ 724              		.cfi_endproc
+ 725              	.LFE67:
+ 726              		.size	updateDAC2, .-updateDAC2
+ 727              		.section	.text.isAudioActive,"ax",%progbits
+ 728              		.align	2
+ 729              		.global	isAudioActive
+ 730              		.thumb
+ 731              		.thumb_func
+ 732              		.type	isAudioActive, %function
+ 733              	isAudioActive:
+ 734              	.LFB68:
+ 312:.\DACaudio.c  **** 
+ 313:.\DACaudio.c  **** /*******************************************************************************
+ 314:.\DACaudio.c  **** * Function Name: isAudioActive
+ 315:.\DACaudio.c  **** ********************************************************************************
+ 316:.\DACaudio.c  **** *
+ 317:.\DACaudio.c  **** * Summary:
+ 318:.\DACaudio.c  **** *  Returns the status of an audio tone
+ 319:.\DACaudio.c  **** *
+ 320:.\DACaudio.c  **** * Parameters: 
+ 321:.\DACaudio.c  **** *   None
+ 322:.\DACaudio.c  **** *
+ 323:.\DACaudio.c  **** * Return:
+ 324:.\DACaudio.c  **** *   TRUE if active, FALSE if inactive
+ 325:.\DACaudio.c  **** *
+ 326:.\DACaudio.c  **** *******************************************************************************/
+ 327:.\DACaudio.c  **** uint8 isAudioActive(void)
+ 328:.\DACaudio.c  **** {
+ 735              		.loc 1 328 0
+ 736              		.cfi_startproc
+ 737              		@ args = 0, pretend = 0, frame = 0
+ 738              		@ frame_needed = 1, uses_anonymous_args = 0
+ 739              		@ link register save eliminated.
+ 740 0000 80B4     		push	{r7}
+ 741              		.cfi_def_cfa_offset 4
+ 742              		.cfi_offset 7, -4
+ 743 0002 00AF     		add	r7, sp, #0
+ 744              		.cfi_def_cfa_register 7
+ 329:.\DACaudio.c  ****     return bAudioActive;
+ 745              		.loc 1 329 0
+ 746 0004 034B     		ldr	r3, .L52
+ 747 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 330:.\DACaudio.c  **** }
+ 748              		.loc 1 330 0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 20
+
+
+ 749 0008 1846     		mov	r0, r3
+ 750 000a BD46     		mov	sp, r7
+ 751              		.cfi_def_cfa_register 13
+ 752              		@ sp needed
+ 753 000c 5DF8047B 		ldr	r7, [sp], #4
+ 754              		.cfi_restore 7
+ 755              		.cfi_def_cfa_offset 0
+ 756 0010 7047     		bx	lr
+ 757              	.L53:
+ 758 0012 00BF     		.align	2
+ 759              	.L52:
+ 760 0014 0A000000 		.word	bAudioActive
+ 761              		.cfi_endproc
+ 762              	.LFE68:
+ 763              		.size	isAudioActive, .-isAudioActive
+ 764              		.section	.text.deactivateAudio,"ax",%progbits
+ 765              		.align	2
+ 766              		.global	deactivateAudio
+ 767              		.thumb
+ 768              		.thumb_func
+ 769              		.type	deactivateAudio, %function
+ 770              	deactivateAudio:
+ 771              	.LFB69:
+ 331:.\DACaudio.c  **** 
+ 332:.\DACaudio.c  **** /*******************************************************************************
+ 333:.\DACaudio.c  **** * Function Name: deactivateAudio
+ 334:.\DACaudio.c  **** ********************************************************************************
+ 335:.\DACaudio.c  **** *
+ 336:.\DACaudio.c  **** * Summary:
+ 337:.\DACaudio.c  **** *  Updates the boolean to deactivate an audio tone
+ 338:.\DACaudio.c  **** *
+ 339:.\DACaudio.c  **** * Parameters: 
+ 340:.\DACaudio.c  **** *   None
+ 341:.\DACaudio.c  **** *
+ 342:.\DACaudio.c  **** * Return:
+ 343:.\DACaudio.c  **** *   None
+ 344:.\DACaudio.c  **** *
+ 345:.\DACaudio.c  **** *******************************************************************************/
+ 346:.\DACaudio.c  **** void deactivateAudio(void)
+ 347:.\DACaudio.c  **** {
+ 772              		.loc 1 347 0
+ 773              		.cfi_startproc
+ 774              		@ args = 0, pretend = 0, frame = 0
+ 775              		@ frame_needed = 1, uses_anonymous_args = 0
+ 776              		@ link register save eliminated.
+ 777 0000 80B4     		push	{r7}
+ 778              		.cfi_def_cfa_offset 4
+ 779              		.cfi_offset 7, -4
+ 780 0002 00AF     		add	r7, sp, #0
+ 781              		.cfi_def_cfa_register 7
+ 348:.\DACaudio.c  ****     bAudioActive = false;
+ 782              		.loc 1 348 0
+ 783 0004 034B     		ldr	r3, .L55
+ 784 0006 0022     		movs	r2, #0
+ 785 0008 1A70     		strb	r2, [r3]
+ 349:.\DACaudio.c  **** }
+ 786              		.loc 1 349 0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 21
+
+
+ 787 000a BD46     		mov	sp, r7
+ 788              		.cfi_def_cfa_register 13
+ 789              		@ sp needed
+ 790 000c 5DF8047B 		ldr	r7, [sp], #4
+ 791              		.cfi_restore 7
+ 792              		.cfi_def_cfa_offset 0
+ 793 0010 7047     		bx	lr
+ 794              	.L56:
+ 795 0012 00BF     		.align	2
+ 796              	.L55:
+ 797 0014 0A000000 		.word	bAudioActive
+ 798              		.cfi_endproc
+ 799              	.LFE69:
+ 800              		.size	deactivateAudio, .-deactivateAudio
+ 801              		.section	.text.isMusicReady,"ax",%progbits
+ 802              		.align	2
+ 803              		.thumb
+ 804              		.thumb_func
+ 805              		.type	isMusicReady, %function
+ 806              	isMusicReady:
+ 807              	.LFB70:
+ 350:.\DACaudio.c  **** 
+ 351:.\DACaudio.c  **** /*******************************************************************************
+ 352:.\DACaudio.c  **** * Function Name: isMusicReady
+ 353:.\DACaudio.c  **** ********************************************************************************
+ 354:.\DACaudio.c  **** *
+ 355:.\DACaudio.c  **** * Summary:
+ 356:.\DACaudio.c  **** *  Verifies that music file is valid and obtains data to process file
+ 357:.\DACaudio.c  **** *
+ 358:.\DACaudio.c  **** * Parameters: 
+ 359:.\DACaudio.c  **** *   None
+ 360:.\DACaudio.c  **** *
+ 361:.\DACaudio.c  **** * Return:
+ 362:.\DACaudio.c  **** *   TRUE for valid inputs, FALSE otherwise
+ 363:.\DACaudio.c  **** *
+ 364:.\DACaudio.c  **** *******************************************************************************/
+ 365:.\DACaudio.c  **** static uint8 isMusicReady(enum ToneType songChoice)
+ 366:.\DACaudio.c  **** {
+ 808              		.loc 1 366 0
+ 809              		.cfi_startproc
+ 810              		@ args = 0, pretend = 0, frame = 8
+ 811              		@ frame_needed = 1, uses_anonymous_args = 0
+ 812 0000 80B5     		push	{r7, lr}
+ 813              		.cfi_def_cfa_offset 8
+ 814              		.cfi_offset 7, -8
+ 815              		.cfi_offset 14, -4
+ 816 0002 82B0     		sub	sp, sp, #8
+ 817              		.cfi_def_cfa_offset 16
+ 818 0004 00AF     		add	r7, sp, #0
+ 819              		.cfi_def_cfa_register 7
+ 820 0006 0346     		mov	r3, r0
+ 821 0008 FB71     		strb	r3, [r7, #7]
+ 367:.\DACaudio.c  ****     if((songChoice < ECTOSIREN) || (songChoice > REMAIN_WINDOW_DOWN))
+ 822              		.loc 1 367 0
+ 823 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 824 000c 0D2B     		cmp	r3, #13
+ 825 000e 02D9     		bls	.L58
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 22
+
+
+ 826              		.loc 1 367 0 is_stmt 0 discriminator 1
+ 827 0010 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 828 0012 152B     		cmp	r3, #21
+ 829 0014 01D9     		bls	.L59
+ 830              	.L58:
+ 368:.\DACaudio.c  ****         return false;
+ 831              		.loc 1 368 0 is_stmt 1
+ 832 0016 0023     		movs	r3, #0
+ 833 0018 1FE0     		b	.L60
+ 834              	.L59:
+ 369:.\DACaudio.c  ****     
+ 370:.\DACaudio.c  ****     if(!processHeaderData(songChoice))
+ 835              		.loc 1 370 0
+ 836 001a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 837 001c 1846     		mov	r0, r3
+ 838 001e FFF7FEFF 		bl	processHeaderData
+ 839 0022 0346     		mov	r3, r0
+ 840 0024 002B     		cmp	r3, #0
+ 841 0026 01D1     		bne	.L61
+ 371:.\DACaudio.c  **** 		return false;
+ 842              		.loc 1 371 0
+ 843 0028 0023     		movs	r3, #0
+ 844 002a 16E0     		b	.L60
+ 845              	.L61:
+ 372:.\DACaudio.c  **** 	
+ 373:.\DACaudio.c  **** 	Speaker1.channelCount = getChannelCount();
+ 846              		.loc 1 373 0
+ 847 002c FFF7FEFF 		bl	getChannelCount
+ 848 0030 0346     		mov	r3, r0
+ 849 0032 1A46     		mov	r2, r3
+ 850 0034 0B4B     		ldr	r3, .L62
+ 851 0036 1A70     		strb	r2, [r3]
+ 374:.\DACaudio.c  **** 	Speaker1.bytesPerSample = getBytesPerSample();
+ 852              		.loc 1 374 0
+ 853 0038 FFF7FEFF 		bl	getBytesPerSample
+ 854 003c 0346     		mov	r3, r0
+ 855 003e 1A46     		mov	r2, r3
+ 856 0040 084B     		ldr	r3, .L62
+ 857 0042 5A70     		strb	r2, [r3, #1]
+ 375:.\DACaudio.c  **** 	Speaker1.dataSize = getDataSize();
+ 858              		.loc 1 375 0
+ 859 0044 FFF7FEFF 		bl	getDataSize
+ 860 0048 0246     		mov	r2, r0
+ 861 004a 064B     		ldr	r3, .L62
+ 862 004c 9A60     		str	r2, [r3, #8]
+ 376:.\DACaudio.c  **** 	Speaker1.samplingRate = getSamplingRate();
+ 863              		.loc 1 376 0
+ 864 004e FFF7FEFF 		bl	getSamplingRate
+ 865 0052 0246     		mov	r2, r0
+ 866 0054 034B     		ldr	r3, .L62
+ 867 0056 5A60     		str	r2, [r3, #4]
+ 377:.\DACaudio.c  **** 		
+ 378:.\DACaudio.c  **** 	return true;
+ 868              		.loc 1 378 0
+ 869 0058 0123     		movs	r3, #1
+ 870              	.L60:
+ 379:.\DACaudio.c  **** }
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 23
+
+
+ 871              		.loc 1 379 0
+ 872 005a 1846     		mov	r0, r3
+ 873 005c 0837     		adds	r7, r7, #8
+ 874              		.cfi_def_cfa_offset 8
+ 875 005e BD46     		mov	sp, r7
+ 876              		.cfi_def_cfa_register 13
+ 877              		@ sp needed
+ 878 0060 80BD     		pop	{r7, pc}
+ 879              	.L63:
+ 880 0062 00BF     		.align	2
+ 881              	.L62:
+ 882 0064 0C000000 		.word	Speaker1
+ 883              		.cfi_endproc
+ 884              	.LFE70:
+ 885              		.size	isMusicReady, .-isMusicReady
+ 886              		.section	.text.getSamplingReloadValue,"ax",%progbits
+ 887              		.align	2
+ 888              		.thumb
+ 889              		.thumb_func
+ 890              		.type	getSamplingReloadValue, %function
+ 891              	getSamplingReloadValue:
+ 892              	.LFB71:
+ 380:.\DACaudio.c  **** 
+ 381:.\DACaudio.c  **** /*******************************************************************************
+ 382:.\DACaudio.c  **** * Function Name: getSamplingReloadValue
+ 383:.\DACaudio.c  **** ********************************************************************************
+ 384:.\DACaudio.c  **** *
+ 385:.\DACaudio.c  **** * Summary:
+ 386:.\DACaudio.c  **** *  Calculates the corresponding reload value for the sampling rate
+ 387:.\DACaudio.c  **** *
+ 388:.\DACaudio.c  **** * Parameters: 
+ 389:.\DACaudio.c  **** *   samplingRate: The 32-bit sampling rate in Hertz
+ 390:.\DACaudio.c  **** *
+ 391:.\DACaudio.c  **** * Return:
+ 392:.\DACaudio.c  **** *   The corresponding reload value
+ 393:.\DACaudio.c  **** *
+ 394:.\DACaudio.c  **** *******************************************************************************/
+ 395:.\DACaudio.c  **** static uint16 getSamplingReloadValue(uint32 samplingRate)
+ 396:.\DACaudio.c  **** {
+ 893              		.loc 1 396 0
+ 894              		.cfi_startproc
+ 895              		@ args = 0, pretend = 0, frame = 8
+ 896              		@ frame_needed = 1, uses_anonymous_args = 0
+ 897              		@ link register save eliminated.
+ 898 0000 80B4     		push	{r7}
+ 899              		.cfi_def_cfa_offset 4
+ 900              		.cfi_offset 7, -4
+ 901 0002 83B0     		sub	sp, sp, #12
+ 902              		.cfi_def_cfa_offset 16
+ 903 0004 00AF     		add	r7, sp, #0
+ 904              		.cfi_def_cfa_register 7
+ 905 0006 7860     		str	r0, [r7, #4]
+ 397:.\DACaudio.c  ****     static const uint32 TIMER_FREQUENCY = 48000000;
+ 398:.\DACaudio.c  ****     return (uint16)(TIMER_FREQUENCY / samplingRate);
+ 906              		.loc 1 398 0
+ 907 0008 054A     		ldr	r2, .L66
+ 908 000a 7B68     		ldr	r3, [r7, #4]
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 24
+
+
+ 909 000c B2FBF3F3 		udiv	r3, r2, r3
+ 910 0010 9BB2     		uxth	r3, r3
+ 399:.\DACaudio.c  **** }
+ 911              		.loc 1 399 0
+ 912 0012 1846     		mov	r0, r3
+ 913 0014 0C37     		adds	r7, r7, #12
+ 914              		.cfi_def_cfa_offset 4
+ 915 0016 BD46     		mov	sp, r7
+ 916              		.cfi_def_cfa_register 13
+ 917              		@ sp needed
+ 918 0018 5DF8047B 		ldr	r7, [sp], #4
+ 919              		.cfi_restore 7
+ 920              		.cfi_def_cfa_offset 0
+ 921 001c 7047     		bx	lr
+ 922              	.L67:
+ 923 001e 00BF     		.align	2
+ 924              	.L66:
+ 925 0020 006CDC02 		.word	48000000
+ 926              		.cfi_endproc
+ 927              	.LFE71:
+ 928              		.size	getSamplingReloadValue, .-getSamplingReloadValue
+ 929              		.section	.rodata
+ 930              		.align	2
+ 931              		.type	TIMER_FREQUENCY.7290, %object
+ 932              		.size	TIMER_FREQUENCY.7290, 4
+ 933              	TIMER_FREQUENCY.7290:
+ 934 0014 006CDC02 		.word	48000000
+ 935              		.text
+ 936              	.Letext0:
+ 937              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 938              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 939              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 940              		.file 5 ".\\CommonVariables.h"
+ 941              		.file 6 "Generated_Source\\PSoC5/core_cm3.h"
+ 942              		.section	.debug_info,"",%progbits
+ 943              	.Ldebug_info0:
+ 944 0000 06040000 		.4byte	0x406
+ 945 0004 0400     		.2byte	0x4
+ 946 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 947 000a 04       		.byte	0x4
+ 948 000b 01       		.uleb128 0x1
+ 949 000c E7010000 		.4byte	.LASF74
+ 950 0010 01       		.byte	0x1
+ 951 0011 3E030000 		.4byte	.LASF75
+ 952 0015 78000000 		.4byte	.LASF76
+ 953 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 954 001d 00000000 		.4byte	0
+ 955 0021 00000000 		.4byte	.Ldebug_line0
+ 956 0025 02       		.uleb128 0x2
+ 957 0026 01       		.byte	0x1
+ 958 0027 06       		.byte	0x6
+ 959 0028 E5020000 		.4byte	.LASF0
+ 960 002c 02       		.uleb128 0x2
+ 961 002d 01       		.byte	0x1
+ 962 002e 08       		.byte	0x8
+ 963 002f B9020000 		.4byte	.LASF1
+ 964 0033 02       		.uleb128 0x2
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 25
+
+
+ 965 0034 02       		.byte	0x2
+ 966 0035 05       		.byte	0x5
+ 967 0036 4B010000 		.4byte	.LASF2
+ 968 003a 02       		.uleb128 0x2
+ 969 003b 02       		.byte	0x2
+ 970 003c 07       		.byte	0x7
+ 971 003d 4B030000 		.4byte	.LASF3
+ 972 0041 03       		.uleb128 0x3
+ 973 0042 23040000 		.4byte	.LASF9
+ 974 0046 02       		.byte	0x2
+ 975 0047 3F       		.byte	0x3f
+ 976 0048 4C000000 		.4byte	0x4c
+ 977 004c 02       		.uleb128 0x2
+ 978 004d 04       		.byte	0x4
+ 979 004e 05       		.byte	0x5
+ 980 004f 63030000 		.4byte	.LASF4
+ 981 0053 02       		.uleb128 0x2
+ 982 0054 04       		.byte	0x4
+ 983 0055 07       		.byte	0x7
+ 984 0056 20030000 		.4byte	.LASF5
+ 985 005a 02       		.uleb128 0x2
+ 986 005b 08       		.byte	0x8
+ 987 005c 05       		.byte	0x5
+ 988 005d 2B010000 		.4byte	.LASF6
+ 989 0061 02       		.uleb128 0x2
+ 990 0062 08       		.byte	0x8
+ 991 0063 07       		.byte	0x7
+ 992 0064 F1020000 		.4byte	.LASF7
+ 993 0068 04       		.uleb128 0x4
+ 994 0069 04       		.byte	0x4
+ 995 006a 05       		.byte	0x5
+ 996 006b 696E7400 		.ascii	"int\000"
+ 997 006f 02       		.uleb128 0x2
+ 998 0070 04       		.byte	0x4
+ 999 0071 07       		.byte	0x7
+ 1000 0072 13030000 		.4byte	.LASF8
+ 1001 0076 03       		.uleb128 0x3
+ 1002 0077 6C030000 		.4byte	.LASF10
+ 1003 007b 03       		.byte	0x3
+ 1004 007c 2C       		.byte	0x2c
+ 1005 007d 41000000 		.4byte	0x41
+ 1006 0081 03       		.uleb128 0x3
+ 1007 0082 83010000 		.4byte	.LASF11
+ 1008 0086 04       		.byte	0x4
+ 1009 0087 C2       		.byte	0xc2
+ 1010 0088 2C000000 		.4byte	0x2c
+ 1011 008c 03       		.uleb128 0x3
+ 1012 008d 65010000 		.4byte	.LASF12
+ 1013 0091 04       		.byte	0x4
+ 1014 0092 C3       		.byte	0xc3
+ 1015 0093 3A000000 		.4byte	0x3a
+ 1016 0097 03       		.uleb128 0x3
+ 1017 0098 B7030000 		.4byte	.LASF13
+ 1018 009c 04       		.byte	0x4
+ 1019 009d C4       		.byte	0xc4
+ 1020 009e 53000000 		.4byte	0x53
+ 1021 00a2 02       		.uleb128 0x2
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 26
+
+
+ 1022 00a3 04       		.byte	0x4
+ 1023 00a4 04       		.byte	0x4
+ 1024 00a5 AC010000 		.4byte	.LASF14
+ 1025 00a9 02       		.uleb128 0x2
+ 1026 00aa 08       		.byte	0x8
+ 1027 00ab 04       		.byte	0x4
+ 1028 00ac C9030000 		.4byte	.LASF15
+ 1029 00b0 02       		.uleb128 0x2
+ 1030 00b1 01       		.byte	0x1
+ 1031 00b2 08       		.byte	0x8
+ 1032 00b3 5E030000 		.4byte	.LASF16
+ 1033 00b7 02       		.uleb128 0x2
+ 1034 00b8 04       		.byte	0x4
+ 1035 00b9 07       		.byte	0x7
+ 1036 00ba 6F000000 		.4byte	.LASF17
+ 1037 00be 05       		.uleb128 0x5
+ 1038 00bf 0A000000 		.4byte	.LASF77
+ 1039 00c3 01       		.byte	0x1
+ 1040 00c4 05       		.byte	0x5
+ 1041 00c5 1D       		.byte	0x1d
+ 1042 00c6 55010000 		.4byte	0x155
+ 1043 00ca 06       		.uleb128 0x6
+ 1044 00cb D0030000 		.4byte	.LASF18
+ 1045 00cf 00       		.sleb128 0
+ 1046 00d0 06       		.uleb128 0x6
+ 1047 00d1 B4020000 		.4byte	.LASF19
+ 1048 00d5 01       		.sleb128 1
+ 1049 00d6 06       		.uleb128 0x6
+ 1050 00d7 C6040000 		.4byte	.LASF20
+ 1051 00db 02       		.sleb128 2
+ 1052 00dc 06       		.uleb128 0x6
+ 1053 00dd 84020000 		.4byte	.LASF21
+ 1054 00e1 03       		.sleb128 3
+ 1055 00e2 06       		.uleb128 0x6
+ 1056 00e3 29000000 		.4byte	.LASF22
+ 1057 00e7 04       		.sleb128 4
+ 1058 00e8 06       		.uleb128 0x6
+ 1059 00e9 75020000 		.4byte	.LASF23
+ 1060 00ed 05       		.sleb128 5
+ 1061 00ee 06       		.uleb128 0x6
+ 1062 00ef A0020000 		.4byte	.LASF24
+ 1063 00f3 06       		.sleb128 6
+ 1064 00f4 06       		.uleb128 0x6
+ 1065 00f5 61040000 		.4byte	.LASF25
+ 1066 00f9 07       		.sleb128 7
+ 1067 00fa 06       		.uleb128 0x6
+ 1068 00fb 3A000000 		.4byte	.LASF26
+ 1069 00ff 08       		.sleb128 8
+ 1070 0100 06       		.uleb128 0x6
+ 1071 0101 09040000 		.4byte	.LASF27
+ 1072 0105 09       		.sleb128 9
+ 1073 0106 06       		.uleb128 0x6
+ 1074 0107 BE030000 		.4byte	.LASF28
+ 1075 010b 0A       		.sleb128 10
+ 1076 010c 06       		.uleb128 0x6
+ 1077 010d E6030000 		.4byte	.LASF29
+ 1078 0111 0B       		.sleb128 11
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 27
+
+
+ 1079 0112 06       		.uleb128 0x6
+ 1080 0113 A2010000 		.4byte	.LASF30
+ 1081 0117 0C       		.sleb128 12
+ 1082 0118 06       		.uleb128 0x6
+ 1083 0119 32030000 		.4byte	.LASF31
+ 1084 011d 0D       		.sleb128 13
+ 1085 011e 06       		.uleb128 0x6
+ 1086 011f 7A020000 		.4byte	.LASF32
+ 1087 0123 0E       		.sleb128 14
+ 1088 0124 06       		.uleb128 0x6
+ 1089 0125 98010000 		.4byte	.LASF33
+ 1090 0129 0F       		.sleb128 15
+ 1091 012a 06       		.uleb128 0x6
+ 1092 012b 66000000 		.4byte	.LASF34
+ 1093 012f 10       		.sleb128 16
+ 1094 0130 06       		.uleb128 0x6
+ 1095 0131 00000000 		.4byte	.LASF35
+ 1096 0135 11       		.sleb128 17
+ 1097 0136 06       		.uleb128 0x6
+ 1098 0137 DE010000 		.4byte	.LASF36
+ 1099 013b 12       		.sleb128 18
+ 1100 013c 06       		.uleb128 0x6
+ 1101 013d FB000000 		.4byte	.LASF37
+ 1102 0141 13       		.sleb128 19
+ 1103 0142 06       		.uleb128 0x6
+ 1104 0143 3F040000 		.4byte	.LASF38
+ 1105 0147 14       		.sleb128 20
+ 1106 0148 06       		.uleb128 0x6
+ 1107 0149 6D040000 		.4byte	.LASF39
+ 1108 014d 15       		.sleb128 21
+ 1109 014e 06       		.uleb128 0x6
+ 1110 014f D4010000 		.4byte	.LASF40
+ 1111 0153 16       		.sleb128 22
+ 1112 0154 00       		.byte	0
+ 1113 0155 07       		.uleb128 0x7
+ 1114 0156 0C       		.byte	0xc
+ 1115 0157 01       		.byte	0x1
+ 1116 0158 1D       		.byte	0x1d
+ 1117 0159 8E010000 		.4byte	0x18e
+ 1118 015d 08       		.uleb128 0x8
+ 1119 015e B9040000 		.4byte	.LASF41
+ 1120 0162 01       		.byte	0x1
+ 1121 0163 1F       		.byte	0x1f
+ 1122 0164 81000000 		.4byte	0x81
+ 1123 0168 00       		.byte	0
+ 1124 0169 08       		.uleb128 0x8
+ 1125 016a 89010000 		.4byte	.LASF42
+ 1126 016e 01       		.byte	0x1
+ 1127 016f 20       		.byte	0x20
+ 1128 0170 81000000 		.4byte	0x81
+ 1129 0174 01       		.byte	0x1
+ 1130 0175 08       		.uleb128 0x8
+ 1131 0176 C7020000 		.4byte	.LASF43
+ 1132 017a 01       		.byte	0x1
+ 1133 017b 21       		.byte	0x21
+ 1134 017c 97000000 		.4byte	0x97
+ 1135 0180 04       		.byte	0x4
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 28
+
+
+ 1136 0181 08       		.uleb128 0x8
+ 1137 0182 6C010000 		.4byte	.LASF44
+ 1138 0186 01       		.byte	0x1
+ 1139 0187 22       		.byte	0x22
+ 1140 0188 97000000 		.4byte	0x97
+ 1141 018c 08       		.byte	0x8
+ 1142 018d 00       		.byte	0
+ 1143 018e 03       		.uleb128 0x3
+ 1144 018f D4020000 		.4byte	.LASF45
+ 1145 0193 01       		.byte	0x1
+ 1146 0194 23       		.byte	0x23
+ 1147 0195 55010000 		.4byte	0x155
+ 1148 0199 09       		.uleb128 0x9
+ 1149 019a 9F030000 		.4byte	.LASF55
+ 1150 019e 01       		.byte	0x1
+ 1151 019f 45       		.byte	0x45
+ 1152 01a0 81000000 		.4byte	0x81
+ 1153 01a4 00000000 		.4byte	.LFB63
+ 1154 01a8 18000000 		.4byte	.LFE63-.LFB63
+ 1155 01ac 01       		.uleb128 0x1
+ 1156 01ad 9C       		.byte	0x9c
+ 1157 01ae 0A       		.uleb128 0xa
+ 1158 01af 1D010000 		.4byte	.LASF49
+ 1159 01b3 01       		.byte	0x1
+ 1160 01b4 5A       		.byte	0x5a
+ 1161 01b5 81000000 		.4byte	0x81
+ 1162 01b9 00000000 		.4byte	.LFB64
+ 1163 01bd 20010000 		.4byte	.LFE64-.LFB64
+ 1164 01c1 01       		.uleb128 0x1
+ 1165 01c2 9C       		.byte	0x9c
+ 1166 01c3 00020000 		.4byte	0x200
+ 1167 01c7 0B       		.uleb128 0xb
+ 1168 01c8 AE030000 		.4byte	.LASF46
+ 1169 01cc 01       		.byte	0x1
+ 1170 01cd 5A       		.byte	0x5a
+ 1171 01ce 81000000 		.4byte	0x81
+ 1172 01d2 02       		.uleb128 0x2
+ 1173 01d3 91       		.byte	0x91
+ 1174 01d4 6F       		.sleb128 -17
+ 1175 01d5 0B       		.uleb128 0xb
+ 1176 01d6 43000000 		.4byte	.LASF47
+ 1177 01da 01       		.byte	0x1
+ 1178 01db 5A       		.byte	0x5a
+ 1179 01dc BE000000 		.4byte	0xbe
+ 1180 01e0 02       		.uleb128 0x2
+ 1181 01e1 91       		.byte	0x91
+ 1182 01e2 6E       		.sleb128 -18
+ 1183 01e3 0B       		.uleb128 0xb
+ 1184 01e4 97040000 		.4byte	.LASF48
+ 1185 01e8 01       		.byte	0x1
+ 1186 01e9 5A       		.byte	0x5a
+ 1187 01ea 81000000 		.4byte	0x81
+ 1188 01ee 02       		.uleb128 0x2
+ 1189 01ef 91       		.byte	0x91
+ 1190 01f0 6D       		.sleb128 -19
+ 1191 01f1 0C       		.uleb128 0xc
+ 1192 01f2 14040000 		.4byte	.LASF51
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 29
+
+
+ 1193 01f6 01       		.byte	0x1
+ 1194 01f7 5C       		.byte	0x5c
+ 1195 01f8 8C000000 		.4byte	0x8c
+ 1196 01fc 02       		.uleb128 0x2
+ 1197 01fd 91       		.byte	0x91
+ 1198 01fe 76       		.sleb128 -10
+ 1199 01ff 00       		.byte	0
+ 1200 0200 0A       		.uleb128 0xa
+ 1201 0201 75010000 		.4byte	.LASF50
+ 1202 0205 01       		.byte	0x1
+ 1203 0206 9D       		.byte	0x9d
+ 1204 0207 81000000 		.4byte	0x81
+ 1205 020b 00000000 		.4byte	.LFB65
+ 1206 020f 48000000 		.4byte	.LFE65-.LFB65
+ 1207 0213 01       		.uleb128 0x1
+ 1208 0214 9C       		.byte	0x9c
+ 1209 0215 28020000 		.4byte	0x228
+ 1210 0219 0B       		.uleb128 0xb
+ 1211 021a AE030000 		.4byte	.LASF46
+ 1212 021e 01       		.byte	0x1
+ 1213 021f 9D       		.byte	0x9d
+ 1214 0220 81000000 		.4byte	0x81
+ 1215 0224 02       		.uleb128 0x2
+ 1216 0225 91       		.byte	0x91
+ 1217 0226 77       		.sleb128 -9
+ 1218 0227 00       		.byte	0
+ 1219 0228 0D       		.uleb128 0xd
+ 1220 0229 08030000 		.4byte	.LASF53
+ 1221 022d 01       		.byte	0x1
+ 1222 022e BC       		.byte	0xbc
+ 1223 022f 00000000 		.4byte	.LFB66
+ 1224 0233 5C010000 		.4byte	.LFE66-.LFB66
+ 1225 0237 01       		.uleb128 0x1
+ 1226 0238 9C       		.byte	0x9c
+ 1227 0239 4C020000 		.4byte	0x24c
+ 1228 023d 0C       		.uleb128 0xc
+ 1229 023e DC020000 		.4byte	.LASF52
+ 1230 0242 01       		.byte	0x1
+ 1231 0243 BE       		.byte	0xbe
+ 1232 0244 81000000 		.4byte	0x81
+ 1233 0248 02       		.uleb128 0x2
+ 1234 0249 91       		.byte	0x91
+ 1235 024a 77       		.sleb128 -9
+ 1236 024b 00       		.byte	0
+ 1237 024c 0E       		.uleb128 0xe
+ 1238 024d 4E000000 		.4byte	.LASF54
+ 1239 0251 01       		.byte	0x1
+ 1240 0252 1101     		.2byte	0x111
+ 1241 0254 00000000 		.4byte	.LFB67
+ 1242 0258 C8000000 		.4byte	.LFE67-.LFB67
+ 1243 025c 01       		.uleb128 0x1
+ 1244 025d 9C       		.byte	0x9c
+ 1245 025e 72020000 		.4byte	0x272
+ 1246 0262 0F       		.uleb128 0xf
+ 1247 0263 DC020000 		.4byte	.LASF52
+ 1248 0267 01       		.byte	0x1
+ 1249 0268 1401     		.2byte	0x114
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 30
+
+
+ 1250 026a 81000000 		.4byte	0x81
+ 1251 026e 02       		.uleb128 0x2
+ 1252 026f 91       		.byte	0x91
+ 1253 0270 77       		.sleb128 -9
+ 1254 0271 00       		.byte	0
+ 1255 0272 10       		.uleb128 0x10
+ 1256 0273 D8030000 		.4byte	.LASF56
+ 1257 0277 01       		.byte	0x1
+ 1258 0278 4701     		.2byte	0x147
+ 1259 027a 81000000 		.4byte	0x81
+ 1260 027e 00000000 		.4byte	.LFB68
+ 1261 0282 18000000 		.4byte	.LFE68-.LFB68
+ 1262 0286 01       		.uleb128 0x1
+ 1263 0287 9C       		.byte	0x9c
+ 1264 0288 11       		.uleb128 0x11
+ 1265 0289 0D010000 		.4byte	.LASF78
+ 1266 028d 01       		.byte	0x1
+ 1267 028e 5A01     		.2byte	0x15a
+ 1268 0290 00000000 		.4byte	.LFB69
+ 1269 0294 18000000 		.4byte	.LFE69-.LFB69
+ 1270 0298 01       		.uleb128 0x1
+ 1271 0299 9C       		.byte	0x9c
+ 1272 029a 12       		.uleb128 0x12
+ 1273 029b 59000000 		.4byte	.LASF57
+ 1274 029f 01       		.byte	0x1
+ 1275 02a0 6D01     		.2byte	0x16d
+ 1276 02a2 81000000 		.4byte	0x81
+ 1277 02a6 00000000 		.4byte	.LFB70
+ 1278 02aa 68000000 		.4byte	.LFE70-.LFB70
+ 1279 02ae 01       		.uleb128 0x1
+ 1280 02af 9C       		.byte	0x9c
+ 1281 02b0 C4020000 		.4byte	0x2c4
+ 1282 02b4 13       		.uleb128 0x13
+ 1283 02b5 43000000 		.4byte	.LASF47
+ 1284 02b9 01       		.byte	0x1
+ 1285 02ba 6D01     		.2byte	0x16d
+ 1286 02bc BE000000 		.4byte	0xbe
+ 1287 02c0 02       		.uleb128 0x2
+ 1288 02c1 91       		.byte	0x91
+ 1289 02c2 77       		.sleb128 -9
+ 1290 02c3 00       		.byte	0
+ 1291 02c4 14       		.uleb128 0x14
+ 1292 02c5 80040000 		.4byte	.LASF58
+ 1293 02c9 01       		.byte	0x1
+ 1294 02ca 8B01     		.2byte	0x18b
+ 1295 02cc 8C000000 		.4byte	0x8c
+ 1296 02d0 00000000 		.4byte	.LFB71
+ 1297 02d4 24000000 		.4byte	.LFE71-.LFB71
+ 1298 02d8 01       		.uleb128 0x1
+ 1299 02d9 9C       		.byte	0x9c
+ 1300 02da 00030000 		.4byte	0x300
+ 1301 02de 13       		.uleb128 0x13
+ 1302 02df C7020000 		.4byte	.LASF43
+ 1303 02e3 01       		.byte	0x1
+ 1304 02e4 8B01     		.2byte	0x18b
+ 1305 02e6 97000000 		.4byte	0x97
+ 1306 02ea 02       		.uleb128 0x2
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 31
+
+
+ 1307 02eb 91       		.byte	0x91
+ 1308 02ec 74       		.sleb128 -12
+ 1309 02ed 0F       		.uleb128 0xf
+ 1310 02ee 55010000 		.4byte	.LASF59
+ 1311 02f2 01       		.byte	0x1
+ 1312 02f3 8D01     		.2byte	0x18d
+ 1313 02f5 00030000 		.4byte	0x300
+ 1314 02f9 05       		.uleb128 0x5
+ 1315 02fa 03       		.byte	0x3
+ 1316 02fb 14000000 		.4byte	TIMER_FREQUENCY.7290
+ 1317 02ff 00       		.byte	0
+ 1318 0300 15       		.uleb128 0x15
+ 1319 0301 97000000 		.4byte	0x97
+ 1320 0305 0C       		.uleb128 0xc
+ 1321 0306 8E020000 		.4byte	.LASF60
+ 1322 030a 01       		.byte	0x1
+ 1323 030b 13       		.byte	0x13
+ 1324 030c 16030000 		.4byte	0x316
+ 1325 0310 05       		.uleb128 0x5
+ 1326 0311 03       		.byte	0x3
+ 1327 0312 00000000 		.4byte	INITIAL_DAC_VALUE
+ 1328 0316 15       		.uleb128 0x15
+ 1329 0317 81000000 		.4byte	0x81
+ 1330 031b 0C       		.uleb128 0xc
+ 1331 031c 13000000 		.4byte	.LASF61
+ 1332 0320 01       		.byte	0x1
+ 1333 0321 15       		.byte	0x15
+ 1334 0322 16030000 		.4byte	0x316
+ 1335 0326 05       		.uleb128 0x5
+ 1336 0327 03       		.byte	0x3
+ 1337 0328 01000000 		.4byte	DEFAULT_CHANNEL_COUNT
+ 1338 032c 0C       		.uleb128 0xc
+ 1339 032d 74030000 		.4byte	.LASF62
+ 1340 0331 01       		.byte	0x1
+ 1341 0332 16       		.byte	0x16
+ 1342 0333 00030000 		.4byte	0x300
+ 1343 0337 05       		.uleb128 0x5
+ 1344 0338 03       		.byte	0x3
+ 1345 0339 04000000 		.4byte	DEFAULT_SAMPLING_RATE
+ 1346 033d 0C       		.uleb128 0xc
+ 1347 033e F2030000 		.4byte	.LASF63
+ 1348 0342 01       		.byte	0x1
+ 1349 0343 18       		.byte	0x18
+ 1350 0344 00030000 		.4byte	0x300
+ 1351 0348 05       		.uleb128 0x5
+ 1352 0349 03       		.byte	0x3
+ 1353 034a 08000000 		.4byte	ECTO_CYCLE_START_INDEX
+ 1354 034e 0C       		.uleb128 0xc
+ 1355 034f 8A030000 		.4byte	.LASF64
+ 1356 0353 01       		.byte	0x1
+ 1357 0354 19       		.byte	0x19
+ 1358 0355 00030000 		.4byte	0x300
+ 1359 0359 05       		.uleb128 0x5
+ 1360 035a 03       		.byte	0x3
+ 1361 035b 0C000000 		.4byte	ECTO_CYCLE_END_INDEX
+ 1362 035f 0C       		.uleb128 0xc
+ 1363 0360 BF010000 		.4byte	.LASF65
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 32
+
+
+ 1364 0364 01       		.byte	0x1
+ 1365 0365 1A       		.byte	0x1a
+ 1366 0366 00030000 		.4byte	0x300
+ 1367 036a 05       		.uleb128 0x5
+ 1368 036b 03       		.byte	0x3
+ 1369 036c 10000000 		.4byte	ECTO_RAMP_DOWN_INDEX
+ 1370 0370 0C       		.uleb128 0xc
+ 1371 0371 2D040000 		.4byte	.LASF66
+ 1372 0375 01       		.byte	0x1
+ 1373 0376 26       		.byte	0x26
+ 1374 0377 BE000000 		.4byte	0xbe
+ 1375 037b 05       		.uleb128 0x5
+ 1376 037c 03       		.byte	0x3
+ 1377 037d 00000000 		.4byte	currentSongNumber
+ 1378 0381 0C       		.uleb128 0xc
+ 1379 0382 30000000 		.4byte	.LASF67
+ 1380 0386 01       		.byte	0x1
+ 1381 0387 27       		.byte	0x27
+ 1382 0388 97000000 		.4byte	0x97
+ 1383 038c 05       		.uleb128 0x5
+ 1384 038d 03       		.byte	0x3
+ 1385 038e 04000000 		.4byte	dataIndex
+ 1386 0392 0C       		.uleb128 0xc
+ 1387 0393 51040000 		.4byte	.LASF68
+ 1388 0397 01       		.byte	0x1
+ 1389 0398 29       		.byte	0x29
+ 1390 0399 81000000 		.4byte	0x81
+ 1391 039d 05       		.uleb128 0x5
+ 1392 039e 03       		.byte	0x3
+ 1393 039f 08000000 		.4byte	bCurrentSpeaker
+ 1394 03a3 0C       		.uleb128 0xc
+ 1395 03a4 D0040000 		.4byte	.LASF69
+ 1396 03a8 01       		.byte	0x1
+ 1397 03a9 2A       		.byte	0x2a
+ 1398 03aa 81000000 		.4byte	0x81
+ 1399 03ae 05       		.uleb128 0x5
+ 1400 03af 03       		.byte	0x3
+ 1401 03b0 09000000 		.4byte	bAudioInputFlag
+ 1402 03b4 0C       		.uleb128 0xc
+ 1403 03b5 B2010000 		.4byte	.LASF70
+ 1404 03b9 01       		.byte	0x1
+ 1405 03ba 2C       		.byte	0x2c
+ 1406 03bb 81000000 		.4byte	0x81
+ 1407 03bf 05       		.uleb128 0x5
+ 1408 03c0 03       		.byte	0x3
+ 1409 03c1 0A000000 		.4byte	bAudioActive
+ 1410 03c5 0C       		.uleb128 0xc
+ 1411 03c6 39010000 		.4byte	.LASF71
+ 1412 03ca 01       		.byte	0x1
+ 1413 03cb 2D       		.byte	0x2d
+ 1414 03cc 81000000 		.4byte	0x81
+ 1415 03d0 05       		.uleb128 0x5
+ 1416 03d1 03       		.byte	0x3
+ 1417 03d2 0B000000 		.4byte	bSongFinishedFlag
+ 1418 03d6 0C       		.uleb128 0xc
+ 1419 03d7 A3040000 		.4byte	.LASF72
+ 1420 03db 01       		.byte	0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 33
+
+
+ 1421 03dc 2F       		.byte	0x2f
+ 1422 03dd 8E010000 		.4byte	0x18e
+ 1423 03e1 05       		.uleb128 0x5
+ 1424 03e2 03       		.byte	0x3
+ 1425 03e3 0C000000 		.4byte	Speaker1
+ 1426 03e7 0C       		.uleb128 0xc
+ 1427 03e8 AB020000 		.4byte	.LASF73
+ 1428 03ec 01       		.byte	0x1
+ 1429 03ed 30       		.byte	0x30
+ 1430 03ee 8E010000 		.4byte	0x18e
+ 1431 03f2 05       		.uleb128 0x5
+ 1432 03f3 03       		.byte	0x3
+ 1433 03f4 18000000 		.4byte	Speaker2
+ 1434 03f8 16       		.uleb128 0x16
+ 1435 03f9 AC040000 		.4byte	.LASF79
+ 1436 03fd 06       		.byte	0x6
+ 1437 03fe 2A06     		.2byte	0x62a
+ 1438 0400 04040000 		.4byte	0x404
+ 1439 0404 17       		.uleb128 0x17
+ 1440 0405 76000000 		.4byte	0x76
+ 1441 0409 00       		.byte	0
+ 1442              		.section	.debug_abbrev,"",%progbits
+ 1443              	.Ldebug_abbrev0:
+ 1444 0000 01       		.uleb128 0x1
+ 1445 0001 11       		.uleb128 0x11
+ 1446 0002 01       		.byte	0x1
+ 1447 0003 25       		.uleb128 0x25
+ 1448 0004 0E       		.uleb128 0xe
+ 1449 0005 13       		.uleb128 0x13
+ 1450 0006 0B       		.uleb128 0xb
+ 1451 0007 03       		.uleb128 0x3
+ 1452 0008 0E       		.uleb128 0xe
+ 1453 0009 1B       		.uleb128 0x1b
+ 1454 000a 0E       		.uleb128 0xe
+ 1455 000b 55       		.uleb128 0x55
+ 1456 000c 17       		.uleb128 0x17
+ 1457 000d 11       		.uleb128 0x11
+ 1458 000e 01       		.uleb128 0x1
+ 1459 000f 10       		.uleb128 0x10
+ 1460 0010 17       		.uleb128 0x17
+ 1461 0011 00       		.byte	0
+ 1462 0012 00       		.byte	0
+ 1463 0013 02       		.uleb128 0x2
+ 1464 0014 24       		.uleb128 0x24
+ 1465 0015 00       		.byte	0
+ 1466 0016 0B       		.uleb128 0xb
+ 1467 0017 0B       		.uleb128 0xb
+ 1468 0018 3E       		.uleb128 0x3e
+ 1469 0019 0B       		.uleb128 0xb
+ 1470 001a 03       		.uleb128 0x3
+ 1471 001b 0E       		.uleb128 0xe
+ 1472 001c 00       		.byte	0
+ 1473 001d 00       		.byte	0
+ 1474 001e 03       		.uleb128 0x3
+ 1475 001f 16       		.uleb128 0x16
+ 1476 0020 00       		.byte	0
+ 1477 0021 03       		.uleb128 0x3
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 34
+
+
+ 1478 0022 0E       		.uleb128 0xe
+ 1479 0023 3A       		.uleb128 0x3a
+ 1480 0024 0B       		.uleb128 0xb
+ 1481 0025 3B       		.uleb128 0x3b
+ 1482 0026 0B       		.uleb128 0xb
+ 1483 0027 49       		.uleb128 0x49
+ 1484 0028 13       		.uleb128 0x13
+ 1485 0029 00       		.byte	0
+ 1486 002a 00       		.byte	0
+ 1487 002b 04       		.uleb128 0x4
+ 1488 002c 24       		.uleb128 0x24
+ 1489 002d 00       		.byte	0
+ 1490 002e 0B       		.uleb128 0xb
+ 1491 002f 0B       		.uleb128 0xb
+ 1492 0030 3E       		.uleb128 0x3e
+ 1493 0031 0B       		.uleb128 0xb
+ 1494 0032 03       		.uleb128 0x3
+ 1495 0033 08       		.uleb128 0x8
+ 1496 0034 00       		.byte	0
+ 1497 0035 00       		.byte	0
+ 1498 0036 05       		.uleb128 0x5
+ 1499 0037 04       		.uleb128 0x4
+ 1500 0038 01       		.byte	0x1
+ 1501 0039 03       		.uleb128 0x3
+ 1502 003a 0E       		.uleb128 0xe
+ 1503 003b 0B       		.uleb128 0xb
+ 1504 003c 0B       		.uleb128 0xb
+ 1505 003d 3A       		.uleb128 0x3a
+ 1506 003e 0B       		.uleb128 0xb
+ 1507 003f 3B       		.uleb128 0x3b
+ 1508 0040 0B       		.uleb128 0xb
+ 1509 0041 01       		.uleb128 0x1
+ 1510 0042 13       		.uleb128 0x13
+ 1511 0043 00       		.byte	0
+ 1512 0044 00       		.byte	0
+ 1513 0045 06       		.uleb128 0x6
+ 1514 0046 28       		.uleb128 0x28
+ 1515 0047 00       		.byte	0
+ 1516 0048 03       		.uleb128 0x3
+ 1517 0049 0E       		.uleb128 0xe
+ 1518 004a 1C       		.uleb128 0x1c
+ 1519 004b 0D       		.uleb128 0xd
+ 1520 004c 00       		.byte	0
+ 1521 004d 00       		.byte	0
+ 1522 004e 07       		.uleb128 0x7
+ 1523 004f 13       		.uleb128 0x13
+ 1524 0050 01       		.byte	0x1
+ 1525 0051 0B       		.uleb128 0xb
+ 1526 0052 0B       		.uleb128 0xb
+ 1527 0053 3A       		.uleb128 0x3a
+ 1528 0054 0B       		.uleb128 0xb
+ 1529 0055 3B       		.uleb128 0x3b
+ 1530 0056 0B       		.uleb128 0xb
+ 1531 0057 01       		.uleb128 0x1
+ 1532 0058 13       		.uleb128 0x13
+ 1533 0059 00       		.byte	0
+ 1534 005a 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 35
+
+
+ 1535 005b 08       		.uleb128 0x8
+ 1536 005c 0D       		.uleb128 0xd
+ 1537 005d 00       		.byte	0
+ 1538 005e 03       		.uleb128 0x3
+ 1539 005f 0E       		.uleb128 0xe
+ 1540 0060 3A       		.uleb128 0x3a
+ 1541 0061 0B       		.uleb128 0xb
+ 1542 0062 3B       		.uleb128 0x3b
+ 1543 0063 0B       		.uleb128 0xb
+ 1544 0064 49       		.uleb128 0x49
+ 1545 0065 13       		.uleb128 0x13
+ 1546 0066 38       		.uleb128 0x38
+ 1547 0067 0B       		.uleb128 0xb
+ 1548 0068 00       		.byte	0
+ 1549 0069 00       		.byte	0
+ 1550 006a 09       		.uleb128 0x9
+ 1551 006b 2E       		.uleb128 0x2e
+ 1552 006c 00       		.byte	0
+ 1553 006d 3F       		.uleb128 0x3f
+ 1554 006e 19       		.uleb128 0x19
+ 1555 006f 03       		.uleb128 0x3
+ 1556 0070 0E       		.uleb128 0xe
+ 1557 0071 3A       		.uleb128 0x3a
+ 1558 0072 0B       		.uleb128 0xb
+ 1559 0073 3B       		.uleb128 0x3b
+ 1560 0074 0B       		.uleb128 0xb
+ 1561 0075 27       		.uleb128 0x27
+ 1562 0076 19       		.uleb128 0x19
+ 1563 0077 49       		.uleb128 0x49
+ 1564 0078 13       		.uleb128 0x13
+ 1565 0079 11       		.uleb128 0x11
+ 1566 007a 01       		.uleb128 0x1
+ 1567 007b 12       		.uleb128 0x12
+ 1568 007c 06       		.uleb128 0x6
+ 1569 007d 40       		.uleb128 0x40
+ 1570 007e 18       		.uleb128 0x18
+ 1571 007f 9742     		.uleb128 0x2117
+ 1572 0081 19       		.uleb128 0x19
+ 1573 0082 00       		.byte	0
+ 1574 0083 00       		.byte	0
+ 1575 0084 0A       		.uleb128 0xa
+ 1576 0085 2E       		.uleb128 0x2e
+ 1577 0086 01       		.byte	0x1
+ 1578 0087 3F       		.uleb128 0x3f
+ 1579 0088 19       		.uleb128 0x19
+ 1580 0089 03       		.uleb128 0x3
+ 1581 008a 0E       		.uleb128 0xe
+ 1582 008b 3A       		.uleb128 0x3a
+ 1583 008c 0B       		.uleb128 0xb
+ 1584 008d 3B       		.uleb128 0x3b
+ 1585 008e 0B       		.uleb128 0xb
+ 1586 008f 27       		.uleb128 0x27
+ 1587 0090 19       		.uleb128 0x19
+ 1588 0091 49       		.uleb128 0x49
+ 1589 0092 13       		.uleb128 0x13
+ 1590 0093 11       		.uleb128 0x11
+ 1591 0094 01       		.uleb128 0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 36
+
+
+ 1592 0095 12       		.uleb128 0x12
+ 1593 0096 06       		.uleb128 0x6
+ 1594 0097 40       		.uleb128 0x40
+ 1595 0098 18       		.uleb128 0x18
+ 1596 0099 9642     		.uleb128 0x2116
+ 1597 009b 19       		.uleb128 0x19
+ 1598 009c 01       		.uleb128 0x1
+ 1599 009d 13       		.uleb128 0x13
+ 1600 009e 00       		.byte	0
+ 1601 009f 00       		.byte	0
+ 1602 00a0 0B       		.uleb128 0xb
+ 1603 00a1 05       		.uleb128 0x5
+ 1604 00a2 00       		.byte	0
+ 1605 00a3 03       		.uleb128 0x3
+ 1606 00a4 0E       		.uleb128 0xe
+ 1607 00a5 3A       		.uleb128 0x3a
+ 1608 00a6 0B       		.uleb128 0xb
+ 1609 00a7 3B       		.uleb128 0x3b
+ 1610 00a8 0B       		.uleb128 0xb
+ 1611 00a9 49       		.uleb128 0x49
+ 1612 00aa 13       		.uleb128 0x13
+ 1613 00ab 02       		.uleb128 0x2
+ 1614 00ac 18       		.uleb128 0x18
+ 1615 00ad 00       		.byte	0
+ 1616 00ae 00       		.byte	0
+ 1617 00af 0C       		.uleb128 0xc
+ 1618 00b0 34       		.uleb128 0x34
+ 1619 00b1 00       		.byte	0
+ 1620 00b2 03       		.uleb128 0x3
+ 1621 00b3 0E       		.uleb128 0xe
+ 1622 00b4 3A       		.uleb128 0x3a
+ 1623 00b5 0B       		.uleb128 0xb
+ 1624 00b6 3B       		.uleb128 0x3b
+ 1625 00b7 0B       		.uleb128 0xb
+ 1626 00b8 49       		.uleb128 0x49
+ 1627 00b9 13       		.uleb128 0x13
+ 1628 00ba 02       		.uleb128 0x2
+ 1629 00bb 18       		.uleb128 0x18
+ 1630 00bc 00       		.byte	0
+ 1631 00bd 00       		.byte	0
+ 1632 00be 0D       		.uleb128 0xd
+ 1633 00bf 2E       		.uleb128 0x2e
+ 1634 00c0 01       		.byte	0x1
+ 1635 00c1 3F       		.uleb128 0x3f
+ 1636 00c2 19       		.uleb128 0x19
+ 1637 00c3 03       		.uleb128 0x3
+ 1638 00c4 0E       		.uleb128 0xe
+ 1639 00c5 3A       		.uleb128 0x3a
+ 1640 00c6 0B       		.uleb128 0xb
+ 1641 00c7 3B       		.uleb128 0x3b
+ 1642 00c8 0B       		.uleb128 0xb
+ 1643 00c9 27       		.uleb128 0x27
+ 1644 00ca 19       		.uleb128 0x19
+ 1645 00cb 11       		.uleb128 0x11
+ 1646 00cc 01       		.uleb128 0x1
+ 1647 00cd 12       		.uleb128 0x12
+ 1648 00ce 06       		.uleb128 0x6
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 37
+
+
+ 1649 00cf 40       		.uleb128 0x40
+ 1650 00d0 18       		.uleb128 0x18
+ 1651 00d1 9642     		.uleb128 0x2116
+ 1652 00d3 19       		.uleb128 0x19
+ 1653 00d4 01       		.uleb128 0x1
+ 1654 00d5 13       		.uleb128 0x13
+ 1655 00d6 00       		.byte	0
+ 1656 00d7 00       		.byte	0
+ 1657 00d8 0E       		.uleb128 0xe
+ 1658 00d9 2E       		.uleb128 0x2e
+ 1659 00da 01       		.byte	0x1
+ 1660 00db 3F       		.uleb128 0x3f
+ 1661 00dc 19       		.uleb128 0x19
+ 1662 00dd 03       		.uleb128 0x3
+ 1663 00de 0E       		.uleb128 0xe
+ 1664 00df 3A       		.uleb128 0x3a
+ 1665 00e0 0B       		.uleb128 0xb
+ 1666 00e1 3B       		.uleb128 0x3b
+ 1667 00e2 05       		.uleb128 0x5
+ 1668 00e3 27       		.uleb128 0x27
+ 1669 00e4 19       		.uleb128 0x19
+ 1670 00e5 11       		.uleb128 0x11
+ 1671 00e6 01       		.uleb128 0x1
+ 1672 00e7 12       		.uleb128 0x12
+ 1673 00e8 06       		.uleb128 0x6
+ 1674 00e9 40       		.uleb128 0x40
+ 1675 00ea 18       		.uleb128 0x18
+ 1676 00eb 9642     		.uleb128 0x2116
+ 1677 00ed 19       		.uleb128 0x19
+ 1678 00ee 01       		.uleb128 0x1
+ 1679 00ef 13       		.uleb128 0x13
+ 1680 00f0 00       		.byte	0
+ 1681 00f1 00       		.byte	0
+ 1682 00f2 0F       		.uleb128 0xf
+ 1683 00f3 34       		.uleb128 0x34
+ 1684 00f4 00       		.byte	0
+ 1685 00f5 03       		.uleb128 0x3
+ 1686 00f6 0E       		.uleb128 0xe
+ 1687 00f7 3A       		.uleb128 0x3a
+ 1688 00f8 0B       		.uleb128 0xb
+ 1689 00f9 3B       		.uleb128 0x3b
+ 1690 00fa 05       		.uleb128 0x5
+ 1691 00fb 49       		.uleb128 0x49
+ 1692 00fc 13       		.uleb128 0x13
+ 1693 00fd 02       		.uleb128 0x2
+ 1694 00fe 18       		.uleb128 0x18
+ 1695 00ff 00       		.byte	0
+ 1696 0100 00       		.byte	0
+ 1697 0101 10       		.uleb128 0x10
+ 1698 0102 2E       		.uleb128 0x2e
+ 1699 0103 00       		.byte	0
+ 1700 0104 3F       		.uleb128 0x3f
+ 1701 0105 19       		.uleb128 0x19
+ 1702 0106 03       		.uleb128 0x3
+ 1703 0107 0E       		.uleb128 0xe
+ 1704 0108 3A       		.uleb128 0x3a
+ 1705 0109 0B       		.uleb128 0xb
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 38
+
+
+ 1706 010a 3B       		.uleb128 0x3b
+ 1707 010b 05       		.uleb128 0x5
+ 1708 010c 27       		.uleb128 0x27
+ 1709 010d 19       		.uleb128 0x19
+ 1710 010e 49       		.uleb128 0x49
+ 1711 010f 13       		.uleb128 0x13
+ 1712 0110 11       		.uleb128 0x11
+ 1713 0111 01       		.uleb128 0x1
+ 1714 0112 12       		.uleb128 0x12
+ 1715 0113 06       		.uleb128 0x6
+ 1716 0114 40       		.uleb128 0x40
+ 1717 0115 18       		.uleb128 0x18
+ 1718 0116 9742     		.uleb128 0x2117
+ 1719 0118 19       		.uleb128 0x19
+ 1720 0119 00       		.byte	0
+ 1721 011a 00       		.byte	0
+ 1722 011b 11       		.uleb128 0x11
+ 1723 011c 2E       		.uleb128 0x2e
+ 1724 011d 00       		.byte	0
+ 1725 011e 3F       		.uleb128 0x3f
+ 1726 011f 19       		.uleb128 0x19
+ 1727 0120 03       		.uleb128 0x3
+ 1728 0121 0E       		.uleb128 0xe
+ 1729 0122 3A       		.uleb128 0x3a
+ 1730 0123 0B       		.uleb128 0xb
+ 1731 0124 3B       		.uleb128 0x3b
+ 1732 0125 05       		.uleb128 0x5
+ 1733 0126 27       		.uleb128 0x27
+ 1734 0127 19       		.uleb128 0x19
+ 1735 0128 11       		.uleb128 0x11
+ 1736 0129 01       		.uleb128 0x1
+ 1737 012a 12       		.uleb128 0x12
+ 1738 012b 06       		.uleb128 0x6
+ 1739 012c 40       		.uleb128 0x40
+ 1740 012d 18       		.uleb128 0x18
+ 1741 012e 9742     		.uleb128 0x2117
+ 1742 0130 19       		.uleb128 0x19
+ 1743 0131 00       		.byte	0
+ 1744 0132 00       		.byte	0
+ 1745 0133 12       		.uleb128 0x12
+ 1746 0134 2E       		.uleb128 0x2e
+ 1747 0135 01       		.byte	0x1
+ 1748 0136 03       		.uleb128 0x3
+ 1749 0137 0E       		.uleb128 0xe
+ 1750 0138 3A       		.uleb128 0x3a
+ 1751 0139 0B       		.uleb128 0xb
+ 1752 013a 3B       		.uleb128 0x3b
+ 1753 013b 05       		.uleb128 0x5
+ 1754 013c 27       		.uleb128 0x27
+ 1755 013d 19       		.uleb128 0x19
+ 1756 013e 49       		.uleb128 0x49
+ 1757 013f 13       		.uleb128 0x13
+ 1758 0140 11       		.uleb128 0x11
+ 1759 0141 01       		.uleb128 0x1
+ 1760 0142 12       		.uleb128 0x12
+ 1761 0143 06       		.uleb128 0x6
+ 1762 0144 40       		.uleb128 0x40
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 39
+
+
+ 1763 0145 18       		.uleb128 0x18
+ 1764 0146 9642     		.uleb128 0x2116
+ 1765 0148 19       		.uleb128 0x19
+ 1766 0149 01       		.uleb128 0x1
+ 1767 014a 13       		.uleb128 0x13
+ 1768 014b 00       		.byte	0
+ 1769 014c 00       		.byte	0
+ 1770 014d 13       		.uleb128 0x13
+ 1771 014e 05       		.uleb128 0x5
+ 1772 014f 00       		.byte	0
+ 1773 0150 03       		.uleb128 0x3
+ 1774 0151 0E       		.uleb128 0xe
+ 1775 0152 3A       		.uleb128 0x3a
+ 1776 0153 0B       		.uleb128 0xb
+ 1777 0154 3B       		.uleb128 0x3b
+ 1778 0155 05       		.uleb128 0x5
+ 1779 0156 49       		.uleb128 0x49
+ 1780 0157 13       		.uleb128 0x13
+ 1781 0158 02       		.uleb128 0x2
+ 1782 0159 18       		.uleb128 0x18
+ 1783 015a 00       		.byte	0
+ 1784 015b 00       		.byte	0
+ 1785 015c 14       		.uleb128 0x14
+ 1786 015d 2E       		.uleb128 0x2e
+ 1787 015e 01       		.byte	0x1
+ 1788 015f 03       		.uleb128 0x3
+ 1789 0160 0E       		.uleb128 0xe
+ 1790 0161 3A       		.uleb128 0x3a
+ 1791 0162 0B       		.uleb128 0xb
+ 1792 0163 3B       		.uleb128 0x3b
+ 1793 0164 05       		.uleb128 0x5
+ 1794 0165 27       		.uleb128 0x27
+ 1795 0166 19       		.uleb128 0x19
+ 1796 0167 49       		.uleb128 0x49
+ 1797 0168 13       		.uleb128 0x13
+ 1798 0169 11       		.uleb128 0x11
+ 1799 016a 01       		.uleb128 0x1
+ 1800 016b 12       		.uleb128 0x12
+ 1801 016c 06       		.uleb128 0x6
+ 1802 016d 40       		.uleb128 0x40
+ 1803 016e 18       		.uleb128 0x18
+ 1804 016f 9742     		.uleb128 0x2117
+ 1805 0171 19       		.uleb128 0x19
+ 1806 0172 01       		.uleb128 0x1
+ 1807 0173 13       		.uleb128 0x13
+ 1808 0174 00       		.byte	0
+ 1809 0175 00       		.byte	0
+ 1810 0176 15       		.uleb128 0x15
+ 1811 0177 26       		.uleb128 0x26
+ 1812 0178 00       		.byte	0
+ 1813 0179 49       		.uleb128 0x49
+ 1814 017a 13       		.uleb128 0x13
+ 1815 017b 00       		.byte	0
+ 1816 017c 00       		.byte	0
+ 1817 017d 16       		.uleb128 0x16
+ 1818 017e 34       		.uleb128 0x34
+ 1819 017f 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 40
+
+
+ 1820 0180 03       		.uleb128 0x3
+ 1821 0181 0E       		.uleb128 0xe
+ 1822 0182 3A       		.uleb128 0x3a
+ 1823 0183 0B       		.uleb128 0xb
+ 1824 0184 3B       		.uleb128 0x3b
+ 1825 0185 05       		.uleb128 0x5
+ 1826 0186 49       		.uleb128 0x49
+ 1827 0187 13       		.uleb128 0x13
+ 1828 0188 3F       		.uleb128 0x3f
+ 1829 0189 19       		.uleb128 0x19
+ 1830 018a 3C       		.uleb128 0x3c
+ 1831 018b 19       		.uleb128 0x19
+ 1832 018c 00       		.byte	0
+ 1833 018d 00       		.byte	0
+ 1834 018e 17       		.uleb128 0x17
+ 1835 018f 35       		.uleb128 0x35
+ 1836 0190 00       		.byte	0
+ 1837 0191 49       		.uleb128 0x49
+ 1838 0192 13       		.uleb128 0x13
+ 1839 0193 00       		.byte	0
+ 1840 0194 00       		.byte	0
+ 1841 0195 00       		.byte	0
+ 1842              		.section	.debug_aranges,"",%progbits
+ 1843 0000 5C000000 		.4byte	0x5c
+ 1844 0004 0200     		.2byte	0x2
+ 1845 0006 00000000 		.4byte	.Ldebug_info0
+ 1846 000a 04       		.byte	0x4
+ 1847 000b 00       		.byte	0
+ 1848 000c 0000     		.2byte	0
+ 1849 000e 0000     		.2byte	0
+ 1850 0010 00000000 		.4byte	.LFB63
+ 1851 0014 18000000 		.4byte	.LFE63-.LFB63
+ 1852 0018 00000000 		.4byte	.LFB64
+ 1853 001c 20010000 		.4byte	.LFE64-.LFB64
+ 1854 0020 00000000 		.4byte	.LFB65
+ 1855 0024 48000000 		.4byte	.LFE65-.LFB65
+ 1856 0028 00000000 		.4byte	.LFB66
+ 1857 002c 5C010000 		.4byte	.LFE66-.LFB66
+ 1858 0030 00000000 		.4byte	.LFB67
+ 1859 0034 C8000000 		.4byte	.LFE67-.LFB67
+ 1860 0038 00000000 		.4byte	.LFB68
+ 1861 003c 18000000 		.4byte	.LFE68-.LFB68
+ 1862 0040 00000000 		.4byte	.LFB69
+ 1863 0044 18000000 		.4byte	.LFE69-.LFB69
+ 1864 0048 00000000 		.4byte	.LFB70
+ 1865 004c 68000000 		.4byte	.LFE70-.LFB70
+ 1866 0050 00000000 		.4byte	.LFB71
+ 1867 0054 24000000 		.4byte	.LFE71-.LFB71
+ 1868 0058 00000000 		.4byte	0
+ 1869 005c 00000000 		.4byte	0
+ 1870              		.section	.debug_ranges,"",%progbits
+ 1871              	.Ldebug_ranges0:
+ 1872 0000 00000000 		.4byte	.LFB63
+ 1873 0004 18000000 		.4byte	.LFE63
+ 1874 0008 00000000 		.4byte	.LFB64
+ 1875 000c 20010000 		.4byte	.LFE64
+ 1876 0010 00000000 		.4byte	.LFB65
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 41
+
+
+ 1877 0014 48000000 		.4byte	.LFE65
+ 1878 0018 00000000 		.4byte	.LFB66
+ 1879 001c 5C010000 		.4byte	.LFE66
+ 1880 0020 00000000 		.4byte	.LFB67
+ 1881 0024 C8000000 		.4byte	.LFE67
+ 1882 0028 00000000 		.4byte	.LFB68
+ 1883 002c 18000000 		.4byte	.LFE68
+ 1884 0030 00000000 		.4byte	.LFB69
+ 1885 0034 18000000 		.4byte	.LFE69
+ 1886 0038 00000000 		.4byte	.LFB70
+ 1887 003c 68000000 		.4byte	.LFE70
+ 1888 0040 00000000 		.4byte	.LFB71
+ 1889 0044 24000000 		.4byte	.LFE71
+ 1890 0048 00000000 		.4byte	0
+ 1891 004c 00000000 		.4byte	0
+ 1892              		.section	.debug_line,"",%progbits
+ 1893              	.Ldebug_line0:
+ 1894 0000 B4020000 		.section	.debug_str,"MS",%progbits,1
+ 1894      02006401 
+ 1894      00000201 
+ 1894      FB0E0D00 
+ 1894      01010101 
+ 1895              	.LASF35:
+ 1896 0000 50554C4C 		.ascii	"PULL_OVER\000"
+ 1896      5F4F5645 
+ 1896      5200
+ 1897              	.LASF77:
+ 1898 000a 546F6E65 		.ascii	"ToneType\000"
+ 1898      54797065 
+ 1898      00
+ 1899              	.LASF61:
+ 1900 0013 44454641 		.ascii	"DEFAULT_CHANNEL_COUNT\000"
+ 1900      554C545F 
+ 1900      4348414E 
+ 1900      4E454C5F 
+ 1900      434F554E 
+ 1901              	.LASF22:
+ 1902 0029 50484153 		.ascii	"PHASER\000"
+ 1902      455200
+ 1903              	.LASF67:
+ 1904 0030 64617461 		.ascii	"dataIndex\000"
+ 1904      496E6465 
+ 1904      7800
+ 1905              	.LASF26:
+ 1906 003a 48494748 		.ascii	"HIGH_LOW\000"
+ 1906      5F4C4F57 
+ 1906      00
+ 1907              	.LASF47:
+ 1908 0043 736F6E67 		.ascii	"songChoice\000"
+ 1908      43686F69 
+ 1908      636500
+ 1909              	.LASF54:
+ 1910 004e 75706461 		.ascii	"updateDAC2\000"
+ 1910      74654441 
+ 1910      433200
+ 1911              	.LASF57:
+ 1912 0059 69734D75 		.ascii	"isMusicReady\000"
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 42
+
+
+ 1912      73696352 
+ 1912      65616479 
+ 1912      00
+ 1913              	.LASF34:
+ 1914 0066 4D4F5645 		.ascii	"MOVE_OUT\000"
+ 1914      5F4F5554 
+ 1914      00
+ 1915              	.LASF17:
+ 1916 006f 73697A65 		.ascii	"sizetype\000"
+ 1916      74797065 
+ 1916      00
+ 1917              	.LASF76:
+ 1918 0078 5C5C4441 		.ascii	"\\\\DATA\\Folder Redirection\\faithc\\Desktop\\FAIT"
+ 1918      54415C46 
+ 1918      6F6C6465 
+ 1918      72205265 
+ 1918      64697265 
+ 1919 00a5 48532052 		.ascii	"HS RELEASED FIRMWARE\\SirenProject200W_RevF\\SirenP"
+ 1919      454C4541 
+ 1919      53454420 
+ 1919      4649524D 
+ 1919      57415245 
+ 1920 00d6 726F6A65 		.ascii	"roject200W_RevD\\ReleaseVersion.cydsn\000"
+ 1920      63743230 
+ 1920      30575F52 
+ 1920      6576445C 
+ 1920      52656C65 
+ 1921              	.LASF37:
+ 1922 00fb 53544550 		.ascii	"STEP_OUT_HANDS_UP\000"
+ 1922      5F4F5554 
+ 1922      5F48414E 
+ 1922      44535F55 
+ 1922      5000
+ 1923              	.LASF78:
+ 1924 010d 64656163 		.ascii	"deactivateAudio\000"
+ 1924      74697661 
+ 1924      74654175 
+ 1924      64696F00 
+ 1925              	.LASF49:
+ 1926 011d 706C6179 		.ascii	"playAudioTone\000"
+ 1926      41756469 
+ 1926      6F546F6E 
+ 1926      6500
+ 1927              	.LASF6:
+ 1928 012b 6C6F6E67 		.ascii	"long long int\000"
+ 1928      206C6F6E 
+ 1928      6720696E 
+ 1928      7400
+ 1929              	.LASF71:
+ 1930 0139 62536F6E 		.ascii	"bSongFinishedFlag\000"
+ 1930      6746696E 
+ 1930      69736865 
+ 1930      64466C61 
+ 1930      6700
+ 1931              	.LASF2:
+ 1932 014b 73686F72 		.ascii	"short int\000"
+ 1932      7420696E 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 43
+
+
+ 1932      7400
+ 1933              	.LASF59:
+ 1934 0155 54494D45 		.ascii	"TIMER_FREQUENCY\000"
+ 1934      525F4652 
+ 1934      45515545 
+ 1934      4E435900 
+ 1935              	.LASF12:
+ 1936 0165 75696E74 		.ascii	"uint16\000"
+ 1936      313600
+ 1937              	.LASF44:
+ 1938 016c 64617461 		.ascii	"dataSize\000"
+ 1938      53697A65 
+ 1938      00
+ 1939              	.LASF50:
+ 1940 0175 73746F70 		.ascii	"stopAudioTone\000"
+ 1940      41756469 
+ 1940      6F546F6E 
+ 1940      6500
+ 1941              	.LASF11:
+ 1942 0183 75696E74 		.ascii	"uint8\000"
+ 1942      3800
+ 1943              	.LASF42:
+ 1944 0189 62797465 		.ascii	"bytesPerSample\000"
+ 1944      73506572 
+ 1944      53616D70 
+ 1944      6C6500
+ 1945              	.LASF33:
+ 1946 0198 434F5053 		.ascii	"COPS_SONG\000"
+ 1946      5F534F4E 
+ 1946      4700
+ 1947              	.LASF30:
+ 1948 01a2 484F524E 		.ascii	"HORN_YELP\000"
+ 1948      5F59454C 
+ 1948      5000
+ 1949              	.LASF14:
+ 1950 01ac 666C6F61 		.ascii	"float\000"
+ 1950      7400
+ 1951              	.LASF70:
+ 1952 01b2 62417564 		.ascii	"bAudioActive\000"
+ 1952      696F4163 
+ 1952      74697665 
+ 1952      00
+ 1953              	.LASF65:
+ 1954 01bf 4543544F 		.ascii	"ECTO_RAMP_DOWN_INDEX\000"
+ 1954      5F52414D 
+ 1954      505F444F 
+ 1954      574E5F49 
+ 1954      4E444558 
+ 1955              	.LASF40:
+ 1956 01d4 54455354 		.ascii	"TEST_TONE\000"
+ 1956      5F544F4E 
+ 1956      4500
+ 1957              	.LASF36:
+ 1958 01de 53544550 		.ascii	"STEP_OUT\000"
+ 1958      5F4F5554 
+ 1958      00
+ 1959              	.LASF74:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 44
+
+
+ 1960 01e7 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 1960      4320342E 
+ 1960      392E3320 
+ 1960      32303135 
+ 1960      30333033 
+ 1961 021a 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m3 -mthumb -g -O"
+ 1961      20726576 
+ 1961      6973696F 
+ 1961      6E203232 
+ 1961      31323230 
+ 1962 024d 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1962      66756E63 
+ 1962      74696F6E 
+ 1962      2D736563 
+ 1962      74696F6E 
+ 1963              	.LASF23:
+ 1964 0275 484F524E 		.ascii	"HORN\000"
+ 1964      00
+ 1965              	.LASF32:
+ 1966 027a 4543544F 		.ascii	"ECTOSIREN\000"
+ 1966      53495245 
+ 1966      4E00
+ 1967              	.LASF21:
+ 1968 0284 46415354 		.ascii	"FAST_YELP\000"
+ 1968      5F59454C 
+ 1968      5000
+ 1969              	.LASF60:
+ 1970 028e 494E4954 		.ascii	"INITIAL_DAC_VALUE\000"
+ 1970      49414C5F 
+ 1970      4441435F 
+ 1970      56414C55 
+ 1970      4500
+ 1971              	.LASF24:
+ 1972 02a0 4D454348 		.ascii	"MECHANICAL\000"
+ 1972      414E4943 
+ 1972      414C00
+ 1973              	.LASF73:
+ 1974 02ab 53706561 		.ascii	"Speaker2\000"
+ 1974      6B657232 
+ 1974      00
+ 1975              	.LASF19:
+ 1976 02b4 5741494C 		.ascii	"WAIL\000"
+ 1976      00
+ 1977              	.LASF1:
+ 1978 02b9 756E7369 		.ascii	"unsigned char\000"
+ 1978      676E6564 
+ 1978      20636861 
+ 1978      7200
+ 1979              	.LASF43:
+ 1980 02c7 73616D70 		.ascii	"samplingRate\000"
+ 1980      6C696E67 
+ 1980      52617465 
+ 1980      00
+ 1981              	.LASF45:
+ 1982 02d4 44414364 		.ascii	"DACdata\000"
+ 1982      61746100 
+ 1983              	.LASF52:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 45
+
+
+ 1984 02dc 44414376 		.ascii	"DACvalue\000"
+ 1984      616C7565 
+ 1984      00
+ 1985              	.LASF0:
+ 1986 02e5 7369676E 		.ascii	"signed char\000"
+ 1986      65642063 
+ 1986      68617200 
+ 1987              	.LASF7:
+ 1988 02f1 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1988      206C6F6E 
+ 1988      6720756E 
+ 1988      7369676E 
+ 1988      65642069 
+ 1989              	.LASF53:
+ 1990 0308 75706461 		.ascii	"updateDAC1\000"
+ 1990      74654441 
+ 1990      433100
+ 1991              	.LASF8:
+ 1992 0313 756E7369 		.ascii	"unsigned int\000"
+ 1992      676E6564 
+ 1992      20696E74 
+ 1992      00
+ 1993              	.LASF5:
+ 1994 0320 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1994      20756E73 
+ 1994      69676E65 
+ 1994      6420696E 
+ 1994      7400
+ 1995              	.LASF31:
+ 1996 0332 50484153 		.ascii	"PHASER_YELP\000"
+ 1996      45525F59 
+ 1996      454C5000 
+ 1997              	.LASF75:
+ 1998 033e 2E5C4441 		.ascii	".\\DACaudio.c\000"
+ 1998      43617564 
+ 1998      696F2E63 
+ 1998      00
+ 1999              	.LASF3:
+ 2000 034b 73686F72 		.ascii	"short unsigned int\000"
+ 2000      7420756E 
+ 2000      7369676E 
+ 2000      65642069 
+ 2000      6E7400
+ 2001              	.LASF16:
+ 2002 035e 63686172 		.ascii	"char\000"
+ 2002      00
+ 2003              	.LASF4:
+ 2004 0363 6C6F6E67 		.ascii	"long int\000"
+ 2004      20696E74 
+ 2004      00
+ 2005              	.LASF10:
+ 2006 036c 696E7433 		.ascii	"int32_t\000"
+ 2006      325F7400 
+ 2007              	.LASF62:
+ 2008 0374 44454641 		.ascii	"DEFAULT_SAMPLING_RATE\000"
+ 2008      554C545F 
+ 2008      53414D50 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 46
+
+
+ 2008      4C494E47 
+ 2008      5F524154 
+ 2009              	.LASF64:
+ 2010 038a 4543544F 		.ascii	"ECTO_CYCLE_END_INDEX\000"
+ 2010      5F435943 
+ 2010      4C455F45 
+ 2010      4E445F49 
+ 2010      4E444558 
+ 2011              	.LASF55:
+ 2012 039f 6973536F 		.ascii	"isSongFinished\000"
+ 2012      6E674669 
+ 2012      6E697368 
+ 2012      656400
+ 2013              	.LASF46:
+ 2014 03ae 62537065 		.ascii	"bSpeaker\000"
+ 2014      616B6572 
+ 2014      00
+ 2015              	.LASF13:
+ 2016 03b7 75696E74 		.ascii	"uint32\000"
+ 2016      333200
+ 2017              	.LASF28:
+ 2018 03be 5043414C 		.ascii	"PCALL_FAST\000"
+ 2018      4C5F4641 
+ 2018      535400
+ 2019              	.LASF15:
+ 2020 03c9 646F7562 		.ascii	"double\000"
+ 2020      6C6500
+ 2021              	.LASF18:
+ 2022 03d0 4E4F5F54 		.ascii	"NO_TONE\000"
+ 2022      4F4E4500 
+ 2023              	.LASF56:
+ 2024 03d8 69734175 		.ascii	"isAudioActive\000"
+ 2024      64696F41 
+ 2024      63746976 
+ 2024      6500
+ 2025              	.LASF29:
+ 2026 03e6 484F524E 		.ascii	"HORN_PHASER\000"
+ 2026      5F504841 
+ 2026      53455200 
+ 2027              	.LASF63:
+ 2028 03f2 4543544F 		.ascii	"ECTO_CYCLE_START_INDEX\000"
+ 2028      5F435943 
+ 2028      4C455F53 
+ 2028      54415254 
+ 2028      5F494E44 
+ 2029              	.LASF27:
+ 2030 0409 5043414C 		.ascii	"PCALL_SLOW\000"
+ 2030      4C5F534C 
+ 2030      4F5700
+ 2031              	.LASF51:
+ 2032 0414 44414372 		.ascii	"DACreloadValue\000"
+ 2032      656C6F61 
+ 2032      6456616C 
+ 2032      756500
+ 2033              	.LASF9:
+ 2034 0423 5F5F696E 		.ascii	"__int32_t\000"
+ 2034      7433325F 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 47
+
+
+ 2034      7400
+ 2035              	.LASF66:
+ 2036 042d 63757272 		.ascii	"currentSongNumber\000"
+ 2036      656E7453 
+ 2036      6F6E674E 
+ 2036      756D6265 
+ 2036      7200
+ 2037              	.LASF38:
+ 2038 043f 52454D41 		.ascii	"REMAIN_IN_VEHICLE\000"
+ 2038      494E5F49 
+ 2038      4E5F5645 
+ 2038      4849434C 
+ 2038      4500
+ 2039              	.LASF68:
+ 2040 0451 62437572 		.ascii	"bCurrentSpeaker\000"
+ 2040      72656E74 
+ 2040      53706561 
+ 2040      6B657200 
+ 2041              	.LASF25:
+ 2042 0461 4D414E55 		.ascii	"MANUAL_WAIL\000"
+ 2042      414C5F57 
+ 2042      41494C00 
+ 2043              	.LASF39:
+ 2044 046d 52454D41 		.ascii	"REMAIN_WINDOW_DOWN\000"
+ 2044      494E5F57 
+ 2044      494E444F 
+ 2044      575F444F 
+ 2044      574E00
+ 2045              	.LASF58:
+ 2046 0480 67657453 		.ascii	"getSamplingReloadValue\000"
+ 2046      616D706C 
+ 2046      696E6752 
+ 2046      656C6F61 
+ 2046      6456616C 
+ 2047              	.LASF48:
+ 2048 0497 62417564 		.ascii	"bAudioInput\000"
+ 2048      696F496E 
+ 2048      70757400 
+ 2049              	.LASF72:
+ 2050 04a3 53706561 		.ascii	"Speaker1\000"
+ 2050      6B657231 
+ 2050      00
+ 2051              	.LASF79:
+ 2052 04ac 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 2052      52784275 
+ 2052      66666572 
+ 2052      00
+ 2053              	.LASF41:
+ 2054 04b9 6368616E 		.ascii	"channelCount\000"
+ 2054      6E656C43 
+ 2054      6F756E74 
+ 2054      00
+ 2055              	.LASF20:
+ 2056 04c6 534C4F57 		.ascii	"SLOW_YELP\000"
+ 2056      5F59454C 
+ 2056      5000
+ 2057              	.LASF69:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cclMtKLk.s 			page 48
+
+
+ 2058 04d0 62417564 		.ascii	"bAudioInputFlag\000"
+ 2058      696F496E 
+ 2058      70757446 
+ 2058      6C616700 
+ 2059              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

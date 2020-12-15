@@ -1,0 +1,680 @@
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccFOSATc.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"main.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.main,"ax",%progbits
+  19              		.align	2
+  20              		.global	main
+  21              		.thumb
+  22              		.thumb_func
+  23              		.type	main, %function
+  24              	main:
+  25              	.LFB63:
+  26              		.file 1 ".\\main.c"
+   1:.\main.c      **** /* ========================================
+   2:.\main.c      ****  *
+   3:.\main.c      ****  * Copyright YOUR COMPANY, THE YEAR
+   4:.\main.c      ****  * All Rights Reserved
+   5:.\main.c      ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:.\main.c      ****  *
+   7:.\main.c      ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:.\main.c      ****  * WHICH IS THE PROPERTY OF your company.
+   9:.\main.c      ****  *
+  10:.\main.c      ****  * ========================================
+  11:.\main.c      **** */
+  12:.\main.c      **** /**********PREPROCESSOR DIRECTIVES**********/
+  13:.\main.c      **** #include "CommonVariables.h"
+  14:.\main.c      **** #include "Fault.h"
+  15:.\main.c      **** #include "SirenState.h"
+  16:.\main.c      **** 
+  17:.\main.c      **** /**********DEFINED CONSTANTS**********/
+  18:.\main.c      **** 
+  19:.\main.c      **** /**********DATA STRUCTURES**********/
+  20:.\main.c      **** 
+  21:.\main.c      **** /**********GLOBAL VARIABLES**********/
+  22:.\main.c      **** 
+  23:.\main.c      **** /**********FUNCTION PROTOTYPES**********/
+  24:.\main.c      **** static void initializePeripherals(void);
+  25:.\main.c      **** 
+  26:.\main.c      **** /**********DEFINED FUNCTIONS**********/
+  27:.\main.c      **** 
+  28:.\main.c      **** int main()
+  29:.\main.c      **** {
+  27              		.loc 1 29 0
+  28              		.cfi_startproc
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccFOSATc.s 			page 2
+
+
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 1, uses_anonymous_args = 0
+  31 0000 80B5     		push	{r7, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 7, -8
+  34              		.cfi_offset 14, -4
+  35 0002 00AF     		add	r7, sp, #0
+  36              		.cfi_def_cfa_register 7
+  30:.\main.c      ****     initializePeripherals();
+  37              		.loc 1 30 0
+  38 0004 FFF7FEFF 		bl	initializePeripherals
+  31:.\main.c      ****     CyGlobalIntEnable; /* Enable global interrupts. */
+  39              		.loc 1 31 0
+  40              	@ 31 ".\main.c" 1
+  41 0008 62B6     		CPSIE   i
+  42              	@ 0 "" 2
+  32:.\main.c      **** 
+  33:.\main.c      ****     initializeInputReadings();
+  43              		.loc 1 33 0
+  44              		.thumb
+  45 000a FFF7FEFF 		bl	initializeInputReadings
+  46              	.L4:
+  34:.\main.c      ****     
+  35:.\main.c      ****     for(;;)
+  36:.\main.c      ****     {       
+  37:.\main.c      ****         while(!isThereOverload())
+  47              		.loc 1 37 0
+  48 000e 04E0     		b	.L2
+  49              	.L3:
+  38:.\main.c      ****         {   //No overload, so allow any ISRs to process
+  39:.\main.c      ****             CyWdtClear();
+  50              		.loc 1 39 0
+  51 0010 FFF7FEFF 		bl	CyWdtClear
+  40:.\main.c      ****             CyDelay(1);
+  52              		.loc 1 40 0
+  53 0014 0120     		movs	r0, #1
+  54 0016 FFF7FEFF 		bl	CyDelay
+  55              	.L2:
+  37:.\main.c      ****         {   //No overload, so allow any ISRs to process
+  56              		.loc 1 37 0
+  57 001a FFF7FEFF 		bl	isThereOverload
+  58 001e 0346     		mov	r3, r0
+  59 0020 002B     		cmp	r3, #0
+  60 0022 F5D0     		beq	.L3
+  41:.\main.c      ****         }
+  42:.\main.c      ****         processOverloadRoutine();
+  61              		.loc 1 42 0
+  62 0024 FFF7FEFF 		bl	processOverloadRoutine
+  43:.\main.c      ****     }
+  63              		.loc 1 43 0
+  64 0028 F1E7     		b	.L4
+  65              		.cfi_endproc
+  66              	.LFE63:
+  67              		.size	main, .-main
+  68 002a 00BF     		.section	.text.initializePeripherals,"ax",%progbits
+  69              		.align	2
+  70              		.thumb
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccFOSATc.s 			page 3
+
+
+  71              		.thumb_func
+  72              		.type	initializePeripherals, %function
+  73              	initializePeripherals:
+  74              	.LFB64:
+  44:.\main.c      **** }
+  45:.\main.c      **** 
+  46:.\main.c      **** /*******************************************************************************
+  47:.\main.c      **** * Function Name: initializePeripherals
+  48:.\main.c      **** ********************************************************************************
+  49:.\main.c      **** *
+  50:.\main.c      **** * Summary:
+  51:.\main.c      **** *  Sets up the watchdog timer, disables, power amplifiers, and enables all ISRs
+  52:.\main.c      **** *
+  53:.\main.c      **** * Parameters:  
+  54:.\main.c      **** *   None
+  55:.\main.c      **** *
+  56:.\main.c      **** * Return:
+  57:.\main.c      **** *   None
+  58:.\main.c      **** *
+  59:.\main.c      **** *******************************************************************************/
+  60:.\main.c      **** static void initializePeripherals(void)
+  61:.\main.c      **** {
+  75              		.loc 1 61 0
+  76              		.cfi_startproc
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 1, uses_anonymous_args = 0
+  79 0000 80B5     		push	{r7, lr}
+  80              		.cfi_def_cfa_offset 8
+  81              		.cfi_offset 7, -8
+  82              		.cfi_offset 14, -4
+  83 0002 00AF     		add	r7, sp, #0
+  84              		.cfi_def_cfa_register 7
+  62:.\main.c      ****     CyWdtStart(CYWDT_1024_TICKS, CYWDT_LPMODE_NOCHANGE);    //2.048 - 3.072 seconds
+  85              		.loc 1 62 0
+  86 0004 0320     		movs	r0, #3
+  87 0006 0021     		movs	r1, #0
+  88 0008 FFF7FEFF 		bl	CyWdtStart
+  63:.\main.c      ****     PowerAmpOutput1_Write(false);
+  89              		.loc 1 63 0
+  90 000c 0020     		movs	r0, #0
+  91 000e FFF7FEFF 		bl	PowerAmpOutput1_Write
+  64:.\main.c      ****     PowerAmpOutput2_Write(false);
+  92              		.loc 1 64 0
+  93 0012 0020     		movs	r0, #0
+  94 0014 FFF7FEFF 		bl	PowerAmpOutput2_Write
+  65:.\main.c      ****     
+  66:.\main.c      ****     LED_ISR_Start();    //Start LED heartbeat
+  95              		.loc 1 66 0
+  96 0018 FFF7FEFF 		bl	LED_ISR_Start
+  67:.\main.c      ****     LED_Timer_Start();
+  97              		.loc 1 67 0
+  98 001c FFF7FEFF 		bl	LED_Timer_Start
+  68:.\main.c      ****     
+  69:.\main.c      ****     while(!OverloadInput1_Read() || !OverloadInput2_Read()){};  //Used to catch first overload
+  99              		.loc 1 69 0
+ 100 0020 00BF     		nop
+ 101              	.L6:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccFOSATc.s 			page 4
+
+
+ 102              		.loc 1 69 0 is_stmt 0 discriminator 3
+ 103 0022 FFF7FEFF 		bl	OverloadInput1_Read
+ 104 0026 0346     		mov	r3, r0
+ 105 0028 002B     		cmp	r3, #0
+ 106 002a FAD0     		beq	.L6
+ 107              		.loc 1 69 0 discriminator 2
+ 108 002c FFF7FEFF 		bl	OverloadInput2_Read
+ 109 0030 0346     		mov	r3, r0
+ 110 0032 002B     		cmp	r3, #0
+ 111 0034 F5D0     		beq	.L6
+  70:.\main.c      ****     initializeToneConfigurationList();                          //Gets tones from EEPROM
+ 112              		.loc 1 70 0 is_stmt 1
+ 113 0036 FFF7FEFF 		bl	initializeToneConfigurationList
+  71:.\main.c      ****     CyDelay(250); //Delay needed to eliminate power amp starting prematurely
+ 114              		.loc 1 71 0
+ 115 003a FA20     		movs	r0, #250
+ 116 003c FFF7FEFF 		bl	CyDelay
+  72:.\main.c      ****     
+  73:.\main.c      ****     AMux1_Start();              //Initialize both multiplexers
+ 117              		.loc 1 73 0
+ 118 0040 FFF7FEFF 		bl	AMux1_Start
+  74:.\main.c      ****     AMux1_FastSelect(PWM_MODE);
+ 119              		.loc 1 74 0
+ 120 0044 0020     		movs	r0, #0
+ 121 0046 FFF7FEFF 		bl	AMux1_FastSelect
+  75:.\main.c      ****     AMux2_Start();
+ 122              		.loc 1 75 0
+ 123 004a FFF7FEFF 		bl	AMux2_Start
+  76:.\main.c      ****     AMux2_FastSelect(PWM_MODE);
+ 124              		.loc 1 76 0
+ 125 004e 0020     		movs	r0, #0
+ 126 0050 FFF7FEFF 		bl	AMux2_FastSelect
+  77:.\main.c      ****     
+  78:.\main.c      ****     PWM1_ISR_Start();       //Initialize interrupts for PWM tones
+ 127              		.loc 1 78 0
+ 128 0054 FFF7FEFF 		bl	PWM1_ISR_Start
+  79:.\main.c      ****     PWM2_ISR_Start();
+ 129              		.loc 1 79 0
+ 130 0058 FFF7FEFF 		bl	PWM2_ISR_Start
+  80:.\main.c      ****     PWMtimer1_ISR_Start();  
+ 131              		.loc 1 80 0
+ 132 005c FFF7FEFF 		bl	PWMtimer1_ISR_Start
+  81:.\main.c      ****     PWMtimer2_ISR_Start();
+ 133              		.loc 1 81 0
+ 134 0060 FFF7FEFF 		bl	PWMtimer2_ISR_Start
+  82:.\main.c      ****     
+  83:.\main.c      ****     SPIM_Start();           //Initialize interrupts for DAC tones
+ 135              		.loc 1 83 0
+ 136 0064 FFF7FEFF 		bl	SPIM_Start
+  84:.\main.c      ****     DAC1_ISR_Start();
+ 137              		.loc 1 84 0
+ 138 0068 FFF7FEFF 		bl	DAC1_ISR_Start
+  85:.\main.c      ****     
+  86:.\main.c      ****     UART_TimerISR_Start();
+ 139              		.loc 1 86 0
+ 140 006c FFF7FEFF 		bl	UART_TimerISR_Start
+  87:.\main.c      ****     UART_ISR_Start();
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccFOSATc.s 			page 5
+
+
+ 141              		.loc 1 87 0
+ 142 0070 FFF7FEFF 		bl	UART_ISR_Start
+  88:.\main.c      ****     UART_Start();
+ 143              		.loc 1 88 0
+ 144 0074 FFF7FEFF 		bl	UART_Start
+  89:.\main.c      ****     
+  90:.\main.c      ****     OverloadISR_Start();     
+ 145              		.loc 1 90 0
+ 146 0078 FFF7FEFF 		bl	OverloadISR_Start
+  91:.\main.c      ****     RadioMicKeyISR_Start();
+ 147              		.loc 1 91 0
+ 148 007c FFF7FEFF 		bl	RadioMicKeyISR_Start
+  92:.\main.c      ****     
+  93:.\main.c      ****     ParkKillISR_Start();   //Initialize interrupts for all inputs
+ 149              		.loc 1 93 0
+ 150 0080 FFF7FEFF 		bl	ParkKillISR_Start
+  94:.\main.c      ****     ParkKillStatus_InterruptEnable();
+ 151              		.loc 1 94 0
+ 152 0084 FFF7FEFF 		bl	ParkKillStatus_InterruptEnable
+  95:.\main.c      ****     
+  96:.\main.c      ****     HornRingISR_Start();
+ 153              		.loc 1 96 0
+ 154 0088 FFF7FEFF 		bl	HornRingISR_Start
+  97:.\main.c      ****     HornRingStatus_InterruptEnable();
+ 155              		.loc 1 97 0
+ 156 008c FFF7FEFF 		bl	HornRingStatus_InterruptEnable
+  98:.\main.c      ****     
+  99:.\main.c      ****     enableToneInputInterrupts();
+ 157              		.loc 1 99 0
+ 158 0090 FFF7FEFF 		bl	enableToneInputInterrupts
+ 100:.\main.c      **** }
+ 159              		.loc 1 100 0
+ 160 0094 80BD     		pop	{r7, pc}
+ 161              		.cfi_endproc
+ 162              	.LFE64:
+ 163              		.size	initializePeripherals, .-initializePeripherals
+ 164 0096 00BF     		.text
+ 165              	.Letext0:
+ 166              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 167              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 168              		.file 4 "Generated_Source\\PSoC5/core_cm3.h"
+ 169              		.section	.debug_info,"",%progbits
+ 170              	.Ldebug_info0:
+ 171 0000 D1000000 		.4byte	0xd1
+ 172 0004 0400     		.2byte	0x4
+ 173 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 174 000a 04       		.byte	0x4
+ 175 000b 01       		.uleb128 0x1
+ 176 000c 11010000 		.4byte	.LASF15
+ 177 0010 01       		.byte	0x1
+ 178 0011 9F010000 		.4byte	.LASF16
+ 179 0015 6A000000 		.4byte	.LASF17
+ 180 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 181 001d 00000000 		.4byte	0
+ 182 0021 00000000 		.4byte	.Ldebug_line0
+ 183 0025 02       		.uleb128 0x2
+ 184 0026 01       		.byte	0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccFOSATc.s 			page 6
+
+
+ 185 0027 06       		.byte	0x6
+ 186 0028 BC010000 		.4byte	.LASF0
+ 187 002c 02       		.uleb128 0x2
+ 188 002d 01       		.byte	0x1
+ 189 002e 08       		.byte	0x8
+ 190 002f 2E000000 		.4byte	.LASF1
+ 191 0033 02       		.uleb128 0x2
+ 192 0034 02       		.byte	0x2
+ 193 0035 05       		.byte	0x5
+ 194 0036 D8010000 		.4byte	.LASF2
+ 195 003a 02       		.uleb128 0x2
+ 196 003b 02       		.byte	0x2
+ 197 003c 07       		.byte	0x7
+ 198 003d 0E000000 		.4byte	.LASF3
+ 199 0041 03       		.uleb128 0x3
+ 200 0042 C8010000 		.4byte	.LASF9
+ 201 0046 02       		.byte	0x2
+ 202 0047 3F       		.byte	0x3f
+ 203 0048 4C000000 		.4byte	0x4c
+ 204 004c 02       		.uleb128 0x2
+ 205 004d 04       		.byte	0x4
+ 206 004e 05       		.byte	0x5
+ 207 004f 08010000 		.4byte	.LASF4
+ 208 0053 02       		.uleb128 0x2
+ 209 0054 04       		.byte	0x4
+ 210 0055 07       		.byte	0x7
+ 211 0056 41000000 		.4byte	.LASF5
+ 212 005a 02       		.uleb128 0x2
+ 213 005b 08       		.byte	0x8
+ 214 005c 05       		.byte	0x5
+ 215 005d 00000000 		.4byte	.LASF6
+ 216 0061 02       		.uleb128 0x2
+ 217 0062 08       		.byte	0x8
+ 218 0063 07       		.byte	0x7
+ 219 0064 53000000 		.4byte	.LASF7
+ 220 0068 04       		.uleb128 0x4
+ 221 0069 04       		.byte	0x4
+ 222 006a 05       		.byte	0x5
+ 223 006b 696E7400 		.ascii	"int\000"
+ 224 006f 02       		.uleb128 0x2
+ 225 0070 04       		.byte	0x4
+ 226 0071 07       		.byte	0x7
+ 227 0072 21000000 		.4byte	.LASF8
+ 228 0076 03       		.uleb128 0x3
+ 229 0077 E2010000 		.4byte	.LASF10
+ 230 007b 03       		.byte	0x3
+ 231 007c 2C       		.byte	0x2c
+ 232 007d 41000000 		.4byte	0x41
+ 233 0081 02       		.uleb128 0x2
+ 234 0082 04       		.byte	0x4
+ 235 0083 04       		.byte	0x4
+ 236 0084 D2010000 		.4byte	.LASF11
+ 237 0088 02       		.uleb128 0x2
+ 238 0089 08       		.byte	0x8
+ 239 008a 04       		.byte	0x4
+ 240 008b A8010000 		.4byte	.LASF12
+ 241 008f 02       		.uleb128 0x2
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccFOSATc.s 			page 7
+
+
+ 242 0090 01       		.byte	0x1
+ 243 0091 08       		.byte	0x8
+ 244 0092 03010000 		.4byte	.LASF13
+ 245 0096 02       		.uleb128 0x2
+ 246 0097 04       		.byte	0x4
+ 247 0098 07       		.byte	0x7
+ 248 0099 EA010000 		.4byte	.LASF14
+ 249 009d 05       		.uleb128 0x5
+ 250 009e 3C000000 		.4byte	.LASF18
+ 251 00a2 01       		.byte	0x1
+ 252 00a3 1C       		.byte	0x1c
+ 253 00a4 68000000 		.4byte	0x68
+ 254 00a8 00000000 		.4byte	.LFB63
+ 255 00ac 2A000000 		.4byte	.LFE63-.LFB63
+ 256 00b0 01       		.uleb128 0x1
+ 257 00b1 9C       		.byte	0x9c
+ 258 00b2 06       		.uleb128 0x6
+ 259 00b3 ED000000 		.4byte	.LASF19
+ 260 00b7 01       		.byte	0x1
+ 261 00b8 3C       		.byte	0x3c
+ 262 00b9 00000000 		.4byte	.LFB64
+ 263 00bd 96000000 		.4byte	.LFE64-.LFB64
+ 264 00c1 01       		.uleb128 0x1
+ 265 00c2 9C       		.byte	0x9c
+ 266 00c3 07       		.uleb128 0x7
+ 267 00c4 AF010000 		.4byte	.LASF20
+ 268 00c8 04       		.byte	0x4
+ 269 00c9 2A06     		.2byte	0x62a
+ 270 00cb CF000000 		.4byte	0xcf
+ 271 00cf 08       		.uleb128 0x8
+ 272 00d0 76000000 		.4byte	0x76
+ 273 00d4 00       		.byte	0
+ 274              		.section	.debug_abbrev,"",%progbits
+ 275              	.Ldebug_abbrev0:
+ 276 0000 01       		.uleb128 0x1
+ 277 0001 11       		.uleb128 0x11
+ 278 0002 01       		.byte	0x1
+ 279 0003 25       		.uleb128 0x25
+ 280 0004 0E       		.uleb128 0xe
+ 281 0005 13       		.uleb128 0x13
+ 282 0006 0B       		.uleb128 0xb
+ 283 0007 03       		.uleb128 0x3
+ 284 0008 0E       		.uleb128 0xe
+ 285 0009 1B       		.uleb128 0x1b
+ 286 000a 0E       		.uleb128 0xe
+ 287 000b 55       		.uleb128 0x55
+ 288 000c 17       		.uleb128 0x17
+ 289 000d 11       		.uleb128 0x11
+ 290 000e 01       		.uleb128 0x1
+ 291 000f 10       		.uleb128 0x10
+ 292 0010 17       		.uleb128 0x17
+ 293 0011 00       		.byte	0
+ 294 0012 00       		.byte	0
+ 295 0013 02       		.uleb128 0x2
+ 296 0014 24       		.uleb128 0x24
+ 297 0015 00       		.byte	0
+ 298 0016 0B       		.uleb128 0xb
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccFOSATc.s 			page 8
+
+
+ 299 0017 0B       		.uleb128 0xb
+ 300 0018 3E       		.uleb128 0x3e
+ 301 0019 0B       		.uleb128 0xb
+ 302 001a 03       		.uleb128 0x3
+ 303 001b 0E       		.uleb128 0xe
+ 304 001c 00       		.byte	0
+ 305 001d 00       		.byte	0
+ 306 001e 03       		.uleb128 0x3
+ 307 001f 16       		.uleb128 0x16
+ 308 0020 00       		.byte	0
+ 309 0021 03       		.uleb128 0x3
+ 310 0022 0E       		.uleb128 0xe
+ 311 0023 3A       		.uleb128 0x3a
+ 312 0024 0B       		.uleb128 0xb
+ 313 0025 3B       		.uleb128 0x3b
+ 314 0026 0B       		.uleb128 0xb
+ 315 0027 49       		.uleb128 0x49
+ 316 0028 13       		.uleb128 0x13
+ 317 0029 00       		.byte	0
+ 318 002a 00       		.byte	0
+ 319 002b 04       		.uleb128 0x4
+ 320 002c 24       		.uleb128 0x24
+ 321 002d 00       		.byte	0
+ 322 002e 0B       		.uleb128 0xb
+ 323 002f 0B       		.uleb128 0xb
+ 324 0030 3E       		.uleb128 0x3e
+ 325 0031 0B       		.uleb128 0xb
+ 326 0032 03       		.uleb128 0x3
+ 327 0033 08       		.uleb128 0x8
+ 328 0034 00       		.byte	0
+ 329 0035 00       		.byte	0
+ 330 0036 05       		.uleb128 0x5
+ 331 0037 2E       		.uleb128 0x2e
+ 332 0038 00       		.byte	0
+ 333 0039 3F       		.uleb128 0x3f
+ 334 003a 19       		.uleb128 0x19
+ 335 003b 03       		.uleb128 0x3
+ 336 003c 0E       		.uleb128 0xe
+ 337 003d 3A       		.uleb128 0x3a
+ 338 003e 0B       		.uleb128 0xb
+ 339 003f 3B       		.uleb128 0x3b
+ 340 0040 0B       		.uleb128 0xb
+ 341 0041 49       		.uleb128 0x49
+ 342 0042 13       		.uleb128 0x13
+ 343 0043 11       		.uleb128 0x11
+ 344 0044 01       		.uleb128 0x1
+ 345 0045 12       		.uleb128 0x12
+ 346 0046 06       		.uleb128 0x6
+ 347 0047 40       		.uleb128 0x40
+ 348 0048 18       		.uleb128 0x18
+ 349 0049 9642     		.uleb128 0x2116
+ 350 004b 19       		.uleb128 0x19
+ 351 004c 00       		.byte	0
+ 352 004d 00       		.byte	0
+ 353 004e 06       		.uleb128 0x6
+ 354 004f 2E       		.uleb128 0x2e
+ 355 0050 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccFOSATc.s 			page 9
+
+
+ 356 0051 03       		.uleb128 0x3
+ 357 0052 0E       		.uleb128 0xe
+ 358 0053 3A       		.uleb128 0x3a
+ 359 0054 0B       		.uleb128 0xb
+ 360 0055 3B       		.uleb128 0x3b
+ 361 0056 0B       		.uleb128 0xb
+ 362 0057 27       		.uleb128 0x27
+ 363 0058 19       		.uleb128 0x19
+ 364 0059 11       		.uleb128 0x11
+ 365 005a 01       		.uleb128 0x1
+ 366 005b 12       		.uleb128 0x12
+ 367 005c 06       		.uleb128 0x6
+ 368 005d 40       		.uleb128 0x40
+ 369 005e 18       		.uleb128 0x18
+ 370 005f 9642     		.uleb128 0x2116
+ 371 0061 19       		.uleb128 0x19
+ 372 0062 00       		.byte	0
+ 373 0063 00       		.byte	0
+ 374 0064 07       		.uleb128 0x7
+ 375 0065 34       		.uleb128 0x34
+ 376 0066 00       		.byte	0
+ 377 0067 03       		.uleb128 0x3
+ 378 0068 0E       		.uleb128 0xe
+ 379 0069 3A       		.uleb128 0x3a
+ 380 006a 0B       		.uleb128 0xb
+ 381 006b 3B       		.uleb128 0x3b
+ 382 006c 05       		.uleb128 0x5
+ 383 006d 49       		.uleb128 0x49
+ 384 006e 13       		.uleb128 0x13
+ 385 006f 3F       		.uleb128 0x3f
+ 386 0070 19       		.uleb128 0x19
+ 387 0071 3C       		.uleb128 0x3c
+ 388 0072 19       		.uleb128 0x19
+ 389 0073 00       		.byte	0
+ 390 0074 00       		.byte	0
+ 391 0075 08       		.uleb128 0x8
+ 392 0076 35       		.uleb128 0x35
+ 393 0077 00       		.byte	0
+ 394 0078 49       		.uleb128 0x49
+ 395 0079 13       		.uleb128 0x13
+ 396 007a 00       		.byte	0
+ 397 007b 00       		.byte	0
+ 398 007c 00       		.byte	0
+ 399              		.section	.debug_aranges,"",%progbits
+ 400 0000 24000000 		.4byte	0x24
+ 401 0004 0200     		.2byte	0x2
+ 402 0006 00000000 		.4byte	.Ldebug_info0
+ 403 000a 04       		.byte	0x4
+ 404 000b 00       		.byte	0
+ 405 000c 0000     		.2byte	0
+ 406 000e 0000     		.2byte	0
+ 407 0010 00000000 		.4byte	.LFB63
+ 408 0014 2A000000 		.4byte	.LFE63-.LFB63
+ 409 0018 00000000 		.4byte	.LFB64
+ 410 001c 96000000 		.4byte	.LFE64-.LFB64
+ 411 0020 00000000 		.4byte	0
+ 412 0024 00000000 		.4byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccFOSATc.s 			page 10
+
+
+ 413              		.section	.debug_ranges,"",%progbits
+ 414              	.Ldebug_ranges0:
+ 415 0000 00000000 		.4byte	.LFB63
+ 416 0004 2A000000 		.4byte	.LFE63
+ 417 0008 00000000 		.4byte	.LFB64
+ 418 000c 96000000 		.4byte	.LFE64
+ 419 0010 00000000 		.4byte	0
+ 420 0014 00000000 		.4byte	0
+ 421              		.section	.debug_line,"",%progbits
+ 422              	.Ldebug_line0:
+ 423 0000 92010000 		.section	.debug_str,"MS",%progbits,1
+ 423      02003C01 
+ 423      00000201 
+ 423      FB0E0D00 
+ 423      01010101 
+ 424              	.LASF6:
+ 425 0000 6C6F6E67 		.ascii	"long long int\000"
+ 425      206C6F6E 
+ 425      6720696E 
+ 425      7400
+ 426              	.LASF3:
+ 427 000e 73686F72 		.ascii	"short unsigned int\000"
+ 427      7420756E 
+ 427      7369676E 
+ 427      65642069 
+ 427      6E7400
+ 428              	.LASF8:
+ 429 0021 756E7369 		.ascii	"unsigned int\000"
+ 429      676E6564 
+ 429      20696E74 
+ 429      00
+ 430              	.LASF1:
+ 431 002e 756E7369 		.ascii	"unsigned char\000"
+ 431      676E6564 
+ 431      20636861 
+ 431      7200
+ 432              	.LASF18:
+ 433 003c 6D61696E 		.ascii	"main\000"
+ 433      00
+ 434              	.LASF5:
+ 435 0041 6C6F6E67 		.ascii	"long unsigned int\000"
+ 435      20756E73 
+ 435      69676E65 
+ 435      6420696E 
+ 435      7400
+ 436              	.LASF7:
+ 437 0053 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 437      206C6F6E 
+ 437      6720756E 
+ 437      7369676E 
+ 437      65642069 
+ 438              	.LASF17:
+ 439 006a 5C5C4441 		.ascii	"\\\\DATA\\Folder Redirection\\faithc\\Desktop\\FAIT"
+ 439      54415C46 
+ 439      6F6C6465 
+ 439      72205265 
+ 439      64697265 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccFOSATc.s 			page 11
+
+
+ 440 0097 48532052 		.ascii	"HS RELEASED FIRMWARE\\SirenProject200W_RevF\\SirenP"
+ 440      454C4541 
+ 440      53454420 
+ 440      4649524D 
+ 440      57415245 
+ 441 00c8 726F6A65 		.ascii	"roject200W_RevD\\ReleaseVersion.cydsn\000"
+ 441      63743230 
+ 441      30575F52 
+ 441      6576445C 
+ 441      52656C65 
+ 442              	.LASF19:
+ 443 00ed 696E6974 		.ascii	"initializePeripherals\000"
+ 443      69616C69 
+ 443      7A655065 
+ 443      72697068 
+ 443      6572616C 
+ 444              	.LASF13:
+ 445 0103 63686172 		.ascii	"char\000"
+ 445      00
+ 446              	.LASF4:
+ 447 0108 6C6F6E67 		.ascii	"long int\000"
+ 447      20696E74 
+ 447      00
+ 448              	.LASF15:
+ 449 0111 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 449      4320342E 
+ 449      392E3320 
+ 449      32303135 
+ 449      30333033 
+ 450 0144 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m3 -mthumb -g -O"
+ 450      20726576 
+ 450      6973696F 
+ 450      6E203232 
+ 450      31323230 
+ 451 0177 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 451      66756E63 
+ 451      74696F6E 
+ 451      2D736563 
+ 451      74696F6E 
+ 452              	.LASF16:
+ 453 019f 2E5C6D61 		.ascii	".\\main.c\000"
+ 453      696E2E63 
+ 453      00
+ 454              	.LASF12:
+ 455 01a8 646F7562 		.ascii	"double\000"
+ 455      6C6500
+ 456              	.LASF20:
+ 457 01af 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 457      52784275 
+ 457      66666572 
+ 457      00
+ 458              	.LASF0:
+ 459 01bc 7369676E 		.ascii	"signed char\000"
+ 459      65642063 
+ 459      68617200 
+ 460              	.LASF9:
+ 461 01c8 5F5F696E 		.ascii	"__int32_t\000"
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccFOSATc.s 			page 12
+
+
+ 461      7433325F 
+ 461      7400
+ 462              	.LASF11:
+ 463 01d2 666C6F61 		.ascii	"float\000"
+ 463      7400
+ 464              	.LASF2:
+ 465 01d8 73686F72 		.ascii	"short int\000"
+ 465      7420696E 
+ 465      7400
+ 466              	.LASF10:
+ 467 01e2 696E7433 		.ascii	"int32_t\000"
+ 467      325F7400 
+ 468              	.LASF14:
+ 469 01ea 73697A65 		.ascii	"sizetype\000"
+ 469      74797065 
+ 469      00
+ 470              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

@@ -1,0 +1,1421 @@
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"Fault.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.isThereOverload,"ax",%progbits
+  19              		.align	2
+  20              		.global	isThereOverload
+  21              		.thumb
+  22              		.thumb_func
+  23              		.type	isThereOverload, %function
+  24              	isThereOverload:
+  25              	.LFB63:
+  26              		.file 1 ".\\Fault.c"
+   1:.\Fault.c     **** /* ========================================
+   2:.\Fault.c     ****  *
+   3:.\Fault.c     ****  * Copyright YOUR COMPANY, THE YEAR
+   4:.\Fault.c     ****  * All Rights Reserved
+   5:.\Fault.c     ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:.\Fault.c     ****  *
+   7:.\Fault.c     ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:.\Fault.c     ****  * WHICH IS THE PROPERTY OF your company.
+   9:.\Fault.c     ****  *
+  10:.\Fault.c     ****  * ========================================
+  11:.\Fault.c     **** */
+  12:.\Fault.c     **** 
+  13:.\Fault.c     **** /**********PREPROCESSOR DIRECTIVES**********/
+  14:.\Fault.c     **** #include "CommonVariables.h"
+  15:.\Fault.c     **** #include "Fault.h"
+  16:.\Fault.c     **** #include "Tones.h"
+  17:.\Fault.c     **** #include "DACaudio.h"
+  18:.\Fault.c     **** 
+  19:.\Fault.c     **** /**********DEFINED CONSTANTS**********/
+  20:.\Fault.c     **** static const uint8 WAIT_TIME_IN_HALF_SECONDS = 10;
+  21:.\Fault.c     **** 
+  22:.\Fault.c     **** /**********DATA STRUCTURES**********/
+  23:.\Fault.c     **** 
+  24:.\Fault.c     **** /**********GLOBAL VARIABLES**********/
+  25:.\Fault.c     **** static uint8 bOverloadFlag = false;
+  26:.\Fault.c     **** 
+  27:.\Fault.c     **** /**********FUNCTION PROTOTYPES**********/
+  28:.\Fault.c     **** 
+  29:.\Fault.c     **** /**********DEFINED FUNCTIONS**********/
+  30:.\Fault.c     **** 
+  31:.\Fault.c     **** /*******************************************************************************
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 2
+
+
+  32:.\Fault.c     **** * Function Name: isThereOverload
+  33:.\Fault.c     **** ********************************************************************************
+  34:.\Fault.c     **** *
+  35:.\Fault.c     **** * Summary:
+  36:.\Fault.c     **** *  Returns the boolean for overload detection
+  37:.\Fault.c     **** *
+  38:.\Fault.c     **** * Parameters:  
+  39:.\Fault.c     **** *   None
+  40:.\Fault.c     **** *
+  41:.\Fault.c     **** * Return:
+  42:.\Fault.c     **** *   The boolean for overload detection
+  43:.\Fault.c     **** *
+  44:.\Fault.c     **** *******************************************************************************/
+  45:.\Fault.c     **** uint8 isThereOverload(void)
+  46:.\Fault.c     **** {   
+  27              		.loc 1 46 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  47:.\Fault.c     ****     return bOverloadFlag;
+  48:.\Fault.c     **** }
+  32              		.loc 1 48 0
+  33 0000 014B     		ldr	r3, .L2
+  34 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+  35 0004 7047     		bx	lr
+  36              	.L3:
+  37 0006 00BF     		.align	2
+  38              	.L2:
+  39 0008 00000000 		.word	.LANCHOR0
+  40              		.cfi_endproc
+  41              	.LFE63:
+  42              		.size	isThereOverload, .-isThereOverload
+  43              		.section	.text.processOverloadRoutine,"ax",%progbits
+  44              		.align	2
+  45              		.global	processOverloadRoutine
+  46              		.thumb
+  47              		.thumb_func
+  48              		.type	processOverloadRoutine, %function
+  49              	processOverloadRoutine:
+  50              	.LFB64:
+  49:.\Fault.c     **** 
+  50:.\Fault.c     **** /*******************************************************************************
+  51:.\Fault.c     **** * Function Name: processOverloadRoutine
+  52:.\Fault.c     **** ********************************************************************************
+  53:.\Fault.c     **** *
+  54:.\Fault.c     **** * Summary:
+  55:.\Fault.c     **** *  Waits for overload signal to clear before restarting the siren system,
+  56:.\Fault.c     **** *  called in main
+  57:.\Fault.c     **** *
+  58:.\Fault.c     **** * Parameters:  
+  59:.\Fault.c     **** *   None
+  60:.\Fault.c     **** *
+  61:.\Fault.c     **** * Return:
+  62:.\Fault.c     **** *   None
+  63:.\Fault.c     **** *
+  64:.\Fault.c     **** *******************************************************************************/
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 3
+
+
+  65:.\Fault.c     **** void processOverloadRoutine(void)
+  66:.\Fault.c     **** {
+  51              		.loc 1 66 0
+  52              		.cfi_startproc
+  53              		@ args = 0, pretend = 0, frame = 0
+  54              		@ frame_needed = 0, uses_anonymous_args = 0
+  55 0000 10B5     		push	{r4, lr}
+  56              		.cfi_def_cfa_offset 8
+  57              		.cfi_offset 4, -8
+  58              		.cfi_offset 14, -4
+  59              	.LVL0:
+  67:.\Fault.c     ****     uint8 index = 0;
+  68:.\Fault.c     ****     CyGlobalIntDisable;
+  60              		.loc 1 68 0
+  61              	@ 68 ".\Fault.c" 1
+  62 0002 72B6     		CPSID   i
+  63              	@ 0 "" 2
+  69:.\Fault.c     ****     
+  70:.\Fault.c     ****     while(!OverloadInput1_Read() || !OverloadInput2_Read())
+  64              		.loc 1 70 0
+  65              		.thumb
+  66 0004 19E0     		b	.L5
+  67              	.LVL1:
+  68              	.L8:
+  71:.\Fault.c     ****     {   //Cannot use do-while loop to prevent cool-down at startup
+  72:.\Fault.c     ****         PowerAmpOutput1_Write(false);
+  69              		.loc 1 72 0
+  70 0006 0020     		movs	r0, #0
+  71 0008 FFF7FEFF 		bl	PowerAmpOutput1_Write
+  72              	.LVL2:
+  73:.\Fault.c     ****         PowerAmpOutput2_Write(false);
+  73              		.loc 1 73 0
+  74 000c 0020     		movs	r0, #0
+  75 000e FFF7FEFF 		bl	PowerAmpOutput2_Write
+  76              	.LVL3:
+  74:.\Fault.c     ****         for(index = 0; index < WAIT_TIME_IN_HALF_SECONDS; index++)
+  77              		.loc 1 74 0
+  78 0012 0024     		movs	r4, #0
+  79 0014 0FE0     		b	.L6
+  80              	.LVL4:
+  81              	.L7:
+  75:.\Fault.c     ****         {
+  76:.\Fault.c     ****             CyWdtClear();
+  82              		.loc 1 76 0 discriminator 3
+  83 0016 FFF7FEFF 		bl	CyWdtClear
+  84              	.LVL5:
+  77:.\Fault.c     ****             LEDoutput_Write(true);
+  85              		.loc 1 77 0 discriminator 3
+  86 001a 0120     		movs	r0, #1
+  87 001c FFF7FEFF 		bl	LEDoutput_Write
+  88              	.LVL6:
+  78:.\Fault.c     ****             CyDelay(250);
+  89              		.loc 1 78 0 discriminator 3
+  90 0020 FA20     		movs	r0, #250
+  91 0022 FFF7FEFF 		bl	CyDelay
+  92              	.LVL7:
+  79:.\Fault.c     ****             LEDoutput_Write(false);
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 4
+
+
+  93              		.loc 1 79 0 discriminator 3
+  94 0026 0020     		movs	r0, #0
+  95 0028 FFF7FEFF 		bl	LEDoutput_Write
+  96              	.LVL8:
+  80:.\Fault.c     ****             CyDelay(250);
+  97              		.loc 1 80 0 discriminator 3
+  98 002c FA20     		movs	r0, #250
+  99 002e FFF7FEFF 		bl	CyDelay
+ 100              	.LVL9:
+  74:.\Fault.c     ****         {
+ 101              		.loc 1 74 0 discriminator 3
+ 102 0032 0134     		adds	r4, r4, #1
+ 103              	.LVL10:
+ 104 0034 E4B2     		uxtb	r4, r4
+ 105              	.LVL11:
+ 106              	.L6:
+  74:.\Fault.c     ****         {
+ 107              		.loc 1 74 0 is_stmt 0 discriminator 1
+ 108 0036 092C     		cmp	r4, #9
+ 109 0038 EDD9     		bls	.L7
+ 110              	.LVL12:
+ 111              	.L5:
+  70:.\Fault.c     ****     {   //Cannot use do-while loop to prevent cool-down at startup
+ 112              		.loc 1 70 0 is_stmt 1
+ 113 003a FFF7FEFF 		bl	OverloadInput1_Read
+ 114              	.LVL13:
+ 115 003e 0028     		cmp	r0, #0
+ 116 0040 E1D0     		beq	.L8
+  70:.\Fault.c     ****     {   //Cannot use do-while loop to prevent cool-down at startup
+ 117              		.loc 1 70 0 is_stmt 0 discriminator 1
+ 118 0042 FFF7FEFF 		bl	OverloadInput2_Read
+ 119              	.LVL14:
+ 120 0046 0028     		cmp	r0, #0
+ 121 0048 DDD0     		beq	.L8
+  81:.\Fault.c     ****         }
+  82:.\Fault.c     ****     }
+  83:.\Fault.c     ****     
+  84:.\Fault.c     ****     bOverloadFlag = false;   
+ 122              		.loc 1 84 0 is_stmt 1
+ 123 004a 0022     		movs	r2, #0
+ 124 004c 074B     		ldr	r3, .L10
+ 125 004e 1A70     		strb	r2, [r3]
+  85:.\Fault.c     ****     RadioMicKeyISR_ClearPending();   
+ 126              		.loc 1 85 0
+ 127 0050 FFF7FEFF 		bl	RadioMicKeyISR_ClearPending
+ 128              	.LVL15:
+  86:.\Fault.c     ****     ParkKillISR_ClearPending(); 
+ 129              		.loc 1 86 0
+ 130 0054 FFF7FEFF 		bl	ParkKillISR_ClearPending
+ 131              	.LVL16:
+  87:.\Fault.c     ****     TackSwitchISR_ClearPending();
+ 132              		.loc 1 87 0
+ 133 0058 FFF7FEFF 		bl	TackSwitchISR_ClearPending
+ 134              	.LVL17:
+  88:.\Fault.c     ****     DualDelayISR_ClearPending();
+ 135              		.loc 1 88 0
+ 136 005c FFF7FEFF 		bl	DualDelayISR_ClearPending
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 5
+
+
+ 137              	.LVL18:
+  89:.\Fault.c     ****     HornRingISR_ClearPending();
+ 138              		.loc 1 89 0
+ 139 0060 FFF7FEFF 		bl	HornRingISR_ClearPending
+ 140              	.LVL19:
+  90:.\Fault.c     ****     ModeStatusISR_ClearPending();
+ 141              		.loc 1 90 0
+ 142 0064 FFF7FEFF 		bl	ModeStatusISR_ClearPending
+ 143              	.LVL20:
+  91:.\Fault.c     ****     CyGlobalIntEnable;
+ 144              		.loc 1 91 0
+ 145              	@ 91 ".\Fault.c" 1
+ 146 0068 62B6     		CPSIE   i
+ 147              	@ 0 "" 2
+ 148              		.thumb
+ 149 006a 10BD     		pop	{r4, pc}
+ 150              	.L11:
+ 151              		.align	2
+ 152              	.L10:
+ 153 006c 00000000 		.word	.LANCHOR0
+ 154              		.cfi_endproc
+ 155              	.LFE64:
+ 156              		.size	processOverloadRoutine, .-processOverloadRoutine
+ 157              		.section	.text.deactivatePoweredFunctions,"ax",%progbits
+ 158              		.align	2
+ 159              		.global	deactivatePoweredFunctions
+ 160              		.thumb
+ 161              		.thumb_func
+ 162              		.type	deactivatePoweredFunctions, %function
+ 163              	deactivatePoweredFunctions:
+ 164              	.LFB65:
+  92:.\Fault.c     **** }
+  93:.\Fault.c     **** 
+  94:.\Fault.c     **** /*******************************************************************************
+  95:.\Fault.c     **** * Function Name: deactivatePoweredFunctions
+  96:.\Fault.c     **** ********************************************************************************
+  97:.\Fault.c     **** *
+  98:.\Fault.c     **** * Summary:
+  99:.\Fault.c     **** *  Turns off PWM, power amps, and tone due to overload detection, called in
+ 100:.\Fault.c     **** *  OverloadISR
+ 101:.\Fault.c     **** *
+ 102:.\Fault.c     **** * Parameters:  
+ 103:.\Fault.c     **** *   None
+ 104:.\Fault.c     **** *
+ 105:.\Fault.c     **** * Return:
+ 106:.\Fault.c     **** *   None
+ 107:.\Fault.c     **** *
+ 108:.\Fault.c     **** *******************************************************************************/
+ 109:.\Fault.c     **** void deactivatePoweredFunctions(void)
+ 110:.\Fault.c     **** {
+ 165              		.loc 1 110 0
+ 166              		.cfi_startproc
+ 167              		@ args = 0, pretend = 0, frame = 0
+ 168              		@ frame_needed = 0, uses_anonymous_args = 0
+ 169 0000 08B5     		push	{r3, lr}
+ 170              		.cfi_def_cfa_offset 8
+ 171              		.cfi_offset 3, -8
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 6
+
+
+ 172              		.cfi_offset 14, -4
+ 111:.\Fault.c     ****     CyGlobalIntDisable;    
+ 173              		.loc 1 111 0
+ 174              	@ 111 ".\Fault.c" 1
+ 175 0002 72B6     		CPSID   i
+ 176              	@ 0 "" 2
+ 112:.\Fault.c     ****     PowerAmpOutput1_Write(false);
+ 177              		.loc 1 112 0
+ 178              		.thumb
+ 179 0004 0020     		movs	r0, #0
+ 180 0006 FFF7FEFF 		bl	PowerAmpOutput1_Write
+ 181              	.LVL21:
+ 113:.\Fault.c     ****     PowerAmpOutput2_Write(false);
+ 182              		.loc 1 113 0
+ 183 000a 0020     		movs	r0, #0
+ 184 000c FFF7FEFF 		bl	PowerAmpOutput2_Write
+ 185              	.LVL22:
+ 114:.\Fault.c     ****     stopPWMTone(SPEAKER_1);
+ 186              		.loc 1 114 0
+ 187 0010 0020     		movs	r0, #0
+ 188 0012 FFF7FEFF 		bl	stopPWMTone
+ 189              	.LVL23:
+ 115:.\Fault.c     ****     stopPWMTone(SPEAKER_2);
+ 190              		.loc 1 115 0
+ 191 0016 0120     		movs	r0, #1
+ 192 0018 FFF7FEFF 		bl	stopPWMTone
+ 193              	.LVL24:
+ 116:.\Fault.c     ****     stopAudioTone(SPEAKER_1);
+ 194              		.loc 1 116 0
+ 195 001c 0020     		movs	r0, #0
+ 196 001e FFF7FEFF 		bl	stopAudioTone
+ 197              	.LVL25:
+ 117:.\Fault.c     ****     stopAudioTone(SPEAKER_2);
+ 198              		.loc 1 117 0
+ 199 0022 0120     		movs	r0, #1
+ 200 0024 FFF7FEFF 		bl	stopAudioTone
+ 201              	.LVL26:
+ 118:.\Fault.c     ****     bOverloadFlag = true;
+ 202              		.loc 1 118 0
+ 203 0028 0122     		movs	r2, #1
+ 204 002a 014B     		ldr	r3, .L14
+ 205 002c 1A70     		strb	r2, [r3]
+ 206 002e 08BD     		pop	{r3, pc}
+ 207              	.L15:
+ 208              		.align	2
+ 209              	.L14:
+ 210 0030 00000000 		.word	.LANCHOR0
+ 211              		.cfi_endproc
+ 212              	.LFE65:
+ 213              		.size	deactivatePoweredFunctions, .-deactivatePoweredFunctions
+ 214              		.bss
+ 215              		.set	.LANCHOR0,. + 0
+ 216              		.type	bOverloadFlag, %object
+ 217              		.size	bOverloadFlag, 1
+ 218              	bOverloadFlag:
+ 219 0000 00       		.space	1
+ 220              		.text
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 7
+
+
+ 221              	.Letext0:
+ 222              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 223              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 224              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 225              		.file 5 "Generated_Source\\PSoC5/PowerAmpOutput1.h"
+ 226              		.file 6 "Generated_Source\\PSoC5/PowerAmpOutput2.h"
+ 227              		.file 7 "Generated_Source\\PSoC5/LEDoutput.h"
+ 228              		.file 8 "Generated_Source\\PSoC5/CyLib.h"
+ 229              		.file 9 "Generated_Source\\PSoC5/OverloadInput1.h"
+ 230              		.file 10 "Generated_Source\\PSoC5/OverloadInput2.h"
+ 231              		.file 11 "Generated_Source\\PSoC5/RadioMicKeyISR.h"
+ 232              		.file 12 "Generated_Source\\PSoC5/ParkKillISR.h"
+ 233              		.file 13 "Generated_Source\\PSoC5/TackSwitchISR.h"
+ 234              		.file 14 "Generated_Source\\PSoC5/DualDelayISR.h"
+ 235              		.file 15 "Generated_Source\\PSoC5/HornRingISR.h"
+ 236              		.file 16 "Generated_Source\\PSoC5/ModeStatusISR.h"
+ 237              		.file 17 ".\\DACaudio.h"
+ 238              		.file 18 "Generated_Source\\PSoC5/core_cm3.h"
+ 239              		.file 19 ".\\Tones.h"
+ 240              		.section	.debug_info,"",%progbits
+ 241              	.Ldebug_info0:
+ 242 0000 17030000 		.4byte	0x317
+ 243 0004 0400     		.2byte	0x4
+ 244 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 245 000a 04       		.byte	0x4
+ 246 000b 01       		.uleb128 0x1
+ 247 000c 72010000 		.4byte	.LASF36
+ 248 0010 01       		.byte	0x1
+ 249 0011 73030000 		.4byte	.LASF37
+ 250 0015 9B020000 		.4byte	.LASF38
+ 251 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 252 001d 00000000 		.4byte	0
+ 253 0021 00000000 		.4byte	.Ldebug_line0
+ 254 0025 02       		.uleb128 0x2
+ 255 0026 01       		.byte	0x1
+ 256 0027 06       		.byte	0x6
+ 257 0028 67030000 		.4byte	.LASF0
+ 258 002c 02       		.uleb128 0x2
+ 259 002d 01       		.byte	0x1
+ 260 002e 08       		.byte	0x8
+ 261 002f D5000000 		.4byte	.LASF1
+ 262 0033 02       		.uleb128 0x2
+ 263 0034 02       		.byte	0x2
+ 264 0035 05       		.byte	0x5
+ 265 0036 37030000 		.4byte	.LASF2
+ 266 003a 02       		.uleb128 0x2
+ 267 003b 02       		.byte	0x2
+ 268 003c 07       		.byte	0x7
+ 269 003d 05010000 		.4byte	.LASF3
+ 270 0041 03       		.uleb128 0x3
+ 271 0042 80000000 		.4byte	.LASF9
+ 272 0046 02       		.byte	0x2
+ 273 0047 3F       		.byte	0x3f
+ 274 0048 4C000000 		.4byte	0x4c
+ 275 004c 02       		.uleb128 0x2
+ 276 004d 04       		.byte	0x4
+ 277 004e 05       		.byte	0x5
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 8
+
+
+ 278 004f 5E030000 		.4byte	.LASF4
+ 279 0053 02       		.uleb128 0x2
+ 280 0054 04       		.byte	0x4
+ 281 0055 07       		.byte	0x7
+ 282 0056 F3000000 		.4byte	.LASF5
+ 283 005a 02       		.uleb128 0x2
+ 284 005b 08       		.byte	0x8
+ 285 005c 05       		.byte	0x5
+ 286 005d 1E030000 		.4byte	.LASF6
+ 287 0061 02       		.uleb128 0x2
+ 288 0062 08       		.byte	0x8
+ 289 0063 07       		.byte	0x7
+ 290 0064 4C020000 		.4byte	.LASF7
+ 291 0068 04       		.uleb128 0x4
+ 292 0069 04       		.byte	0x4
+ 293 006a 05       		.byte	0x5
+ 294 006b 696E7400 		.ascii	"int\000"
+ 295 006f 02       		.uleb128 0x2
+ 296 0070 04       		.byte	0x4
+ 297 0071 07       		.byte	0x7
+ 298 0072 16020000 		.4byte	.LASF8
+ 299 0076 03       		.uleb128 0x3
+ 300 0077 C7000000 		.4byte	.LASF10
+ 301 007b 03       		.byte	0x3
+ 302 007c 2C       		.byte	0x2c
+ 303 007d 41000000 		.4byte	0x41
+ 304 0081 03       		.uleb128 0x3
+ 305 0082 41030000 		.4byte	.LASF11
+ 306 0086 04       		.byte	0x4
+ 307 0087 C2       		.byte	0xc2
+ 308 0088 2C000000 		.4byte	0x2c
+ 309 008c 03       		.uleb128 0x3
+ 310 008d 6B010000 		.4byte	.LASF12
+ 311 0091 04       		.byte	0x4
+ 312 0092 C4       		.byte	0xc4
+ 313 0093 53000000 		.4byte	0x53
+ 314 0097 02       		.uleb128 0x2
+ 315 0098 04       		.byte	0x4
+ 316 0099 04       		.byte	0x4
+ 317 009a CF000000 		.4byte	.LASF13
+ 318 009e 02       		.uleb128 0x2
+ 319 009f 08       		.byte	0x8
+ 320 00a0 04       		.byte	0x4
+ 321 00a1 A6000000 		.4byte	.LASF14
+ 322 00a5 02       		.uleb128 0x2
+ 323 00a6 01       		.byte	0x1
+ 324 00a7 08       		.byte	0x8
+ 325 00a8 2C030000 		.4byte	.LASF15
+ 326 00ac 02       		.uleb128 0x2
+ 327 00ad 04       		.byte	0x4
+ 328 00ae 07       		.byte	0x7
+ 329 00af 92020000 		.4byte	.LASF16
+ 330 00b3 05       		.uleb128 0x5
+ 331 00b4 E3000000 		.4byte	.LASF39
+ 332 00b8 01       		.byte	0x1
+ 333 00b9 2D       		.byte	0x2d
+ 334 00ba 81000000 		.4byte	0x81
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 9
+
+
+ 335 00be 00000000 		.4byte	.LFB63
+ 336 00c2 0C000000 		.4byte	.LFE63-.LFB63
+ 337 00c6 01       		.uleb128 0x1
+ 338 00c7 9C       		.byte	0x9c
+ 339 00c8 06       		.uleb128 0x6
+ 340 00c9 47030000 		.4byte	.LASF17
+ 341 00cd 01       		.byte	0x1
+ 342 00ce 41       		.byte	0x41
+ 343 00cf 00000000 		.4byte	.LFB64
+ 344 00d3 70000000 		.4byte	.LFE64-.LFB64
+ 345 00d7 01       		.uleb128 0x1
+ 346 00d8 9C       		.byte	0x9c
+ 347 00d9 B2010000 		.4byte	0x1b2
+ 348 00dd 07       		.uleb128 0x7
+ 349 00de 31030000 		.4byte	.LASF19
+ 350 00e2 01       		.byte	0x1
+ 351 00e3 43       		.byte	0x43
+ 352 00e4 81000000 		.4byte	0x81
+ 353 00e8 00000000 		.4byte	.LLST0
+ 354 00ec 08       		.uleb128 0x8
+ 355 00ed 0C000000 		.4byte	.LVL2
+ 356 00f1 69020000 		.4byte	0x269
+ 357 00f5 FF000000 		.4byte	0xff
+ 358 00f9 09       		.uleb128 0x9
+ 359 00fa 01       		.uleb128 0x1
+ 360 00fb 50       		.byte	0x50
+ 361 00fc 01       		.uleb128 0x1
+ 362 00fd 30       		.byte	0x30
+ 363 00fe 00       		.byte	0
+ 364 00ff 08       		.uleb128 0x8
+ 365 0100 12000000 		.4byte	.LVL3
+ 366 0104 7A020000 		.4byte	0x27a
+ 367 0108 12010000 		.4byte	0x112
+ 368 010c 09       		.uleb128 0x9
+ 369 010d 01       		.uleb128 0x1
+ 370 010e 50       		.byte	0x50
+ 371 010f 01       		.uleb128 0x1
+ 372 0110 30       		.byte	0x30
+ 373 0111 00       		.byte	0
+ 374 0112 0A       		.uleb128 0xa
+ 375 0113 1A000000 		.4byte	.LVL5
+ 376 0117 8B020000 		.4byte	0x28b
+ 377 011b 08       		.uleb128 0x8
+ 378 011c 20000000 		.4byte	.LVL6
+ 379 0120 92020000 		.4byte	0x292
+ 380 0124 2E010000 		.4byte	0x12e
+ 381 0128 09       		.uleb128 0x9
+ 382 0129 01       		.uleb128 0x1
+ 383 012a 50       		.byte	0x50
+ 384 012b 01       		.uleb128 0x1
+ 385 012c 31       		.byte	0x31
+ 386 012d 00       		.byte	0
+ 387 012e 08       		.uleb128 0x8
+ 388 012f 26000000 		.4byte	.LVL7
+ 389 0133 A3020000 		.4byte	0x2a3
+ 390 0137 42010000 		.4byte	0x142
+ 391 013b 09       		.uleb128 0x9
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 10
+
+
+ 392 013c 01       		.uleb128 0x1
+ 393 013d 50       		.byte	0x50
+ 394 013e 02       		.uleb128 0x2
+ 395 013f 08       		.byte	0x8
+ 396 0140 FA       		.byte	0xfa
+ 397 0141 00       		.byte	0
+ 398 0142 08       		.uleb128 0x8
+ 399 0143 2C000000 		.4byte	.LVL8
+ 400 0147 92020000 		.4byte	0x292
+ 401 014b 55010000 		.4byte	0x155
+ 402 014f 09       		.uleb128 0x9
+ 403 0150 01       		.uleb128 0x1
+ 404 0151 50       		.byte	0x50
+ 405 0152 01       		.uleb128 0x1
+ 406 0153 30       		.byte	0x30
+ 407 0154 00       		.byte	0
+ 408 0155 08       		.uleb128 0x8
+ 409 0156 32000000 		.4byte	.LVL9
+ 410 015a A3020000 		.4byte	0x2a3
+ 411 015e 69010000 		.4byte	0x169
+ 412 0162 09       		.uleb128 0x9
+ 413 0163 01       		.uleb128 0x1
+ 414 0164 50       		.byte	0x50
+ 415 0165 02       		.uleb128 0x2
+ 416 0166 08       		.byte	0x8
+ 417 0167 FA       		.byte	0xfa
+ 418 0168 00       		.byte	0
+ 419 0169 0A       		.uleb128 0xa
+ 420 016a 3E000000 		.4byte	.LVL13
+ 421 016e B4020000 		.4byte	0x2b4
+ 422 0172 0A       		.uleb128 0xa
+ 423 0173 46000000 		.4byte	.LVL14
+ 424 0177 BF020000 		.4byte	0x2bf
+ 425 017b 0A       		.uleb128 0xa
+ 426 017c 54000000 		.4byte	.LVL15
+ 427 0180 CA020000 		.4byte	0x2ca
+ 428 0184 0A       		.uleb128 0xa
+ 429 0185 58000000 		.4byte	.LVL16
+ 430 0189 D1020000 		.4byte	0x2d1
+ 431 018d 0A       		.uleb128 0xa
+ 432 018e 5C000000 		.4byte	.LVL17
+ 433 0192 D8020000 		.4byte	0x2d8
+ 434 0196 0A       		.uleb128 0xa
+ 435 0197 60000000 		.4byte	.LVL18
+ 436 019b DF020000 		.4byte	0x2df
+ 437 019f 0A       		.uleb128 0xa
+ 438 01a0 64000000 		.4byte	.LVL19
+ 439 01a4 E6020000 		.4byte	0x2e6
+ 440 01a8 0A       		.uleb128 0xa
+ 441 01a9 68000000 		.4byte	.LVL20
+ 442 01ad ED020000 		.4byte	0x2ed
+ 443 01b1 00       		.byte	0
+ 444 01b2 06       		.uleb128 0x6
+ 445 01b3 63020000 		.4byte	.LASF18
+ 446 01b7 01       		.byte	0x1
+ 447 01b8 6D       		.byte	0x6d
+ 448 01b9 00000000 		.4byte	.LFB65
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 11
+
+
+ 449 01bd 34000000 		.4byte	.LFE65-.LFB65
+ 450 01c1 01       		.uleb128 0x1
+ 451 01c2 9C       		.byte	0x9c
+ 452 01c3 36020000 		.4byte	0x236
+ 453 01c7 08       		.uleb128 0x8
+ 454 01c8 0A000000 		.4byte	.LVL21
+ 455 01cc 69020000 		.4byte	0x269
+ 456 01d0 DA010000 		.4byte	0x1da
+ 457 01d4 09       		.uleb128 0x9
+ 458 01d5 01       		.uleb128 0x1
+ 459 01d6 50       		.byte	0x50
+ 460 01d7 01       		.uleb128 0x1
+ 461 01d8 30       		.byte	0x30
+ 462 01d9 00       		.byte	0
+ 463 01da 08       		.uleb128 0x8
+ 464 01db 10000000 		.4byte	.LVL22
+ 465 01df 7A020000 		.4byte	0x27a
+ 466 01e3 ED010000 		.4byte	0x1ed
+ 467 01e7 09       		.uleb128 0x9
+ 468 01e8 01       		.uleb128 0x1
+ 469 01e9 50       		.byte	0x50
+ 470 01ea 01       		.uleb128 0x1
+ 471 01eb 30       		.byte	0x30
+ 472 01ec 00       		.byte	0
+ 473 01ed 08       		.uleb128 0x8
+ 474 01ee 16000000 		.4byte	.LVL23
+ 475 01f2 F4020000 		.4byte	0x2f4
+ 476 01f6 00020000 		.4byte	0x200
+ 477 01fa 09       		.uleb128 0x9
+ 478 01fb 01       		.uleb128 0x1
+ 479 01fc 50       		.byte	0x50
+ 480 01fd 01       		.uleb128 0x1
+ 481 01fe 30       		.byte	0x30
+ 482 01ff 00       		.byte	0
+ 483 0200 08       		.uleb128 0x8
+ 484 0201 1C000000 		.4byte	.LVL24
+ 485 0205 F4020000 		.4byte	0x2f4
+ 486 0209 13020000 		.4byte	0x213
+ 487 020d 09       		.uleb128 0x9
+ 488 020e 01       		.uleb128 0x1
+ 489 020f 50       		.byte	0x50
+ 490 0210 01       		.uleb128 0x1
+ 491 0211 31       		.byte	0x31
+ 492 0212 00       		.byte	0
+ 493 0213 08       		.uleb128 0x8
+ 494 0214 22000000 		.4byte	.LVL25
+ 495 0218 09030000 		.4byte	0x309
+ 496 021c 26020000 		.4byte	0x226
+ 497 0220 09       		.uleb128 0x9
+ 498 0221 01       		.uleb128 0x1
+ 499 0222 50       		.byte	0x50
+ 500 0223 01       		.uleb128 0x1
+ 501 0224 30       		.byte	0x30
+ 502 0225 00       		.byte	0
+ 503 0226 0B       		.uleb128 0xb
+ 504 0227 28000000 		.4byte	.LVL26
+ 505 022b 09030000 		.4byte	0x309
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 12
+
+
+ 506 022f 09       		.uleb128 0x9
+ 507 0230 01       		.uleb128 0x1
+ 508 0231 50       		.byte	0x50
+ 509 0232 01       		.uleb128 0x1
+ 510 0233 31       		.byte	0x31
+ 511 0234 00       		.byte	0
+ 512 0235 00       		.byte	0
+ 513 0236 0C       		.uleb128 0xc
+ 514 0237 00000000 		.4byte	.LASF20
+ 515 023b 01       		.byte	0x1
+ 516 023c 14       		.byte	0x14
+ 517 023d 42020000 		.4byte	0x242
+ 518 0241 0A       		.byte	0xa
+ 519 0242 0D       		.uleb128 0xd
+ 520 0243 81000000 		.4byte	0x81
+ 521 0247 0E       		.uleb128 0xe
+ 522 0248 5D010000 		.4byte	.LASF21
+ 523 024c 01       		.byte	0x1
+ 524 024d 19       		.byte	0x19
+ 525 024e 81000000 		.4byte	0x81
+ 526 0252 05       		.uleb128 0x5
+ 527 0253 03       		.byte	0x3
+ 528 0254 00000000 		.4byte	bOverloadFlag
+ 529 0258 0F       		.uleb128 0xf
+ 530 0259 31010000 		.4byte	.LASF40
+ 531 025d 12       		.byte	0x12
+ 532 025e 2A06     		.2byte	0x62a
+ 533 0260 64020000 		.4byte	0x264
+ 534 0264 10       		.uleb128 0x10
+ 535 0265 76000000 		.4byte	0x76
+ 536 0269 11       		.uleb128 0x11
+ 537 026a 6A000000 		.4byte	.LASF22
+ 538 026e 05       		.byte	0x5
+ 539 026f 28       		.byte	0x28
+ 540 0270 7A020000 		.4byte	0x27a
+ 541 0274 12       		.uleb128 0x12
+ 542 0275 81000000 		.4byte	0x81
+ 543 0279 00       		.byte	0
+ 544 027a 11       		.uleb128 0x11
+ 545 027b 00020000 		.4byte	.LASF23
+ 546 027f 06       		.byte	0x6
+ 547 0280 28       		.byte	0x28
+ 548 0281 8B020000 		.4byte	0x28b
+ 549 0285 12       		.uleb128 0x12
+ 550 0286 81000000 		.4byte	0x81
+ 551 028a 00       		.byte	0
+ 552 028b 13       		.uleb128 0x13
+ 553 028c 3E010000 		.4byte	.LASF28
+ 554 0290 08       		.byte	0x8
+ 555 0291 74       		.byte	0x74
+ 556 0292 11       		.uleb128 0x11
+ 557 0293 96000000 		.4byte	.LASF24
+ 558 0297 07       		.byte	0x7
+ 559 0298 28       		.byte	0x28
+ 560 0299 A3020000 		.4byte	0x2a3
+ 561 029d 12       		.uleb128 0x12
+ 562 029e 81000000 		.4byte	0x81
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 13
+
+
+ 563 02a2 00       		.byte	0
+ 564 02a3 11       		.uleb128 0x11
+ 565 02a4 7D030000 		.4byte	.LASF25
+ 566 02a8 08       		.byte	0x8
+ 567 02a9 77       		.byte	0x77
+ 568 02aa B4020000 		.4byte	0x2b4
+ 569 02ae 12       		.uleb128 0x12
+ 570 02af 8C000000 		.4byte	0x8c
+ 571 02b3 00       		.byte	0
+ 572 02b4 14       		.uleb128 0x14
+ 573 02b5 49010000 		.4byte	.LASF26
+ 574 02b9 09       		.byte	0x9
+ 575 02ba 2B       		.byte	0x2b
+ 576 02bb 81000000 		.4byte	0x81
+ 577 02bf 14       		.uleb128 0x14
+ 578 02c0 7E020000 		.4byte	.LASF27
+ 579 02c4 0A       		.byte	0xa
+ 580 02c5 2B       		.byte	0x2b
+ 581 02c6 81000000 		.4byte	0x81
+ 582 02ca 13       		.uleb128 0x13
+ 583 02cb 4E000000 		.4byte	.LASF29
+ 584 02cf 0B       		.byte	0xb
+ 585 02d0 28       		.byte	0x28
+ 586 02d1 13       		.uleb128 0x13
+ 587 02d2 18010000 		.4byte	.LASF30
+ 588 02d6 0C       		.byte	0xc
+ 589 02d7 28       		.byte	0x28
+ 590 02d8 13       		.uleb128 0x13
+ 591 02d9 23020000 		.4byte	.LASF31
+ 592 02dd 0D       		.byte	0xd
+ 593 02de 28       		.byte	0x28
+ 594 02df 13       		.uleb128 0x13
+ 595 02e0 AD000000 		.4byte	.LASF32
+ 596 02e4 0E       		.byte	0xe
+ 597 02e5 28       		.byte	0x28
+ 598 02e6 13       		.uleb128 0x13
+ 599 02e7 35000000 		.4byte	.LASF33
+ 600 02eb 0F       		.byte	0xf
+ 601 02ec 28       		.byte	0x28
+ 602 02ed 13       		.uleb128 0x13
+ 603 02ee 1A000000 		.4byte	.LASF34
+ 604 02f2 10       		.byte	0x10
+ 605 02f3 28       		.byte	0x28
+ 606 02f4 15       		.uleb128 0x15
+ 607 02f5 8A000000 		.4byte	.LASF41
+ 608 02f9 13       		.byte	0x13
+ 609 02fa 1A       		.byte	0x1a
+ 610 02fb 81000000 		.4byte	0x81
+ 611 02ff 09030000 		.4byte	0x309
+ 612 0303 12       		.uleb128 0x12
+ 613 0304 81000000 		.4byte	0x81
+ 614 0308 00       		.byte	0
+ 615 0309 16       		.uleb128 0x16
+ 616 030a 3E020000 		.4byte	.LASF35
+ 617 030e 11       		.byte	0x11
+ 618 030f 1B       		.byte	0x1b
+ 619 0310 81000000 		.4byte	0x81
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 14
+
+
+ 620 0314 12       		.uleb128 0x12
+ 621 0315 81000000 		.4byte	0x81
+ 622 0319 00       		.byte	0
+ 623 031a 00       		.byte	0
+ 624              		.section	.debug_abbrev,"",%progbits
+ 625              	.Ldebug_abbrev0:
+ 626 0000 01       		.uleb128 0x1
+ 627 0001 11       		.uleb128 0x11
+ 628 0002 01       		.byte	0x1
+ 629 0003 25       		.uleb128 0x25
+ 630 0004 0E       		.uleb128 0xe
+ 631 0005 13       		.uleb128 0x13
+ 632 0006 0B       		.uleb128 0xb
+ 633 0007 03       		.uleb128 0x3
+ 634 0008 0E       		.uleb128 0xe
+ 635 0009 1B       		.uleb128 0x1b
+ 636 000a 0E       		.uleb128 0xe
+ 637 000b 55       		.uleb128 0x55
+ 638 000c 17       		.uleb128 0x17
+ 639 000d 11       		.uleb128 0x11
+ 640 000e 01       		.uleb128 0x1
+ 641 000f 10       		.uleb128 0x10
+ 642 0010 17       		.uleb128 0x17
+ 643 0011 00       		.byte	0
+ 644 0012 00       		.byte	0
+ 645 0013 02       		.uleb128 0x2
+ 646 0014 24       		.uleb128 0x24
+ 647 0015 00       		.byte	0
+ 648 0016 0B       		.uleb128 0xb
+ 649 0017 0B       		.uleb128 0xb
+ 650 0018 3E       		.uleb128 0x3e
+ 651 0019 0B       		.uleb128 0xb
+ 652 001a 03       		.uleb128 0x3
+ 653 001b 0E       		.uleb128 0xe
+ 654 001c 00       		.byte	0
+ 655 001d 00       		.byte	0
+ 656 001e 03       		.uleb128 0x3
+ 657 001f 16       		.uleb128 0x16
+ 658 0020 00       		.byte	0
+ 659 0021 03       		.uleb128 0x3
+ 660 0022 0E       		.uleb128 0xe
+ 661 0023 3A       		.uleb128 0x3a
+ 662 0024 0B       		.uleb128 0xb
+ 663 0025 3B       		.uleb128 0x3b
+ 664 0026 0B       		.uleb128 0xb
+ 665 0027 49       		.uleb128 0x49
+ 666 0028 13       		.uleb128 0x13
+ 667 0029 00       		.byte	0
+ 668 002a 00       		.byte	0
+ 669 002b 04       		.uleb128 0x4
+ 670 002c 24       		.uleb128 0x24
+ 671 002d 00       		.byte	0
+ 672 002e 0B       		.uleb128 0xb
+ 673 002f 0B       		.uleb128 0xb
+ 674 0030 3E       		.uleb128 0x3e
+ 675 0031 0B       		.uleb128 0xb
+ 676 0032 03       		.uleb128 0x3
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 15
+
+
+ 677 0033 08       		.uleb128 0x8
+ 678 0034 00       		.byte	0
+ 679 0035 00       		.byte	0
+ 680 0036 05       		.uleb128 0x5
+ 681 0037 2E       		.uleb128 0x2e
+ 682 0038 00       		.byte	0
+ 683 0039 3F       		.uleb128 0x3f
+ 684 003a 19       		.uleb128 0x19
+ 685 003b 03       		.uleb128 0x3
+ 686 003c 0E       		.uleb128 0xe
+ 687 003d 3A       		.uleb128 0x3a
+ 688 003e 0B       		.uleb128 0xb
+ 689 003f 3B       		.uleb128 0x3b
+ 690 0040 0B       		.uleb128 0xb
+ 691 0041 27       		.uleb128 0x27
+ 692 0042 19       		.uleb128 0x19
+ 693 0043 49       		.uleb128 0x49
+ 694 0044 13       		.uleb128 0x13
+ 695 0045 11       		.uleb128 0x11
+ 696 0046 01       		.uleb128 0x1
+ 697 0047 12       		.uleb128 0x12
+ 698 0048 06       		.uleb128 0x6
+ 699 0049 40       		.uleb128 0x40
+ 700 004a 18       		.uleb128 0x18
+ 701 004b 9742     		.uleb128 0x2117
+ 702 004d 19       		.uleb128 0x19
+ 703 004e 00       		.byte	0
+ 704 004f 00       		.byte	0
+ 705 0050 06       		.uleb128 0x6
+ 706 0051 2E       		.uleb128 0x2e
+ 707 0052 01       		.byte	0x1
+ 708 0053 3F       		.uleb128 0x3f
+ 709 0054 19       		.uleb128 0x19
+ 710 0055 03       		.uleb128 0x3
+ 711 0056 0E       		.uleb128 0xe
+ 712 0057 3A       		.uleb128 0x3a
+ 713 0058 0B       		.uleb128 0xb
+ 714 0059 3B       		.uleb128 0x3b
+ 715 005a 0B       		.uleb128 0xb
+ 716 005b 27       		.uleb128 0x27
+ 717 005c 19       		.uleb128 0x19
+ 718 005d 11       		.uleb128 0x11
+ 719 005e 01       		.uleb128 0x1
+ 720 005f 12       		.uleb128 0x12
+ 721 0060 06       		.uleb128 0x6
+ 722 0061 40       		.uleb128 0x40
+ 723 0062 18       		.uleb128 0x18
+ 724 0063 9742     		.uleb128 0x2117
+ 725 0065 19       		.uleb128 0x19
+ 726 0066 01       		.uleb128 0x1
+ 727 0067 13       		.uleb128 0x13
+ 728 0068 00       		.byte	0
+ 729 0069 00       		.byte	0
+ 730 006a 07       		.uleb128 0x7
+ 731 006b 34       		.uleb128 0x34
+ 732 006c 00       		.byte	0
+ 733 006d 03       		.uleb128 0x3
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 16
+
+
+ 734 006e 0E       		.uleb128 0xe
+ 735 006f 3A       		.uleb128 0x3a
+ 736 0070 0B       		.uleb128 0xb
+ 737 0071 3B       		.uleb128 0x3b
+ 738 0072 0B       		.uleb128 0xb
+ 739 0073 49       		.uleb128 0x49
+ 740 0074 13       		.uleb128 0x13
+ 741 0075 02       		.uleb128 0x2
+ 742 0076 17       		.uleb128 0x17
+ 743 0077 00       		.byte	0
+ 744 0078 00       		.byte	0
+ 745 0079 08       		.uleb128 0x8
+ 746 007a 898201   		.uleb128 0x4109
+ 747 007d 01       		.byte	0x1
+ 748 007e 11       		.uleb128 0x11
+ 749 007f 01       		.uleb128 0x1
+ 750 0080 31       		.uleb128 0x31
+ 751 0081 13       		.uleb128 0x13
+ 752 0082 01       		.uleb128 0x1
+ 753 0083 13       		.uleb128 0x13
+ 754 0084 00       		.byte	0
+ 755 0085 00       		.byte	0
+ 756 0086 09       		.uleb128 0x9
+ 757 0087 8A8201   		.uleb128 0x410a
+ 758 008a 00       		.byte	0
+ 759 008b 02       		.uleb128 0x2
+ 760 008c 18       		.uleb128 0x18
+ 761 008d 9142     		.uleb128 0x2111
+ 762 008f 18       		.uleb128 0x18
+ 763 0090 00       		.byte	0
+ 764 0091 00       		.byte	0
+ 765 0092 0A       		.uleb128 0xa
+ 766 0093 898201   		.uleb128 0x4109
+ 767 0096 00       		.byte	0
+ 768 0097 11       		.uleb128 0x11
+ 769 0098 01       		.uleb128 0x1
+ 770 0099 31       		.uleb128 0x31
+ 771 009a 13       		.uleb128 0x13
+ 772 009b 00       		.byte	0
+ 773 009c 00       		.byte	0
+ 774 009d 0B       		.uleb128 0xb
+ 775 009e 898201   		.uleb128 0x4109
+ 776 00a1 01       		.byte	0x1
+ 777 00a2 11       		.uleb128 0x11
+ 778 00a3 01       		.uleb128 0x1
+ 779 00a4 31       		.uleb128 0x31
+ 780 00a5 13       		.uleb128 0x13
+ 781 00a6 00       		.byte	0
+ 782 00a7 00       		.byte	0
+ 783 00a8 0C       		.uleb128 0xc
+ 784 00a9 34       		.uleb128 0x34
+ 785 00aa 00       		.byte	0
+ 786 00ab 03       		.uleb128 0x3
+ 787 00ac 0E       		.uleb128 0xe
+ 788 00ad 3A       		.uleb128 0x3a
+ 789 00ae 0B       		.uleb128 0xb
+ 790 00af 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 17
+
+
+ 791 00b0 0B       		.uleb128 0xb
+ 792 00b1 49       		.uleb128 0x49
+ 793 00b2 13       		.uleb128 0x13
+ 794 00b3 1C       		.uleb128 0x1c
+ 795 00b4 0B       		.uleb128 0xb
+ 796 00b5 00       		.byte	0
+ 797 00b6 00       		.byte	0
+ 798 00b7 0D       		.uleb128 0xd
+ 799 00b8 26       		.uleb128 0x26
+ 800 00b9 00       		.byte	0
+ 801 00ba 49       		.uleb128 0x49
+ 802 00bb 13       		.uleb128 0x13
+ 803 00bc 00       		.byte	0
+ 804 00bd 00       		.byte	0
+ 805 00be 0E       		.uleb128 0xe
+ 806 00bf 34       		.uleb128 0x34
+ 807 00c0 00       		.byte	0
+ 808 00c1 03       		.uleb128 0x3
+ 809 00c2 0E       		.uleb128 0xe
+ 810 00c3 3A       		.uleb128 0x3a
+ 811 00c4 0B       		.uleb128 0xb
+ 812 00c5 3B       		.uleb128 0x3b
+ 813 00c6 0B       		.uleb128 0xb
+ 814 00c7 49       		.uleb128 0x49
+ 815 00c8 13       		.uleb128 0x13
+ 816 00c9 02       		.uleb128 0x2
+ 817 00ca 18       		.uleb128 0x18
+ 818 00cb 00       		.byte	0
+ 819 00cc 00       		.byte	0
+ 820 00cd 0F       		.uleb128 0xf
+ 821 00ce 34       		.uleb128 0x34
+ 822 00cf 00       		.byte	0
+ 823 00d0 03       		.uleb128 0x3
+ 824 00d1 0E       		.uleb128 0xe
+ 825 00d2 3A       		.uleb128 0x3a
+ 826 00d3 0B       		.uleb128 0xb
+ 827 00d4 3B       		.uleb128 0x3b
+ 828 00d5 05       		.uleb128 0x5
+ 829 00d6 49       		.uleb128 0x49
+ 830 00d7 13       		.uleb128 0x13
+ 831 00d8 3F       		.uleb128 0x3f
+ 832 00d9 19       		.uleb128 0x19
+ 833 00da 3C       		.uleb128 0x3c
+ 834 00db 19       		.uleb128 0x19
+ 835 00dc 00       		.byte	0
+ 836 00dd 00       		.byte	0
+ 837 00de 10       		.uleb128 0x10
+ 838 00df 35       		.uleb128 0x35
+ 839 00e0 00       		.byte	0
+ 840 00e1 49       		.uleb128 0x49
+ 841 00e2 13       		.uleb128 0x13
+ 842 00e3 00       		.byte	0
+ 843 00e4 00       		.byte	0
+ 844 00e5 11       		.uleb128 0x11
+ 845 00e6 2E       		.uleb128 0x2e
+ 846 00e7 01       		.byte	0x1
+ 847 00e8 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 18
+
+
+ 848 00e9 19       		.uleb128 0x19
+ 849 00ea 03       		.uleb128 0x3
+ 850 00eb 0E       		.uleb128 0xe
+ 851 00ec 3A       		.uleb128 0x3a
+ 852 00ed 0B       		.uleb128 0xb
+ 853 00ee 3B       		.uleb128 0x3b
+ 854 00ef 0B       		.uleb128 0xb
+ 855 00f0 27       		.uleb128 0x27
+ 856 00f1 19       		.uleb128 0x19
+ 857 00f2 3C       		.uleb128 0x3c
+ 858 00f3 19       		.uleb128 0x19
+ 859 00f4 01       		.uleb128 0x1
+ 860 00f5 13       		.uleb128 0x13
+ 861 00f6 00       		.byte	0
+ 862 00f7 00       		.byte	0
+ 863 00f8 12       		.uleb128 0x12
+ 864 00f9 05       		.uleb128 0x5
+ 865 00fa 00       		.byte	0
+ 866 00fb 49       		.uleb128 0x49
+ 867 00fc 13       		.uleb128 0x13
+ 868 00fd 00       		.byte	0
+ 869 00fe 00       		.byte	0
+ 870 00ff 13       		.uleb128 0x13
+ 871 0100 2E       		.uleb128 0x2e
+ 872 0101 00       		.byte	0
+ 873 0102 3F       		.uleb128 0x3f
+ 874 0103 19       		.uleb128 0x19
+ 875 0104 03       		.uleb128 0x3
+ 876 0105 0E       		.uleb128 0xe
+ 877 0106 3A       		.uleb128 0x3a
+ 878 0107 0B       		.uleb128 0xb
+ 879 0108 3B       		.uleb128 0x3b
+ 880 0109 0B       		.uleb128 0xb
+ 881 010a 27       		.uleb128 0x27
+ 882 010b 19       		.uleb128 0x19
+ 883 010c 3C       		.uleb128 0x3c
+ 884 010d 19       		.uleb128 0x19
+ 885 010e 00       		.byte	0
+ 886 010f 00       		.byte	0
+ 887 0110 14       		.uleb128 0x14
+ 888 0111 2E       		.uleb128 0x2e
+ 889 0112 00       		.byte	0
+ 890 0113 3F       		.uleb128 0x3f
+ 891 0114 19       		.uleb128 0x19
+ 892 0115 03       		.uleb128 0x3
+ 893 0116 0E       		.uleb128 0xe
+ 894 0117 3A       		.uleb128 0x3a
+ 895 0118 0B       		.uleb128 0xb
+ 896 0119 3B       		.uleb128 0x3b
+ 897 011a 0B       		.uleb128 0xb
+ 898 011b 27       		.uleb128 0x27
+ 899 011c 19       		.uleb128 0x19
+ 900 011d 49       		.uleb128 0x49
+ 901 011e 13       		.uleb128 0x13
+ 902 011f 3C       		.uleb128 0x3c
+ 903 0120 19       		.uleb128 0x19
+ 904 0121 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 19
+
+
+ 905 0122 00       		.byte	0
+ 906 0123 15       		.uleb128 0x15
+ 907 0124 2E       		.uleb128 0x2e
+ 908 0125 01       		.byte	0x1
+ 909 0126 3F       		.uleb128 0x3f
+ 910 0127 19       		.uleb128 0x19
+ 911 0128 03       		.uleb128 0x3
+ 912 0129 0E       		.uleb128 0xe
+ 913 012a 3A       		.uleb128 0x3a
+ 914 012b 0B       		.uleb128 0xb
+ 915 012c 3B       		.uleb128 0x3b
+ 916 012d 0B       		.uleb128 0xb
+ 917 012e 27       		.uleb128 0x27
+ 918 012f 19       		.uleb128 0x19
+ 919 0130 49       		.uleb128 0x49
+ 920 0131 13       		.uleb128 0x13
+ 921 0132 3C       		.uleb128 0x3c
+ 922 0133 19       		.uleb128 0x19
+ 923 0134 01       		.uleb128 0x1
+ 924 0135 13       		.uleb128 0x13
+ 925 0136 00       		.byte	0
+ 926 0137 00       		.byte	0
+ 927 0138 16       		.uleb128 0x16
+ 928 0139 2E       		.uleb128 0x2e
+ 929 013a 01       		.byte	0x1
+ 930 013b 3F       		.uleb128 0x3f
+ 931 013c 19       		.uleb128 0x19
+ 932 013d 03       		.uleb128 0x3
+ 933 013e 0E       		.uleb128 0xe
+ 934 013f 3A       		.uleb128 0x3a
+ 935 0140 0B       		.uleb128 0xb
+ 936 0141 3B       		.uleb128 0x3b
+ 937 0142 0B       		.uleb128 0xb
+ 938 0143 27       		.uleb128 0x27
+ 939 0144 19       		.uleb128 0x19
+ 940 0145 49       		.uleb128 0x49
+ 941 0146 13       		.uleb128 0x13
+ 942 0147 3C       		.uleb128 0x3c
+ 943 0148 19       		.uleb128 0x19
+ 944 0149 00       		.byte	0
+ 945 014a 00       		.byte	0
+ 946 014b 00       		.byte	0
+ 947              		.section	.debug_loc,"",%progbits
+ 948              	.Ldebug_loc0:
+ 949              	.LLST0:
+ 950 0000 02000000 		.4byte	.LVL0
+ 951 0004 06000000 		.4byte	.LVL1
+ 952 0008 0200     		.2byte	0x2
+ 953 000a 30       		.byte	0x30
+ 954 000b 9F       		.byte	0x9f
+ 955 000c 12000000 		.4byte	.LVL3
+ 956 0010 16000000 		.4byte	.LVL4
+ 957 0014 0200     		.2byte	0x2
+ 958 0016 30       		.byte	0x30
+ 959 0017 9F       		.byte	0x9f
+ 960 0018 16000000 		.4byte	.LVL4
+ 961 001c 34000000 		.4byte	.LVL10
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 20
+
+
+ 962 0020 0100     		.2byte	0x1
+ 963 0022 54       		.byte	0x54
+ 964 0023 36000000 		.4byte	.LVL11
+ 965 0027 3A000000 		.4byte	.LVL12
+ 966 002b 0100     		.2byte	0x1
+ 967 002d 54       		.byte	0x54
+ 968 002e 00000000 		.4byte	0
+ 969 0032 00000000 		.4byte	0
+ 970              		.section	.debug_aranges,"",%progbits
+ 971 0000 2C000000 		.4byte	0x2c
+ 972 0004 0200     		.2byte	0x2
+ 973 0006 00000000 		.4byte	.Ldebug_info0
+ 974 000a 04       		.byte	0x4
+ 975 000b 00       		.byte	0
+ 976 000c 0000     		.2byte	0
+ 977 000e 0000     		.2byte	0
+ 978 0010 00000000 		.4byte	.LFB63
+ 979 0014 0C000000 		.4byte	.LFE63-.LFB63
+ 980 0018 00000000 		.4byte	.LFB64
+ 981 001c 70000000 		.4byte	.LFE64-.LFB64
+ 982 0020 00000000 		.4byte	.LFB65
+ 983 0024 34000000 		.4byte	.LFE65-.LFB65
+ 984 0028 00000000 		.4byte	0
+ 985 002c 00000000 		.4byte	0
+ 986              		.section	.debug_ranges,"",%progbits
+ 987              	.Ldebug_ranges0:
+ 988 0000 00000000 		.4byte	.LFB63
+ 989 0004 0C000000 		.4byte	.LFE63
+ 990 0008 00000000 		.4byte	.LFB64
+ 991 000c 70000000 		.4byte	.LFE64
+ 992 0010 00000000 		.4byte	.LFB65
+ 993 0014 34000000 		.4byte	.LFE65
+ 994 0018 00000000 		.4byte	0
+ 995 001c 00000000 		.4byte	0
+ 996              		.section	.debug_line,"",%progbits
+ 997              	.Ldebug_line0:
+ 998 0000 BD020000 		.section	.debug_str,"MS",%progbits,1
+ 998      02004102 
+ 998      00000201 
+ 998      FB0E0D00 
+ 998      01010101 
+ 999              	.LASF20:
+ 1000 0000 57414954 		.ascii	"WAIT_TIME_IN_HALF_SECONDS\000"
+ 1000      5F54494D 
+ 1000      455F494E 
+ 1000      5F48414C 
+ 1000      465F5345 
+ 1001              	.LASF34:
+ 1002 001a 4D6F6465 		.ascii	"ModeStatusISR_ClearPending\000"
+ 1002      53746174 
+ 1002      75734953 
+ 1002      525F436C 
+ 1002      65617250 
+ 1003              	.LASF33:
+ 1004 0035 486F726E 		.ascii	"HornRingISR_ClearPending\000"
+ 1004      52696E67 
+ 1004      4953525F 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 21
+
+
+ 1004      436C6561 
+ 1004      7250656E 
+ 1005              	.LASF29:
+ 1006 004e 52616469 		.ascii	"RadioMicKeyISR_ClearPending\000"
+ 1006      6F4D6963 
+ 1006      4B657949 
+ 1006      53525F43 
+ 1006      6C656172 
+ 1007              	.LASF22:
+ 1008 006a 506F7765 		.ascii	"PowerAmpOutput1_Write\000"
+ 1008      72416D70 
+ 1008      4F757470 
+ 1008      7574315F 
+ 1008      57726974 
+ 1009              	.LASF9:
+ 1010 0080 5F5F696E 		.ascii	"__int32_t\000"
+ 1010      7433325F 
+ 1010      7400
+ 1011              	.LASF41:
+ 1012 008a 73746F70 		.ascii	"stopPWMTone\000"
+ 1012      50574D54 
+ 1012      6F6E6500 
+ 1013              	.LASF24:
+ 1014 0096 4C45446F 		.ascii	"LEDoutput_Write\000"
+ 1014      75747075 
+ 1014      745F5772 
+ 1014      69746500 
+ 1015              	.LASF14:
+ 1016 00a6 646F7562 		.ascii	"double\000"
+ 1016      6C6500
+ 1017              	.LASF32:
+ 1018 00ad 4475616C 		.ascii	"DualDelayISR_ClearPending\000"
+ 1018      44656C61 
+ 1018      79495352 
+ 1018      5F436C65 
+ 1018      61725065 
+ 1019              	.LASF10:
+ 1020 00c7 696E7433 		.ascii	"int32_t\000"
+ 1020      325F7400 
+ 1021              	.LASF13:
+ 1022 00cf 666C6F61 		.ascii	"float\000"
+ 1022      7400
+ 1023              	.LASF1:
+ 1024 00d5 756E7369 		.ascii	"unsigned char\000"
+ 1024      676E6564 
+ 1024      20636861 
+ 1024      7200
+ 1025              	.LASF39:
+ 1026 00e3 69735468 		.ascii	"isThereOverload\000"
+ 1026      6572654F 
+ 1026      7665726C 
+ 1026      6F616400 
+ 1027              	.LASF5:
+ 1028 00f3 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1028      20756E73 
+ 1028      69676E65 
+ 1028      6420696E 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 22
+
+
+ 1028      7400
+ 1029              	.LASF3:
+ 1030 0105 73686F72 		.ascii	"short unsigned int\000"
+ 1030      7420756E 
+ 1030      7369676E 
+ 1030      65642069 
+ 1030      6E7400
+ 1031              	.LASF30:
+ 1032 0118 5061726B 		.ascii	"ParkKillISR_ClearPending\000"
+ 1032      4B696C6C 
+ 1032      4953525F 
+ 1032      436C6561 
+ 1032      7250656E 
+ 1033              	.LASF40:
+ 1034 0131 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1034      52784275 
+ 1034      66666572 
+ 1034      00
+ 1035              	.LASF28:
+ 1036 013e 43795764 		.ascii	"CyWdtClear\000"
+ 1036      74436C65 
+ 1036      617200
+ 1037              	.LASF26:
+ 1038 0149 4F766572 		.ascii	"OverloadInput1_Read\000"
+ 1038      6C6F6164 
+ 1038      496E7075 
+ 1038      74315F52 
+ 1038      65616400 
+ 1039              	.LASF21:
+ 1040 015d 624F7665 		.ascii	"bOverloadFlag\000"
+ 1040      726C6F61 
+ 1040      64466C61 
+ 1040      6700
+ 1041              	.LASF12:
+ 1042 016b 75696E74 		.ascii	"uint32\000"
+ 1042      333200
+ 1043              	.LASF36:
+ 1044 0172 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 1044      4320342E 
+ 1044      392E3320 
+ 1044      32303135 
+ 1044      30333033 
+ 1045 01a5 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m3 -mthumb -g -O"
+ 1045      20726576 
+ 1045      6973696F 
+ 1045      6E203232 
+ 1045      31323230 
+ 1046 01d8 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1046      66756E63 
+ 1046      74696F6E 
+ 1046      2D736563 
+ 1046      74696F6E 
+ 1047              	.LASF23:
+ 1048 0200 506F7765 		.ascii	"PowerAmpOutput2_Write\000"
+ 1048      72416D70 
+ 1048      4F757470 
+ 1048      7574325F 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 23
+
+
+ 1048      57726974 
+ 1049              	.LASF8:
+ 1050 0216 756E7369 		.ascii	"unsigned int\000"
+ 1050      676E6564 
+ 1050      20696E74 
+ 1050      00
+ 1051              	.LASF31:
+ 1052 0223 5461636B 		.ascii	"TackSwitchISR_ClearPending\000"
+ 1052      53776974 
+ 1052      63684953 
+ 1052      525F436C 
+ 1052      65617250 
+ 1053              	.LASF35:
+ 1054 023e 73746F70 		.ascii	"stopAudioTone\000"
+ 1054      41756469 
+ 1054      6F546F6E 
+ 1054      6500
+ 1055              	.LASF7:
+ 1056 024c 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1056      206C6F6E 
+ 1056      6720756E 
+ 1056      7369676E 
+ 1056      65642069 
+ 1057              	.LASF18:
+ 1058 0263 64656163 		.ascii	"deactivatePoweredFunctions\000"
+ 1058      74697661 
+ 1058      7465506F 
+ 1058      77657265 
+ 1058      6446756E 
+ 1059              	.LASF27:
+ 1060 027e 4F766572 		.ascii	"OverloadInput2_Read\000"
+ 1060      6C6F6164 
+ 1060      496E7075 
+ 1060      74325F52 
+ 1060      65616400 
+ 1061              	.LASF16:
+ 1062 0292 73697A65 		.ascii	"sizetype\000"
+ 1062      74797065 
+ 1062      00
+ 1063              	.LASF38:
+ 1064 029b 5C5C4441 		.ascii	"\\\\DATA\\Folder Redirection\\faithc\\Desktop\\FAIT"
+ 1064      54415C46 
+ 1064      6F6C6465 
+ 1064      72205265 
+ 1064      64697265 
+ 1065 02c8 48532052 		.ascii	"HS RELEASED FIRMWARE\\SirenProject200W_RevF\\SirenP"
+ 1065      454C4541 
+ 1065      53454420 
+ 1065      4649524D 
+ 1065      57415245 
+ 1066 02f9 726F6A65 		.ascii	"roject200W_RevD\\ReleaseVersion.cydsn\000"
+ 1066      63743230 
+ 1066      30575F52 
+ 1066      6576445C 
+ 1066      52656C65 
+ 1067              	.LASF6:
+ 1068 031e 6C6F6E67 		.ascii	"long long int\000"
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccBi4iZm.s 			page 24
+
+
+ 1068      206C6F6E 
+ 1068      6720696E 
+ 1068      7400
+ 1069              	.LASF15:
+ 1070 032c 63686172 		.ascii	"char\000"
+ 1070      00
+ 1071              	.LASF19:
+ 1072 0331 696E6465 		.ascii	"index\000"
+ 1072      7800
+ 1073              	.LASF2:
+ 1074 0337 73686F72 		.ascii	"short int\000"
+ 1074      7420696E 
+ 1074      7400
+ 1075              	.LASF11:
+ 1076 0341 75696E74 		.ascii	"uint8\000"
+ 1076      3800
+ 1077              	.LASF17:
+ 1078 0347 70726F63 		.ascii	"processOverloadRoutine\000"
+ 1078      6573734F 
+ 1078      7665726C 
+ 1078      6F616452 
+ 1078      6F757469 
+ 1079              	.LASF4:
+ 1080 035e 6C6F6E67 		.ascii	"long int\000"
+ 1080      20696E74 
+ 1080      00
+ 1081              	.LASF0:
+ 1082 0367 7369676E 		.ascii	"signed char\000"
+ 1082      65642063 
+ 1082      68617200 
+ 1083              	.LASF37:
+ 1084 0373 2E5C4661 		.ascii	".\\Fault.c\000"
+ 1084      756C742E 
+ 1084      6300
+ 1085              	.LASF25:
+ 1086 037d 43794465 		.ascii	"CyDelay\000"
+ 1086      6C617900 
+ 1087              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

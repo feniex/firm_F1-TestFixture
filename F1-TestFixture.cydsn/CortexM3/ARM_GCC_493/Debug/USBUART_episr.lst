@@ -1,0 +1,1639 @@
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"USBUART_episr.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.USBUART_EP_1_ISR,"ax",%progbits
+  19              		.align	2
+  20              		.global	USBUART_EP_1_ISR
+  21              		.thumb
+  22              		.thumb_func
+  23              		.type	USBUART_EP_1_ISR, %function
+  24              	USBUART_EP_1_ISR:
+  25              	.LFB0:
+  26              		.file 1 ".\\Generated_Source\\PSoC5\\USBUART_episr.c"
+   1:.\Generated_Source\PSoC5/USBUART_episr.c **** /*******************************************************************************
+   2:.\Generated_Source\PSoC5/USBUART_episr.c **** * File Name: USBUART_episr.c
+   3:.\Generated_Source\PSoC5/USBUART_episr.c **** * Version 2.80
+   4:.\Generated_Source\PSoC5/USBUART_episr.c **** *
+   5:.\Generated_Source\PSoC5/USBUART_episr.c **** * Description:
+   6:.\Generated_Source\PSoC5/USBUART_episr.c **** *  Data endpoint Interrupt Service Routines
+   7:.\Generated_Source\PSoC5/USBUART_episr.c **** *
+   8:.\Generated_Source\PSoC5/USBUART_episr.c **** * Note:
+   9:.\Generated_Source\PSoC5/USBUART_episr.c **** *
+  10:.\Generated_Source\PSoC5/USBUART_episr.c **** ********************************************************************************
+  11:.\Generated_Source\PSoC5/USBUART_episr.c **** * Copyright 2008-2014, Cypress Semiconductor Corporation.  All rights reserved.
+  12:.\Generated_Source\PSoC5/USBUART_episr.c **** * You may use this file only in accordance with the license, terms, conditions,
+  13:.\Generated_Source\PSoC5/USBUART_episr.c **** * disclaimers, and limitations in the end user license agreement accompanying
+  14:.\Generated_Source\PSoC5/USBUART_episr.c **** * the software package with which this file was provided.
+  15:.\Generated_Source\PSoC5/USBUART_episr.c **** *******************************************************************************/
+  16:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  17:.\Generated_Source\PSoC5/USBUART_episr.c **** #include "USBUART.h"
+  18:.\Generated_Source\PSoC5/USBUART_episr.c **** #include "USBUART_pvt.h"
+  19:.\Generated_Source\PSoC5/USBUART_episr.c **** #include "cyapicallbacks.h"
+  20:.\Generated_Source\PSoC5/USBUART_episr.c **** #if (defined(USBUART_ENABLE_MIDI_STREAMING) && (USBUART_ENABLE_MIDI_API != 0u))
+  21:.\Generated_Source\PSoC5/USBUART_episr.c ****     #include "USBUART_midi.h"
+  22:.\Generated_Source\PSoC5/USBUART_episr.c **** #endif /* (defined(USBUART_ENABLE_MIDI_STREAMING) && (USBUART_ENABLE_MIDI_API != 0u)) */
+  23:.\Generated_Source\PSoC5/USBUART_episr.c **** #if ((USBUART_EP_MM == USBUART__EP_DMAAUTO) && (USBUART_EP_DMA_AUTO_OPT == 0u))
+  24:.\Generated_Source\PSoC5/USBUART_episr.c ****     #include "USBUART_EP8_DMA_Done_SR.h"
+  25:.\Generated_Source\PSoC5/USBUART_episr.c ****     #include "USBUART_EP17_DMA_Done_SR.h"
+  26:.\Generated_Source\PSoC5/USBUART_episr.c **** #endif /* (USBUART_EP_MM == USBUART__EP_DMAAUTO) && (USBUART_EP_DMA_AUTO_OPT == 0u) */
+  27:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  28:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  29:.\Generated_Source\PSoC5/USBUART_episr.c **** /***************************************
+  30:.\Generated_Source\PSoC5/USBUART_episr.c **** * Custom Declarations
+  31:.\Generated_Source\PSoC5/USBUART_episr.c **** ***************************************/
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 2
+
+
+  32:.\Generated_Source\PSoC5/USBUART_episr.c **** /* `#START CUSTOM_DECLARATIONS` Place your declaration here */
+  33:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  34:.\Generated_Source\PSoC5/USBUART_episr.c **** /* `#END` */
+  35:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  36:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  37:.\Generated_Source\PSoC5/USBUART_episr.c **** #if(USBUART_EP1_ISR_REMOVE == 0u)
+  38:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  39:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  40:.\Generated_Source\PSoC5/USBUART_episr.c ****     /******************************************************************************
+  41:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Function Name: USBUART_EP_1_ISR
+  42:.\Generated_Source\PSoC5/USBUART_episr.c ****     *******************************************************************************
+  43:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+  44:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Summary:
+  45:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  Endpoint 1 Interrupt Service Routine
+  46:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+  47:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Parameters:
+  48:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  None.
+  49:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+  50:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Return:
+  51:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  None.
+  52:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+  53:.\Generated_Source\PSoC5/USBUART_episr.c ****     ******************************************************************************/
+  54:.\Generated_Source\PSoC5/USBUART_episr.c ****     CY_ISR(USBUART_EP_1_ISR)
+  55:.\Generated_Source\PSoC5/USBUART_episr.c ****     {
+  27              		.loc 1 55 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  56:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT)  && 
+  57:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+  58:.\Generated_Source\PSoC5/USBUART_episr.c ****             uint8 int_en;
+  59:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3 */
+  60:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  61:.\Generated_Source\PSoC5/USBUART_episr.c ****         #ifdef USBUART_EP_1_ISR_ENTRY_CALLBACK
+  62:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP_1_ISR_EntryCallback();
+  63:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_EP_1_ISR_ENTRY_CALLBACK */
+  64:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  65:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#START EP1_USER_CODE` Place your code here */
+  66:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  67:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#END` */
+  68:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  69:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+  70:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+  71:.\Generated_Source\PSoC5/USBUART_episr.c ****             int_en = EA;
+  72:.\Generated_Source\PSoC5/USBUART_episr.c ****             CyGlobalIntEnable;  /* Make sure nested interrupt is enabled */
+  73:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3 */
+  74:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  75:.\Generated_Source\PSoC5/USBUART_episr.c ****         CY_GET_REG8(USBUART_SIE_EP1_CR0_PTR); /* Must read the mode reg */
+  32              		.loc 1 75 0
+  33 0000 0A4B     		ldr	r3, .L3
+  34 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  76:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* Do not toggle ISOC endpoint */
+  77:.\Generated_Source\PSoC5/USBUART_episr.c ****         if((USBUART_EP[USBUART_EP1].attrib & USBUART_EP_TYPE_MASK) !=
+  35              		.loc 1 77 0
+  36 0004 0A4B     		ldr	r3, .L3+4
+  37 0006 1B7B     		ldrb	r3, [r3, #12]	@ zero_extendqisi2
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 3
+
+
+  38 0008 03F00303 		and	r3, r3, #3
+  39 000c 012B     		cmp	r3, #1
+  40 000e 04D0     		beq	.L2
+  78:.\Generated_Source\PSoC5/USBUART_episr.c ****                                                                                     USBUART_EP_TYPE
+  79:.\Generated_Source\PSoC5/USBUART_episr.c ****         {
+  80:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP[USBUART_EP1].epToggle ^= USBUART_EPX_CNT_DATA_TOGGLE;
+  41              		.loc 1 80 0
+  42 0010 074A     		ldr	r2, .L3+4
+  43 0012 D37B     		ldrb	r3, [r2, #15]	@ zero_extendqisi2
+  44 0014 83F08003 		eor	r3, r3, #128
+  45 0018 D373     		strb	r3, [r2, #15]
+  46              	.L2:
+  81:.\Generated_Source\PSoC5/USBUART_episr.c ****         }
+  82:.\Generated_Source\PSoC5/USBUART_episr.c ****         USBUART_EP[USBUART_EP1].apiEpState = USBUART_EVENT_PENDING;
+  47              		.loc 1 82 0
+  48 001a 0122     		movs	r2, #1
+  49 001c 044B     		ldr	r3, .L3+4
+  50 001e 5A73     		strb	r2, [r3, #13]
+  83:.\Generated_Source\PSoC5/USBUART_episr.c ****         CY_SET_REG8(USBUART_SIE_EP_INT_SR_PTR, CY_GET_REG8(USBUART_SIE_EP_INT_SR_PTR) &
+  51              		.loc 1 83 0
+  52 0020 044A     		ldr	r2, .L3+8
+  53 0022 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  54 0024 03F0FE03 		and	r3, r3, #254
+  55 0028 1370     		strb	r3, [r2]
+  56 002a 7047     		bx	lr
+  57              	.L4:
+  58              		.align	2
+  59              	.L3:
+  60 002c 0E600040 		.word	1073766414
+  61 0030 00000000 		.word	USBUART_EP
+  62 0034 0B600040 		.word	1073766411
+  63              		.cfi_endproc
+  64              	.LFE0:
+  65              		.size	USBUART_EP_1_ISR, .-USBUART_EP_1_ISR
+  66              		.section	.text.USBUART_EP_2_ISR,"ax",%progbits
+  67              		.align	2
+  68              		.global	USBUART_EP_2_ISR
+  69              		.thumb
+  70              		.thumb_func
+  71              		.type	USBUART_EP_2_ISR, %function
+  72              	USBUART_EP_2_ISR:
+  73              	.LFB1:
+  84:.\Generated_Source\PSoC5/USBUART_episr.c ****                                                                     (uint8)~USBUART_SIE_EP_INT_EP1_
+  85:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  86:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+  87:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT)
+  88:.\Generated_Source\PSoC5/USBUART_episr.c ****             if(USBUART_midi_out_ep == USBUART_EP1)
+  89:.\Generated_Source\PSoC5/USBUART_episr.c ****             {
+  90:.\Generated_Source\PSoC5/USBUART_episr.c ****                 USBUART_MIDI_OUT_EP_Service();
+  91:.\Generated_Source\PSoC5/USBUART_episr.c ****             }
+  92:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /*  USBUART_ISR_SERVICE_MIDI_OUT */
+  93:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  94:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#START EP1_END_USER_CODE` Place your code here */
+  95:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  96:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#END` */
+  97:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+  98:.\Generated_Source\PSoC5/USBUART_episr.c ****         #ifdef USBUART_EP_1_ISR_EXIT_CALLBACK
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 4
+
+
+  99:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP_1_ISR_ExitCallback();
+ 100:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_EP_1_ISR_EXIT_CALLBACK */
+ 101:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 102:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 103:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 104:.\Generated_Source\PSoC5/USBUART_episr.c ****             EA = int_en;
+ 105:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3 */
+ 106:.\Generated_Source\PSoC5/USBUART_episr.c ****     }
+ 107:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 108:.\Generated_Source\PSoC5/USBUART_episr.c **** #endif   /*  USBUART_EP1_ISR_REMOVE */
+ 109:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 110:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 111:.\Generated_Source\PSoC5/USBUART_episr.c **** #if(USBUART_EP2_ISR_REMOVE == 0u)
+ 112:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 113:.\Generated_Source\PSoC5/USBUART_episr.c ****     /*******************************************************************************
+ 114:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Function Name: USBUART_EP_2_ISR
+ 115:.\Generated_Source\PSoC5/USBUART_episr.c ****     ********************************************************************************
+ 116:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 117:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Summary:
+ 118:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  Endpoint 2 Interrupt Service Routine
+ 119:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 120:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Parameters:
+ 121:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  None.
+ 122:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 123:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Return:
+ 124:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  None.
+ 125:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 126:.\Generated_Source\PSoC5/USBUART_episr.c ****     *******************************************************************************/
+ 127:.\Generated_Source\PSoC5/USBUART_episr.c ****     CY_ISR(USBUART_EP_2_ISR)
+ 128:.\Generated_Source\PSoC5/USBUART_episr.c ****     {
+  74              		.loc 1 128 0
+  75              		.cfi_startproc
+  76              		@ args = 0, pretend = 0, frame = 0
+  77              		@ frame_needed = 0, uses_anonymous_args = 0
+  78              		@ link register save eliminated.
+ 129:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 130:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 131:.\Generated_Source\PSoC5/USBUART_episr.c ****             uint8 int_en;
+ 132:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3 */
+ 133:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 134:.\Generated_Source\PSoC5/USBUART_episr.c ****         #ifdef USBUART_EP_2_ISR_ENTRY_CALLBACK
+ 135:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP_2_ISR_EntryCallback();
+ 136:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_EP_2_ISR_ENTRY_CALLBACK */
+ 137:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 138:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#START EP2_USER_CODE` Place your code here */
+ 139:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 140:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#END` */
+ 141:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 142:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 143:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 144:.\Generated_Source\PSoC5/USBUART_episr.c ****             int_en = EA;
+ 145:.\Generated_Source\PSoC5/USBUART_episr.c ****             CyGlobalIntEnable;  /* Make sure nested interrupt is enabled */
+ 146:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3 */
+ 147:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 148:.\Generated_Source\PSoC5/USBUART_episr.c ****         CY_GET_REG8(USBUART_SIE_EP2_CR0_PTR); /* Must read the mode reg */
+  79              		.loc 1 148 0
+  80 0000 0A4B     		ldr	r3, .L7
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 5
+
+
+  81 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 149:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* Do not toggle ISOC endpoint */
+ 150:.\Generated_Source\PSoC5/USBUART_episr.c ****         if((USBUART_EP[USBUART_EP2].attrib & USBUART_EP_TYPE_MASK) !=
+  82              		.loc 1 150 0
+  83 0004 0A4B     		ldr	r3, .L7+4
+  84 0006 1B7E     		ldrb	r3, [r3, #24]	@ zero_extendqisi2
+  85 0008 03F00303 		and	r3, r3, #3
+  86 000c 012B     		cmp	r3, #1
+  87 000e 04D0     		beq	.L6
+ 151:.\Generated_Source\PSoC5/USBUART_episr.c ****                                                                                     USBUART_EP_TYPE
+ 152:.\Generated_Source\PSoC5/USBUART_episr.c ****         {
+ 153:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP[USBUART_EP2].epToggle ^= USBUART_EPX_CNT_DATA_TOGGLE;
+  88              		.loc 1 153 0
+  89 0010 074A     		ldr	r2, .L7+4
+  90 0012 D37E     		ldrb	r3, [r2, #27]	@ zero_extendqisi2
+  91 0014 83F08003 		eor	r3, r3, #128
+  92 0018 D376     		strb	r3, [r2, #27]
+  93              	.L6:
+ 154:.\Generated_Source\PSoC5/USBUART_episr.c ****         }
+ 155:.\Generated_Source\PSoC5/USBUART_episr.c ****         USBUART_EP[USBUART_EP2].apiEpState = USBUART_EVENT_PENDING;
+  94              		.loc 1 155 0
+  95 001a 0122     		movs	r2, #1
+  96 001c 044B     		ldr	r3, .L7+4
+  97 001e 5A76     		strb	r2, [r3, #25]
+ 156:.\Generated_Source\PSoC5/USBUART_episr.c ****         CY_SET_REG8(USBUART_SIE_EP_INT_SR_PTR, CY_GET_REG8(USBUART_SIE_EP_INT_SR_PTR)
+  98              		.loc 1 156 0
+  99 0020 044A     		ldr	r2, .L7+8
+ 100 0022 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 101 0024 03F0FD03 		and	r3, r3, #253
+ 102 0028 1370     		strb	r3, [r2]
+ 103 002a 7047     		bx	lr
+ 104              	.L8:
+ 105              		.align	2
+ 106              	.L7:
+ 107 002c 1E600040 		.word	1073766430
+ 108 0030 00000000 		.word	USBUART_EP
+ 109 0034 0B600040 		.word	1073766411
+ 110              		.cfi_endproc
+ 111              	.LFE1:
+ 112              		.size	USBUART_EP_2_ISR, .-USBUART_EP_2_ISR
+ 113              		.section	.text.USBUART_EP_3_ISR,"ax",%progbits
+ 114              		.align	2
+ 115              		.global	USBUART_EP_3_ISR
+ 116              		.thumb
+ 117              		.thumb_func
+ 118              		.type	USBUART_EP_3_ISR, %function
+ 119              	USBUART_EP_3_ISR:
+ 120              	.LFB2:
+ 157:.\Generated_Source\PSoC5/USBUART_episr.c ****                                                                         & (uint8)~USBUART_SIE_EP_IN
+ 158:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 159:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 160:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT)
+ 161:.\Generated_Source\PSoC5/USBUART_episr.c ****             if(USBUART_midi_out_ep == USBUART_EP2)
+ 162:.\Generated_Source\PSoC5/USBUART_episr.c ****             {
+ 163:.\Generated_Source\PSoC5/USBUART_episr.c ****                 USBUART_MIDI_OUT_EP_Service();
+ 164:.\Generated_Source\PSoC5/USBUART_episr.c ****             }
+ 165:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /*  USBUART_ISR_SERVICE_MIDI_OUT */
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 6
+
+
+ 166:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 167:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#START EP2_END_USER_CODE` Place your code here */
+ 168:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 169:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#END` */
+ 170:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 171:.\Generated_Source\PSoC5/USBUART_episr.c ****         #ifdef USBUART_EP_2_ISR_EXIT_CALLBACK
+ 172:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP_2_ISR_ExitCallback();
+ 173:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_EP_2_ISR_EXIT_CALLBACK */
+ 174:.\Generated_Source\PSoC5/USBUART_episr.c ****         
+ 175:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 176:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 177:.\Generated_Source\PSoC5/USBUART_episr.c ****             EA = int_en;
+ 178:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3 */
+ 179:.\Generated_Source\PSoC5/USBUART_episr.c ****     }
+ 180:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 181:.\Generated_Source\PSoC5/USBUART_episr.c **** #endif   /*  USBUART_EP2_ISR_REMOVE */
+ 182:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 183:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 184:.\Generated_Source\PSoC5/USBUART_episr.c **** #if(USBUART_EP3_ISR_REMOVE == 0u)
+ 185:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 186:.\Generated_Source\PSoC5/USBUART_episr.c ****     /*******************************************************************************
+ 187:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Function Name: USBUART_EP_3_ISR
+ 188:.\Generated_Source\PSoC5/USBUART_episr.c ****     ********************************************************************************
+ 189:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 190:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Summary:
+ 191:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  Endpoint 3 Interrupt Service Routine
+ 192:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 193:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Parameters:
+ 194:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  None.
+ 195:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 196:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Return:
+ 197:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  None.
+ 198:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 199:.\Generated_Source\PSoC5/USBUART_episr.c ****     *******************************************************************************/
+ 200:.\Generated_Source\PSoC5/USBUART_episr.c ****     CY_ISR(USBUART_EP_3_ISR)
+ 201:.\Generated_Source\PSoC5/USBUART_episr.c ****     {
+ 121              		.loc 1 201 0
+ 122              		.cfi_startproc
+ 123              		@ args = 0, pretend = 0, frame = 0
+ 124              		@ frame_needed = 0, uses_anonymous_args = 0
+ 125              		@ link register save eliminated.
+ 202:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 203:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 204:.\Generated_Source\PSoC5/USBUART_episr.c ****             uint8 int_en;
+ 205:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3 */
+ 206:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 207:.\Generated_Source\PSoC5/USBUART_episr.c ****         #ifdef USBUART_EP_3_ISR_ENTRY_CALLBACK
+ 208:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP_3_ISR_EntryCallback();
+ 209:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_EP_3_ISR_ENTRY_CALLBACK */
+ 210:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 211:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#START EP3_USER_CODE` Place your code here */
+ 212:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 213:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#END` */
+ 214:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 215:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 216:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 217:.\Generated_Source\PSoC5/USBUART_episr.c ****             int_en = EA;
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 7
+
+
+ 218:.\Generated_Source\PSoC5/USBUART_episr.c ****             CyGlobalIntEnable;  /* Make sure nested interrupt is enabled */
+ 219:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 220:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 221:.\Generated_Source\PSoC5/USBUART_episr.c ****         CY_GET_REG8(USBUART_SIE_EP3_CR0_PTR); /* Must read the mode reg */
+ 126              		.loc 1 221 0
+ 127 0000 0C4B     		ldr	r3, .L11
+ 128 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 222:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* Do not toggle ISOC endpoint */
+ 223:.\Generated_Source\PSoC5/USBUART_episr.c ****         if((USBUART_EP[USBUART_EP3].attrib & USBUART_EP_TYPE_MASK) !=
+ 129              		.loc 1 223 0
+ 130 0004 0C4B     		ldr	r3, .L11+4
+ 131 0006 93F82430 		ldrb	r3, [r3, #36]	@ zero_extendqisi2
+ 132 000a 03F00303 		and	r3, r3, #3
+ 133 000e 012B     		cmp	r3, #1
+ 134 0010 06D0     		beq	.L10
+ 224:.\Generated_Source\PSoC5/USBUART_episr.c ****                                                                                     USBUART_EP_TYPE
+ 225:.\Generated_Source\PSoC5/USBUART_episr.c ****         {
+ 226:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP[USBUART_EP3].epToggle ^= USBUART_EPX_CNT_DATA_TOGGLE;
+ 135              		.loc 1 226 0
+ 136 0012 094A     		ldr	r2, .L11+4
+ 137 0014 92F82730 		ldrb	r3, [r2, #39]	@ zero_extendqisi2
+ 138 0018 83F08003 		eor	r3, r3, #128
+ 139 001c 82F82730 		strb	r3, [r2, #39]
+ 140              	.L10:
+ 227:.\Generated_Source\PSoC5/USBUART_episr.c ****         }
+ 228:.\Generated_Source\PSoC5/USBUART_episr.c ****         USBUART_EP[USBUART_EP3].apiEpState = USBUART_EVENT_PENDING;
+ 141              		.loc 1 228 0
+ 142 0020 0122     		movs	r2, #1
+ 143 0022 054B     		ldr	r3, .L11+4
+ 144 0024 83F82520 		strb	r2, [r3, #37]
+ 229:.\Generated_Source\PSoC5/USBUART_episr.c ****         CY_SET_REG8(USBUART_SIE_EP_INT_SR_PTR, CY_GET_REG8(USBUART_SIE_EP_INT_SR_PTR)
+ 145              		.loc 1 229 0
+ 146 0028 044A     		ldr	r2, .L11+8
+ 147 002a 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 148 002c 03F0FB03 		and	r3, r3, #251
+ 149 0030 1370     		strb	r3, [r2]
+ 150 0032 7047     		bx	lr
+ 151              	.L12:
+ 152              		.align	2
+ 153              	.L11:
+ 154 0034 2E600040 		.word	1073766446
+ 155 0038 00000000 		.word	USBUART_EP
+ 156 003c 0B600040 		.word	1073766411
+ 157              		.cfi_endproc
+ 158              	.LFE2:
+ 159              		.size	USBUART_EP_3_ISR, .-USBUART_EP_3_ISR
+ 160              		.section	.text.USBUART_SOF_ISR,"ax",%progbits
+ 161              		.align	2
+ 162              		.global	USBUART_SOF_ISR
+ 163              		.thumb
+ 164              		.thumb_func
+ 165              		.type	USBUART_SOF_ISR, %function
+ 166              	USBUART_SOF_ISR:
+ 167              	.LFB3:
+ 230:.\Generated_Source\PSoC5/USBUART_episr.c ****                                                                         & (uint8)~USBUART_SIE_EP_IN
+ 231:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 232:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 8
+
+
+ 233:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT)
+ 234:.\Generated_Source\PSoC5/USBUART_episr.c ****             if(USBUART_midi_out_ep == USBUART_EP3)
+ 235:.\Generated_Source\PSoC5/USBUART_episr.c ****             {
+ 236:.\Generated_Source\PSoC5/USBUART_episr.c ****                 USBUART_MIDI_OUT_EP_Service();
+ 237:.\Generated_Source\PSoC5/USBUART_episr.c ****             }
+ 238:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /*  USBUART_ISR_SERVICE_MIDI_OUT */
+ 239:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 240:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#START EP3_END_USER_CODE` Place your code here */
+ 241:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 242:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#END` */
+ 243:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 244:.\Generated_Source\PSoC5/USBUART_episr.c ****         #ifdef USBUART_EP_3_ISR_EXIT_CALLBACK
+ 245:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP_3_ISR_ExitCallback();
+ 246:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_EP_3_ISR_EXIT_CALLBACK */
+ 247:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 248:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 249:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 250:.\Generated_Source\PSoC5/USBUART_episr.c ****             EA = int_en;
+ 251:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 252:.\Generated_Source\PSoC5/USBUART_episr.c ****     }
+ 253:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 254:.\Generated_Source\PSoC5/USBUART_episr.c **** #endif   /*  USBUART_EP3_ISR_REMOVE */
+ 255:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 256:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 257:.\Generated_Source\PSoC5/USBUART_episr.c **** #if(USBUART_EP4_ISR_REMOVE == 0u)
+ 258:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 259:.\Generated_Source\PSoC5/USBUART_episr.c ****     /*******************************************************************************
+ 260:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Function Name: USBUART_EP_4_ISR
+ 261:.\Generated_Source\PSoC5/USBUART_episr.c ****     ********************************************************************************
+ 262:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 263:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Summary:
+ 264:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  Endpoint 4 Interrupt Service Routine
+ 265:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 266:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Parameters:
+ 267:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  None.
+ 268:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 269:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Return:
+ 270:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  None.
+ 271:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 272:.\Generated_Source\PSoC5/USBUART_episr.c ****     *******************************************************************************/
+ 273:.\Generated_Source\PSoC5/USBUART_episr.c ****     CY_ISR(USBUART_EP_4_ISR)
+ 274:.\Generated_Source\PSoC5/USBUART_episr.c ****     {
+ 275:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 276:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 277:.\Generated_Source\PSoC5/USBUART_episr.c ****             uint8 int_en;
+ 278:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 279:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 280:.\Generated_Source\PSoC5/USBUART_episr.c ****         #ifdef USBUART_EP_4_ISR_ENTRY_CALLBACK
+ 281:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP_4_ISR_EntryCallback();
+ 282:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_EP_4_ISR_ENTRY_CALLBACK */
+ 283:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 284:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#START EP4_USER_CODE` Place your code here */
+ 285:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 286:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#END` */
+ 287:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 288:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 289:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 9
+
+
+ 290:.\Generated_Source\PSoC5/USBUART_episr.c ****             int_en = EA;
+ 291:.\Generated_Source\PSoC5/USBUART_episr.c ****             CyGlobalIntEnable;  /* Make sure nested interrupt is enabled */
+ 292:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 293:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 294:.\Generated_Source\PSoC5/USBUART_episr.c ****         CY_GET_REG8(USBUART_SIE_EP4_CR0_PTR); /* Must read the mode reg */
+ 295:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* Do not toggle ISOC endpoint */
+ 296:.\Generated_Source\PSoC5/USBUART_episr.c ****         if((USBUART_EP[USBUART_EP4].attrib & USBUART_EP_TYPE_MASK) !=
+ 297:.\Generated_Source\PSoC5/USBUART_episr.c ****                                                                                     USBUART_EP_TYPE
+ 298:.\Generated_Source\PSoC5/USBUART_episr.c ****         {
+ 299:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP[USBUART_EP4].epToggle ^= USBUART_EPX_CNT_DATA_TOGGLE;
+ 300:.\Generated_Source\PSoC5/USBUART_episr.c ****         }
+ 301:.\Generated_Source\PSoC5/USBUART_episr.c ****         USBUART_EP[USBUART_EP4].apiEpState = USBUART_EVENT_PENDING;
+ 302:.\Generated_Source\PSoC5/USBUART_episr.c ****         CY_SET_REG8(USBUART_SIE_EP_INT_SR_PTR, CY_GET_REG8(USBUART_SIE_EP_INT_SR_PTR)
+ 303:.\Generated_Source\PSoC5/USBUART_episr.c ****                                                                         & (uint8)~USBUART_SIE_EP_IN
+ 304:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 305:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 306:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT)
+ 307:.\Generated_Source\PSoC5/USBUART_episr.c ****             if(USBUART_midi_out_ep == USBUART_EP4)
+ 308:.\Generated_Source\PSoC5/USBUART_episr.c ****             {
+ 309:.\Generated_Source\PSoC5/USBUART_episr.c ****                 USBUART_MIDI_OUT_EP_Service();
+ 310:.\Generated_Source\PSoC5/USBUART_episr.c ****             }
+ 311:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /*  USBUART_ISR_SERVICE_MIDI_OUT */
+ 312:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 313:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#START EP4_END_USER_CODE` Place your code here */
+ 314:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 315:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#END` */
+ 316:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 317:.\Generated_Source\PSoC5/USBUART_episr.c ****         #ifdef USBUART_EP_4_ISR_EXIT_CALLBACK
+ 318:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP_4_ISR_ExitCallback();
+ 319:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_EP_4_ISR_EXIT_CALLBACK */
+ 320:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 321:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 322:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 323:.\Generated_Source\PSoC5/USBUART_episr.c ****             EA = int_en;
+ 324:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 325:.\Generated_Source\PSoC5/USBUART_episr.c ****     }
+ 326:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 327:.\Generated_Source\PSoC5/USBUART_episr.c **** #endif   /*  USBUART_EP4_ISR_REMOVE */
+ 328:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 329:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 330:.\Generated_Source\PSoC5/USBUART_episr.c **** #if(USBUART_EP5_ISR_REMOVE == 0u)
+ 331:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 332:.\Generated_Source\PSoC5/USBUART_episr.c ****     /*******************************************************************************
+ 333:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Function Name: USBUART_EP_5_ISR
+ 334:.\Generated_Source\PSoC5/USBUART_episr.c ****     ********************************************************************************
+ 335:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 336:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Summary:
+ 337:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  Endpoint 5 Interrupt Service Routine
+ 338:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 339:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Parameters:
+ 340:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  None.
+ 341:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 342:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Return:
+ 343:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  None.
+ 344:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 345:.\Generated_Source\PSoC5/USBUART_episr.c ****     *******************************************************************************/
+ 346:.\Generated_Source\PSoC5/USBUART_episr.c ****     CY_ISR(USBUART_EP_5_ISR)
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 10
+
+
+ 347:.\Generated_Source\PSoC5/USBUART_episr.c ****     {
+ 348:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 349:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 350:.\Generated_Source\PSoC5/USBUART_episr.c ****             uint8 int_en;
+ 351:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 352:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 353:.\Generated_Source\PSoC5/USBUART_episr.c ****         #ifdef USBUART_EP_5_ISR_ENTRY_CALLBACK
+ 354:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP_5_ISR_EntryCallback();
+ 355:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_EP_5_ISR_ENTRY_CALLBACK */
+ 356:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 357:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#START EP5_USER_CODE` Place your code here */
+ 358:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 359:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#END` */
+ 360:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 361:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 362:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 363:.\Generated_Source\PSoC5/USBUART_episr.c ****             int_en = EA;
+ 364:.\Generated_Source\PSoC5/USBUART_episr.c ****             CyGlobalIntEnable;  /* Make sure nested interrupt is enabled */
+ 365:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 366:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 367:.\Generated_Source\PSoC5/USBUART_episr.c ****         CY_GET_REG8(USBUART_SIE_EP5_CR0_PTR); /* Must read the mode reg */
+ 368:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* Do not toggle ISOC endpoint */
+ 369:.\Generated_Source\PSoC5/USBUART_episr.c ****         if((USBUART_EP[USBUART_EP5].attrib & USBUART_EP_TYPE_MASK) !=
+ 370:.\Generated_Source\PSoC5/USBUART_episr.c ****                                                                                     USBUART_EP_TYPE
+ 371:.\Generated_Source\PSoC5/USBUART_episr.c ****         {
+ 372:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP[USBUART_EP5].epToggle ^= USBUART_EPX_CNT_DATA_TOGGLE;
+ 373:.\Generated_Source\PSoC5/USBUART_episr.c ****         }
+ 374:.\Generated_Source\PSoC5/USBUART_episr.c ****         USBUART_EP[USBUART_EP5].apiEpState = USBUART_EVENT_PENDING;
+ 375:.\Generated_Source\PSoC5/USBUART_episr.c ****         CY_SET_REG8(USBUART_SIE_EP_INT_SR_PTR, CY_GET_REG8(USBUART_SIE_EP_INT_SR_PTR)
+ 376:.\Generated_Source\PSoC5/USBUART_episr.c ****                                                                         & (uint8)~USBUART_SIE_EP_IN
+ 377:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 378:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 379:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT)
+ 380:.\Generated_Source\PSoC5/USBUART_episr.c ****             if(USBUART_midi_out_ep == USBUART_EP5)
+ 381:.\Generated_Source\PSoC5/USBUART_episr.c ****             {
+ 382:.\Generated_Source\PSoC5/USBUART_episr.c ****                 USBUART_MIDI_OUT_EP_Service();
+ 383:.\Generated_Source\PSoC5/USBUART_episr.c ****             }
+ 384:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /*  USBUART_ISR_SERVICE_MIDI_OUT */
+ 385:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 386:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#START EP5_END_USER_CODE` Place your code here */
+ 387:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 388:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#END` */
+ 389:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 390:.\Generated_Source\PSoC5/USBUART_episr.c ****         #ifdef USBUART_EP_5_ISR_EXIT_CALLBACK
+ 391:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP_5_ISR_ExitCallback();
+ 392:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_EP_5_ISR_EXIT_CALLBACK */
+ 393:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 394:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 395:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 396:.\Generated_Source\PSoC5/USBUART_episr.c ****             EA = int_en;
+ 397:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 398:.\Generated_Source\PSoC5/USBUART_episr.c ****     }
+ 399:.\Generated_Source\PSoC5/USBUART_episr.c **** #endif   /*  USBUART_EP5_ISR_REMOVE */
+ 400:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 401:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 402:.\Generated_Source\PSoC5/USBUART_episr.c **** #if(USBUART_EP6_ISR_REMOVE == 0u)
+ 403:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 11
+
+
+ 404:.\Generated_Source\PSoC5/USBUART_episr.c ****     /*******************************************************************************
+ 405:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Function Name: USBUART_EP_6_ISR
+ 406:.\Generated_Source\PSoC5/USBUART_episr.c ****     ********************************************************************************
+ 407:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 408:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Summary:
+ 409:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  Endpoint 6 Interrupt Service Routine
+ 410:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 411:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Parameters:
+ 412:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  None.
+ 413:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 414:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Return:
+ 415:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  None.
+ 416:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 417:.\Generated_Source\PSoC5/USBUART_episr.c ****     *******************************************************************************/
+ 418:.\Generated_Source\PSoC5/USBUART_episr.c ****     CY_ISR(USBUART_EP_6_ISR)
+ 419:.\Generated_Source\PSoC5/USBUART_episr.c ****     {
+ 420:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 421:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 422:.\Generated_Source\PSoC5/USBUART_episr.c ****             uint8 int_en;
+ 423:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 424:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 425:.\Generated_Source\PSoC5/USBUART_episr.c ****         #ifdef USBUART_EP_6_ISR_ENTRY_CALLBACK
+ 426:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP_6_ISR_EntryCallback();
+ 427:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_EP_6_ISR_ENTRY_CALLBACK */
+ 428:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 429:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#START EP6_USER_CODE` Place your code here */
+ 430:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 431:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#END` */
+ 432:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 433:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 434:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 435:.\Generated_Source\PSoC5/USBUART_episr.c ****             int_en = EA;
+ 436:.\Generated_Source\PSoC5/USBUART_episr.c ****             CyGlobalIntEnable;  /* Make sure nested interrupt is enabled */
+ 437:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 438:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 439:.\Generated_Source\PSoC5/USBUART_episr.c ****         CY_GET_REG8(USBUART_SIE_EP6_CR0_PTR); /* Must read the mode reg */
+ 440:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* Do not toggle ISOC endpoint */
+ 441:.\Generated_Source\PSoC5/USBUART_episr.c ****         if((USBUART_EP[USBUART_EP6].attrib & USBUART_EP_TYPE_MASK) !=
+ 442:.\Generated_Source\PSoC5/USBUART_episr.c ****                                                                                     USBUART_EP_TYPE
+ 443:.\Generated_Source\PSoC5/USBUART_episr.c ****         {
+ 444:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP[USBUART_EP6].epToggle ^= USBUART_EPX_CNT_DATA_TOGGLE;
+ 445:.\Generated_Source\PSoC5/USBUART_episr.c ****         }
+ 446:.\Generated_Source\PSoC5/USBUART_episr.c ****         USBUART_EP[USBUART_EP6].apiEpState = USBUART_EVENT_PENDING;
+ 447:.\Generated_Source\PSoC5/USBUART_episr.c ****         CY_SET_REG8(USBUART_SIE_EP_INT_SR_PTR, CY_GET_REG8(USBUART_SIE_EP_INT_SR_PTR)
+ 448:.\Generated_Source\PSoC5/USBUART_episr.c ****                                                                         & (uint8)~USBUART_SIE_EP_IN
+ 449:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 450:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 451:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT)
+ 452:.\Generated_Source\PSoC5/USBUART_episr.c ****             if(USBUART_midi_out_ep == USBUART_EP6)
+ 453:.\Generated_Source\PSoC5/USBUART_episr.c ****             {
+ 454:.\Generated_Source\PSoC5/USBUART_episr.c ****                 USBUART_MIDI_OUT_EP_Service();
+ 455:.\Generated_Source\PSoC5/USBUART_episr.c ****             }
+ 456:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /*  USBUART_ISR_SERVICE_MIDI_OUT  */
+ 457:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 458:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#START EP6_END_USER_CODE` Place your code here */
+ 459:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 460:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#END` */
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 12
+
+
+ 461:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 462:.\Generated_Source\PSoC5/USBUART_episr.c ****         #ifdef USBUART_EP_6_ISR_EXIT_CALLBACK
+ 463:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP_6_ISR_ExitCallback();
+ 464:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_EP_6_ISR_EXIT_CALLBACK */
+ 465:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 466:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 467:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 468:.\Generated_Source\PSoC5/USBUART_episr.c ****             EA = int_en;
+ 469:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 470:.\Generated_Source\PSoC5/USBUART_episr.c ****     }
+ 471:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 472:.\Generated_Source\PSoC5/USBUART_episr.c **** #endif   /*  USBUART_EP6_ISR_REMOVE */
+ 473:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 474:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 475:.\Generated_Source\PSoC5/USBUART_episr.c **** #if(USBUART_EP7_ISR_REMOVE == 0u)
+ 476:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 477:.\Generated_Source\PSoC5/USBUART_episr.c ****     /*******************************************************************************
+ 478:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Function Name: USBUART_EP_7_ISR
+ 479:.\Generated_Source\PSoC5/USBUART_episr.c ****     ********************************************************************************
+ 480:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 481:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Summary:
+ 482:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  Endpoint 7 Interrupt Service Routine
+ 483:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 484:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Parameters:
+ 485:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  None.
+ 486:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 487:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Return:
+ 488:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  None.
+ 489:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 490:.\Generated_Source\PSoC5/USBUART_episr.c ****     *******************************************************************************/
+ 491:.\Generated_Source\PSoC5/USBUART_episr.c ****     CY_ISR(USBUART_EP_7_ISR)
+ 492:.\Generated_Source\PSoC5/USBUART_episr.c ****     {
+ 493:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 494:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 495:.\Generated_Source\PSoC5/USBUART_episr.c ****             uint8 int_en;
+ 496:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 497:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 498:.\Generated_Source\PSoC5/USBUART_episr.c ****         #ifdef USBUART_EP_7_ISR_ENTRY_CALLBACK
+ 499:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP_7_ISR_EntryCallback();
+ 500:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_EP_7_ISR_ENTRY_CALLBACK */
+ 501:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 502:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#START EP7_USER_CODE` Place your code here */
+ 503:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 504:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#END` */
+ 505:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 506:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 507:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 508:.\Generated_Source\PSoC5/USBUART_episr.c ****             int_en = EA;
+ 509:.\Generated_Source\PSoC5/USBUART_episr.c ****             CyGlobalIntEnable;  /* Make sure nested interrupt is enabled */
+ 510:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 511:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 512:.\Generated_Source\PSoC5/USBUART_episr.c ****         CY_GET_REG8(USBUART_SIE_EP7_CR0_PTR); /* Must read the mode reg */
+ 513:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* Do not toggle ISOC endpoint */
+ 514:.\Generated_Source\PSoC5/USBUART_episr.c ****         if((USBUART_EP[USBUART_EP7].attrib & USBUART_EP_TYPE_MASK) !=
+ 515:.\Generated_Source\PSoC5/USBUART_episr.c ****                                                                                     USBUART_EP_TYPE
+ 516:.\Generated_Source\PSoC5/USBUART_episr.c ****         {
+ 517:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP[USBUART_EP7].epToggle ^= USBUART_EPX_CNT_DATA_TOGGLE;
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 13
+
+
+ 518:.\Generated_Source\PSoC5/USBUART_episr.c ****         }
+ 519:.\Generated_Source\PSoC5/USBUART_episr.c ****         USBUART_EP[USBUART_EP7].apiEpState = USBUART_EVENT_PENDING;
+ 520:.\Generated_Source\PSoC5/USBUART_episr.c ****         CY_SET_REG8(USBUART_SIE_EP_INT_SR_PTR, CY_GET_REG8(USBUART_SIE_EP_INT_SR_PTR)
+ 521:.\Generated_Source\PSoC5/USBUART_episr.c ****                                                                         & (uint8)~USBUART_SIE_EP_IN
+ 522:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 523:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 524:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT)
+ 525:.\Generated_Source\PSoC5/USBUART_episr.c ****             if(USBUART_midi_out_ep == USBUART_EP7)
+ 526:.\Generated_Source\PSoC5/USBUART_episr.c ****             {
+ 527:.\Generated_Source\PSoC5/USBUART_episr.c ****                 USBUART_MIDI_OUT_EP_Service();
+ 528:.\Generated_Source\PSoC5/USBUART_episr.c ****             }
+ 529:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /*  USBUART_ISR_SERVICE_MIDI_OUT  */
+ 530:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 531:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#START EP7_END_USER_CODE` Place your code here */
+ 532:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 533:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#END` */
+ 534:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 535:.\Generated_Source\PSoC5/USBUART_episr.c ****         #ifdef USBUART_EP_7_ISR_EXIT_CALLBACK
+ 536:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP_7_ISR_ExitCallback();
+ 537:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_EP_7_ISR_EXIT_CALLBACK */
+ 538:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 539:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 540:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 541:.\Generated_Source\PSoC5/USBUART_episr.c ****             EA = int_en;
+ 542:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 543:.\Generated_Source\PSoC5/USBUART_episr.c ****     }
+ 544:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 545:.\Generated_Source\PSoC5/USBUART_episr.c **** #endif   /*  USBUART_EP7_ISR_REMOVE */
+ 546:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 547:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 548:.\Generated_Source\PSoC5/USBUART_episr.c **** #if(USBUART_EP8_ISR_REMOVE == 0u)
+ 549:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 550:.\Generated_Source\PSoC5/USBUART_episr.c ****     /*******************************************************************************
+ 551:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Function Name: USBUART_EP_8_ISR
+ 552:.\Generated_Source\PSoC5/USBUART_episr.c ****     ********************************************************************************
+ 553:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 554:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Summary:
+ 555:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  Endpoint 8 Interrupt Service Routine
+ 556:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 557:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Parameters:
+ 558:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  None.
+ 559:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 560:.\Generated_Source\PSoC5/USBUART_episr.c ****     * Return:
+ 561:.\Generated_Source\PSoC5/USBUART_episr.c ****     *  None.
+ 562:.\Generated_Source\PSoC5/USBUART_episr.c ****     *
+ 563:.\Generated_Source\PSoC5/USBUART_episr.c ****     *******************************************************************************/
+ 564:.\Generated_Source\PSoC5/USBUART_episr.c ****     CY_ISR(USBUART_EP_8_ISR)
+ 565:.\Generated_Source\PSoC5/USBUART_episr.c ****     {
+ 566:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 567:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 568:.\Generated_Source\PSoC5/USBUART_episr.c ****             uint8 int_en;
+ 569:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 570:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 571:.\Generated_Source\PSoC5/USBUART_episr.c ****         #ifdef USBUART_EP_8_ISR_ENTRY_CALLBACK
+ 572:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP_8_ISR_EntryCallback();
+ 573:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_EP_8_ISR_ENTRY_CALLBACK */
+ 574:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 14
+
+
+ 575:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#START EP8_USER_CODE` Place your code here */
+ 576:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 577:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#END` */
+ 578:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 579:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 580:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 581:.\Generated_Source\PSoC5/USBUART_episr.c ****             int_en = EA;
+ 582:.\Generated_Source\PSoC5/USBUART_episr.c ****             CyGlobalIntEnable;  /* Make sure nested interrupt is enabled */
+ 583:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 584:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 585:.\Generated_Source\PSoC5/USBUART_episr.c ****         CY_GET_REG8(USBUART_SIE_EP8_CR0_PTR); /* Must read the mode reg */
+ 586:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* Do not toggle ISOC endpoint */
+ 587:.\Generated_Source\PSoC5/USBUART_episr.c ****         if((USBUART_EP[USBUART_EP8].attrib & USBUART_EP_TYPE_MASK) !=
+ 588:.\Generated_Source\PSoC5/USBUART_episr.c ****                                                                                     USBUART_EP_TYPE
+ 589:.\Generated_Source\PSoC5/USBUART_episr.c ****         {
+ 590:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP[USBUART_EP8].epToggle ^= USBUART_EPX_CNT_DATA_TOGGLE;
+ 591:.\Generated_Source\PSoC5/USBUART_episr.c ****         }
+ 592:.\Generated_Source\PSoC5/USBUART_episr.c ****         USBUART_EP[USBUART_EP8].apiEpState = USBUART_EVENT_PENDING;
+ 593:.\Generated_Source\PSoC5/USBUART_episr.c ****         CY_SET_REG8(USBUART_SIE_EP_INT_SR_PTR, CY_GET_REG8(USBUART_SIE_EP_INT_SR_PTR)
+ 594:.\Generated_Source\PSoC5/USBUART_episr.c ****                                                                         & (uint8)~USBUART_SIE_EP_IN
+ 595:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 596:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 597:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT)
+ 598:.\Generated_Source\PSoC5/USBUART_episr.c ****             if(USBUART_midi_out_ep == USBUART_EP8)
+ 599:.\Generated_Source\PSoC5/USBUART_episr.c ****             {
+ 600:.\Generated_Source\PSoC5/USBUART_episr.c ****                 USBUART_MIDI_OUT_EP_Service();
+ 601:.\Generated_Source\PSoC5/USBUART_episr.c ****             }
+ 602:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /*  USBUART_ISR_SERVICE_MIDI_OUT */
+ 603:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 604:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#START EP8_END_USER_CODE` Place your code here */
+ 605:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 606:.\Generated_Source\PSoC5/USBUART_episr.c ****         /* `#END` */
+ 607:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 608:.\Generated_Source\PSoC5/USBUART_episr.c ****         #ifdef USBUART_EP_8_ISR_EXIT_CALLBACK
+ 609:.\Generated_Source\PSoC5/USBUART_episr.c ****             USBUART_EP_8_ISR_ExitCallback();
+ 610:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* USBUART_EP_8_ISR_EXIT_CALLBACK */
+ 611:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 612:.\Generated_Source\PSoC5/USBUART_episr.c ****         #if (defined(USBUART_ENABLE_MIDI_STREAMING) && !defined(USBUART_MAIN_SERVICE_MIDI_OUT) && \
+ 613:.\Generated_Source\PSoC5/USBUART_episr.c ****                      USBUART_ISR_SERVICE_MIDI_OUT && CY_PSOC3)
+ 614:.\Generated_Source\PSoC5/USBUART_episr.c ****             EA = int_en;
+ 615:.\Generated_Source\PSoC5/USBUART_episr.c ****         #endif /* CY_PSOC3 & USBUART_ISR_SERVICE_MIDI_OUT  */
+ 616:.\Generated_Source\PSoC5/USBUART_episr.c ****     }
+ 617:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 618:.\Generated_Source\PSoC5/USBUART_episr.c **** #endif   /*  USBUART_EP8_ISR_REMOVE */
+ 619:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 620:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 621:.\Generated_Source\PSoC5/USBUART_episr.c **** /*******************************************************************************
+ 622:.\Generated_Source\PSoC5/USBUART_episr.c **** * Function Name: USBUART_SOF_ISR
+ 623:.\Generated_Source\PSoC5/USBUART_episr.c **** ********************************************************************************
+ 624:.\Generated_Source\PSoC5/USBUART_episr.c **** *
+ 625:.\Generated_Source\PSoC5/USBUART_episr.c **** * Summary:
+ 626:.\Generated_Source\PSoC5/USBUART_episr.c **** *  Start of Frame Interrupt Service Routine
+ 627:.\Generated_Source\PSoC5/USBUART_episr.c **** *
+ 628:.\Generated_Source\PSoC5/USBUART_episr.c **** * Parameters:
+ 629:.\Generated_Source\PSoC5/USBUART_episr.c **** *  None.
+ 630:.\Generated_Source\PSoC5/USBUART_episr.c **** *
+ 631:.\Generated_Source\PSoC5/USBUART_episr.c **** * Return:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 15
+
+
+ 632:.\Generated_Source\PSoC5/USBUART_episr.c **** *  None.
+ 633:.\Generated_Source\PSoC5/USBUART_episr.c **** *
+ 634:.\Generated_Source\PSoC5/USBUART_episr.c **** *******************************************************************************/
+ 635:.\Generated_Source\PSoC5/USBUART_episr.c **** CY_ISR(USBUART_SOF_ISR)
+ 636:.\Generated_Source\PSoC5/USBUART_episr.c **** {
+ 168              		.loc 1 636 0
+ 169              		.cfi_startproc
+ 170              		@ args = 0, pretend = 0, frame = 0
+ 171              		@ frame_needed = 0, uses_anonymous_args = 0
+ 172              		@ link register save eliminated.
+ 173 0000 7047     		bx	lr
+ 174              		.cfi_endproc
+ 175              	.LFE3:
+ 176              		.size	USBUART_SOF_ISR, .-USBUART_SOF_ISR
+ 177 0002 00BF     		.section	.text.USBUART_BUS_RESET_ISR,"ax",%progbits
+ 178              		.align	2
+ 179              		.global	USBUART_BUS_RESET_ISR
+ 180              		.thumb
+ 181              		.thumb_func
+ 182              		.type	USBUART_BUS_RESET_ISR, %function
+ 183              	USBUART_BUS_RESET_ISR:
+ 184              	.LFB4:
+ 637:.\Generated_Source\PSoC5/USBUART_episr.c ****     #ifdef USBUART_SOF_ISR_INTERRUPT_CALLBACK
+ 638:.\Generated_Source\PSoC5/USBUART_episr.c ****         USBUART_SOF_ISR_InterruptCallback();
+ 639:.\Generated_Source\PSoC5/USBUART_episr.c ****     #endif /* USBUART_SOF_ISR_INTERRUPT_CALLBACK */
+ 640:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 641:.\Generated_Source\PSoC5/USBUART_episr.c ****     /* `#START SOF_USER_CODE` Place your code here */
+ 642:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 643:.\Generated_Source\PSoC5/USBUART_episr.c ****     /* `#END` */
+ 644:.\Generated_Source\PSoC5/USBUART_episr.c **** }
+ 645:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 646:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 647:.\Generated_Source\PSoC5/USBUART_episr.c **** /*******************************************************************************
+ 648:.\Generated_Source\PSoC5/USBUART_episr.c **** * Function Name: USBUART_BUS_RESET_ISR
+ 649:.\Generated_Source\PSoC5/USBUART_episr.c **** ********************************************************************************
+ 650:.\Generated_Source\PSoC5/USBUART_episr.c **** *
+ 651:.\Generated_Source\PSoC5/USBUART_episr.c **** * Summary:
+ 652:.\Generated_Source\PSoC5/USBUART_episr.c **** *  USB Bus Reset Interrupt Service Routine.  Calls _Start with the same
+ 653:.\Generated_Source\PSoC5/USBUART_episr.c **** *  parameters as the last USER call to _Start
+ 654:.\Generated_Source\PSoC5/USBUART_episr.c **** *
+ 655:.\Generated_Source\PSoC5/USBUART_episr.c **** * Parameters:
+ 656:.\Generated_Source\PSoC5/USBUART_episr.c **** *  None.
+ 657:.\Generated_Source\PSoC5/USBUART_episr.c **** *
+ 658:.\Generated_Source\PSoC5/USBUART_episr.c **** * Return:
+ 659:.\Generated_Source\PSoC5/USBUART_episr.c **** *  None.
+ 660:.\Generated_Source\PSoC5/USBUART_episr.c **** *
+ 661:.\Generated_Source\PSoC5/USBUART_episr.c **** *******************************************************************************/
+ 662:.\Generated_Source\PSoC5/USBUART_episr.c **** CY_ISR(USBUART_BUS_RESET_ISR)
+ 663:.\Generated_Source\PSoC5/USBUART_episr.c **** {
+ 185              		.loc 1 663 0
+ 186              		.cfi_startproc
+ 187              		@ args = 0, pretend = 0, frame = 0
+ 188              		@ frame_needed = 0, uses_anonymous_args = 0
+ 189              		.loc 1 663 0
+ 190 0000 08B5     		push	{r3, lr}
+ 191              		.cfi_def_cfa_offset 8
+ 192              		.cfi_offset 3, -8
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 16
+
+
+ 193              		.cfi_offset 14, -4
+ 664:.\Generated_Source\PSoC5/USBUART_episr.c ****     #ifdef USBUART_BUS_RESET_ISR_ENTRY_CALLBACK
+ 665:.\Generated_Source\PSoC5/USBUART_episr.c ****         USBUART_BUS_RESET_ISR_EntryCallback();
+ 666:.\Generated_Source\PSoC5/USBUART_episr.c ****     #endif /* USBUART_BUS_RESET_ISR_ENTRY_CALLBACK */
+ 667:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 668:.\Generated_Source\PSoC5/USBUART_episr.c ****     /* `#START BUS_RESET_USER_CODE` Place your code here */
+ 669:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 670:.\Generated_Source\PSoC5/USBUART_episr.c ****     /* `#END` */
+ 671:.\Generated_Source\PSoC5/USBUART_episr.c **** 
+ 672:.\Generated_Source\PSoC5/USBUART_episr.c ****     USBUART_ReInitComponent();
+ 194              		.loc 1 672 0
+ 195 0002 FFF7FEFF 		bl	USBUART_ReInitComponent
+ 196              	.LVL0:
+ 197 0006 08BD     		pop	{r3, pc}
+ 198              		.cfi_endproc
+ 199              	.LFE4:
+ 200              		.size	USBUART_BUS_RESET_ISR, .-USBUART_BUS_RESET_ISR
+ 201              		.text
+ 202              	.Letext0:
+ 203              		.file 2 ".\\Generated_Source\\PSoC5\\cytypes.h"
+ 204              		.file 3 ".\\Generated_Source\\PSoC5\\USBUART.h"
+ 205              		.file 4 ".\\Generated_Source\\PSoC5\\USBUART_pvt.h"
+ 206              		.section	.debug_info,"",%progbits
+ 207              	.Ldebug_info0:
+ 208 0000 B7010000 		.4byte	0x1b7
+ 209 0004 0400     		.2byte	0x4
+ 210 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 211 000a 04       		.byte	0x4
+ 212 000b 01       		.uleb128 0x1
+ 213 000c CC000000 		.4byte	.LASF30
+ 214 0010 01       		.byte	0x1
+ 215 0011 88010000 		.4byte	.LASF31
+ 216 0015 0F020000 		.4byte	.LASF32
+ 217 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 218 001d 00000000 		.4byte	0
+ 219 0021 00000000 		.4byte	.Ldebug_line0
+ 220 0025 02       		.uleb128 0x2
+ 221 0026 01       		.byte	0x1
+ 222 0027 06       		.byte	0x6
+ 223 0028 B2020000 		.4byte	.LASF0
+ 224 002c 02       		.uleb128 0x2
+ 225 002d 01       		.byte	0x1
+ 226 002e 08       		.byte	0x8
+ 227 002f 93000000 		.4byte	.LASF1
+ 228 0033 02       		.uleb128 0x2
+ 229 0034 02       		.byte	0x2
+ 230 0035 05       		.byte	0x5
+ 231 0036 DF010000 		.4byte	.LASF2
+ 232 003a 02       		.uleb128 0x2
+ 233 003b 02       		.byte	0x2
+ 234 003c 07       		.byte	0x7
+ 235 003d 18000000 		.4byte	.LASF3
+ 236 0041 02       		.uleb128 0x2
+ 237 0042 04       		.byte	0x4
+ 238 0043 05       		.byte	0x5
+ 239 0044 92020000 		.4byte	.LASF4
+ 240 0048 02       		.uleb128 0x2
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 17
+
+
+ 241 0049 04       		.byte	0x4
+ 242 004a 07       		.byte	0x7
+ 243 004b 6B000000 		.4byte	.LASF5
+ 244 004f 02       		.uleb128 0x2
+ 245 0050 08       		.byte	0x8
+ 246 0051 05       		.byte	0x5
+ 247 0052 C1010000 		.4byte	.LASF6
+ 248 0056 02       		.uleb128 0x2
+ 249 0057 08       		.byte	0x8
+ 250 0058 07       		.byte	0x7
+ 251 0059 67010000 		.4byte	.LASF7
+ 252 005d 03       		.uleb128 0x3
+ 253 005e 04       		.byte	0x4
+ 254 005f 05       		.byte	0x5
+ 255 0060 696E7400 		.ascii	"int\000"
+ 256 0064 02       		.uleb128 0x2
+ 257 0065 04       		.byte	0x4
+ 258 0066 07       		.byte	0x7
+ 259 0067 5A010000 		.4byte	.LASF8
+ 260 006b 04       		.uleb128 0x4
+ 261 006c FF010000 		.4byte	.LASF9
+ 262 0070 02       		.byte	0x2
+ 263 0071 C2       		.byte	0xc2
+ 264 0072 2C000000 		.4byte	0x2c
+ 265 0076 04       		.uleb128 0x4
+ 266 0077 BA000000 		.4byte	.LASF10
+ 267 007b 02       		.byte	0x2
+ 268 007c C3       		.byte	0xc3
+ 269 007d 3A000000 		.4byte	0x3a
+ 270 0081 02       		.uleb128 0x2
+ 271 0082 04       		.byte	0x4
+ 272 0083 04       		.byte	0x4
+ 273 0084 4C000000 		.4byte	.LASF11
+ 274 0088 02       		.uleb128 0x2
+ 275 0089 08       		.byte	0x8
+ 276 008a 04       		.byte	0x4
+ 277 008b A1000000 		.4byte	.LASF12
+ 278 008f 02       		.uleb128 0x2
+ 279 0090 01       		.byte	0x1
+ 280 0091 08       		.byte	0x8
+ 281 0092 CF010000 		.4byte	.LASF13
+ 282 0096 05       		.uleb128 0x5
+ 283 0097 66000000 		.4byte	.LASF14
+ 284 009b 02       		.byte	0x2
+ 285 009c 6C01     		.2byte	0x16c
+ 286 009e A2000000 		.4byte	0xa2
+ 287 00a2 06       		.uleb128 0x6
+ 288 00a3 6B000000 		.4byte	0x6b
+ 289 00a7 02       		.uleb128 0x2
+ 290 00a8 04       		.byte	0x4
+ 291 00a9 07       		.byte	0x7
+ 292 00aa B1010000 		.4byte	.LASF15
+ 293 00ae 07       		.uleb128 0x7
+ 294 00af 0C       		.byte	0xc
+ 295 00b0 03       		.byte	0x3
+ 296 00b1 7A       		.byte	0x7a
+ 297 00b2 23010000 		.4byte	0x123
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 18
+
+
+ 298 00b6 08       		.uleb128 0x8
+ 299 00b7 A8000000 		.4byte	.LASF16
+ 300 00bb 03       		.byte	0x3
+ 301 00bc 7C       		.byte	0x7c
+ 302 00bd 6B000000 		.4byte	0x6b
+ 303 00c1 00       		.byte	0
+ 304 00c2 08       		.uleb128 0x8
+ 305 00c3 C1000000 		.4byte	.LASF17
+ 306 00c7 03       		.byte	0x3
+ 307 00c8 7D       		.byte	0x7d
+ 308 00c9 6B000000 		.4byte	0x6b
+ 309 00cd 01       		.byte	0x1
+ 310 00ce 08       		.uleb128 0x8
+ 311 00cf 7E010000 		.4byte	.LASF18
+ 312 00d3 03       		.byte	0x3
+ 313 00d4 7E       		.byte	0x7e
+ 314 00d5 6B000000 		.4byte	0x6b
+ 315 00d9 02       		.byte	0x2
+ 316 00da 08       		.uleb128 0x8
+ 317 00db 52000000 		.4byte	.LASF19
+ 318 00df 03       		.byte	0x3
+ 319 00e0 7F       		.byte	0x7f
+ 320 00e1 6B000000 		.4byte	0x6b
+ 321 00e5 03       		.byte	0x3
+ 322 00e6 08       		.uleb128 0x8
+ 323 00e7 7D000000 		.4byte	.LASF20
+ 324 00eb 03       		.byte	0x3
+ 325 00ec 80       		.byte	0x80
+ 326 00ed 6B000000 		.4byte	0x6b
+ 327 00f1 04       		.byte	0x4
+ 328 00f2 08       		.uleb128 0x8
+ 329 00f3 BA010000 		.4byte	.LASF21
+ 330 00f7 03       		.byte	0x3
+ 331 00f8 81       		.byte	0x81
+ 332 00f9 6B000000 		.4byte	0x6b
+ 333 00fd 05       		.byte	0x5
+ 334 00fe 08       		.uleb128 0x8
+ 335 00ff AF000000 		.4byte	.LASF22
+ 336 0103 03       		.byte	0x3
+ 337 0104 82       		.byte	0x82
+ 338 0105 76000000 		.4byte	0x76
+ 339 0109 06       		.byte	0x6
+ 340 010a 08       		.uleb128 0x8
+ 341 010b D4010000 		.4byte	.LASF23
+ 342 010f 03       		.byte	0x3
+ 343 0110 83       		.byte	0x83
+ 344 0111 76000000 		.4byte	0x76
+ 345 0115 08       		.byte	0x8
+ 346 0116 08       		.uleb128 0x8
+ 347 0117 05020000 		.4byte	.LASF24
+ 348 011b 03       		.byte	0x3
+ 349 011c 84       		.byte	0x84
+ 350 011d 6B000000 		.4byte	0x6b
+ 351 0121 0A       		.byte	0xa
+ 352 0122 00       		.byte	0
+ 353 0123 04       		.uleb128 0x4
+ 354 0124 9B020000 		.4byte	.LASF25
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 19
+
+
+ 355 0128 03       		.byte	0x3
+ 356 0129 85       		.byte	0x85
+ 357 012a AE000000 		.4byte	0xae
+ 358 012e 09       		.uleb128 0x9
+ 359 012f BE020000 		.4byte	.LASF26
+ 360 0133 01       		.byte	0x1
+ 361 0134 36       		.byte	0x36
+ 362 0135 00000000 		.4byte	.LFB0
+ 363 0139 38000000 		.4byte	.LFE0-.LFB0
+ 364 013d 01       		.uleb128 0x1
+ 365 013e 9C       		.byte	0x9c
+ 366 013f 09       		.uleb128 0x9
+ 367 0140 2B000000 		.4byte	.LASF27
+ 368 0144 01       		.byte	0x1
+ 369 0145 7F       		.byte	0x7f
+ 370 0146 00000000 		.4byte	.LFB1
+ 371 014a 38000000 		.4byte	.LFE1-.LFB1
+ 372 014e 01       		.uleb128 0x1
+ 373 014f 9C       		.byte	0x9c
+ 374 0150 09       		.uleb128 0x9
+ 375 0151 82000000 		.4byte	.LASF28
+ 376 0155 01       		.byte	0x1
+ 377 0156 C8       		.byte	0xc8
+ 378 0157 00000000 		.4byte	.LFB2
+ 379 015b 40000000 		.4byte	.LFE2-.LFB2
+ 380 015f 01       		.uleb128 0x1
+ 381 0160 9C       		.byte	0x9c
+ 382 0161 0A       		.uleb128 0xa
+ 383 0162 3C000000 		.4byte	.LASF29
+ 384 0166 01       		.byte	0x1
+ 385 0167 7B02     		.2byte	0x27b
+ 386 0169 00000000 		.4byte	.LFB3
+ 387 016d 02000000 		.4byte	.LFE3-.LFB3
+ 388 0171 01       		.uleb128 0x1
+ 389 0172 9C       		.byte	0x9c
+ 390 0173 0B       		.uleb128 0xb
+ 391 0174 E9010000 		.4byte	.LASF33
+ 392 0178 01       		.byte	0x1
+ 393 0179 9602     		.2byte	0x296
+ 394 017b 00000000 		.4byte	.LFB4
+ 395 017f 08000000 		.4byte	.LFE4-.LFB4
+ 396 0183 01       		.uleb128 0x1
+ 397 0184 9C       		.byte	0x9c
+ 398 0185 93010000 		.4byte	0x193
+ 399 0189 0C       		.uleb128 0xc
+ 400 018a 06000000 		.4byte	.LVL0
+ 401 018e B3010000 		.4byte	0x1b3
+ 402 0192 00       		.byte	0
+ 403 0193 0D       		.uleb128 0xd
+ 404 0194 23010000 		.4byte	0x123
+ 405 0198 A3010000 		.4byte	0x1a3
+ 406 019c 0E       		.uleb128 0xe
+ 407 019d A7000000 		.4byte	0xa7
+ 408 01a1 08       		.byte	0x8
+ 409 01a2 00       		.byte	0
+ 410 01a3 0F       		.uleb128 0xf
+ 411 01a4 5B000000 		.4byte	.LASF34
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 20
+
+
+ 412 01a8 04       		.byte	0x4
+ 413 01a9 34       		.byte	0x34
+ 414 01aa AE010000 		.4byte	0x1ae
+ 415 01ae 06       		.uleb128 0x6
+ 416 01af 93010000 		.4byte	0x193
+ 417 01b3 10       		.uleb128 0x10
+ 418 01b4 00000000 		.4byte	.LASF35
+ 419 01b8 04       		.byte	0x4
+ 420 01b9 4D       		.byte	0x4d
+ 421 01ba 00       		.byte	0
+ 422              		.section	.debug_abbrev,"",%progbits
+ 423              	.Ldebug_abbrev0:
+ 424 0000 01       		.uleb128 0x1
+ 425 0001 11       		.uleb128 0x11
+ 426 0002 01       		.byte	0x1
+ 427 0003 25       		.uleb128 0x25
+ 428 0004 0E       		.uleb128 0xe
+ 429 0005 13       		.uleb128 0x13
+ 430 0006 0B       		.uleb128 0xb
+ 431 0007 03       		.uleb128 0x3
+ 432 0008 0E       		.uleb128 0xe
+ 433 0009 1B       		.uleb128 0x1b
+ 434 000a 0E       		.uleb128 0xe
+ 435 000b 55       		.uleb128 0x55
+ 436 000c 17       		.uleb128 0x17
+ 437 000d 11       		.uleb128 0x11
+ 438 000e 01       		.uleb128 0x1
+ 439 000f 10       		.uleb128 0x10
+ 440 0010 17       		.uleb128 0x17
+ 441 0011 00       		.byte	0
+ 442 0012 00       		.byte	0
+ 443 0013 02       		.uleb128 0x2
+ 444 0014 24       		.uleb128 0x24
+ 445 0015 00       		.byte	0
+ 446 0016 0B       		.uleb128 0xb
+ 447 0017 0B       		.uleb128 0xb
+ 448 0018 3E       		.uleb128 0x3e
+ 449 0019 0B       		.uleb128 0xb
+ 450 001a 03       		.uleb128 0x3
+ 451 001b 0E       		.uleb128 0xe
+ 452 001c 00       		.byte	0
+ 453 001d 00       		.byte	0
+ 454 001e 03       		.uleb128 0x3
+ 455 001f 24       		.uleb128 0x24
+ 456 0020 00       		.byte	0
+ 457 0021 0B       		.uleb128 0xb
+ 458 0022 0B       		.uleb128 0xb
+ 459 0023 3E       		.uleb128 0x3e
+ 460 0024 0B       		.uleb128 0xb
+ 461 0025 03       		.uleb128 0x3
+ 462 0026 08       		.uleb128 0x8
+ 463 0027 00       		.byte	0
+ 464 0028 00       		.byte	0
+ 465 0029 04       		.uleb128 0x4
+ 466 002a 16       		.uleb128 0x16
+ 467 002b 00       		.byte	0
+ 468 002c 03       		.uleb128 0x3
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 21
+
+
+ 469 002d 0E       		.uleb128 0xe
+ 470 002e 3A       		.uleb128 0x3a
+ 471 002f 0B       		.uleb128 0xb
+ 472 0030 3B       		.uleb128 0x3b
+ 473 0031 0B       		.uleb128 0xb
+ 474 0032 49       		.uleb128 0x49
+ 475 0033 13       		.uleb128 0x13
+ 476 0034 00       		.byte	0
+ 477 0035 00       		.byte	0
+ 478 0036 05       		.uleb128 0x5
+ 479 0037 16       		.uleb128 0x16
+ 480 0038 00       		.byte	0
+ 481 0039 03       		.uleb128 0x3
+ 482 003a 0E       		.uleb128 0xe
+ 483 003b 3A       		.uleb128 0x3a
+ 484 003c 0B       		.uleb128 0xb
+ 485 003d 3B       		.uleb128 0x3b
+ 486 003e 05       		.uleb128 0x5
+ 487 003f 49       		.uleb128 0x49
+ 488 0040 13       		.uleb128 0x13
+ 489 0041 00       		.byte	0
+ 490 0042 00       		.byte	0
+ 491 0043 06       		.uleb128 0x6
+ 492 0044 35       		.uleb128 0x35
+ 493 0045 00       		.byte	0
+ 494 0046 49       		.uleb128 0x49
+ 495 0047 13       		.uleb128 0x13
+ 496 0048 00       		.byte	0
+ 497 0049 00       		.byte	0
+ 498 004a 07       		.uleb128 0x7
+ 499 004b 13       		.uleb128 0x13
+ 500 004c 01       		.byte	0x1
+ 501 004d 0B       		.uleb128 0xb
+ 502 004e 0B       		.uleb128 0xb
+ 503 004f 3A       		.uleb128 0x3a
+ 504 0050 0B       		.uleb128 0xb
+ 505 0051 3B       		.uleb128 0x3b
+ 506 0052 0B       		.uleb128 0xb
+ 507 0053 01       		.uleb128 0x1
+ 508 0054 13       		.uleb128 0x13
+ 509 0055 00       		.byte	0
+ 510 0056 00       		.byte	0
+ 511 0057 08       		.uleb128 0x8
+ 512 0058 0D       		.uleb128 0xd
+ 513 0059 00       		.byte	0
+ 514 005a 03       		.uleb128 0x3
+ 515 005b 0E       		.uleb128 0xe
+ 516 005c 3A       		.uleb128 0x3a
+ 517 005d 0B       		.uleb128 0xb
+ 518 005e 3B       		.uleb128 0x3b
+ 519 005f 0B       		.uleb128 0xb
+ 520 0060 49       		.uleb128 0x49
+ 521 0061 13       		.uleb128 0x13
+ 522 0062 38       		.uleb128 0x38
+ 523 0063 0B       		.uleb128 0xb
+ 524 0064 00       		.byte	0
+ 525 0065 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 22
+
+
+ 526 0066 09       		.uleb128 0x9
+ 527 0067 2E       		.uleb128 0x2e
+ 528 0068 00       		.byte	0
+ 529 0069 3F       		.uleb128 0x3f
+ 530 006a 19       		.uleb128 0x19
+ 531 006b 03       		.uleb128 0x3
+ 532 006c 0E       		.uleb128 0xe
+ 533 006d 3A       		.uleb128 0x3a
+ 534 006e 0B       		.uleb128 0xb
+ 535 006f 3B       		.uleb128 0x3b
+ 536 0070 0B       		.uleb128 0xb
+ 537 0071 27       		.uleb128 0x27
+ 538 0072 19       		.uleb128 0x19
+ 539 0073 11       		.uleb128 0x11
+ 540 0074 01       		.uleb128 0x1
+ 541 0075 12       		.uleb128 0x12
+ 542 0076 06       		.uleb128 0x6
+ 543 0077 40       		.uleb128 0x40
+ 544 0078 18       		.uleb128 0x18
+ 545 0079 9742     		.uleb128 0x2117
+ 546 007b 19       		.uleb128 0x19
+ 547 007c 00       		.byte	0
+ 548 007d 00       		.byte	0
+ 549 007e 0A       		.uleb128 0xa
+ 550 007f 2E       		.uleb128 0x2e
+ 551 0080 00       		.byte	0
+ 552 0081 3F       		.uleb128 0x3f
+ 553 0082 19       		.uleb128 0x19
+ 554 0083 03       		.uleb128 0x3
+ 555 0084 0E       		.uleb128 0xe
+ 556 0085 3A       		.uleb128 0x3a
+ 557 0086 0B       		.uleb128 0xb
+ 558 0087 3B       		.uleb128 0x3b
+ 559 0088 05       		.uleb128 0x5
+ 560 0089 27       		.uleb128 0x27
+ 561 008a 19       		.uleb128 0x19
+ 562 008b 11       		.uleb128 0x11
+ 563 008c 01       		.uleb128 0x1
+ 564 008d 12       		.uleb128 0x12
+ 565 008e 06       		.uleb128 0x6
+ 566 008f 40       		.uleb128 0x40
+ 567 0090 18       		.uleb128 0x18
+ 568 0091 9742     		.uleb128 0x2117
+ 569 0093 19       		.uleb128 0x19
+ 570 0094 00       		.byte	0
+ 571 0095 00       		.byte	0
+ 572 0096 0B       		.uleb128 0xb
+ 573 0097 2E       		.uleb128 0x2e
+ 574 0098 01       		.byte	0x1
+ 575 0099 3F       		.uleb128 0x3f
+ 576 009a 19       		.uleb128 0x19
+ 577 009b 03       		.uleb128 0x3
+ 578 009c 0E       		.uleb128 0xe
+ 579 009d 3A       		.uleb128 0x3a
+ 580 009e 0B       		.uleb128 0xb
+ 581 009f 3B       		.uleb128 0x3b
+ 582 00a0 05       		.uleb128 0x5
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 23
+
+
+ 583 00a1 27       		.uleb128 0x27
+ 584 00a2 19       		.uleb128 0x19
+ 585 00a3 11       		.uleb128 0x11
+ 586 00a4 01       		.uleb128 0x1
+ 587 00a5 12       		.uleb128 0x12
+ 588 00a6 06       		.uleb128 0x6
+ 589 00a7 40       		.uleb128 0x40
+ 590 00a8 18       		.uleb128 0x18
+ 591 00a9 9742     		.uleb128 0x2117
+ 592 00ab 19       		.uleb128 0x19
+ 593 00ac 01       		.uleb128 0x1
+ 594 00ad 13       		.uleb128 0x13
+ 595 00ae 00       		.byte	0
+ 596 00af 00       		.byte	0
+ 597 00b0 0C       		.uleb128 0xc
+ 598 00b1 898201   		.uleb128 0x4109
+ 599 00b4 00       		.byte	0
+ 600 00b5 11       		.uleb128 0x11
+ 601 00b6 01       		.uleb128 0x1
+ 602 00b7 31       		.uleb128 0x31
+ 603 00b8 13       		.uleb128 0x13
+ 604 00b9 00       		.byte	0
+ 605 00ba 00       		.byte	0
+ 606 00bb 0D       		.uleb128 0xd
+ 607 00bc 01       		.uleb128 0x1
+ 608 00bd 01       		.byte	0x1
+ 609 00be 49       		.uleb128 0x49
+ 610 00bf 13       		.uleb128 0x13
+ 611 00c0 01       		.uleb128 0x1
+ 612 00c1 13       		.uleb128 0x13
+ 613 00c2 00       		.byte	0
+ 614 00c3 00       		.byte	0
+ 615 00c4 0E       		.uleb128 0xe
+ 616 00c5 21       		.uleb128 0x21
+ 617 00c6 00       		.byte	0
+ 618 00c7 49       		.uleb128 0x49
+ 619 00c8 13       		.uleb128 0x13
+ 620 00c9 2F       		.uleb128 0x2f
+ 621 00ca 0B       		.uleb128 0xb
+ 622 00cb 00       		.byte	0
+ 623 00cc 00       		.byte	0
+ 624 00cd 0F       		.uleb128 0xf
+ 625 00ce 34       		.uleb128 0x34
+ 626 00cf 00       		.byte	0
+ 627 00d0 03       		.uleb128 0x3
+ 628 00d1 0E       		.uleb128 0xe
+ 629 00d2 3A       		.uleb128 0x3a
+ 630 00d3 0B       		.uleb128 0xb
+ 631 00d4 3B       		.uleb128 0x3b
+ 632 00d5 0B       		.uleb128 0xb
+ 633 00d6 49       		.uleb128 0x49
+ 634 00d7 13       		.uleb128 0x13
+ 635 00d8 3F       		.uleb128 0x3f
+ 636 00d9 19       		.uleb128 0x19
+ 637 00da 3C       		.uleb128 0x3c
+ 638 00db 19       		.uleb128 0x19
+ 639 00dc 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 24
+
+
+ 640 00dd 00       		.byte	0
+ 641 00de 10       		.uleb128 0x10
+ 642 00df 2E       		.uleb128 0x2e
+ 643 00e0 00       		.byte	0
+ 644 00e1 3F       		.uleb128 0x3f
+ 645 00e2 19       		.uleb128 0x19
+ 646 00e3 03       		.uleb128 0x3
+ 647 00e4 0E       		.uleb128 0xe
+ 648 00e5 3A       		.uleb128 0x3a
+ 649 00e6 0B       		.uleb128 0xb
+ 650 00e7 3B       		.uleb128 0x3b
+ 651 00e8 0B       		.uleb128 0xb
+ 652 00e9 27       		.uleb128 0x27
+ 653 00ea 19       		.uleb128 0x19
+ 654 00eb 3C       		.uleb128 0x3c
+ 655 00ec 19       		.uleb128 0x19
+ 656 00ed 00       		.byte	0
+ 657 00ee 00       		.byte	0
+ 658 00ef 00       		.byte	0
+ 659              		.section	.debug_aranges,"",%progbits
+ 660 0000 3C000000 		.4byte	0x3c
+ 661 0004 0200     		.2byte	0x2
+ 662 0006 00000000 		.4byte	.Ldebug_info0
+ 663 000a 04       		.byte	0x4
+ 664 000b 00       		.byte	0
+ 665 000c 0000     		.2byte	0
+ 666 000e 0000     		.2byte	0
+ 667 0010 00000000 		.4byte	.LFB0
+ 668 0014 38000000 		.4byte	.LFE0-.LFB0
+ 669 0018 00000000 		.4byte	.LFB1
+ 670 001c 38000000 		.4byte	.LFE1-.LFB1
+ 671 0020 00000000 		.4byte	.LFB2
+ 672 0024 40000000 		.4byte	.LFE2-.LFB2
+ 673 0028 00000000 		.4byte	.LFB3
+ 674 002c 02000000 		.4byte	.LFE3-.LFB3
+ 675 0030 00000000 		.4byte	.LFB4
+ 676 0034 08000000 		.4byte	.LFE4-.LFB4
+ 677 0038 00000000 		.4byte	0
+ 678 003c 00000000 		.4byte	0
+ 679              		.section	.debug_ranges,"",%progbits
+ 680              	.Ldebug_ranges0:
+ 681 0000 00000000 		.4byte	.LFB0
+ 682 0004 38000000 		.4byte	.LFE0
+ 683 0008 00000000 		.4byte	.LFB1
+ 684 000c 38000000 		.4byte	.LFE1
+ 685 0010 00000000 		.4byte	.LFB2
+ 686 0014 40000000 		.4byte	.LFE2
+ 687 0018 00000000 		.4byte	.LFB3
+ 688 001c 02000000 		.4byte	.LFE3
+ 689 0020 00000000 		.4byte	.LFB4
+ 690 0024 08000000 		.4byte	.LFE4
+ 691 0028 00000000 		.4byte	0
+ 692 002c 00000000 		.4byte	0
+ 693              		.section	.debug_line,"",%progbits
+ 694              	.Ldebug_line0:
+ 695 0000 D8000000 		.section	.debug_str,"MS",%progbits,1
+ 695      02006A00 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 25
+
+
+ 695      00000201 
+ 695      FB0E0D00 
+ 695      01010101 
+ 696              	.LASF35:
+ 697 0000 55534255 		.ascii	"USBUART_ReInitComponent\000"
+ 697      4152545F 
+ 697      5265496E 
+ 697      6974436F 
+ 697      6D706F6E 
+ 698              	.LASF3:
+ 699 0018 73686F72 		.ascii	"short unsigned int\000"
+ 699      7420756E 
+ 699      7369676E 
+ 699      65642069 
+ 699      6E7400
+ 700              	.LASF27:
+ 701 002b 55534255 		.ascii	"USBUART_EP_2_ISR\000"
+ 701      4152545F 
+ 701      45505F32 
+ 701      5F495352 
+ 701      00
+ 702              	.LASF29:
+ 703 003c 55534255 		.ascii	"USBUART_SOF_ISR\000"
+ 703      4152545F 
+ 703      534F465F 
+ 703      49535200 
+ 704              	.LASF11:
+ 705 004c 666C6F61 		.ascii	"float\000"
+ 705      7400
+ 706              	.LASF19:
+ 707 0052 6570546F 		.ascii	"epToggle\000"
+ 707      67676C65 
+ 707      00
+ 708              	.LASF34:
+ 709 005b 55534255 		.ascii	"USBUART_EP\000"
+ 709      4152545F 
+ 709      455000
+ 710              	.LASF14:
+ 711 0066 72656738 		.ascii	"reg8\000"
+ 711      00
+ 712              	.LASF5:
+ 713 006b 6C6F6E67 		.ascii	"long unsigned int\000"
+ 713      20756E73 
+ 713      69676E65 
+ 713      6420696E 
+ 713      7400
+ 714              	.LASF20:
+ 715 007d 61646472 		.ascii	"addr\000"
+ 715      00
+ 716              	.LASF28:
+ 717 0082 55534255 		.ascii	"USBUART_EP_3_ISR\000"
+ 717      4152545F 
+ 717      45505F33 
+ 717      5F495352 
+ 717      00
+ 718              	.LASF1:
+ 719 0093 756E7369 		.ascii	"unsigned char\000"
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 26
+
+
+ 719      676E6564 
+ 719      20636861 
+ 719      7200
+ 720              	.LASF12:
+ 721 00a1 646F7562 		.ascii	"double\000"
+ 721      6C6500
+ 722              	.LASF16:
+ 723 00a8 61747472 		.ascii	"attrib\000"
+ 723      696200
+ 724              	.LASF22:
+ 725 00af 62756666 		.ascii	"buffOffset\000"
+ 725      4F666673 
+ 725      657400
+ 726              	.LASF10:
+ 727 00ba 75696E74 		.ascii	"uint16\000"
+ 727      313600
+ 728              	.LASF17:
+ 729 00c1 61706945 		.ascii	"apiEpState\000"
+ 729      70537461 
+ 729      746500
+ 730              	.LASF30:
+ 731 00cc 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 731      4320342E 
+ 731      392E3320 
+ 731      32303135 
+ 731      30333033 
+ 732 00ff 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m3 -mthumb -g -O"
+ 732      20726576 
+ 732      6973696F 
+ 732      6E203232 
+ 732      31323230 
+ 733 0132 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 733      66756E63 
+ 733      74696F6E 
+ 733      2D736563 
+ 733      74696F6E 
+ 734              	.LASF8:
+ 735 015a 756E7369 		.ascii	"unsigned int\000"
+ 735      676E6564 
+ 735      20696E74 
+ 735      00
+ 736              	.LASF7:
+ 737 0167 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 737      206C6F6E 
+ 737      6720756E 
+ 737      7369676E 
+ 737      65642069 
+ 738              	.LASF18:
+ 739 017e 68774570 		.ascii	"hwEpState\000"
+ 739      53746174 
+ 739      6500
+ 740              	.LASF31:
+ 741 0188 2E5C4765 		.ascii	".\\Generated_Source\\PSoC5\\USBUART_episr.c\000"
+ 741      6E657261 
+ 741      7465645F 
+ 741      536F7572 
+ 741      63655C50 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 27
+
+
+ 742              	.LASF15:
+ 743 01b1 73697A65 		.ascii	"sizetype\000"
+ 743      74797065 
+ 743      00
+ 744              	.LASF21:
+ 745 01ba 65704D6F 		.ascii	"epMode\000"
+ 745      646500
+ 746              	.LASF6:
+ 747 01c1 6C6F6E67 		.ascii	"long long int\000"
+ 747      206C6F6E 
+ 747      6720696E 
+ 747      7400
+ 748              	.LASF13:
+ 749 01cf 63686172 		.ascii	"char\000"
+ 749      00
+ 750              	.LASF23:
+ 751 01d4 62756666 		.ascii	"bufferSize\000"
+ 751      65725369 
+ 751      7A6500
+ 752              	.LASF2:
+ 753 01df 73686F72 		.ascii	"short int\000"
+ 753      7420696E 
+ 753      7400
+ 754              	.LASF33:
+ 755 01e9 55534255 		.ascii	"USBUART_BUS_RESET_ISR\000"
+ 755      4152545F 
+ 755      4255535F 
+ 755      52455345 
+ 755      545F4953 
+ 756              	.LASF9:
+ 757 01ff 75696E74 		.ascii	"uint8\000"
+ 757      3800
+ 758              	.LASF24:
+ 759 0205 696E7465 		.ascii	"interface\000"
+ 759      72666163 
+ 759      6500
+ 760              	.LASF32:
+ 761 020f 5C5C4441 		.ascii	"\\\\DATA\\Folder Redirection\\faithc\\Desktop\\FAIT"
+ 761      54415C46 
+ 761      6F6C6465 
+ 761      72205265 
+ 761      64697265 
+ 762 023c 48532052 		.ascii	"HS RELEASED FIRMWARE\\SirenProject200W_RevF\\SirenP"
+ 762      454C4541 
+ 762      53454420 
+ 762      4649524D 
+ 762      57415245 
+ 763 026d 726F6A65 		.ascii	"roject200W_RevD\\ReleaseVersion.cydsn\000"
+ 763      63743230 
+ 763      30575F52 
+ 763      6576445C 
+ 763      52656C65 
+ 764              	.LASF4:
+ 765 0292 6C6F6E67 		.ascii	"long int\000"
+ 765      20696E74 
+ 765      00
+ 766              	.LASF25:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cceHVGGy.s 			page 28
+
+
+ 767 029b 545F5553 		.ascii	"T_USBUART_EP_CTL_BLOCK\000"
+ 767      42554152 
+ 767      545F4550 
+ 767      5F43544C 
+ 767      5F424C4F 
+ 768              	.LASF0:
+ 769 02b2 7369676E 		.ascii	"signed char\000"
+ 769      65642063 
+ 769      68617200 
+ 770              	.LASF26:
+ 771 02be 55534255 		.ascii	"USBUART_EP_1_ISR\000"
+ 771      4152545F 
+ 771      45505F31 
+ 771      5F495352 
+ 771      00
+ 772              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

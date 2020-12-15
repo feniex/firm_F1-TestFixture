@@ -1,0 +1,1988 @@
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"ModeStatus2ISR.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.ModeStatus2ISR_Start,"ax",%progbits
+  19              		.align	2
+  20              		.global	ModeStatus2ISR_Start
+  21              		.thumb
+  22              		.thumb_func
+  23              		.type	ModeStatus2ISR_Start, %function
+  24              	ModeStatus2ISR_Start:
+  25              	.LFB63:
+  26              		.file 1 ".\\Generated_Source\\PSoC5\\ModeStatus2ISR.c"
+   1:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /*******************************************************************************
+   2:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * File Name: ModeStatus2ISR.c  
+   3:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Version 1.70
+   4:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+   5:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *  Description:
+   6:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   API for controlling the state of an interrupt.
+   7:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+   8:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+   9:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *  Note:
+  10:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+  11:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** ********************************************************************************
+  12:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  13:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  14:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  15:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * the software package with which this file was provided.
+  16:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *******************************************************************************/
+  17:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+  18:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+  19:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** #include <cydevice_trm.h>
+  20:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** #include <CyLib.h>
+  21:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** #include <ModeStatus2ISR.h>
+  22:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** #include "cyapicallbacks.h"
+  23:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+  24:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** #if !defined(ModeStatus2ISR__REMOVED) /* Check for removal by optimization */
+  25:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+  26:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /*******************************************************************************
+  27:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *  Place your includes, defines and code here 
+  28:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** ********************************************************************************/
+  29:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /* `#START ModeStatus2ISR_intc` */
+  30:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** #include <stdbool.h>
+  31:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** #include "SirenState.h"
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 2
+
+
+  32:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /* `#END` */
+  33:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+  34:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** #ifndef CYINT_IRQ_BASE
+  35:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** #define CYINT_IRQ_BASE      16
+  36:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** #endif /* CYINT_IRQ_BASE */
+  37:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** #ifndef CYINT_VECT_TABLE
+  38:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** #define CYINT_VECT_TABLE    ((cyisraddress **) CYREG_NVIC_VECT_OFFSET)
+  39:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** #endif /* CYINT_VECT_TABLE */
+  40:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+  41:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /* Declared in startup, used to set unused interrupts to. */
+  42:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** CY_ISR_PROTO(IntDefaultHandler);
+  43:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+  44:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+  45:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /*******************************************************************************
+  46:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Function Name: ModeStatus2ISR_Start
+  47:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** ********************************************************************************
+  48:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+  49:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Summary:
+  50:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *  Set up the interrupt and enable it. This function disables the interrupt, 
+  51:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *  sets the default interrupt vector, sets the priority from the value in the
+  52:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *  Design Wide Resources Interrupt Editor, then enables the interrupt to the 
+  53:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *  interrupt controller.
+  54:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+  55:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Parameters:  
+  56:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+  57:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+  58:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Return:
+  59:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+  60:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+  61:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *******************************************************************************/
+  62:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** void ModeStatus2ISR_Start(void)
+  63:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** {
+  27              		.loc 1 63 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 1, uses_anonymous_args = 0
+  31 0000 80B5     		push	{r7, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 7, -8
+  34              		.cfi_offset 14, -4
+  35 0002 00AF     		add	r7, sp, #0
+  36              		.cfi_def_cfa_register 7
+  64:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     /* For all we know the interrupt is active. */
+  65:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     ModeStatus2ISR_Disable();
+  37              		.loc 1 65 0
+  38 0004 FFF7FEFF 		bl	ModeStatus2ISR_Disable
+  66:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+  67:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     /* Set the ISR to point to the ModeStatus2ISR Interrupt. */
+  68:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     ModeStatus2ISR_SetVector(&ModeStatus2ISR_Interrupt);
+  39              		.loc 1 68 0
+  40 0008 0448     		ldr	r0, .L2
+  41 000a FFF7FEFF 		bl	ModeStatus2ISR_SetVector
+  69:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+  70:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     /* Set the priority. */
+  71:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     ModeStatus2ISR_SetPriority((uint8)ModeStatus2ISR_INTC_PRIOR_NUMBER);
+  42              		.loc 1 71 0
+  43 000e 0720     		movs	r0, #7
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 3
+
+
+  44 0010 FFF7FEFF 		bl	ModeStatus2ISR_SetPriority
+  72:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+  73:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     /* Enable it. */
+  74:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     ModeStatus2ISR_Enable();
+  45              		.loc 1 74 0
+  46 0014 FFF7FEFF 		bl	ModeStatus2ISR_Enable
+  75:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** }
+  47              		.loc 1 75 0
+  48 0018 80BD     		pop	{r7, pc}
+  49              	.L3:
+  50 001a 00BF     		.align	2
+  51              	.L2:
+  52 001c 00000000 		.word	ModeStatus2ISR_Interrupt
+  53              		.cfi_endproc
+  54              	.LFE63:
+  55              		.size	ModeStatus2ISR_Start, .-ModeStatus2ISR_Start
+  56              		.section	.text.ModeStatus2ISR_StartEx,"ax",%progbits
+  57              		.align	2
+  58              		.global	ModeStatus2ISR_StartEx
+  59              		.thumb
+  60              		.thumb_func
+  61              		.type	ModeStatus2ISR_StartEx, %function
+  62              	ModeStatus2ISR_StartEx:
+  63              	.LFB64:
+  76:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+  77:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+  78:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /*******************************************************************************
+  79:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Function Name: ModeStatus2ISR_StartEx
+  80:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** ********************************************************************************
+  81:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+  82:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Summary:
+  83:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *  Sets up the interrupt and enables it. This function disables the interrupt,
+  84:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *  sets the interrupt vector based on the address passed in, sets the priority 
+  85:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *  from the value in the Design Wide Resources Interrupt Editor, then enables 
+  86:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *  the interrupt to the interrupt controller.
+  87:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *  
+  88:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *  When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
+  89:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *  used to provide consistent definition across compilers:
+  90:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *  
+  91:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *  Function definition example:
+  92:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   CY_ISR(MyISR)
+  93:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   {
+  94:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   }
+  95:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Function prototype example:
+  96:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   CY_ISR_PROTO(MyISR);
+  97:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+  98:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Parameters:  
+  99:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   address: Address of the ISR to set in the interrupt vector table.
+ 100:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 101:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Return:
+ 102:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 103:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 104:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *******************************************************************************/
+ 105:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** void ModeStatus2ISR_StartEx(cyisraddress address)
+ 106:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** {
+  64              		.loc 1 106 0
+  65              		.cfi_startproc
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 4
+
+
+  66              		@ args = 0, pretend = 0, frame = 8
+  67              		@ frame_needed = 1, uses_anonymous_args = 0
+  68 0000 80B5     		push	{r7, lr}
+  69              		.cfi_def_cfa_offset 8
+  70              		.cfi_offset 7, -8
+  71              		.cfi_offset 14, -4
+  72 0002 82B0     		sub	sp, sp, #8
+  73              		.cfi_def_cfa_offset 16
+  74 0004 00AF     		add	r7, sp, #0
+  75              		.cfi_def_cfa_register 7
+  76 0006 7860     		str	r0, [r7, #4]
+ 107:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     /* For all we know the interrupt is active. */
+ 108:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     ModeStatus2ISR_Disable();
+  77              		.loc 1 108 0
+  78 0008 FFF7FEFF 		bl	ModeStatus2ISR_Disable
+ 109:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 110:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     /* Set the ISR to point to the ModeStatus2ISR Interrupt. */
+ 111:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     ModeStatus2ISR_SetVector(address);
+  79              		.loc 1 111 0
+  80 000c 7868     		ldr	r0, [r7, #4]
+  81 000e FFF7FEFF 		bl	ModeStatus2ISR_SetVector
+ 112:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 113:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     /* Set the priority. */
+ 114:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     ModeStatus2ISR_SetPriority((uint8)ModeStatus2ISR_INTC_PRIOR_NUMBER);
+  82              		.loc 1 114 0
+  83 0012 0720     		movs	r0, #7
+  84 0014 FFF7FEFF 		bl	ModeStatus2ISR_SetPriority
+ 115:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 116:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     /* Enable it. */
+ 117:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     ModeStatus2ISR_Enable();
+  85              		.loc 1 117 0
+  86 0018 FFF7FEFF 		bl	ModeStatus2ISR_Enable
+ 118:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** }
+  87              		.loc 1 118 0
+  88 001c 0837     		adds	r7, r7, #8
+  89              		.cfi_def_cfa_offset 8
+  90 001e BD46     		mov	sp, r7
+  91              		.cfi_def_cfa_register 13
+  92              		@ sp needed
+  93 0020 80BD     		pop	{r7, pc}
+  94              		.cfi_endproc
+  95              	.LFE64:
+  96              		.size	ModeStatus2ISR_StartEx, .-ModeStatus2ISR_StartEx
+  97 0022 00BF     		.section	.text.ModeStatus2ISR_Stop,"ax",%progbits
+  98              		.align	2
+  99              		.global	ModeStatus2ISR_Stop
+ 100              		.thumb
+ 101              		.thumb_func
+ 102              		.type	ModeStatus2ISR_Stop, %function
+ 103              	ModeStatus2ISR_Stop:
+ 104              	.LFB65:
+ 119:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 120:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 121:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /*******************************************************************************
+ 122:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Function Name: ModeStatus2ISR_Stop
+ 123:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** ********************************************************************************
+ 124:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 5
+
+
+ 125:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Summary:
+ 126:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Disables and removes the interrupt.
+ 127:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 128:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Parameters:  
+ 129:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 130:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 131:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Return:
+ 132:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 133:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 134:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *******************************************************************************/
+ 135:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** void ModeStatus2ISR_Stop(void)
+ 136:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** {
+ 105              		.loc 1 136 0
+ 106              		.cfi_startproc
+ 107              		@ args = 0, pretend = 0, frame = 0
+ 108              		@ frame_needed = 1, uses_anonymous_args = 0
+ 109 0000 80B5     		push	{r7, lr}
+ 110              		.cfi_def_cfa_offset 8
+ 111              		.cfi_offset 7, -8
+ 112              		.cfi_offset 14, -4
+ 113 0002 00AF     		add	r7, sp, #0
+ 114              		.cfi_def_cfa_register 7
+ 137:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     /* Disable this interrupt. */
+ 138:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     ModeStatus2ISR_Disable();
+ 115              		.loc 1 138 0
+ 116 0004 FFF7FEFF 		bl	ModeStatus2ISR_Disable
+ 139:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 140:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     /* Set the ISR to point to the passive one. */
+ 141:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     ModeStatus2ISR_SetVector(&IntDefaultHandler);
+ 117              		.loc 1 141 0
+ 118 0008 0148     		ldr	r0, .L6
+ 119 000a FFF7FEFF 		bl	ModeStatus2ISR_SetVector
+ 142:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** }
+ 120              		.loc 1 142 0
+ 121 000e 80BD     		pop	{r7, pc}
+ 122              	.L7:
+ 123              		.align	2
+ 124              	.L6:
+ 125 0010 00000000 		.word	IntDefaultHandler
+ 126              		.cfi_endproc
+ 127              	.LFE65:
+ 128              		.size	ModeStatus2ISR_Stop, .-ModeStatus2ISR_Stop
+ 129              		.section	.text.ModeStatus2ISR_Interrupt,"ax",%progbits
+ 130              		.align	2
+ 131              		.global	ModeStatus2ISR_Interrupt
+ 132              		.thumb
+ 133              		.thumb_func
+ 134              		.type	ModeStatus2ISR_Interrupt, %function
+ 135              	ModeStatus2ISR_Interrupt:
+ 136              	.LFB66:
+ 143:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 144:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 145:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /*******************************************************************************
+ 146:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Function Name: ModeStatus2ISR_Interrupt
+ 147:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** ********************************************************************************
+ 148:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 149:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Summary:
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 6
+
+
+ 150:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   The default Interrupt Service Routine for ModeStatus2ISR.
+ 151:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 152:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Add custom code between the coments to keep the next version of this file
+ 153:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   from over writting your code.
+ 154:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 155:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Parameters:  
+ 156:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 157:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Return:
+ 158:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 159:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 160:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *******************************************************************************/
+ 161:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** CY_ISR(ModeStatus2ISR_Interrupt)
+ 162:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** {
+ 137              		.loc 1 162 0
+ 138              		.cfi_startproc
+ 139              		@ args = 0, pretend = 0, frame = 0
+ 140              		@ frame_needed = 1, uses_anonymous_args = 0
+ 141 0000 80B5     		push	{r7, lr}
+ 142              		.cfi_def_cfa_offset 8
+ 143              		.cfi_offset 7, -8
+ 144              		.cfi_offset 14, -4
+ 145 0002 00AF     		add	r7, sp, #0
+ 146              		.cfi_def_cfa_register 7
+ 163:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     #ifdef ModeStatus2ISR_INTERRUPT_INTERRUPT_CALLBACK
+ 164:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****         ModeStatus2ISR_Interrupt_InterruptCallback();
+ 165:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     #endif /* ModeStatus2ISR_INTERRUPT_INTERRUPT_CALLBACK */ 
+ 166:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 167:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     /*  Place your Interrupt code here. */
+ 168:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     /* `#START ModeStatus2ISR_Interrupt` */
+ 169:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     processToneChangeRoutine(true);
+ 147              		.loc 1 169 0
+ 148 0004 0120     		movs	r0, #1
+ 149 0006 FFF7FEFF 		bl	processToneChangeRoutine
+ 170:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     /* `#END` */
+ 171:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** }
+ 150              		.loc 1 171 0
+ 151 000a 80BD     		pop	{r7, pc}
+ 152              		.cfi_endproc
+ 153              	.LFE66:
+ 154              		.size	ModeStatus2ISR_Interrupt, .-ModeStatus2ISR_Interrupt
+ 155              		.section	.text.ModeStatus2ISR_SetVector,"ax",%progbits
+ 156              		.align	2
+ 157              		.global	ModeStatus2ISR_SetVector
+ 158              		.thumb
+ 159              		.thumb_func
+ 160              		.type	ModeStatus2ISR_SetVector, %function
+ 161              	ModeStatus2ISR_SetVector:
+ 162              	.LFB67:
+ 172:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 173:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 174:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /*******************************************************************************
+ 175:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Function Name: ModeStatus2ISR_SetVector
+ 176:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** ********************************************************************************
+ 177:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 178:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Summary:
+ 179:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Change the ISR vector for the Interrupt. Note calling ModeStatus2ISR_Start
+ 180:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   will override any effect this method would have had. To set the vector 
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 7
+
+
+ 181:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   before the component has been started use ModeStatus2ISR_StartEx instead.
+ 182:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * 
+ 183:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
+ 184:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   used to provide consistent definition across compilers:
+ 185:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 186:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Function definition example:
+ 187:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   CY_ISR(MyISR)
+ 188:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   {
+ 189:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   }
+ 190:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 191:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Function prototype example:
+ 192:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *     CY_ISR_PROTO(MyISR);
+ 193:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 194:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Parameters:
+ 195:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   address: Address of the ISR to set in the interrupt vector table.
+ 196:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 197:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Return:
+ 198:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 199:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 200:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *******************************************************************************/
+ 201:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** void ModeStatus2ISR_SetVector(cyisraddress address)
+ 202:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** {
+ 163              		.loc 1 202 0
+ 164              		.cfi_startproc
+ 165              		@ args = 0, pretend = 0, frame = 16
+ 166              		@ frame_needed = 1, uses_anonymous_args = 0
+ 167              		@ link register save eliminated.
+ 168 0000 80B4     		push	{r7}
+ 169              		.cfi_def_cfa_offset 4
+ 170              		.cfi_offset 7, -4
+ 171 0002 85B0     		sub	sp, sp, #20
+ 172              		.cfi_def_cfa_offset 24
+ 173 0004 00AF     		add	r7, sp, #0
+ 174              		.cfi_def_cfa_register 7
+ 175 0006 7860     		str	r0, [r7, #4]
+ 203:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     cyisraddress * ramVectorTable;
+ 204:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 205:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
+ 176              		.loc 1 205 0
+ 177 0008 054B     		ldr	r3, .L10
+ 178 000a 1B68     		ldr	r3, [r3]
+ 179 000c FB60     		str	r3, [r7, #12]
+ 206:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 207:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     ramVectorTable[CYINT_IRQ_BASE + (uint32)ModeStatus2ISR__INTC_NUMBER] = address;
+ 180              		.loc 1 207 0
+ 181 000e FB68     		ldr	r3, [r7, #12]
+ 182 0010 5433     		adds	r3, r3, #84
+ 183 0012 7A68     		ldr	r2, [r7, #4]
+ 184 0014 1A60     		str	r2, [r3]
+ 208:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** }
+ 185              		.loc 1 208 0
+ 186 0016 1437     		adds	r7, r7, #20
+ 187              		.cfi_def_cfa_offset 4
+ 188 0018 BD46     		mov	sp, r7
+ 189              		.cfi_def_cfa_register 13
+ 190              		@ sp needed
+ 191 001a 5DF8047B 		ldr	r7, [sp], #4
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 8
+
+
+ 192              		.cfi_restore 7
+ 193              		.cfi_def_cfa_offset 0
+ 194 001e 7047     		bx	lr
+ 195              	.L11:
+ 196              		.align	2
+ 197              	.L10:
+ 198 0020 08ED00E0 		.word	-536810232
+ 199              		.cfi_endproc
+ 200              	.LFE67:
+ 201              		.size	ModeStatus2ISR_SetVector, .-ModeStatus2ISR_SetVector
+ 202              		.section	.text.ModeStatus2ISR_GetVector,"ax",%progbits
+ 203              		.align	2
+ 204              		.global	ModeStatus2ISR_GetVector
+ 205              		.thumb
+ 206              		.thumb_func
+ 207              		.type	ModeStatus2ISR_GetVector, %function
+ 208              	ModeStatus2ISR_GetVector:
+ 209              	.LFB68:
+ 209:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 210:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 211:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /*******************************************************************************
+ 212:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Function Name: ModeStatus2ISR_GetVector
+ 213:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** ********************************************************************************
+ 214:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 215:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Summary:
+ 216:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Gets the "address" of the current ISR vector for the Interrupt.
+ 217:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 218:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Parameters:
+ 219:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 220:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 221:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Return:
+ 222:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Address of the ISR in the interrupt vector table.
+ 223:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 224:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *******************************************************************************/
+ 225:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** cyisraddress ModeStatus2ISR_GetVector(void)
+ 226:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** {
+ 210              		.loc 1 226 0
+ 211              		.cfi_startproc
+ 212              		@ args = 0, pretend = 0, frame = 8
+ 213              		@ frame_needed = 1, uses_anonymous_args = 0
+ 214              		@ link register save eliminated.
+ 215 0000 80B4     		push	{r7}
+ 216              		.cfi_def_cfa_offset 4
+ 217              		.cfi_offset 7, -4
+ 218 0002 83B0     		sub	sp, sp, #12
+ 219              		.cfi_def_cfa_offset 16
+ 220 0004 00AF     		add	r7, sp, #0
+ 221              		.cfi_def_cfa_register 7
+ 227:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     cyisraddress * ramVectorTable;
+ 228:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 229:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
+ 222              		.loc 1 229 0
+ 223 0006 054B     		ldr	r3, .L14
+ 224 0008 1B68     		ldr	r3, [r3]
+ 225 000a 7B60     		str	r3, [r7, #4]
+ 230:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 231:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     return ramVectorTable[CYINT_IRQ_BASE + (uint32)ModeStatus2ISR__INTC_NUMBER];
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 9
+
+
+ 226              		.loc 1 231 0
+ 227 000c 7B68     		ldr	r3, [r7, #4]
+ 228 000e 5B6D     		ldr	r3, [r3, #84]
+ 232:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** }
+ 229              		.loc 1 232 0
+ 230 0010 1846     		mov	r0, r3
+ 231 0012 0C37     		adds	r7, r7, #12
+ 232              		.cfi_def_cfa_offset 4
+ 233 0014 BD46     		mov	sp, r7
+ 234              		.cfi_def_cfa_register 13
+ 235              		@ sp needed
+ 236 0016 5DF8047B 		ldr	r7, [sp], #4
+ 237              		.cfi_restore 7
+ 238              		.cfi_def_cfa_offset 0
+ 239 001a 7047     		bx	lr
+ 240              	.L15:
+ 241              		.align	2
+ 242              	.L14:
+ 243 001c 08ED00E0 		.word	-536810232
+ 244              		.cfi_endproc
+ 245              	.LFE68:
+ 246              		.size	ModeStatus2ISR_GetVector, .-ModeStatus2ISR_GetVector
+ 247              		.section	.text.ModeStatus2ISR_SetPriority,"ax",%progbits
+ 248              		.align	2
+ 249              		.global	ModeStatus2ISR_SetPriority
+ 250              		.thumb
+ 251              		.thumb_func
+ 252              		.type	ModeStatus2ISR_SetPriority, %function
+ 253              	ModeStatus2ISR_SetPriority:
+ 254              	.LFB69:
+ 233:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 234:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 235:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /*******************************************************************************
+ 236:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Function Name: ModeStatus2ISR_SetPriority
+ 237:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** ********************************************************************************
+ 238:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 239:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Summary:
+ 240:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Sets the Priority of the Interrupt. 
+ 241:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 242:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Note calling ModeStatus2ISR_Start or ModeStatus2ISR_StartEx will 
+ 243:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   override any effect this API would have had. This API should only be called
+ 244:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   after ModeStatus2ISR_Start or ModeStatus2ISR_StartEx has been called. 
+ 245:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   To set the initial priority for the component, use the Design-Wide Resources
+ 246:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Interrupt Editor.
+ 247:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 248:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Note This API has no effect on Non-maskable interrupt NMI).
+ 249:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 250:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Parameters:
+ 251:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   priority: Priority of the interrupt, 0 being the highest priority
+ 252:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *             PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
+ 253:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *             PSoC 4: Priority is from 0 to 3.
+ 254:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 255:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Return:
+ 256:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 257:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 258:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *******************************************************************************/
+ 259:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** void ModeStatus2ISR_SetPriority(uint8 priority)
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 10
+
+
+ 260:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** {
+ 255              		.loc 1 260 0
+ 256              		.cfi_startproc
+ 257              		@ args = 0, pretend = 0, frame = 8
+ 258              		@ frame_needed = 1, uses_anonymous_args = 0
+ 259              		@ link register save eliminated.
+ 260 0000 80B4     		push	{r7}
+ 261              		.cfi_def_cfa_offset 4
+ 262              		.cfi_offset 7, -4
+ 263 0002 83B0     		sub	sp, sp, #12
+ 264              		.cfi_def_cfa_offset 16
+ 265 0004 00AF     		add	r7, sp, #0
+ 266              		.cfi_def_cfa_register 7
+ 267 0006 0346     		mov	r3, r0
+ 268 0008 FB71     		strb	r3, [r7, #7]
+ 261:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     *ModeStatus2ISR_INTC_PRIOR = priority << 5;
+ 269              		.loc 1 261 0
+ 270 000a 054A     		ldr	r2, .L17
+ 271 000c FB79     		ldrb	r3, [r7, #7]
+ 272 000e 5B01     		lsls	r3, r3, #5
+ 273 0010 DBB2     		uxtb	r3, r3
+ 274 0012 1370     		strb	r3, [r2]
+ 262:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** }
+ 275              		.loc 1 262 0
+ 276 0014 0C37     		adds	r7, r7, #12
+ 277              		.cfi_def_cfa_offset 4
+ 278 0016 BD46     		mov	sp, r7
+ 279              		.cfi_def_cfa_register 13
+ 280              		@ sp needed
+ 281 0018 5DF8047B 		ldr	r7, [sp], #4
+ 282              		.cfi_restore 7
+ 283              		.cfi_def_cfa_offset 0
+ 284 001c 7047     		bx	lr
+ 285              	.L18:
+ 286 001e 00BF     		.align	2
+ 287              	.L17:
+ 288 0020 05E400E0 		.word	-536812539
+ 289              		.cfi_endproc
+ 290              	.LFE69:
+ 291              		.size	ModeStatus2ISR_SetPriority, .-ModeStatus2ISR_SetPriority
+ 292              		.section	.text.ModeStatus2ISR_GetPriority,"ax",%progbits
+ 293              		.align	2
+ 294              		.global	ModeStatus2ISR_GetPriority
+ 295              		.thumb
+ 296              		.thumb_func
+ 297              		.type	ModeStatus2ISR_GetPriority, %function
+ 298              	ModeStatus2ISR_GetPriority:
+ 299              	.LFB70:
+ 263:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 264:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 265:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /*******************************************************************************
+ 266:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Function Name: ModeStatus2ISR_GetPriority
+ 267:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** ********************************************************************************
+ 268:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 269:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Summary:
+ 270:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Gets the Priority of the Interrupt.
+ 271:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 11
+
+
+ 272:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Parameters:
+ 273:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 274:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 275:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Return:
+ 276:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Priority of the interrupt, 0 being the highest priority
+ 277:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *    PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
+ 278:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *    PSoC 4: Priority is from 0 to 3.
+ 279:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 280:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *******************************************************************************/
+ 281:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** uint8 ModeStatus2ISR_GetPriority(void)
+ 282:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** {
+ 300              		.loc 1 282 0
+ 301              		.cfi_startproc
+ 302              		@ args = 0, pretend = 0, frame = 8
+ 303              		@ frame_needed = 1, uses_anonymous_args = 0
+ 304              		@ link register save eliminated.
+ 305 0000 80B4     		push	{r7}
+ 306              		.cfi_def_cfa_offset 4
+ 307              		.cfi_offset 7, -4
+ 308 0002 83B0     		sub	sp, sp, #12
+ 309              		.cfi_def_cfa_offset 16
+ 310 0004 00AF     		add	r7, sp, #0
+ 311              		.cfi_def_cfa_register 7
+ 283:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     uint8 priority;
+ 284:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 285:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 286:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     priority = *ModeStatus2ISR_INTC_PRIOR >> 5;
+ 312              		.loc 1 286 0
+ 313 0006 064B     		ldr	r3, .L21
+ 314 0008 1B78     		ldrb	r3, [r3]
+ 315 000a DBB2     		uxtb	r3, r3
+ 316 000c 5B09     		lsrs	r3, r3, #5
+ 317 000e FB71     		strb	r3, [r7, #7]
+ 287:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 288:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     return priority;
+ 318              		.loc 1 288 0
+ 319 0010 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 289:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** }
+ 320              		.loc 1 289 0
+ 321 0012 1846     		mov	r0, r3
+ 322 0014 0C37     		adds	r7, r7, #12
+ 323              		.cfi_def_cfa_offset 4
+ 324 0016 BD46     		mov	sp, r7
+ 325              		.cfi_def_cfa_register 13
+ 326              		@ sp needed
+ 327 0018 5DF8047B 		ldr	r7, [sp], #4
+ 328              		.cfi_restore 7
+ 329              		.cfi_def_cfa_offset 0
+ 330 001c 7047     		bx	lr
+ 331              	.L22:
+ 332 001e 00BF     		.align	2
+ 333              	.L21:
+ 334 0020 05E400E0 		.word	-536812539
+ 335              		.cfi_endproc
+ 336              	.LFE70:
+ 337              		.size	ModeStatus2ISR_GetPriority, .-ModeStatus2ISR_GetPriority
+ 338              		.section	.text.ModeStatus2ISR_Enable,"ax",%progbits
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 12
+
+
+ 339              		.align	2
+ 340              		.global	ModeStatus2ISR_Enable
+ 341              		.thumb
+ 342              		.thumb_func
+ 343              		.type	ModeStatus2ISR_Enable, %function
+ 344              	ModeStatus2ISR_Enable:
+ 345              	.LFB71:
+ 290:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 291:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 292:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /*******************************************************************************
+ 293:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Function Name: ModeStatus2ISR_Enable
+ 294:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** ********************************************************************************
+ 295:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 296:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Summary:
+ 297:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Enables the interrupt to the interrupt controller. Do not call this function
+ 298:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   unless ISR_Start() has been called or the functionality of the ISR_Start() 
+ 299:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   function, which sets the vector and the priority, has been called.
+ 300:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 301:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Parameters:
+ 302:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 303:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 304:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Return:
+ 305:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 306:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 307:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *******************************************************************************/
+ 308:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** void ModeStatus2ISR_Enable(void)
+ 309:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** {
+ 346              		.loc 1 309 0
+ 347              		.cfi_startproc
+ 348              		@ args = 0, pretend = 0, frame = 0
+ 349              		@ frame_needed = 1, uses_anonymous_args = 0
+ 350              		@ link register save eliminated.
+ 351 0000 80B4     		push	{r7}
+ 352              		.cfi_def_cfa_offset 4
+ 353              		.cfi_offset 7, -4
+ 354 0002 00AF     		add	r7, sp, #0
+ 355              		.cfi_def_cfa_register 7
+ 310:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     /* Enable the general interrupt. */
+ 311:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     *ModeStatus2ISR_INTC_SET_EN = ModeStatus2ISR__INTC_MASK;
+ 356              		.loc 1 311 0
+ 357 0004 034B     		ldr	r3, .L24
+ 358 0006 2022     		movs	r2, #32
+ 359 0008 1A60     		str	r2, [r3]
+ 312:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** }
+ 360              		.loc 1 312 0
+ 361 000a BD46     		mov	sp, r7
+ 362              		.cfi_def_cfa_register 13
+ 363              		@ sp needed
+ 364 000c 5DF8047B 		ldr	r7, [sp], #4
+ 365              		.cfi_restore 7
+ 366              		.cfi_def_cfa_offset 0
+ 367 0010 7047     		bx	lr
+ 368              	.L25:
+ 369 0012 00BF     		.align	2
+ 370              	.L24:
+ 371 0014 00E100E0 		.word	-536813312
+ 372              		.cfi_endproc
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 13
+
+
+ 373              	.LFE71:
+ 374              		.size	ModeStatus2ISR_Enable, .-ModeStatus2ISR_Enable
+ 375              		.section	.text.ModeStatus2ISR_GetState,"ax",%progbits
+ 376              		.align	2
+ 377              		.global	ModeStatus2ISR_GetState
+ 378              		.thumb
+ 379              		.thumb_func
+ 380              		.type	ModeStatus2ISR_GetState, %function
+ 381              	ModeStatus2ISR_GetState:
+ 382              	.LFB72:
+ 313:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 314:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 315:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /*******************************************************************************
+ 316:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Function Name: ModeStatus2ISR_GetState
+ 317:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** ********************************************************************************
+ 318:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 319:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Summary:
+ 320:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Gets the state (enabled, disabled) of the Interrupt.
+ 321:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 322:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Parameters:
+ 323:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 324:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 325:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Return:
+ 326:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   1 if enabled, 0 if disabled.
+ 327:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 328:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *******************************************************************************/
+ 329:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** uint8 ModeStatus2ISR_GetState(void)
+ 330:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** {
+ 383              		.loc 1 330 0
+ 384              		.cfi_startproc
+ 385              		@ args = 0, pretend = 0, frame = 0
+ 386              		@ frame_needed = 1, uses_anonymous_args = 0
+ 387              		@ link register save eliminated.
+ 388 0000 80B4     		push	{r7}
+ 389              		.cfi_def_cfa_offset 4
+ 390              		.cfi_offset 7, -4
+ 391 0002 00AF     		add	r7, sp, #0
+ 392              		.cfi_def_cfa_register 7
+ 331:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     /* Get the state of the general interrupt. */
+ 332:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     return ((*ModeStatus2ISR_INTC_SET_EN & (uint32)ModeStatus2ISR__INTC_MASK) != 0u) ? 1u:0u;
+ 393              		.loc 1 332 0
+ 394 0004 064B     		ldr	r3, .L30
+ 395 0006 1B68     		ldr	r3, [r3]
+ 396 0008 03F02003 		and	r3, r3, #32
+ 397 000c 002B     		cmp	r3, #0
+ 398 000e 01D0     		beq	.L27
+ 399              		.loc 1 332 0 is_stmt 0 discriminator 1
+ 400 0010 0123     		movs	r3, #1
+ 401 0012 00E0     		b	.L28
+ 402              	.L27:
+ 403              		.loc 1 332 0 discriminator 2
+ 404 0014 0023     		movs	r3, #0
+ 405              	.L28:
+ 333:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** }
+ 406              		.loc 1 333 0 is_stmt 1 discriminator 4
+ 407 0016 1846     		mov	r0, r3
+ 408 0018 BD46     		mov	sp, r7
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 14
+
+
+ 409              		.cfi_def_cfa_register 13
+ 410              		@ sp needed
+ 411 001a 5DF8047B 		ldr	r7, [sp], #4
+ 412              		.cfi_restore 7
+ 413              		.cfi_def_cfa_offset 0
+ 414 001e 7047     		bx	lr
+ 415              	.L31:
+ 416              		.align	2
+ 417              	.L30:
+ 418 0020 00E100E0 		.word	-536813312
+ 419              		.cfi_endproc
+ 420              	.LFE72:
+ 421              		.size	ModeStatus2ISR_GetState, .-ModeStatus2ISR_GetState
+ 422              		.section	.text.ModeStatus2ISR_Disable,"ax",%progbits
+ 423              		.align	2
+ 424              		.global	ModeStatus2ISR_Disable
+ 425              		.thumb
+ 426              		.thumb_func
+ 427              		.type	ModeStatus2ISR_Disable, %function
+ 428              	ModeStatus2ISR_Disable:
+ 429              	.LFB73:
+ 334:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 335:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 336:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /*******************************************************************************
+ 337:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Function Name: ModeStatus2ISR_Disable
+ 338:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** ********************************************************************************
+ 339:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 340:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Summary:
+ 341:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Disables the Interrupt in the interrupt controller.
+ 342:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 343:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Parameters:
+ 344:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 345:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 346:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Return:
+ 347:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 348:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 349:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *******************************************************************************/
+ 350:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** void ModeStatus2ISR_Disable(void)
+ 351:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** {
+ 430              		.loc 1 351 0
+ 431              		.cfi_startproc
+ 432              		@ args = 0, pretend = 0, frame = 0
+ 433              		@ frame_needed = 1, uses_anonymous_args = 0
+ 434              		@ link register save eliminated.
+ 435 0000 80B4     		push	{r7}
+ 436              		.cfi_def_cfa_offset 4
+ 437              		.cfi_offset 7, -4
+ 438 0002 00AF     		add	r7, sp, #0
+ 439              		.cfi_def_cfa_register 7
+ 352:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     /* Disable the general interrupt. */
+ 353:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     *ModeStatus2ISR_INTC_CLR_EN = ModeStatus2ISR__INTC_MASK;
+ 440              		.loc 1 353 0
+ 441 0004 034B     		ldr	r3, .L33
+ 442 0006 2022     		movs	r2, #32
+ 443 0008 1A60     		str	r2, [r3]
+ 354:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** }
+ 444              		.loc 1 354 0
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 15
+
+
+ 445 000a BD46     		mov	sp, r7
+ 446              		.cfi_def_cfa_register 13
+ 447              		@ sp needed
+ 448 000c 5DF8047B 		ldr	r7, [sp], #4
+ 449              		.cfi_restore 7
+ 450              		.cfi_def_cfa_offset 0
+ 451 0010 7047     		bx	lr
+ 452              	.L34:
+ 453 0012 00BF     		.align	2
+ 454              	.L33:
+ 455 0014 80E100E0 		.word	-536813184
+ 456              		.cfi_endproc
+ 457              	.LFE73:
+ 458              		.size	ModeStatus2ISR_Disable, .-ModeStatus2ISR_Disable
+ 459              		.section	.text.ModeStatus2ISR_SetPending,"ax",%progbits
+ 460              		.align	2
+ 461              		.global	ModeStatus2ISR_SetPending
+ 462              		.thumb
+ 463              		.thumb_func
+ 464              		.type	ModeStatus2ISR_SetPending, %function
+ 465              	ModeStatus2ISR_SetPending:
+ 466              	.LFB74:
+ 355:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 356:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 357:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /*******************************************************************************
+ 358:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Function Name: ModeStatus2ISR_SetPending
+ 359:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** ********************************************************************************
+ 360:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 361:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Summary:
+ 362:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Causes the Interrupt to enter the pending state, a software method of
+ 363:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   generating the interrupt.
+ 364:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 365:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Parameters:
+ 366:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 367:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 368:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Return:
+ 369:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 370:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 371:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Side Effects:
+ 372:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   If interrupts are enabled and the interrupt is set up properly, the ISR is
+ 373:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   entered (depending on the priority of this interrupt and other pending 
+ 374:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   interrupts).
+ 375:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 376:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *******************************************************************************/
+ 377:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** void ModeStatus2ISR_SetPending(void)
+ 378:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** {
+ 467              		.loc 1 378 0
+ 468              		.cfi_startproc
+ 469              		@ args = 0, pretend = 0, frame = 0
+ 470              		@ frame_needed = 1, uses_anonymous_args = 0
+ 471              		@ link register save eliminated.
+ 472 0000 80B4     		push	{r7}
+ 473              		.cfi_def_cfa_offset 4
+ 474              		.cfi_offset 7, -4
+ 475 0002 00AF     		add	r7, sp, #0
+ 476              		.cfi_def_cfa_register 7
+ 379:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     *ModeStatus2ISR_INTC_SET_PD = ModeStatus2ISR__INTC_MASK;
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 16
+
+
+ 477              		.loc 1 379 0
+ 478 0004 034B     		ldr	r3, .L36
+ 479 0006 2022     		movs	r2, #32
+ 480 0008 1A60     		str	r2, [r3]
+ 380:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** }
+ 481              		.loc 1 380 0
+ 482 000a BD46     		mov	sp, r7
+ 483              		.cfi_def_cfa_register 13
+ 484              		@ sp needed
+ 485 000c 5DF8047B 		ldr	r7, [sp], #4
+ 486              		.cfi_restore 7
+ 487              		.cfi_def_cfa_offset 0
+ 488 0010 7047     		bx	lr
+ 489              	.L37:
+ 490 0012 00BF     		.align	2
+ 491              	.L36:
+ 492 0014 00E200E0 		.word	-536813056
+ 493              		.cfi_endproc
+ 494              	.LFE74:
+ 495              		.size	ModeStatus2ISR_SetPending, .-ModeStatus2ISR_SetPending
+ 496              		.section	.text.ModeStatus2ISR_ClearPending,"ax",%progbits
+ 497              		.align	2
+ 498              		.global	ModeStatus2ISR_ClearPending
+ 499              		.thumb
+ 500              		.thumb_func
+ 501              		.type	ModeStatus2ISR_ClearPending, %function
+ 502              	ModeStatus2ISR_ClearPending:
+ 503              	.LFB75:
+ 381:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 382:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** 
+ 383:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** /*******************************************************************************
+ 384:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Function Name: ModeStatus2ISR_ClearPending
+ 385:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** ********************************************************************************
+ 386:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 387:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Summary:
+ 388:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Clears a pending interrupt in the interrupt controller.
+ 389:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 390:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   Note Some interrupt sources are clear-on-read and require the block 
+ 391:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   interrupt/status register to be read/cleared with the appropriate block API 
+ 392:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   (GPIO, UART, and so on). Otherwise the ISR will continue to remain in 
+ 393:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   pending state even though the interrupt itself is cleared using this API.
+ 394:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 395:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Parameters:
+ 396:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 397:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 398:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** * Return:
+ 399:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *   None
+ 400:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *
+ 401:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** *******************************************************************************/
+ 402:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** void ModeStatus2ISR_ClearPending(void)
+ 403:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** {
+ 504              		.loc 1 403 0
+ 505              		.cfi_startproc
+ 506              		@ args = 0, pretend = 0, frame = 0
+ 507              		@ frame_needed = 1, uses_anonymous_args = 0
+ 508              		@ link register save eliminated.
+ 509 0000 80B4     		push	{r7}
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 17
+
+
+ 510              		.cfi_def_cfa_offset 4
+ 511              		.cfi_offset 7, -4
+ 512 0002 00AF     		add	r7, sp, #0
+ 513              		.cfi_def_cfa_register 7
+ 404:.\Generated_Source\PSoC5/ModeStatus2ISR.c ****     *ModeStatus2ISR_INTC_CLR_PD = ModeStatus2ISR__INTC_MASK;
+ 514              		.loc 1 404 0
+ 515 0004 034B     		ldr	r3, .L39
+ 516 0006 2022     		movs	r2, #32
+ 517 0008 1A60     		str	r2, [r3]
+ 405:.\Generated_Source\PSoC5/ModeStatus2ISR.c **** }
+ 518              		.loc 1 405 0
+ 519 000a BD46     		mov	sp, r7
+ 520              		.cfi_def_cfa_register 13
+ 521              		@ sp needed
+ 522 000c 5DF8047B 		ldr	r7, [sp], #4
+ 523              		.cfi_restore 7
+ 524              		.cfi_def_cfa_offset 0
+ 525 0010 7047     		bx	lr
+ 526              	.L40:
+ 527 0012 00BF     		.align	2
+ 528              	.L39:
+ 529 0014 80E200E0 		.word	-536812928
+ 530              		.cfi_endproc
+ 531              	.LFE75:
+ 532              		.size	ModeStatus2ISR_ClearPending, .-ModeStatus2ISR_ClearPending
+ 533              		.text
+ 534              	.Letext0:
+ 535              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 536              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 537              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 538              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 539              		.section	.debug_info,"",%progbits
+ 540              	.Ldebug_info0:
+ 541 0000 5B020000 		.4byte	0x25b
+ 542 0004 0400     		.2byte	0x4
+ 543 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 544 000a 04       		.byte	0x4
+ 545 000b 01       		.uleb128 0x1
+ 546 000c 27000000 		.4byte	.LASF35
+ 547 0010 01       		.byte	0x1
+ 548 0011 38010000 		.4byte	.LASF36
+ 549 0015 23020000 		.4byte	.LASF37
+ 550 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 551 001d 00000000 		.4byte	0
+ 552 0021 00000000 		.4byte	.Ldebug_line0
+ 553 0025 02       		.uleb128 0x2
+ 554 0026 04       		.byte	0x4
+ 555 0027 05       		.byte	0x5
+ 556 0028 696E7400 		.ascii	"int\000"
+ 557 002c 03       		.uleb128 0x3
+ 558 002d 04       		.byte	0x4
+ 559 002e 07       		.byte	0x7
+ 560 002f EA010000 		.4byte	.LASF0
+ 561 0033 03       		.uleb128 0x3
+ 562 0034 01       		.byte	0x1
+ 563 0035 06       		.byte	0x6
+ 564 0036 41030000 		.4byte	.LASF1
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 18
+
+
+ 565 003a 03       		.uleb128 0x3
+ 566 003b 01       		.byte	0x1
+ 567 003c 08       		.byte	0x8
+ 568 003d 25010000 		.4byte	.LASF2
+ 569 0041 03       		.uleb128 0x3
+ 570 0042 02       		.byte	0x2
+ 571 0043 05       		.byte	0x5
+ 572 0044 F9020000 		.4byte	.LASF3
+ 573 0048 03       		.uleb128 0x3
+ 574 0049 02       		.byte	0x2
+ 575 004a 07       		.byte	0x7
+ 576 004b 8D010000 		.4byte	.LASF4
+ 577 004f 04       		.uleb128 0x4
+ 578 0050 1D000000 		.4byte	.LASF11
+ 579 0054 02       		.byte	0x2
+ 580 0055 3F       		.byte	0x3f
+ 581 0056 5A000000 		.4byte	0x5a
+ 582 005a 03       		.uleb128 0x3
+ 583 005b 04       		.byte	0x4
+ 584 005c 05       		.byte	0x5
+ 585 005d 38030000 		.4byte	.LASF5
+ 586 0061 03       		.uleb128 0x3
+ 587 0062 04       		.byte	0x4
+ 588 0063 07       		.byte	0x7
+ 589 0064 AD010000 		.4byte	.LASF6
+ 590 0068 03       		.uleb128 0x3
+ 591 0069 08       		.byte	0x8
+ 592 006a 05       		.byte	0x5
+ 593 006b 8A020000 		.4byte	.LASF7
+ 594 006f 03       		.uleb128 0x3
+ 595 0070 08       		.byte	0x8
+ 596 0071 07       		.byte	0x7
+ 597 0072 FF010000 		.4byte	.LASF8
+ 598 0076 03       		.uleb128 0x3
+ 599 0077 04       		.byte	0x4
+ 600 0078 07       		.byte	0x7
+ 601 0079 81020000 		.4byte	.LASF9
+ 602 007d 05       		.uleb128 0x5
+ 603 007e 04       		.byte	0x4
+ 604 007f 83000000 		.4byte	0x83
+ 605 0083 06       		.uleb128 0x6
+ 606 0084 03       		.uleb128 0x3
+ 607 0085 01       		.byte	0x1
+ 608 0086 08       		.byte	0x8
+ 609 0087 98020000 		.4byte	.LASF10
+ 610 008b 04       		.uleb128 0x4
+ 611 008c 79020000 		.4byte	.LASF12
+ 612 0090 03       		.byte	0x3
+ 613 0091 2C       		.byte	0x2c
+ 614 0092 4F000000 		.4byte	0x4f
+ 615 0096 04       		.uleb128 0x4
+ 616 0097 0B010000 		.4byte	.LASF13
+ 617 009b 04       		.byte	0x4
+ 618 009c C2       		.byte	0xc2
+ 619 009d 3A000000 		.4byte	0x3a
+ 620 00a1 04       		.uleb128 0x4
+ 621 00a2 E3010000 		.4byte	.LASF14
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 19
+
+
+ 622 00a6 04       		.byte	0x4
+ 623 00a7 C4       		.byte	0xc4
+ 624 00a8 61000000 		.4byte	0x61
+ 625 00ac 03       		.uleb128 0x3
+ 626 00ad 04       		.byte	0x4
+ 627 00ae 04       		.byte	0x4
+ 628 00af 05010000 		.4byte	.LASF15
+ 629 00b3 03       		.uleb128 0x3
+ 630 00b4 08       		.byte	0x8
+ 631 00b5 04       		.byte	0x4
+ 632 00b6 CC000000 		.4byte	.LASF16
+ 633 00ba 07       		.uleb128 0x7
+ 634 00bb 33010000 		.4byte	.LASF17
+ 635 00bf 04       		.byte	0x4
+ 636 00c0 6C01     		.2byte	0x16c
+ 637 00c2 C6000000 		.4byte	0xc6
+ 638 00c6 08       		.uleb128 0x8
+ 639 00c7 96000000 		.4byte	0x96
+ 640 00cb 07       		.uleb128 0x7
+ 641 00cc 17000000 		.4byte	.LASF18
+ 642 00d0 04       		.byte	0x4
+ 643 00d1 6E01     		.2byte	0x16e
+ 644 00d3 D7000000 		.4byte	0xd7
+ 645 00d7 08       		.uleb128 0x8
+ 646 00d8 A1000000 		.4byte	0xa1
+ 647 00dc 07       		.uleb128 0x7
+ 648 00dd 16020000 		.4byte	.LASF19
+ 649 00e1 04       		.byte	0x4
+ 650 00e2 7E01     		.2byte	0x17e
+ 651 00e4 7D000000 		.4byte	0x7d
+ 652 00e8 09       		.uleb128 0x9
+ 653 00e9 78010000 		.4byte	.LASF20
+ 654 00ed 01       		.byte	0x1
+ 655 00ee 3E       		.byte	0x3e
+ 656 00ef 00000000 		.4byte	.LFB63
+ 657 00f3 20000000 		.4byte	.LFE63-.LFB63
+ 658 00f7 01       		.uleb128 0x1
+ 659 00f8 9C       		.byte	0x9c
+ 660 00f9 0A       		.uleb128 0xa
+ 661 00fa 00000000 		.4byte	.LASF23
+ 662 00fe 01       		.byte	0x1
+ 663 00ff 69       		.byte	0x69
+ 664 0100 00000000 		.4byte	.LFB64
+ 665 0104 22000000 		.4byte	.LFE64-.LFB64
+ 666 0108 01       		.uleb128 0x1
+ 667 0109 9C       		.byte	0x9c
+ 668 010a 1D010000 		.4byte	0x11d
+ 669 010e 0B       		.uleb128 0xb
+ 670 010f F7010000 		.4byte	.LASF25
+ 671 0113 01       		.byte	0x1
+ 672 0114 69       		.byte	0x69
+ 673 0115 DC000000 		.4byte	0xdc
+ 674 0119 02       		.uleb128 0x2
+ 675 011a 91       		.byte	0x91
+ 676 011b 74       		.sleb128 -12
+ 677 011c 00       		.byte	0
+ 678 011d 09       		.uleb128 0x9
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 20
+
+
+ 679 011e 11010000 		.4byte	.LASF21
+ 680 0122 01       		.byte	0x1
+ 681 0123 87       		.byte	0x87
+ 682 0124 00000000 		.4byte	.LFB65
+ 683 0128 14000000 		.4byte	.LFE65-.LFB65
+ 684 012c 01       		.uleb128 0x1
+ 685 012d 9C       		.byte	0x9c
+ 686 012e 09       		.uleb128 0x9
+ 687 012f EC000000 		.4byte	.LASF22
+ 688 0133 01       		.byte	0x1
+ 689 0134 A1       		.byte	0xa1
+ 690 0135 00000000 		.4byte	.LFB66
+ 691 0139 0C000000 		.4byte	.LFE66-.LFB66
+ 692 013d 01       		.uleb128 0x1
+ 693 013e 9C       		.byte	0x9c
+ 694 013f 0C       		.uleb128 0xc
+ 695 0140 1F030000 		.4byte	.LASF24
+ 696 0144 01       		.byte	0x1
+ 697 0145 C9       		.byte	0xc9
+ 698 0146 00000000 		.4byte	.LFB67
+ 699 014a 24000000 		.4byte	.LFE67-.LFB67
+ 700 014e 01       		.uleb128 0x1
+ 701 014f 9C       		.byte	0x9c
+ 702 0150 71010000 		.4byte	0x171
+ 703 0154 0B       		.uleb128 0xb
+ 704 0155 F7010000 		.4byte	.LASF25
+ 705 0159 01       		.byte	0x1
+ 706 015a C9       		.byte	0xc9
+ 707 015b DC000000 		.4byte	0xdc
+ 708 015f 02       		.uleb128 0x2
+ 709 0160 91       		.byte	0x91
+ 710 0161 6C       		.sleb128 -20
+ 711 0162 0D       		.uleb128 0xd
+ 712 0163 9D020000 		.4byte	.LASF26
+ 713 0167 01       		.byte	0x1
+ 714 0168 CB       		.byte	0xcb
+ 715 0169 71010000 		.4byte	0x171
+ 716 016d 02       		.uleb128 0x2
+ 717 016e 91       		.byte	0x91
+ 718 016f 74       		.sleb128 -12
+ 719 0170 00       		.byte	0
+ 720 0171 05       		.uleb128 0x5
+ 721 0172 04       		.byte	0x4
+ 722 0173 DC000000 		.4byte	0xdc
+ 723 0177 0E       		.uleb128 0xe
+ 724 0178 D3000000 		.4byte	.LASF29
+ 725 017c 01       		.byte	0x1
+ 726 017d E1       		.byte	0xe1
+ 727 017e DC000000 		.4byte	0xdc
+ 728 0182 00000000 		.4byte	.LFB68
+ 729 0186 20000000 		.4byte	.LFE68-.LFB68
+ 730 018a 01       		.uleb128 0x1
+ 731 018b 9C       		.byte	0x9c
+ 732 018c 9F010000 		.4byte	0x19f
+ 733 0190 0D       		.uleb128 0xd
+ 734 0191 9D020000 		.4byte	.LASF26
+ 735 0195 01       		.byte	0x1
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 21
+
+
+ 736 0196 E3       		.byte	0xe3
+ 737 0197 71010000 		.4byte	0x171
+ 738 019b 02       		.uleb128 0x2
+ 739 019c 91       		.byte	0x91
+ 740 019d 74       		.sleb128 -12
+ 741 019e 00       		.byte	0
+ 742 019f 0F       		.uleb128 0xf
+ 743 01a0 AC020000 		.4byte	.LASF27
+ 744 01a4 01       		.byte	0x1
+ 745 01a5 0301     		.2byte	0x103
+ 746 01a7 00000000 		.4byte	.LFB69
+ 747 01ab 24000000 		.4byte	.LFE69-.LFB69
+ 748 01af 01       		.uleb128 0x1
+ 749 01b0 9C       		.byte	0x9c
+ 750 01b1 C5010000 		.4byte	0x1c5
+ 751 01b5 10       		.uleb128 0x10
+ 752 01b6 DA010000 		.4byte	.LASF28
+ 753 01ba 01       		.byte	0x1
+ 754 01bb 0301     		.2byte	0x103
+ 755 01bd 96000000 		.4byte	0x96
+ 756 01c1 02       		.uleb128 0x2
+ 757 01c2 91       		.byte	0x91
+ 758 01c3 77       		.sleb128 -9
+ 759 01c4 00       		.byte	0
+ 760 01c5 11       		.uleb128 0x11
+ 761 01c6 BF010000 		.4byte	.LASF30
+ 762 01ca 01       		.byte	0x1
+ 763 01cb 1901     		.2byte	0x119
+ 764 01cd 96000000 		.4byte	0x96
+ 765 01d1 00000000 		.4byte	.LFB70
+ 766 01d5 24000000 		.4byte	.LFE70-.LFB70
+ 767 01d9 01       		.uleb128 0x1
+ 768 01da 9C       		.byte	0x9c
+ 769 01db EF010000 		.4byte	0x1ef
+ 770 01df 12       		.uleb128 0x12
+ 771 01e0 DA010000 		.4byte	.LASF28
+ 772 01e4 01       		.byte	0x1
+ 773 01e5 1B01     		.2byte	0x11b
+ 774 01e7 96000000 		.4byte	0x96
+ 775 01eb 02       		.uleb128 0x2
+ 776 01ec 91       		.byte	0x91
+ 777 01ed 77       		.sleb128 -9
+ 778 01ee 00       		.byte	0
+ 779 01ef 13       		.uleb128 0x13
+ 780 01f0 62010000 		.4byte	.LASF31
+ 781 01f4 01       		.byte	0x1
+ 782 01f5 3401     		.2byte	0x134
+ 783 01f7 00000000 		.4byte	.LFB71
+ 784 01fb 18000000 		.4byte	.LFE71-.LFB71
+ 785 01ff 01       		.uleb128 0x1
+ 786 0200 9C       		.byte	0x9c
+ 787 0201 14       		.uleb128 0x14
+ 788 0202 E1020000 		.4byte	.LASF38
+ 789 0206 01       		.byte	0x1
+ 790 0207 4901     		.2byte	0x149
+ 791 0209 96000000 		.4byte	0x96
+ 792 020d 00000000 		.4byte	.LFB72
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 22
+
+
+ 793 0211 24000000 		.4byte	.LFE72-.LFB72
+ 794 0215 01       		.uleb128 0x1
+ 795 0216 9C       		.byte	0x9c
+ 796 0217 13       		.uleb128 0x13
+ 797 0218 B5000000 		.4byte	.LASF32
+ 798 021c 01       		.byte	0x1
+ 799 021d 5E01     		.2byte	0x15e
+ 800 021f 00000000 		.4byte	.LFB73
+ 801 0223 18000000 		.4byte	.LFE73-.LFB73
+ 802 0227 01       		.uleb128 0x1
+ 803 0228 9C       		.byte	0x9c
+ 804 0229 13       		.uleb128 0x13
+ 805 022a C7020000 		.4byte	.LASF33
+ 806 022e 01       		.byte	0x1
+ 807 022f 7901     		.2byte	0x179
+ 808 0231 00000000 		.4byte	.LFB74
+ 809 0235 18000000 		.4byte	.LFE74-.LFB74
+ 810 0239 01       		.uleb128 0x1
+ 811 023a 9C       		.byte	0x9c
+ 812 023b 13       		.uleb128 0x13
+ 813 023c 03030000 		.4byte	.LASF34
+ 814 0240 01       		.byte	0x1
+ 815 0241 9201     		.2byte	0x192
+ 816 0243 00000000 		.4byte	.LFB75
+ 817 0247 18000000 		.4byte	.LFE75-.LFB75
+ 818 024b 01       		.uleb128 0x1
+ 819 024c 9C       		.byte	0x9c
+ 820 024d 15       		.uleb128 0x15
+ 821 024e A0010000 		.4byte	.LASF39
+ 822 0252 05       		.byte	0x5
+ 823 0253 2A06     		.2byte	0x62a
+ 824 0255 59020000 		.4byte	0x259
+ 825 0259 08       		.uleb128 0x8
+ 826 025a 8B000000 		.4byte	0x8b
+ 827 025e 00       		.byte	0
+ 828              		.section	.debug_abbrev,"",%progbits
+ 829              	.Ldebug_abbrev0:
+ 830 0000 01       		.uleb128 0x1
+ 831 0001 11       		.uleb128 0x11
+ 832 0002 01       		.byte	0x1
+ 833 0003 25       		.uleb128 0x25
+ 834 0004 0E       		.uleb128 0xe
+ 835 0005 13       		.uleb128 0x13
+ 836 0006 0B       		.uleb128 0xb
+ 837 0007 03       		.uleb128 0x3
+ 838 0008 0E       		.uleb128 0xe
+ 839 0009 1B       		.uleb128 0x1b
+ 840 000a 0E       		.uleb128 0xe
+ 841 000b 55       		.uleb128 0x55
+ 842 000c 17       		.uleb128 0x17
+ 843 000d 11       		.uleb128 0x11
+ 844 000e 01       		.uleb128 0x1
+ 845 000f 10       		.uleb128 0x10
+ 846 0010 17       		.uleb128 0x17
+ 847 0011 00       		.byte	0
+ 848 0012 00       		.byte	0
+ 849 0013 02       		.uleb128 0x2
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 23
+
+
+ 850 0014 24       		.uleb128 0x24
+ 851 0015 00       		.byte	0
+ 852 0016 0B       		.uleb128 0xb
+ 853 0017 0B       		.uleb128 0xb
+ 854 0018 3E       		.uleb128 0x3e
+ 855 0019 0B       		.uleb128 0xb
+ 856 001a 03       		.uleb128 0x3
+ 857 001b 08       		.uleb128 0x8
+ 858 001c 00       		.byte	0
+ 859 001d 00       		.byte	0
+ 860 001e 03       		.uleb128 0x3
+ 861 001f 24       		.uleb128 0x24
+ 862 0020 00       		.byte	0
+ 863 0021 0B       		.uleb128 0xb
+ 864 0022 0B       		.uleb128 0xb
+ 865 0023 3E       		.uleb128 0x3e
+ 866 0024 0B       		.uleb128 0xb
+ 867 0025 03       		.uleb128 0x3
+ 868 0026 0E       		.uleb128 0xe
+ 869 0027 00       		.byte	0
+ 870 0028 00       		.byte	0
+ 871 0029 04       		.uleb128 0x4
+ 872 002a 16       		.uleb128 0x16
+ 873 002b 00       		.byte	0
+ 874 002c 03       		.uleb128 0x3
+ 875 002d 0E       		.uleb128 0xe
+ 876 002e 3A       		.uleb128 0x3a
+ 877 002f 0B       		.uleb128 0xb
+ 878 0030 3B       		.uleb128 0x3b
+ 879 0031 0B       		.uleb128 0xb
+ 880 0032 49       		.uleb128 0x49
+ 881 0033 13       		.uleb128 0x13
+ 882 0034 00       		.byte	0
+ 883 0035 00       		.byte	0
+ 884 0036 05       		.uleb128 0x5
+ 885 0037 0F       		.uleb128 0xf
+ 886 0038 00       		.byte	0
+ 887 0039 0B       		.uleb128 0xb
+ 888 003a 0B       		.uleb128 0xb
+ 889 003b 49       		.uleb128 0x49
+ 890 003c 13       		.uleb128 0x13
+ 891 003d 00       		.byte	0
+ 892 003e 00       		.byte	0
+ 893 003f 06       		.uleb128 0x6
+ 894 0040 15       		.uleb128 0x15
+ 895 0041 00       		.byte	0
+ 896 0042 27       		.uleb128 0x27
+ 897 0043 19       		.uleb128 0x19
+ 898 0044 00       		.byte	0
+ 899 0045 00       		.byte	0
+ 900 0046 07       		.uleb128 0x7
+ 901 0047 16       		.uleb128 0x16
+ 902 0048 00       		.byte	0
+ 903 0049 03       		.uleb128 0x3
+ 904 004a 0E       		.uleb128 0xe
+ 905 004b 3A       		.uleb128 0x3a
+ 906 004c 0B       		.uleb128 0xb
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 24
+
+
+ 907 004d 3B       		.uleb128 0x3b
+ 908 004e 05       		.uleb128 0x5
+ 909 004f 49       		.uleb128 0x49
+ 910 0050 13       		.uleb128 0x13
+ 911 0051 00       		.byte	0
+ 912 0052 00       		.byte	0
+ 913 0053 08       		.uleb128 0x8
+ 914 0054 35       		.uleb128 0x35
+ 915 0055 00       		.byte	0
+ 916 0056 49       		.uleb128 0x49
+ 917 0057 13       		.uleb128 0x13
+ 918 0058 00       		.byte	0
+ 919 0059 00       		.byte	0
+ 920 005a 09       		.uleb128 0x9
+ 921 005b 2E       		.uleb128 0x2e
+ 922 005c 00       		.byte	0
+ 923 005d 3F       		.uleb128 0x3f
+ 924 005e 19       		.uleb128 0x19
+ 925 005f 03       		.uleb128 0x3
+ 926 0060 0E       		.uleb128 0xe
+ 927 0061 3A       		.uleb128 0x3a
+ 928 0062 0B       		.uleb128 0xb
+ 929 0063 3B       		.uleb128 0x3b
+ 930 0064 0B       		.uleb128 0xb
+ 931 0065 27       		.uleb128 0x27
+ 932 0066 19       		.uleb128 0x19
+ 933 0067 11       		.uleb128 0x11
+ 934 0068 01       		.uleb128 0x1
+ 935 0069 12       		.uleb128 0x12
+ 936 006a 06       		.uleb128 0x6
+ 937 006b 40       		.uleb128 0x40
+ 938 006c 18       		.uleb128 0x18
+ 939 006d 9642     		.uleb128 0x2116
+ 940 006f 19       		.uleb128 0x19
+ 941 0070 00       		.byte	0
+ 942 0071 00       		.byte	0
+ 943 0072 0A       		.uleb128 0xa
+ 944 0073 2E       		.uleb128 0x2e
+ 945 0074 01       		.byte	0x1
+ 946 0075 3F       		.uleb128 0x3f
+ 947 0076 19       		.uleb128 0x19
+ 948 0077 03       		.uleb128 0x3
+ 949 0078 0E       		.uleb128 0xe
+ 950 0079 3A       		.uleb128 0x3a
+ 951 007a 0B       		.uleb128 0xb
+ 952 007b 3B       		.uleb128 0x3b
+ 953 007c 0B       		.uleb128 0xb
+ 954 007d 27       		.uleb128 0x27
+ 955 007e 19       		.uleb128 0x19
+ 956 007f 11       		.uleb128 0x11
+ 957 0080 01       		.uleb128 0x1
+ 958 0081 12       		.uleb128 0x12
+ 959 0082 06       		.uleb128 0x6
+ 960 0083 40       		.uleb128 0x40
+ 961 0084 18       		.uleb128 0x18
+ 962 0085 9642     		.uleb128 0x2116
+ 963 0087 19       		.uleb128 0x19
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 25
+
+
+ 964 0088 01       		.uleb128 0x1
+ 965 0089 13       		.uleb128 0x13
+ 966 008a 00       		.byte	0
+ 967 008b 00       		.byte	0
+ 968 008c 0B       		.uleb128 0xb
+ 969 008d 05       		.uleb128 0x5
+ 970 008e 00       		.byte	0
+ 971 008f 03       		.uleb128 0x3
+ 972 0090 0E       		.uleb128 0xe
+ 973 0091 3A       		.uleb128 0x3a
+ 974 0092 0B       		.uleb128 0xb
+ 975 0093 3B       		.uleb128 0x3b
+ 976 0094 0B       		.uleb128 0xb
+ 977 0095 49       		.uleb128 0x49
+ 978 0096 13       		.uleb128 0x13
+ 979 0097 02       		.uleb128 0x2
+ 980 0098 18       		.uleb128 0x18
+ 981 0099 00       		.byte	0
+ 982 009a 00       		.byte	0
+ 983 009b 0C       		.uleb128 0xc
+ 984 009c 2E       		.uleb128 0x2e
+ 985 009d 01       		.byte	0x1
+ 986 009e 3F       		.uleb128 0x3f
+ 987 009f 19       		.uleb128 0x19
+ 988 00a0 03       		.uleb128 0x3
+ 989 00a1 0E       		.uleb128 0xe
+ 990 00a2 3A       		.uleb128 0x3a
+ 991 00a3 0B       		.uleb128 0xb
+ 992 00a4 3B       		.uleb128 0x3b
+ 993 00a5 0B       		.uleb128 0xb
+ 994 00a6 27       		.uleb128 0x27
+ 995 00a7 19       		.uleb128 0x19
+ 996 00a8 11       		.uleb128 0x11
+ 997 00a9 01       		.uleb128 0x1
+ 998 00aa 12       		.uleb128 0x12
+ 999 00ab 06       		.uleb128 0x6
+ 1000 00ac 40       		.uleb128 0x40
+ 1001 00ad 18       		.uleb128 0x18
+ 1002 00ae 9742     		.uleb128 0x2117
+ 1003 00b0 19       		.uleb128 0x19
+ 1004 00b1 01       		.uleb128 0x1
+ 1005 00b2 13       		.uleb128 0x13
+ 1006 00b3 00       		.byte	0
+ 1007 00b4 00       		.byte	0
+ 1008 00b5 0D       		.uleb128 0xd
+ 1009 00b6 34       		.uleb128 0x34
+ 1010 00b7 00       		.byte	0
+ 1011 00b8 03       		.uleb128 0x3
+ 1012 00b9 0E       		.uleb128 0xe
+ 1013 00ba 3A       		.uleb128 0x3a
+ 1014 00bb 0B       		.uleb128 0xb
+ 1015 00bc 3B       		.uleb128 0x3b
+ 1016 00bd 0B       		.uleb128 0xb
+ 1017 00be 49       		.uleb128 0x49
+ 1018 00bf 13       		.uleb128 0x13
+ 1019 00c0 02       		.uleb128 0x2
+ 1020 00c1 18       		.uleb128 0x18
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 26
+
+
+ 1021 00c2 00       		.byte	0
+ 1022 00c3 00       		.byte	0
+ 1023 00c4 0E       		.uleb128 0xe
+ 1024 00c5 2E       		.uleb128 0x2e
+ 1025 00c6 01       		.byte	0x1
+ 1026 00c7 3F       		.uleb128 0x3f
+ 1027 00c8 19       		.uleb128 0x19
+ 1028 00c9 03       		.uleb128 0x3
+ 1029 00ca 0E       		.uleb128 0xe
+ 1030 00cb 3A       		.uleb128 0x3a
+ 1031 00cc 0B       		.uleb128 0xb
+ 1032 00cd 3B       		.uleb128 0x3b
+ 1033 00ce 0B       		.uleb128 0xb
+ 1034 00cf 27       		.uleb128 0x27
+ 1035 00d0 19       		.uleb128 0x19
+ 1036 00d1 49       		.uleb128 0x49
+ 1037 00d2 13       		.uleb128 0x13
+ 1038 00d3 11       		.uleb128 0x11
+ 1039 00d4 01       		.uleb128 0x1
+ 1040 00d5 12       		.uleb128 0x12
+ 1041 00d6 06       		.uleb128 0x6
+ 1042 00d7 40       		.uleb128 0x40
+ 1043 00d8 18       		.uleb128 0x18
+ 1044 00d9 9742     		.uleb128 0x2117
+ 1045 00db 19       		.uleb128 0x19
+ 1046 00dc 01       		.uleb128 0x1
+ 1047 00dd 13       		.uleb128 0x13
+ 1048 00de 00       		.byte	0
+ 1049 00df 00       		.byte	0
+ 1050 00e0 0F       		.uleb128 0xf
+ 1051 00e1 2E       		.uleb128 0x2e
+ 1052 00e2 01       		.byte	0x1
+ 1053 00e3 3F       		.uleb128 0x3f
+ 1054 00e4 19       		.uleb128 0x19
+ 1055 00e5 03       		.uleb128 0x3
+ 1056 00e6 0E       		.uleb128 0xe
+ 1057 00e7 3A       		.uleb128 0x3a
+ 1058 00e8 0B       		.uleb128 0xb
+ 1059 00e9 3B       		.uleb128 0x3b
+ 1060 00ea 05       		.uleb128 0x5
+ 1061 00eb 27       		.uleb128 0x27
+ 1062 00ec 19       		.uleb128 0x19
+ 1063 00ed 11       		.uleb128 0x11
+ 1064 00ee 01       		.uleb128 0x1
+ 1065 00ef 12       		.uleb128 0x12
+ 1066 00f0 06       		.uleb128 0x6
+ 1067 00f1 40       		.uleb128 0x40
+ 1068 00f2 18       		.uleb128 0x18
+ 1069 00f3 9742     		.uleb128 0x2117
+ 1070 00f5 19       		.uleb128 0x19
+ 1071 00f6 01       		.uleb128 0x1
+ 1072 00f7 13       		.uleb128 0x13
+ 1073 00f8 00       		.byte	0
+ 1074 00f9 00       		.byte	0
+ 1075 00fa 10       		.uleb128 0x10
+ 1076 00fb 05       		.uleb128 0x5
+ 1077 00fc 00       		.byte	0
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 27
+
+
+ 1078 00fd 03       		.uleb128 0x3
+ 1079 00fe 0E       		.uleb128 0xe
+ 1080 00ff 3A       		.uleb128 0x3a
+ 1081 0100 0B       		.uleb128 0xb
+ 1082 0101 3B       		.uleb128 0x3b
+ 1083 0102 05       		.uleb128 0x5
+ 1084 0103 49       		.uleb128 0x49
+ 1085 0104 13       		.uleb128 0x13
+ 1086 0105 02       		.uleb128 0x2
+ 1087 0106 18       		.uleb128 0x18
+ 1088 0107 00       		.byte	0
+ 1089 0108 00       		.byte	0
+ 1090 0109 11       		.uleb128 0x11
+ 1091 010a 2E       		.uleb128 0x2e
+ 1092 010b 01       		.byte	0x1
+ 1093 010c 3F       		.uleb128 0x3f
+ 1094 010d 19       		.uleb128 0x19
+ 1095 010e 03       		.uleb128 0x3
+ 1096 010f 0E       		.uleb128 0xe
+ 1097 0110 3A       		.uleb128 0x3a
+ 1098 0111 0B       		.uleb128 0xb
+ 1099 0112 3B       		.uleb128 0x3b
+ 1100 0113 05       		.uleb128 0x5
+ 1101 0114 27       		.uleb128 0x27
+ 1102 0115 19       		.uleb128 0x19
+ 1103 0116 49       		.uleb128 0x49
+ 1104 0117 13       		.uleb128 0x13
+ 1105 0118 11       		.uleb128 0x11
+ 1106 0119 01       		.uleb128 0x1
+ 1107 011a 12       		.uleb128 0x12
+ 1108 011b 06       		.uleb128 0x6
+ 1109 011c 40       		.uleb128 0x40
+ 1110 011d 18       		.uleb128 0x18
+ 1111 011e 9742     		.uleb128 0x2117
+ 1112 0120 19       		.uleb128 0x19
+ 1113 0121 01       		.uleb128 0x1
+ 1114 0122 13       		.uleb128 0x13
+ 1115 0123 00       		.byte	0
+ 1116 0124 00       		.byte	0
+ 1117 0125 12       		.uleb128 0x12
+ 1118 0126 34       		.uleb128 0x34
+ 1119 0127 00       		.byte	0
+ 1120 0128 03       		.uleb128 0x3
+ 1121 0129 0E       		.uleb128 0xe
+ 1122 012a 3A       		.uleb128 0x3a
+ 1123 012b 0B       		.uleb128 0xb
+ 1124 012c 3B       		.uleb128 0x3b
+ 1125 012d 05       		.uleb128 0x5
+ 1126 012e 49       		.uleb128 0x49
+ 1127 012f 13       		.uleb128 0x13
+ 1128 0130 02       		.uleb128 0x2
+ 1129 0131 18       		.uleb128 0x18
+ 1130 0132 00       		.byte	0
+ 1131 0133 00       		.byte	0
+ 1132 0134 13       		.uleb128 0x13
+ 1133 0135 2E       		.uleb128 0x2e
+ 1134 0136 00       		.byte	0
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 28
+
+
+ 1135 0137 3F       		.uleb128 0x3f
+ 1136 0138 19       		.uleb128 0x19
+ 1137 0139 03       		.uleb128 0x3
+ 1138 013a 0E       		.uleb128 0xe
+ 1139 013b 3A       		.uleb128 0x3a
+ 1140 013c 0B       		.uleb128 0xb
+ 1141 013d 3B       		.uleb128 0x3b
+ 1142 013e 05       		.uleb128 0x5
+ 1143 013f 27       		.uleb128 0x27
+ 1144 0140 19       		.uleb128 0x19
+ 1145 0141 11       		.uleb128 0x11
+ 1146 0142 01       		.uleb128 0x1
+ 1147 0143 12       		.uleb128 0x12
+ 1148 0144 06       		.uleb128 0x6
+ 1149 0145 40       		.uleb128 0x40
+ 1150 0146 18       		.uleb128 0x18
+ 1151 0147 9742     		.uleb128 0x2117
+ 1152 0149 19       		.uleb128 0x19
+ 1153 014a 00       		.byte	0
+ 1154 014b 00       		.byte	0
+ 1155 014c 14       		.uleb128 0x14
+ 1156 014d 2E       		.uleb128 0x2e
+ 1157 014e 00       		.byte	0
+ 1158 014f 3F       		.uleb128 0x3f
+ 1159 0150 19       		.uleb128 0x19
+ 1160 0151 03       		.uleb128 0x3
+ 1161 0152 0E       		.uleb128 0xe
+ 1162 0153 3A       		.uleb128 0x3a
+ 1163 0154 0B       		.uleb128 0xb
+ 1164 0155 3B       		.uleb128 0x3b
+ 1165 0156 05       		.uleb128 0x5
+ 1166 0157 27       		.uleb128 0x27
+ 1167 0158 19       		.uleb128 0x19
+ 1168 0159 49       		.uleb128 0x49
+ 1169 015a 13       		.uleb128 0x13
+ 1170 015b 11       		.uleb128 0x11
+ 1171 015c 01       		.uleb128 0x1
+ 1172 015d 12       		.uleb128 0x12
+ 1173 015e 06       		.uleb128 0x6
+ 1174 015f 40       		.uleb128 0x40
+ 1175 0160 18       		.uleb128 0x18
+ 1176 0161 9742     		.uleb128 0x2117
+ 1177 0163 19       		.uleb128 0x19
+ 1178 0164 00       		.byte	0
+ 1179 0165 00       		.byte	0
+ 1180 0166 15       		.uleb128 0x15
+ 1181 0167 34       		.uleb128 0x34
+ 1182 0168 00       		.byte	0
+ 1183 0169 03       		.uleb128 0x3
+ 1184 016a 0E       		.uleb128 0xe
+ 1185 016b 3A       		.uleb128 0x3a
+ 1186 016c 0B       		.uleb128 0xb
+ 1187 016d 3B       		.uleb128 0x3b
+ 1188 016e 05       		.uleb128 0x5
+ 1189 016f 49       		.uleb128 0x49
+ 1190 0170 13       		.uleb128 0x13
+ 1191 0171 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 29
+
+
+ 1192 0172 19       		.uleb128 0x19
+ 1193 0173 3C       		.uleb128 0x3c
+ 1194 0174 19       		.uleb128 0x19
+ 1195 0175 00       		.byte	0
+ 1196 0176 00       		.byte	0
+ 1197 0177 00       		.byte	0
+ 1198              		.section	.debug_aranges,"",%progbits
+ 1199 0000 7C000000 		.4byte	0x7c
+ 1200 0004 0200     		.2byte	0x2
+ 1201 0006 00000000 		.4byte	.Ldebug_info0
+ 1202 000a 04       		.byte	0x4
+ 1203 000b 00       		.byte	0
+ 1204 000c 0000     		.2byte	0
+ 1205 000e 0000     		.2byte	0
+ 1206 0010 00000000 		.4byte	.LFB63
+ 1207 0014 20000000 		.4byte	.LFE63-.LFB63
+ 1208 0018 00000000 		.4byte	.LFB64
+ 1209 001c 22000000 		.4byte	.LFE64-.LFB64
+ 1210 0020 00000000 		.4byte	.LFB65
+ 1211 0024 14000000 		.4byte	.LFE65-.LFB65
+ 1212 0028 00000000 		.4byte	.LFB66
+ 1213 002c 0C000000 		.4byte	.LFE66-.LFB66
+ 1214 0030 00000000 		.4byte	.LFB67
+ 1215 0034 24000000 		.4byte	.LFE67-.LFB67
+ 1216 0038 00000000 		.4byte	.LFB68
+ 1217 003c 20000000 		.4byte	.LFE68-.LFB68
+ 1218 0040 00000000 		.4byte	.LFB69
+ 1219 0044 24000000 		.4byte	.LFE69-.LFB69
+ 1220 0048 00000000 		.4byte	.LFB70
+ 1221 004c 24000000 		.4byte	.LFE70-.LFB70
+ 1222 0050 00000000 		.4byte	.LFB71
+ 1223 0054 18000000 		.4byte	.LFE71-.LFB71
+ 1224 0058 00000000 		.4byte	.LFB72
+ 1225 005c 24000000 		.4byte	.LFE72-.LFB72
+ 1226 0060 00000000 		.4byte	.LFB73
+ 1227 0064 18000000 		.4byte	.LFE73-.LFB73
+ 1228 0068 00000000 		.4byte	.LFB74
+ 1229 006c 18000000 		.4byte	.LFE74-.LFB74
+ 1230 0070 00000000 		.4byte	.LFB75
+ 1231 0074 18000000 		.4byte	.LFE75-.LFB75
+ 1232 0078 00000000 		.4byte	0
+ 1233 007c 00000000 		.4byte	0
+ 1234              		.section	.debug_ranges,"",%progbits
+ 1235              	.Ldebug_ranges0:
+ 1236 0000 00000000 		.4byte	.LFB63
+ 1237 0004 20000000 		.4byte	.LFE63
+ 1238 0008 00000000 		.4byte	.LFB64
+ 1239 000c 22000000 		.4byte	.LFE64
+ 1240 0010 00000000 		.4byte	.LFB65
+ 1241 0014 14000000 		.4byte	.LFE65
+ 1242 0018 00000000 		.4byte	.LFB66
+ 1243 001c 0C000000 		.4byte	.LFE66
+ 1244 0020 00000000 		.4byte	.LFB67
+ 1245 0024 24000000 		.4byte	.LFE67
+ 1246 0028 00000000 		.4byte	.LFB68
+ 1247 002c 20000000 		.4byte	.LFE68
+ 1248 0030 00000000 		.4byte	.LFB69
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 30
+
+
+ 1249 0034 24000000 		.4byte	.LFE69
+ 1250 0038 00000000 		.4byte	.LFB70
+ 1251 003c 24000000 		.4byte	.LFE70
+ 1252 0040 00000000 		.4byte	.LFB71
+ 1253 0044 18000000 		.4byte	.LFE71
+ 1254 0048 00000000 		.4byte	.LFB72
+ 1255 004c 24000000 		.4byte	.LFE72
+ 1256 0050 00000000 		.4byte	.LFB73
+ 1257 0054 18000000 		.4byte	.LFE73
+ 1258 0058 00000000 		.4byte	.LFB74
+ 1259 005c 18000000 		.4byte	.LFE74
+ 1260 0060 00000000 		.4byte	.LFB75
+ 1261 0064 18000000 		.4byte	.LFE75
+ 1262 0068 00000000 		.4byte	0
+ 1263 006c 00000000 		.4byte	0
+ 1264              		.section	.debug_line,"",%progbits
+ 1265              	.Ldebug_line0:
+ 1266 0000 73020000 		.section	.debug_str,"MS",%progbits,1
+ 1266      02006A01 
+ 1266      00000201 
+ 1266      FB0E0D00 
+ 1266      01010101 
+ 1267              	.LASF23:
+ 1268 0000 4D6F6465 		.ascii	"ModeStatus2ISR_StartEx\000"
+ 1268      53746174 
+ 1268      75733249 
+ 1268      53525F53 
+ 1268      74617274 
+ 1269              	.LASF18:
+ 1270 0017 72656733 		.ascii	"reg32\000"
+ 1270      3200
+ 1271              	.LASF11:
+ 1272 001d 5F5F696E 		.ascii	"__int32_t\000"
+ 1272      7433325F 
+ 1272      7400
+ 1273              	.LASF35:
+ 1274 0027 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 1274      4320342E 
+ 1274      392E3320 
+ 1274      32303135 
+ 1274      30333033 
+ 1275 005a 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m3 -mthumb -g -O"
+ 1275      20726576 
+ 1275      6973696F 
+ 1275      6E203232 
+ 1275      31323230 
+ 1276 008d 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1276      66756E63 
+ 1276      74696F6E 
+ 1276      2D736563 
+ 1276      74696F6E 
+ 1277              	.LASF32:
+ 1278 00b5 4D6F6465 		.ascii	"ModeStatus2ISR_Disable\000"
+ 1278      53746174 
+ 1278      75733249 
+ 1278      53525F44 
+ 1278      69736162 
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 31
+
+
+ 1279              	.LASF16:
+ 1280 00cc 646F7562 		.ascii	"double\000"
+ 1280      6C6500
+ 1281              	.LASF29:
+ 1282 00d3 4D6F6465 		.ascii	"ModeStatus2ISR_GetVector\000"
+ 1282      53746174 
+ 1282      75733249 
+ 1282      53525F47 
+ 1282      65745665 
+ 1283              	.LASF22:
+ 1284 00ec 4D6F6465 		.ascii	"ModeStatus2ISR_Interrupt\000"
+ 1284      53746174 
+ 1284      75733249 
+ 1284      53525F49 
+ 1284      6E746572 
+ 1285              	.LASF15:
+ 1286 0105 666C6F61 		.ascii	"float\000"
+ 1286      7400
+ 1287              	.LASF13:
+ 1288 010b 75696E74 		.ascii	"uint8\000"
+ 1288      3800
+ 1289              	.LASF21:
+ 1290 0111 4D6F6465 		.ascii	"ModeStatus2ISR_Stop\000"
+ 1290      53746174 
+ 1290      75733249 
+ 1290      53525F53 
+ 1290      746F7000 
+ 1291              	.LASF2:
+ 1292 0125 756E7369 		.ascii	"unsigned char\000"
+ 1292      676E6564 
+ 1292      20636861 
+ 1292      7200
+ 1293              	.LASF17:
+ 1294 0133 72656738 		.ascii	"reg8\000"
+ 1294      00
+ 1295              	.LASF36:
+ 1296 0138 2E5C4765 		.ascii	".\\Generated_Source\\PSoC5\\ModeStatus2ISR.c\000"
+ 1296      6E657261 
+ 1296      7465645F 
+ 1296      536F7572 
+ 1296      63655C50 
+ 1297              	.LASF31:
+ 1298 0162 4D6F6465 		.ascii	"ModeStatus2ISR_Enable\000"
+ 1298      53746174 
+ 1298      75733249 
+ 1298      53525F45 
+ 1298      6E61626C 
+ 1299              	.LASF20:
+ 1300 0178 4D6F6465 		.ascii	"ModeStatus2ISR_Start\000"
+ 1300      53746174 
+ 1300      75733249 
+ 1300      53525F53 
+ 1300      74617274 
+ 1301              	.LASF4:
+ 1302 018d 73686F72 		.ascii	"short unsigned int\000"
+ 1302      7420756E 
+ 1302      7369676E 
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 32
+
+
+ 1302      65642069 
+ 1302      6E7400
+ 1303              	.LASF39:
+ 1304 01a0 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1304      52784275 
+ 1304      66666572 
+ 1304      00
+ 1305              	.LASF6:
+ 1306 01ad 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1306      20756E73 
+ 1306      69676E65 
+ 1306      6420696E 
+ 1306      7400
+ 1307              	.LASF30:
+ 1308 01bf 4D6F6465 		.ascii	"ModeStatus2ISR_GetPriority\000"
+ 1308      53746174 
+ 1308      75733249 
+ 1308      53525F47 
+ 1308      65745072 
+ 1309              	.LASF28:
+ 1310 01da 7072696F 		.ascii	"priority\000"
+ 1310      72697479 
+ 1310      00
+ 1311              	.LASF14:
+ 1312 01e3 75696E74 		.ascii	"uint32\000"
+ 1312      333200
+ 1313              	.LASF0:
+ 1314 01ea 756E7369 		.ascii	"unsigned int\000"
+ 1314      676E6564 
+ 1314      20696E74 
+ 1314      00
+ 1315              	.LASF25:
+ 1316 01f7 61646472 		.ascii	"address\000"
+ 1316      65737300 
+ 1317              	.LASF8:
+ 1318 01ff 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1318      206C6F6E 
+ 1318      6720756E 
+ 1318      7369676E 
+ 1318      65642069 
+ 1319              	.LASF19:
+ 1320 0216 63796973 		.ascii	"cyisraddress\000"
+ 1320      72616464 
+ 1320      72657373 
+ 1320      00
+ 1321              	.LASF37:
+ 1322 0223 5C5C5345 		.ascii	"\\\\SERVER1\\Folder Redirection\\faith\\Desktop\\Si"
+ 1322      52564552 
+ 1322      315C466F 
+ 1322      6C646572 
+ 1322      20526564 
+ 1323 0250 72656E50 		.ascii	"renProject200W_RevD\\ReleaseVersion.cydsn\000"
+ 1323      726F6A65 
+ 1323      63743230 
+ 1323      30575F52 
+ 1323      6576445C 
+ 1324              	.LASF12:
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 33
+
+
+ 1325 0279 696E7433 		.ascii	"int32_t\000"
+ 1325      325F7400 
+ 1326              	.LASF9:
+ 1327 0281 73697A65 		.ascii	"sizetype\000"
+ 1327      74797065 
+ 1327      00
+ 1328              	.LASF7:
+ 1329 028a 6C6F6E67 		.ascii	"long long int\000"
+ 1329      206C6F6E 
+ 1329      6720696E 
+ 1329      7400
+ 1330              	.LASF10:
+ 1331 0298 63686172 		.ascii	"char\000"
+ 1331      00
+ 1332              	.LASF26:
+ 1333 029d 72616D56 		.ascii	"ramVectorTable\000"
+ 1333      6563746F 
+ 1333      72546162 
+ 1333      6C6500
+ 1334              	.LASF27:
+ 1335 02ac 4D6F6465 		.ascii	"ModeStatus2ISR_SetPriority\000"
+ 1335      53746174 
+ 1335      75733249 
+ 1335      53525F53 
+ 1335      65745072 
+ 1336              	.LASF33:
+ 1337 02c7 4D6F6465 		.ascii	"ModeStatus2ISR_SetPending\000"
+ 1337      53746174 
+ 1337      75733249 
+ 1337      53525F53 
+ 1337      65745065 
+ 1338              	.LASF38:
+ 1339 02e1 4D6F6465 		.ascii	"ModeStatus2ISR_GetState\000"
+ 1339      53746174 
+ 1339      75733249 
+ 1339      53525F47 
+ 1339      65745374 
+ 1340              	.LASF3:
+ 1341 02f9 73686F72 		.ascii	"short int\000"
+ 1341      7420696E 
+ 1341      7400
+ 1342              	.LASF34:
+ 1343 0303 4D6F6465 		.ascii	"ModeStatus2ISR_ClearPending\000"
+ 1343      53746174 
+ 1343      75733249 
+ 1343      53525F43 
+ 1343      6C656172 
+ 1344              	.LASF24:
+ 1345 031f 4D6F6465 		.ascii	"ModeStatus2ISR_SetVector\000"
+ 1345      53746174 
+ 1345      75733249 
+ 1345      53525F53 
+ 1345      65745665 
+ 1346              	.LASF5:
+ 1347 0338 6C6F6E67 		.ascii	"long int\000"
+ 1347      20696E74 
+ 1347      00
+ARM GAS  C:\Users\faith\AppData\Local\Temp\ccRciuYl.s 			page 34
+
+
+ 1348              	.LASF1:
+ 1349 0341 7369676E 		.ascii	"signed char\000"
+ 1349      65642063 
+ 1349      68617200 
+ 1350              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

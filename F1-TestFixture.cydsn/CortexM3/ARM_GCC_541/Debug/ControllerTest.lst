@@ -1,0 +1,1993 @@
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"ControllerTest.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.bss
+  20              		.align	2
+  21              	rxPacket_Controller:
+  22 0000 00000000 		.space	8
+  22      00000000 
+  23              		.align	2
+  24              	pRxPacket_Controller:
+  25 0008 00000000 		.space	4
+  26              		.align	2
+  27              	txPacket_Controller:
+  28 000c 00000000 		.space	15
+  28      00000000 
+  28      00000000 
+  28      000000
+  29 001b 00       		.align	2
+  30              	pTxPacket_Controller:
+  31 001c 00000000 		.space	4
+  32              	TestState:
+  33 0020 00       		.space	1
+  34              	testvalue:
+  35 0021 00       		.space	1
+  36 0022 0000     		.align	2
+  37              	testvaluearray:
+  38 0024 00000000 		.space	400
+  38      00000000 
+  38      00000000 
+  38      00000000 
+  38      00000000 
+  39              	testindex:
+  40 01b4 00       		.space	1
+  41              		.section	.text.ControllerTest,"ax",%progbits
+  42              		.align	2
+  43              		.global	ControllerTest
+  44              		.thumb
+  45              		.thumb_func
+  46              		.type	ControllerTest, %function
+  47              	ControllerTest:
+  48              	.LFB63:
+  49              		.file 1 "ControllerTest.c"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 2
+
+
+   1:ControllerTest.c **** /* ========================================
+   2:ControllerTest.c ****  *
+   3:ControllerTest.c ****  * Copyright YOUR COMPANY, THE YEAR
+   4:ControllerTest.c ****  * All Rights Reserved
+   5:ControllerTest.c ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:ControllerTest.c ****  *
+   7:ControllerTest.c ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:ControllerTest.c ****  * WHICH IS THE PROPERTY OF your company.
+   9:ControllerTest.c ****  *
+  10:ControllerTest.c ****  * ========================================
+  11:ControllerTest.c **** */
+  12:ControllerTest.c **** 
+  13:ControllerTest.c **** #include <project.h>
+  14:ControllerTest.c **** #include "ControllerTest.h"
+  15:ControllerTest.c **** #include "UART_230400_Functions.h"
+  16:ControllerTest.c **** 
+  17:ControllerTest.c **** static RxPacket_Controller rxPacket_Controller;            
+  18:ControllerTest.c **** static RxPacket_Controller * pRxPacket_Controller; 
+  19:ControllerTest.c **** static TxPacket_Controller txPacket_Controller;            
+  20:ControllerTest.c **** static TxPacket_Controller * pTxPacket_Controller;
+  21:ControllerTest.c **** 
+  22:ControllerTest.c **** 
+  23:ControllerTest.c **** static uint8 TestState = 0;
+  24:ControllerTest.c **** 
+  25:ControllerTest.c **** static uint8 testvalue = 0;
+  26:ControllerTest.c **** static uint16 testvaluearray[200];
+  27:ControllerTest.c **** static uint8 testindex = 0;
+  28:ControllerTest.c **** 
+  29:ControllerTest.c **** enum DataType
+  30:ControllerTest.c **** { 
+  31:ControllerTest.c ****     CONFIRM_BOOTUP, 
+  32:ControllerTest.c ****     TEST_POWERMODES,
+  33:ControllerTest.c ****     FAIL
+  34:ControllerTest.c **** };
+  35:ControllerTest.c **** 
+  36:ControllerTest.c **** 
+  37:ControllerTest.c **** // Should have SOM installed (maybe with test software embedded)
+  38:ControllerTest.c **** // Controller should already be programmed with a test config file
+  39:ControllerTest.c **** 
+  40:ControllerTest.c **** 
+  41:ControllerTest.c **** 
+  42:ControllerTest.c **** void ControllerTest(void)
+  43:ControllerTest.c **** {
+  50              		.loc 1 43 0
+  51              		.cfi_startproc
+  52              		@ args = 0, pretend = 0, frame = 0
+  53              		@ frame_needed = 1, uses_anonymous_args = 0
+  54 0000 80B5     		push	{r7, lr}
+  55              		.cfi_def_cfa_offset 8
+  56              		.cfi_offset 7, -8
+  57              		.cfi_offset 14, -4
+  58 0002 00AF     		add	r7, sp, #0
+  59              		.cfi_def_cfa_register 7
+  44:ControllerTest.c ****     
+  45:ControllerTest.c ****     switch(TestState)
+  60              		.loc 1 45 0
+  61 0004 1D4B     		ldr	r3, .L11
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 3
+
+
+  62 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  63 0008 012B     		cmp	r3, #1
+  64 000a 15D0     		beq	.L3
+  65 000c 022B     		cmp	r3, #2
+  66 000e 30D0     		beq	.L9
+  67 0010 002B     		cmp	r3, #0
+  68 0012 00D0     		beq	.L5
+  46:ControllerTest.c ****     {   
+  47:ControllerTest.c ****         
+  48:ControllerTest.c ****         //----------------Set Default States----------------------------
+  49:ControllerTest.c ****         // Controller should be powered only by Vbatt at this time, with ignition ON
+  50:ControllerTest.c ****         //  - Enable Vbatt
+  51:ControllerTest.c ****         //  - Disable USB_5V
+  52:ControllerTest.c ****         //  - Send packet simulating ignition ON event
+  53:ControllerTest.c ****         //--------------------------------------------------------------
+  54:ControllerTest.c ****         
+  55:ControllerTest.c ****         case CONFIRM_BOOTUP:
+  56:ControllerTest.c ****         
+  57:ControllerTest.c ****         //***CTest_SendIgnitionState(IGNITION_ON);                 // Simulate ignition ON
+  58:ControllerTest.c ****             
+  59:ControllerTest.c ****         //*** need to setup a transmit to controller every 20msec - (this part will need some work 
+  60:ControllerTest.c ****         // (this is causing priority issues and messes up the Rx)
+  61:ControllerTest.c ****             
+  62:ControllerTest.c ****         // Verify the SOM has booted by verifying a valid packet is being sent (could be any packet
+  63:ControllerTest.c ****             ResetPacketSuccess();                       // Reset the packetsuccess count
+  64:ControllerTest.c ****             while( !VerifyPacket_230400(0) )                   // Wait for 5 successful packets - (
+  65:ControllerTest.c ****             {
+  66:ControllerTest.c **** //                LED_EN_Write(0);
+  67:ControllerTest.c ****             }
+  68:ControllerTest.c ****             
+  69:ControllerTest.c ****         // Indicate this step has been passed and move to next step
+  70:ControllerTest.c **** //            LED_EN_Write(1);                            
+  71:ControllerTest.c ****             CyDelay(1000);
+  72:ControllerTest.c **** //            LED_EN_Write(0);
+  73:ControllerTest.c ****             
+  74:ControllerTest.c ****             TestState = TEST_POWERMODES;                // Move to the next test step
+  75:ControllerTest.c ****             
+  76:ControllerTest.c ****         //*** need to add a timeout here - if 5 packets aren't received in a certain time, then mov
+  77:ControllerTest.c ****         //  TestState = FAIL;
+  78:ControllerTest.c ****         
+  79:ControllerTest.c ****         break;
+  80:ControllerTest.c ****         
+  81:ControllerTest.c ****         case TEST_POWERMODES:           // Vbatt Detect, USB Detect - 230400bps 
+  82:ControllerTest.c ****   
+  83:ControllerTest.c **** 
+  84:ControllerTest.c **** //        // Send_IgnitionState(IGNITION_OFF);      
+  85:ControllerTest.c **** //        if(CTest_ReadPowerMode() == 0x00)       // Verify Low Power Mode  
+  86:ControllerTest.c **** //            LED_EN_Write(1);
+  87:ControllerTest.c **** //        else
+  88:ControllerTest.c **** //            TestState = FAIL;
+  89:ControllerTest.c ****                       
+  90:ControllerTest.c **** //        // Send_IgnitionState(IGNITION_ON);  
+  91:ControllerTest.c **** //        if(CTest_ReadPowerMode() == 0x01)       // Verify Normal Power Mode
+  92:ControllerTest.c **** //            LED_EN_Write(1);
+  93:ControllerTest.c **** //        else
+  94:ControllerTest.c **** //            TestState = FAIL;
+  95:ControllerTest.c ****                 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 4
+
+
+  96:ControllerTest.c ****         // Send_IgnitionState(IGNITION_ON);
+  97:ControllerTest.c ****                 
+  98:ControllerTest.c **** //        if(CTest_ReadPowerMode() == 0x02)       // Verify Live Power Mode
+  99:ControllerTest.c **** //            LED_EN_Write(1);
+ 100:ControllerTest.c **** //        else
+ 101:ControllerTest.c **** //            TestState = FAIL;
+ 102:ControllerTest.c ****         
+ 103:ControllerTest.c ****             //----------------------test code----------------------
+ 104:ControllerTest.c ****             testvalue = CTest_ReadPowerMode();
+ 105:ControllerTest.c ****             
+ 106:ControllerTest.c ****             testvaluearray[testindex] = testvalue;
+ 107:ControllerTest.c ****             testindex++;
+ 108:ControllerTest.c ****             
+ 109:ControllerTest.c ****             if(testindex >= 200)
+ 110:ControllerTest.c ****                 testindex = 0;
+ 111:ControllerTest.c ****                 
+ 112:ControllerTest.c ****  //           if(testvalue == 0x00)
+ 113:ControllerTest.c **** //                LED_EN_Write(1);
+ 114:ControllerTest.c **** //            else if(testvalue == 0x01)
+ 115:ControllerTest.c **** //                LED_EN_Write(1);
+ 116:ControllerTest.c **** //            else if(testvalue == 0x02)
+ 117:ControllerTest.c **** //                LED_EN_Write(1);
+ 118:ControllerTest.c **** //            else
+ 119:ControllerTest.c **** //                LED_EN_Write(1);
+ 120:ControllerTest.c ****             //-----------------------------------------------------
+ 121:ControllerTest.c **** 
+ 122:ControllerTest.c ****         break;
+ 123:ControllerTest.c ****                 
+ 124:ControllerTest.c **** //            case TEST_QUAD:
+ 125:ControllerTest.c ****                 
+ 126:ControllerTest.c ****         //-------------------------------------------
+ 127:ControllerTest.c ****         // Quad Stream - 460800
+ 128:ControllerTest.c ****         // - Check that valid quad packets are being sent
+ 129:ControllerTest.c ****         //      - If pass, move to next step
+ 130:ControllerTest.c ****         //      - If fail, set LED to solid red, and wait for the user to reset the test
+ 131:ControllerTest.c ****                 while( CTest_VerifyPacket_QUAD() )      // Wait until the packet has been verified
+ 132:ControllerTest.c ****                 {}   
+ 133:ControllerTest.c ****         //-------------------------------------------
+ 134:ControllerTest.c ****               
+ 135:ControllerTest.c ****                 
+ 136:ControllerTest.c ****                 
+ 137:ControllerTest.c ****                 
+ 138:ControllerTest.c ****         //-------------------------------------------
+ 139:ControllerTest.c ****         // Debug Port (will need hardware to test)    
+ 140:ControllerTest.c ****         //-------------------------------------------
+ 141:ControllerTest.c ****         // Audio Stream (not a priority)
+ 142:ControllerTest.c ****         //-------------------------------------------   
+ 143:ControllerTest.c ****                 
+ 144:ControllerTest.c ****                 
+ 145:ControllerTest.c ****         // (Manual and requires a config file)
+ 146:ControllerTest.c ****         //-------------------------------------------
+ 147:ControllerTest.c ****         // Pushbuttons - 230400 - 'packet type'
+ 148:ControllerTest.c ****         //  - Check that the packet is turning all Relay Outputs on - (requires config file)
+ 149:ControllerTest.c ****                 CTest_ReadPushbuttons();
+ 150:ControllerTest.c ****         //-------------------------------------------
+ 151:ControllerTest.c ****                 
+ 152:ControllerTest.c ****                 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 5
+
+
+ 153:ControllerTest.c ****         //-------------------------------------------
+ 154:ControllerTest.c ****         // OBDII - (requires a config file)
+ 155:ControllerTest.c ****         // Send a known vehicle event
+ 156:ControllerTest.c ****         // Verify expected response - (corresponding output will be enabled)
+ 157:ControllerTest.c ****         //-------------------------------------------
+ 158:ControllerTest.c **** //                break;
+ 159:ControllerTest.c ****                 
+ 160:ControllerTest.c ****         case FAIL:
+ 161:ControllerTest.c ****                 
+ 162:ControllerTest.c ****             // Unit has failed the overall test
+ 163:ControllerTest.c ****             // Indicate to the user to press and hold the 'Next Action' button for 3 seconds to res
+ 164:ControllerTest.c ****             
+ 165:ControllerTest.c ****         break;
+ 166:ControllerTest.c ****                 
+ 167:ControllerTest.c **** 
+ 168:ControllerTest.c ****     }
+ 169:ControllerTest.c ****     
+ 170:ControllerTest.c ****     return;
+  69              		.loc 1 170 0
+  70 0014 31E0     		b	.L1
+  71              	.L5:
+  63:ControllerTest.c ****             while( !VerifyPacket_230400(0) )                   // Wait for 5 successful packets - (
+  72              		.loc 1 63 0
+  73 0016 FFF7FEFF 		bl	ResetPacketSuccess
+  64:ControllerTest.c ****             {
+  74              		.loc 1 64 0
+  75 001a 00BF     		nop
+  76              	.L6:
+  64:ControllerTest.c ****             {
+  77              		.loc 1 64 0 is_stmt 0 discriminator 1
+  78 001c 0020     		movs	r0, #0
+  79 001e FFF7FEFF 		bl	VerifyPacket_230400
+  80 0022 0346     		mov	r3, r0
+  81 0024 002B     		cmp	r3, #0
+  82 0026 F9D0     		beq	.L6
+  71:ControllerTest.c **** //            LED_EN_Write(0);
+  83              		.loc 1 71 0 is_stmt 1
+  84 0028 4FF47A70 		mov	r0, #1000
+  85 002c FFF7FEFF 		bl	CyDelay
+  74:ControllerTest.c ****             
+  86              		.loc 1 74 0
+  87 0030 124B     		ldr	r3, .L11
+  88 0032 0122     		movs	r2, #1
+  89 0034 1A70     		strb	r2, [r3]
+  79:ControllerTest.c ****         
+  90              		.loc 1 79 0
+  91 0036 1FE0     		b	.L2
+  92              	.L3:
+ 104:ControllerTest.c ****             
+  93              		.loc 1 104 0
+  94 0038 FFF7FEFF 		bl	CTest_ReadPowerMode
+  95 003c 0346     		mov	r3, r0
+  96 003e 1A46     		mov	r2, r3
+  97 0040 0F4B     		ldr	r3, .L11+4
+  98 0042 1A70     		strb	r2, [r3]
+ 106:ControllerTest.c ****             testindex++;
+  99              		.loc 1 106 0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 6
+
+
+ 100 0044 0F4B     		ldr	r3, .L11+8
+ 101 0046 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 102 0048 1A46     		mov	r2, r3
+ 103 004a 0D4B     		ldr	r3, .L11+4
+ 104 004c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 105 004e 99B2     		uxth	r1, r3
+ 106 0050 0D4B     		ldr	r3, .L11+12
+ 107 0052 23F81210 		strh	r1, [r3, r2, lsl #1]	@ movhi
+ 107:ControllerTest.c ****             
+ 108              		.loc 1 107 0
+ 109 0056 0B4B     		ldr	r3, .L11+8
+ 110 0058 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 111 005a 0133     		adds	r3, r3, #1
+ 112 005c DAB2     		uxtb	r2, r3
+ 113 005e 094B     		ldr	r3, .L11+8
+ 114 0060 1A70     		strb	r2, [r3]
+ 109:ControllerTest.c ****                 testindex = 0;
+ 115              		.loc 1 109 0
+ 116 0062 084B     		ldr	r3, .L11+8
+ 117 0064 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 118 0066 C72B     		cmp	r3, #199
+ 119 0068 05D9     		bls	.L10
+ 110:ControllerTest.c ****                 
+ 120              		.loc 1 110 0
+ 121 006a 064B     		ldr	r3, .L11+8
+ 122 006c 0022     		movs	r2, #0
+ 123 006e 1A70     		strb	r2, [r3]
+ 122:ControllerTest.c ****                 
+ 124              		.loc 1 122 0
+ 125 0070 01E0     		b	.L10
+ 126              	.L9:
+ 165:ControllerTest.c ****                 
+ 127              		.loc 1 165 0
+ 128 0072 00BF     		nop
+ 129 0074 00E0     		b	.L2
+ 130              	.L10:
+ 122:ControllerTest.c ****                 
+ 131              		.loc 1 122 0
+ 132 0076 00BF     		nop
+ 133              	.L2:
+ 134              		.loc 1 170 0 discriminator 1
+ 135 0078 00BF     		nop
+ 136              	.L1:
+ 171:ControllerTest.c **** }
+ 137              		.loc 1 171 0
+ 138 007a 80BD     		pop	{r7, pc}
+ 139              	.L12:
+ 140              		.align	2
+ 141              	.L11:
+ 142 007c 20000000 		.word	TestState
+ 143 0080 21000000 		.word	testvalue
+ 144 0084 B4010000 		.word	testindex
+ 145 0088 24000000 		.word	testvaluearray
+ 146              		.cfi_endproc
+ 147              	.LFE63:
+ 148              		.size	ControllerTest, .-ControllerTest
+ 149              		.section	.text.CTest_VerifyPacket_QUAD,"ax",%progbits
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 7
+
+
+ 150              		.align	2
+ 151              		.global	CTest_VerifyPacket_QUAD
+ 152              		.thumb
+ 153              		.thumb_func
+ 154              		.type	CTest_VerifyPacket_QUAD, %function
+ 155              	CTest_VerifyPacket_QUAD:
+ 156              	.LFB64:
+ 172:ControllerTest.c **** 
+ 173:ControllerTest.c **** 
+ 174:ControllerTest.c **** uint8 CTest_VerifyPacket_QUAD()
+ 175:ControllerTest.c **** {
+ 157              		.loc 1 175 0
+ 158              		.cfi_startproc
+ 159              		@ args = 0, pretend = 0, frame = 0
+ 160              		@ frame_needed = 1, uses_anonymous_args = 0
+ 161              		@ link register save eliminated.
+ 162 0000 80B4     		push	{r7}
+ 163              		.cfi_def_cfa_offset 4
+ 164              		.cfi_offset 7, -4
+ 165 0002 00AF     		add	r7, sp, #0
+ 166              		.cfi_def_cfa_register 7
+ 176:ControllerTest.c ****     
+ 177:ControllerTest.c ****     //  Setup to read Quad packets
+ 178:ControllerTest.c ****     //  - Switch the mux
+ 179:ControllerTest.c ****     //  - Setup UART_460800
+ 180:ControllerTest.c ****     
+ 181:ControllerTest.c ****     return(0);
+ 167              		.loc 1 181 0
+ 168 0004 0023     		movs	r3, #0
+ 182:ControllerTest.c **** }
+ 169              		.loc 1 182 0
+ 170 0006 1846     		mov	r0, r3
+ 171 0008 BD46     		mov	sp, r7
+ 172              		.cfi_def_cfa_register 13
+ 173              		@ sp needed
+ 174 000a 80BC     		pop	{r7}
+ 175              		.cfi_restore 7
+ 176              		.cfi_def_cfa_offset 0
+ 177 000c 7047     		bx	lr
+ 178              		.cfi_endproc
+ 179              	.LFE64:
+ 180              		.size	CTest_VerifyPacket_QUAD, .-CTest_VerifyPacket_QUAD
+ 181 000e 00BF     		.section	.text.CTest_ReadPushbuttons,"ax",%progbits
+ 182              		.align	2
+ 183              		.global	CTest_ReadPushbuttons
+ 184              		.thumb
+ 185              		.thumb_func
+ 186              		.type	CTest_ReadPushbuttons, %function
+ 187              	CTest_ReadPushbuttons:
+ 188              	.LFB65:
+ 183:ControllerTest.c **** 
+ 184:ControllerTest.c **** uint8 CTest_ReadPushbuttons()
+ 185:ControllerTest.c **** {
+ 189              		.loc 1 185 0
+ 190              		.cfi_startproc
+ 191              		@ args = 0, pretend = 0, frame = 0
+ 192              		@ frame_needed = 1, uses_anonymous_args = 0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 8
+
+
+ 193 0000 80B5     		push	{r7, lr}
+ 194              		.cfi_def_cfa_offset 8
+ 195              		.cfi_offset 7, -8
+ 196              		.cfi_offset 14, -4
+ 197 0002 00AF     		add	r7, sp, #0
+ 198              		.cfi_def_cfa_register 7
+ 186:ControllerTest.c **** 
+ 187:ControllerTest.c ****     // Switch MUX_230400 to read CTest_RS485_Relay_Rx
+ 188:ControllerTest.c **** //        MUX_CTRL_230400_Write(0x00);
+ 189:ControllerTest.c ****     
+ 190:ControllerTest.c ****     // Read the Outputs1_8 and Outputs9_16 bytes, return TRUE if all are active
+ 191:ControllerTest.c ****     
+ 192:ControllerTest.c ****         pRxPacket_Controller = getRxPacket_Controller();
+ 199              		.loc 1 192 0
+ 200 0004 FFF7FEFF 		bl	getRxPacket_Controller
+ 201 0008 0246     		mov	r2, r0
+ 202 000a 084B     		ldr	r3, .L18
+ 203 000c 1A60     		str	r2, [r3]
+ 193:ControllerTest.c ****         
+ 194:ControllerTest.c ****         if ( (pRxPacket_Controller->Payload.Outputs1_8 == 0xFF) && (pRxPacket_Controller->Payload.O
+ 204              		.loc 1 194 0
+ 205 000e 074B     		ldr	r3, .L18
+ 206 0010 1B68     		ldr	r3, [r3]
+ 207 0012 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 208 0014 FF2B     		cmp	r3, #255
+ 209 0016 06D1     		bne	.L16
+ 210              		.loc 1 194 0 is_stmt 0 discriminator 1
+ 211 0018 044B     		ldr	r3, .L18
+ 212 001a 1B68     		ldr	r3, [r3]
+ 213 001c 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 214 001e FF2B     		cmp	r3, #255
+ 215 0020 01D1     		bne	.L16
+ 195:ControllerTest.c ****             return(1);
+ 216              		.loc 1 195 0 is_stmt 1
+ 217 0022 0123     		movs	r3, #1
+ 218 0024 00E0     		b	.L17
+ 219              	.L16:
+ 196:ControllerTest.c ****         else
+ 197:ControllerTest.c ****             return(0);
+ 220              		.loc 1 197 0
+ 221 0026 0023     		movs	r3, #0
+ 222              	.L17:
+ 198:ControllerTest.c ****        
+ 199:ControllerTest.c **** }
+ 223              		.loc 1 199 0
+ 224 0028 1846     		mov	r0, r3
+ 225 002a 80BD     		pop	{r7, pc}
+ 226              	.L19:
+ 227              		.align	2
+ 228              	.L18:
+ 229 002c 08000000 		.word	pRxPacket_Controller
+ 230              		.cfi_endproc
+ 231              	.LFE65:
+ 232              		.size	CTest_ReadPushbuttons, .-CTest_ReadPushbuttons
+ 233              		.section	.text.CTest_ReadPowerMode,"ax",%progbits
+ 234              		.align	2
+ 235              		.global	CTest_ReadPowerMode
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 9
+
+
+ 236              		.thumb
+ 237              		.thumb_func
+ 238              		.type	CTest_ReadPowerMode, %function
+ 239              	CTest_ReadPowerMode:
+ 240              	.LFB66:
+ 200:ControllerTest.c **** 
+ 201:ControllerTest.c **** uint8 CTest_ReadPowerMode()
+ 202:ControllerTest.c **** {  
+ 241              		.loc 1 202 0
+ 242              		.cfi_startproc
+ 243              		@ args = 0, pretend = 0, frame = 0
+ 244              		@ frame_needed = 1, uses_anonymous_args = 0
+ 245 0000 80B5     		push	{r7, lr}
+ 246              		.cfi_def_cfa_offset 8
+ 247              		.cfi_offset 7, -8
+ 248              		.cfi_offset 14, -4
+ 249 0002 00AF     		add	r7, sp, #0
+ 250              		.cfi_def_cfa_register 7
+ 203:ControllerTest.c ****     
+ 204:ControllerTest.c ****     //*** We need to inlude Relay ignition signal, and OBD as triggers
+ 205:ControllerTest.c ****     //*** (Controller config file should have all input logic set to Hi???)
+ 206:ControllerTest.c ****     
+ 207:ControllerTest.c ****     // Switch MUX_230400 to read CTest_RS485_Relay_Rx
+ 208:ControllerTest.c **** //        MUX_CTRL_230400_Write(0x00);
+ 209:ControllerTest.c ****      
+ 210:ControllerTest.c ****     // Read the PowerState byte, Return the Powerstate byte
+ 211:ControllerTest.c ****         pRxPacket_Controller = getRxPacket_Controller();
+ 251              		.loc 1 211 0
+ 252 0004 FFF7FEFF 		bl	getRxPacket_Controller
+ 253 0008 0246     		mov	r2, r0
+ 254 000a 034B     		ldr	r3, .L22
+ 255 000c 1A60     		str	r2, [r3]
+ 212:ControllerTest.c ****         return(pRxPacket_Controller->Payload.PowerState);
+ 256              		.loc 1 212 0
+ 257 000e 024B     		ldr	r3, .L22
+ 258 0010 1B68     		ldr	r3, [r3]
+ 259 0012 5B79     		ldrb	r3, [r3, #5]	@ zero_extendqisi2
+ 213:ControllerTest.c ****    
+ 214:ControllerTest.c **** }
+ 260              		.loc 1 214 0
+ 261 0014 1846     		mov	r0, r3
+ 262 0016 80BD     		pop	{r7, pc}
+ 263              	.L23:
+ 264              		.align	2
+ 265              	.L22:
+ 266 0018 08000000 		.word	pRxPacket_Controller
+ 267              		.cfi_endproc
+ 268              	.LFE66:
+ 269              		.size	CTest_ReadPowerMode, .-CTest_ReadPowerMode
+ 270              		.section	.text.CTest_SendIgnitionState,"ax",%progbits
+ 271              		.align	2
+ 272              		.global	CTest_SendIgnitionState
+ 273              		.thumb
+ 274              		.thumb_func
+ 275              		.type	CTest_SendIgnitionState, %function
+ 276              	CTest_SendIgnitionState:
+ 277              	.LFB67:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 10
+
+
+ 215:ControllerTest.c **** 
+ 216:ControllerTest.c **** void CTest_SendIgnitionState(uint8 ignition_state)           //*** This function needs work
+ 217:ControllerTest.c **** {
+ 278              		.loc 1 217 0
+ 279              		.cfi_startproc
+ 280              		@ args = 0, pretend = 0, frame = 8
+ 281              		@ frame_needed = 1, uses_anonymous_args = 0
+ 282 0000 80B5     		push	{r7, lr}
+ 283              		.cfi_def_cfa_offset 8
+ 284              		.cfi_offset 7, -8
+ 285              		.cfi_offset 14, -4
+ 286 0002 82B0     		sub	sp, sp, #8
+ 287              		.cfi_def_cfa_offset 16
+ 288 0004 00AF     		add	r7, sp, #0
+ 289              		.cfi_def_cfa_register 7
+ 290 0006 0346     		mov	r3, r0
+ 291 0008 FB71     		strb	r3, [r7, #7]
+ 218:ControllerTest.c ****     
+ 219:ControllerTest.c ****     pTxPacket_Controller = getTxPacket_Controller();
+ 292              		.loc 1 219 0
+ 293 000a FFF7FEFF 		bl	getTxPacket_Controller
+ 294 000e 0246     		mov	r2, r0
+ 295 0010 084B     		ldr	r3, .L26
+ 296 0012 1A60     		str	r2, [r3]
+ 220:ControllerTest.c ****     pTxPacket_Controller->Payload.RelayInputs = (pTxPacket_Controller->Payload.RelayInputs | 0x01);
+ 297              		.loc 1 220 0
+ 298 0014 074B     		ldr	r3, .L26
+ 299 0016 1B68     		ldr	r3, [r3]
+ 300 0018 064A     		ldr	r2, .L26
+ 301 001a 1268     		ldr	r2, [r2]
+ 302 001c D279     		ldrb	r2, [r2, #7]	@ zero_extendqisi2
+ 303 001e 42F00102 		orr	r2, r2, #1
+ 304 0022 D2B2     		uxtb	r2, r2
+ 305 0024 DA71     		strb	r2, [r3, #7]
+ 221:ControllerTest.c ****     
+ 222:ControllerTest.c ****     MUX_CTRL_230400_Write(0x00);                        // Set the Mux channel
+ 306              		.loc 1 222 0
+ 307 0026 0020     		movs	r0, #0
+ 308 0028 FFF7FEFF 		bl	MUX_CTRL_230400_Write
+ 223:ControllerTest.c ****     
+ 224:ControllerTest.c ****     
+ 225:ControllerTest.c ****     return;
+ 309              		.loc 1 225 0
+ 310 002c 00BF     		nop
+ 226:ControllerTest.c **** }
+ 311              		.loc 1 226 0
+ 312 002e 0837     		adds	r7, r7, #8
+ 313              		.cfi_def_cfa_offset 8
+ 314 0030 BD46     		mov	sp, r7
+ 315              		.cfi_def_cfa_register 13
+ 316              		@ sp needed
+ 317 0032 80BD     		pop	{r7, pc}
+ 318              	.L27:
+ 319              		.align	2
+ 320              	.L26:
+ 321 0034 1C000000 		.word	pTxPacket_Controller
+ 322              		.cfi_endproc
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 11
+
+
+ 323              	.LFE67:
+ 324              		.size	CTest_SendIgnitionState, .-CTest_SendIgnitionState
+ 325              		.section	.text.getRxPacket_Controller,"ax",%progbits
+ 326              		.align	2
+ 327              		.global	getRxPacket_Controller
+ 328              		.thumb
+ 329              		.thumb_func
+ 330              		.type	getRxPacket_Controller, %function
+ 331              	getRxPacket_Controller:
+ 332              	.LFB68:
+ 227:ControllerTest.c **** 
+ 228:ControllerTest.c **** 
+ 229:ControllerTest.c **** 
+ 230:ControllerTest.c **** 
+ 231:ControllerTest.c **** RxPacket_Controller * getRxPacket_Controller(void)
+ 232:ControllerTest.c **** {
+ 333              		.loc 1 232 0
+ 334              		.cfi_startproc
+ 335              		@ args = 0, pretend = 0, frame = 0
+ 336              		@ frame_needed = 1, uses_anonymous_args = 0
+ 337              		@ link register save eliminated.
+ 338 0000 80B4     		push	{r7}
+ 339              		.cfi_def_cfa_offset 4
+ 340              		.cfi_offset 7, -4
+ 341 0002 00AF     		add	r7, sp, #0
+ 342              		.cfi_def_cfa_register 7
+ 233:ControllerTest.c ****     pRxPacket_Controller = &rxPacket_Controller;
+ 343              		.loc 1 233 0
+ 344 0004 044B     		ldr	r3, .L30
+ 345 0006 054A     		ldr	r2, .L30+4
+ 346 0008 1A60     		str	r2, [r3]
+ 234:ControllerTest.c ****     
+ 235:ControllerTest.c ****     return pRxPacket_Controller;
+ 347              		.loc 1 235 0
+ 348 000a 034B     		ldr	r3, .L30
+ 349 000c 1B68     		ldr	r3, [r3]
+ 236:ControllerTest.c **** }
+ 350              		.loc 1 236 0
+ 351 000e 1846     		mov	r0, r3
+ 352 0010 BD46     		mov	sp, r7
+ 353              		.cfi_def_cfa_register 13
+ 354              		@ sp needed
+ 355 0012 80BC     		pop	{r7}
+ 356              		.cfi_restore 7
+ 357              		.cfi_def_cfa_offset 0
+ 358 0014 7047     		bx	lr
+ 359              	.L31:
+ 360 0016 00BF     		.align	2
+ 361              	.L30:
+ 362 0018 08000000 		.word	pRxPacket_Controller
+ 363 001c 00000000 		.word	rxPacket_Controller
+ 364              		.cfi_endproc
+ 365              	.LFE68:
+ 366              		.size	getRxPacket_Controller, .-getRxPacket_Controller
+ 367              		.section	.text.getTxPacket_Controller,"ax",%progbits
+ 368              		.align	2
+ 369              		.global	getTxPacket_Controller
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 12
+
+
+ 370              		.thumb
+ 371              		.thumb_func
+ 372              		.type	getTxPacket_Controller, %function
+ 373              	getTxPacket_Controller:
+ 374              	.LFB69:
+ 237:ControllerTest.c **** 
+ 238:ControllerTest.c **** TxPacket_Controller * getTxPacket_Controller(void)
+ 239:ControllerTest.c **** {
+ 375              		.loc 1 239 0
+ 376              		.cfi_startproc
+ 377              		@ args = 0, pretend = 0, frame = 0
+ 378              		@ frame_needed = 1, uses_anonymous_args = 0
+ 379              		@ link register save eliminated.
+ 380 0000 80B4     		push	{r7}
+ 381              		.cfi_def_cfa_offset 4
+ 382              		.cfi_offset 7, -4
+ 383 0002 00AF     		add	r7, sp, #0
+ 384              		.cfi_def_cfa_register 7
+ 240:ControllerTest.c ****     pTxPacket_Controller = &txPacket_Controller;
+ 385              		.loc 1 240 0
+ 386 0004 044B     		ldr	r3, .L34
+ 387 0006 054A     		ldr	r2, .L34+4
+ 388 0008 1A60     		str	r2, [r3]
+ 241:ControllerTest.c ****     
+ 242:ControllerTest.c ****     return pTxPacket_Controller;
+ 389              		.loc 1 242 0
+ 390 000a 034B     		ldr	r3, .L34
+ 391 000c 1B68     		ldr	r3, [r3]
+ 243:ControllerTest.c **** }
+ 392              		.loc 1 243 0
+ 393 000e 1846     		mov	r0, r3
+ 394 0010 BD46     		mov	sp, r7
+ 395              		.cfi_def_cfa_register 13
+ 396              		@ sp needed
+ 397 0012 80BC     		pop	{r7}
+ 398              		.cfi_restore 7
+ 399              		.cfi_def_cfa_offset 0
+ 400 0014 7047     		bx	lr
+ 401              	.L35:
+ 402 0016 00BF     		.align	2
+ 403              	.L34:
+ 404 0018 1C000000 		.word	pTxPacket_Controller
+ 405 001c 0C000000 		.word	txPacket_Controller
+ 406              		.cfi_endproc
+ 407              	.LFE69:
+ 408              		.size	getTxPacket_Controller, .-getTxPacket_Controller
+ 409              		.text
+ 410              	.Letext0:
+ 411              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 412              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 413              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 414              		.file 5 "UART_230400_Functions.h"
+ 415              		.file 6 "Generated_Source\\PSoC5/core_cm3.h"
+ 416              		.section	.debug_info,"",%progbits
+ 417              	.Ldebug_info0:
+ 418 0000 D9030000 		.4byte	0x3d9
+ 419 0004 0400     		.2byte	0x4
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 13
+
+
+ 420 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 421 000a 04       		.byte	0x4
+ 422 000b 01       		.uleb128 0x1
+ 423 000c AD000000 		.4byte	.LASF63
+ 424 0010 0C       		.byte	0xc
+ 425 0011 B7030000 		.4byte	.LASF64
+ 426 0015 2C000000 		.4byte	.LASF65
+ 427 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 428 001d 00000000 		.4byte	0
+ 429 0021 00000000 		.4byte	.Ldebug_line0
+ 430 0025 02       		.uleb128 0x2
+ 431 0026 01       		.byte	0x1
+ 432 0027 06       		.byte	0x6
+ 433 0028 F5020000 		.4byte	.LASF0
+ 434 002c 02       		.uleb128 0x2
+ 435 002d 01       		.byte	0x1
+ 436 002e 08       		.byte	0x8
+ 437 002f E7020000 		.4byte	.LASF1
+ 438 0033 02       		.uleb128 0x2
+ 439 0034 02       		.byte	0x2
+ 440 0035 05       		.byte	0x5
+ 441 0036 74000000 		.4byte	.LASF2
+ 442 003a 02       		.uleb128 0x2
+ 443 003b 02       		.byte	0x2
+ 444 003c 07       		.byte	0x7
+ 445 003d 8A030000 		.4byte	.LASF3
+ 446 0041 03       		.uleb128 0x3
+ 447 0042 F6030000 		.4byte	.LASF9
+ 448 0046 02       		.byte	0x2
+ 449 0047 3F       		.byte	0x3f
+ 450 0048 4C000000 		.4byte	0x4c
+ 451 004c 02       		.uleb128 0x2
+ 452 004d 04       		.byte	0x4
+ 453 004e 05       		.byte	0x5
+ 454 004f 44020000 		.4byte	.LASF4
+ 455 0053 02       		.uleb128 0x2
+ 456 0054 04       		.byte	0x4
+ 457 0055 07       		.byte	0x7
+ 458 0056 20030000 		.4byte	.LASF5
+ 459 005a 02       		.uleb128 0x2
+ 460 005b 08       		.byte	0x8
+ 461 005c 05       		.byte	0x5
+ 462 005d 1F020000 		.4byte	.LASF6
+ 463 0061 02       		.uleb128 0x2
+ 464 0062 08       		.byte	0x8
+ 465 0063 07       		.byte	0x7
+ 466 0064 2D020000 		.4byte	.LASF7
+ 467 0068 04       		.uleb128 0x4
+ 468 0069 04       		.byte	0x4
+ 469 006a 05       		.byte	0x5
+ 470 006b 696E7400 		.ascii	"int\000"
+ 471 006f 02       		.uleb128 0x2
+ 472 0070 04       		.byte	0x4
+ 473 0071 07       		.byte	0x7
+ 474 0072 13030000 		.4byte	.LASF8
+ 475 0076 03       		.uleb128 0x3
+ 476 0077 82030000 		.4byte	.LASF10
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 14
+
+
+ 477 007b 03       		.byte	0x3
+ 478 007c 2C       		.byte	0x2c
+ 479 007d 41000000 		.4byte	0x41
+ 480 0081 05       		.uleb128 0x5
+ 481 0082 9D030000 		.4byte	.LASF11
+ 482 0086 04       		.byte	0x4
+ 483 0087 E401     		.2byte	0x1e4
+ 484 0089 2C000000 		.4byte	0x2c
+ 485 008d 05       		.uleb128 0x5
+ 486 008e A3030000 		.4byte	.LASF12
+ 487 0092 04       		.byte	0x4
+ 488 0093 E501     		.2byte	0x1e5
+ 489 0095 3A000000 		.4byte	0x3a
+ 490 0099 02       		.uleb128 0x2
+ 491 009a 04       		.byte	0x4
+ 492 009b 04       		.byte	0x4
+ 493 009c 19020000 		.4byte	.LASF13
+ 494 00a0 02       		.uleb128 0x2
+ 495 00a1 08       		.byte	0x8
+ 496 00a2 04       		.byte	0x4
+ 497 00a3 D8030000 		.4byte	.LASF14
+ 498 00a7 02       		.uleb128 0x2
+ 499 00a8 01       		.byte	0x1
+ 500 00a9 08       		.byte	0x8
+ 501 00aa 7D030000 		.4byte	.LASF15
+ 502 00ae 02       		.uleb128 0x2
+ 503 00af 08       		.byte	0x8
+ 504 00b0 04       		.byte	0x4
+ 505 00b1 3B010000 		.4byte	.LASF16
+ 506 00b5 02       		.uleb128 0x2
+ 507 00b6 04       		.byte	0x4
+ 508 00b7 07       		.byte	0x7
+ 509 00b8 7E000000 		.4byte	.LASF17
+ 510 00bc 06       		.uleb128 0x6
+ 511 00bd 5C040000 		.4byte	.LASF29
+ 512 00c1 08       		.byte	0x8
+ 513 00c2 05       		.byte	0x5
+ 514 00c3 20       		.byte	0x20
+ 515 00c4 29010000 		.4byte	0x129
+ 516 00c8 07       		.uleb128 0x7
+ 517 00c9 00040000 		.4byte	.LASF18
+ 518 00cd 05       		.byte	0x5
+ 519 00ce 22       		.byte	0x22
+ 520 00cf 81000000 		.4byte	0x81
+ 521 00d3 00       		.byte	0
+ 522 00d4 07       		.uleb128 0x7
+ 523 00d5 EF010000 		.4byte	.LASF19
+ 524 00d9 05       		.byte	0x5
+ 525 00da 23       		.byte	0x23
+ 526 00db 81000000 		.4byte	0x81
+ 527 00df 01       		.byte	0x1
+ 528 00e0 07       		.uleb128 0x7
+ 529 00e1 56010000 		.4byte	.LASF20
+ 530 00e5 05       		.byte	0x5
+ 531 00e6 24       		.byte	0x24
+ 532 00e7 81000000 		.4byte	0x81
+ 533 00eb 02       		.byte	0x2
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 15
+
+
+ 534 00ec 07       		.uleb128 0x7
+ 535 00ed AD020000 		.4byte	.LASF21
+ 536 00f1 05       		.byte	0x5
+ 537 00f2 25       		.byte	0x25
+ 538 00f3 81000000 		.4byte	0x81
+ 539 00f7 03       		.byte	0x3
+ 540 00f8 07       		.uleb128 0x7
+ 541 00f9 8C010000 		.4byte	.LASF22
+ 542 00fd 05       		.byte	0x5
+ 543 00fe 26       		.byte	0x26
+ 544 00ff 81000000 		.4byte	0x81
+ 545 0103 04       		.byte	0x4
+ 546 0104 07       		.uleb128 0x7
+ 547 0105 32030000 		.4byte	.LASF23
+ 548 0109 05       		.byte	0x5
+ 549 010a 27       		.byte	0x27
+ 550 010b 81000000 		.4byte	0x81
+ 551 010f 05       		.byte	0x5
+ 552 0110 07       		.uleb128 0x7
+ 553 0111 E9030000 		.4byte	.LASF24
+ 554 0115 05       		.byte	0x5
+ 555 0116 28       		.byte	0x28
+ 556 0117 81000000 		.4byte	0x81
+ 557 011b 06       		.byte	0x6
+ 558 011c 07       		.uleb128 0x7
+ 559 011d 81020000 		.4byte	.LASF25
+ 560 0121 05       		.byte	0x5
+ 561 0122 29       		.byte	0x29
+ 562 0123 81000000 		.4byte	0x81
+ 563 0127 07       		.byte	0x7
+ 564 0128 00       		.byte	0
+ 565 0129 08       		.uleb128 0x8
+ 566 012a 98010000 		.4byte	.LASF46
+ 567 012e 08       		.byte	0x8
+ 568 012f 05       		.byte	0x5
+ 569 0130 1C       		.byte	0x1c
+ 570 0131 4C010000 		.4byte	0x14c
+ 571 0135 09       		.uleb128 0x9
+ 572 0136 D2030000 		.4byte	.LASF26
+ 573 013a 05       		.byte	0x5
+ 574 013b 1E       		.byte	0x1e
+ 575 013c 4C010000 		.4byte	0x14c
+ 576 0140 09       		.uleb128 0x9
+ 577 0141 4D020000 		.4byte	.LASF27
+ 578 0145 05       		.byte	0x5
+ 579 0146 2A       		.byte	0x2a
+ 580 0147 BC000000 		.4byte	0xbc
+ 581 014b 00       		.byte	0
+ 582 014c 0A       		.uleb128 0xa
+ 583 014d 81000000 		.4byte	0x81
+ 584 0151 5C010000 		.4byte	0x15c
+ 585 0155 0B       		.uleb128 0xb
+ 586 0156 B5000000 		.4byte	0xb5
+ 587 015a 07       		.byte	0x7
+ 588 015b 00       		.byte	0
+ 589 015c 03       		.uleb128 0x3
+ 590 015d 63010000 		.4byte	.LASF28
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 16
+
+
+ 591 0161 05       		.byte	0x5
+ 592 0162 2B       		.byte	0x2b
+ 593 0163 29010000 		.4byte	0x129
+ 594 0167 06       		.uleb128 0x6
+ 595 0168 01030000 		.4byte	.LASF30
+ 596 016c 0F       		.byte	0xf
+ 597 016d 05       		.byte	0x5
+ 598 016e 32       		.byte	0x32
+ 599 016f 28020000 		.4byte	0x228
+ 600 0173 07       		.uleb128 0x7
+ 601 0174 C2010000 		.4byte	.LASF31
+ 602 0178 05       		.byte	0x5
+ 603 0179 34       		.byte	0x34
+ 604 017a 81000000 		.4byte	0x81
+ 605 017e 00       		.byte	0
+ 606 017f 07       		.uleb128 0x7
+ 607 0180 D1010000 		.4byte	.LASF32
+ 608 0184 05       		.byte	0x5
+ 609 0185 35       		.byte	0x35
+ 610 0186 81000000 		.4byte	0x81
+ 611 018a 01       		.byte	0x1
+ 612 018b 07       		.uleb128 0x7
+ 613 018c E0010000 		.4byte	.LASF33
+ 614 0190 05       		.byte	0x5
+ 615 0191 36       		.byte	0x36
+ 616 0192 81000000 		.4byte	0x81
+ 617 0196 02       		.byte	0x2
+ 618 0197 07       		.uleb128 0x7
+ 619 0198 47010000 		.4byte	.LASF34
+ 620 019c 05       		.byte	0x5
+ 621 019d 37       		.byte	0x37
+ 622 019e 81000000 		.4byte	0x81
+ 623 01a2 03       		.byte	0x3
+ 624 01a3 07       		.uleb128 0x7
+ 625 01a4 AA030000 		.4byte	.LASF35
+ 626 01a8 05       		.byte	0x5
+ 627 01a9 38       		.byte	0x38
+ 628 01aa 81000000 		.4byte	0x81
+ 629 01ae 04       		.byte	0x4
+ 630 01af 07       		.uleb128 0x7
+ 631 01b0 31040000 		.4byte	.LASF36
+ 632 01b4 05       		.byte	0x5
+ 633 01b5 39       		.byte	0x39
+ 634 01b6 81000000 		.4byte	0x81
+ 635 01ba 05       		.byte	0x5
+ 636 01bb 07       		.uleb128 0x7
+ 637 01bc 77010000 		.4byte	.LASF37
+ 638 01c0 05       		.byte	0x5
+ 639 01c1 3A       		.byte	0x3a
+ 640 01c2 81000000 		.4byte	0x81
+ 641 01c6 06       		.byte	0x6
+ 642 01c7 07       		.uleb128 0x7
+ 643 01c8 6E040000 		.4byte	.LASF38
+ 644 01cc 05       		.byte	0x5
+ 645 01cd 3B       		.byte	0x3b
+ 646 01ce 81000000 		.4byte	0x81
+ 647 01d2 07       		.byte	0x7
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 17
+
+
+ 648 01d3 07       		.uleb128 0x7
+ 649 01d4 59030000 		.4byte	.LASF39
+ 650 01d8 05       		.byte	0x5
+ 651 01d9 3C       		.byte	0x3c
+ 652 01da 81000000 		.4byte	0x81
+ 653 01de 08       		.byte	0x8
+ 654 01df 07       		.uleb128 0x7
+ 655 01e0 65030000 		.4byte	.LASF40
+ 656 01e4 05       		.byte	0x5
+ 657 01e5 3D       		.byte	0x3d
+ 658 01e6 81000000 		.4byte	0x81
+ 659 01ea 09       		.byte	0x9
+ 660 01eb 07       		.uleb128 0x7
+ 661 01ec 71030000 		.4byte	.LASF41
+ 662 01f0 05       		.byte	0x5
+ 663 01f1 3E       		.byte	0x3e
+ 664 01f2 81000000 		.4byte	0x81
+ 665 01f6 0A       		.byte	0xa
+ 666 01f7 07       		.uleb128 0x7
+ 667 01f8 BA020000 		.4byte	.LASF42
+ 668 01fc 05       		.byte	0x5
+ 669 01fd 3F       		.byte	0x3f
+ 670 01fe 81000000 		.4byte	0x81
+ 671 0202 0B       		.byte	0xb
+ 672 0203 07       		.uleb128 0x7
+ 673 0204 C6020000 		.4byte	.LASF43
+ 674 0208 05       		.byte	0x5
+ 675 0209 40       		.byte	0x40
+ 676 020a 81000000 		.4byte	0x81
+ 677 020e 0C       		.byte	0xc
+ 678 020f 07       		.uleb128 0x7
+ 679 0210 3D030000 		.4byte	.LASF44
+ 680 0214 05       		.byte	0x5
+ 681 0215 41       		.byte	0x41
+ 682 0216 81000000 		.4byte	0x81
+ 683 021a 0D       		.byte	0xd
+ 684 021b 07       		.uleb128 0x7
+ 685 021c 53040000 		.4byte	.LASF45
+ 686 0220 05       		.byte	0x5
+ 687 0221 42       		.byte	0x42
+ 688 0222 81000000 		.4byte	0x81
+ 689 0226 0E       		.byte	0xe
+ 690 0227 00       		.byte	0
+ 691 0228 08       		.uleb128 0x8
+ 692 0229 8A020000 		.4byte	.LASF47
+ 693 022d 0F       		.byte	0xf
+ 694 022e 05       		.byte	0x5
+ 695 022f 2E       		.byte	0x2e
+ 696 0230 4B020000 		.4byte	0x24b
+ 697 0234 09       		.uleb128 0x9
+ 698 0235 D2030000 		.4byte	.LASF26
+ 699 0239 05       		.byte	0x5
+ 700 023a 30       		.byte	0x30
+ 701 023b 4B020000 		.4byte	0x24b
+ 702 023f 09       		.uleb128 0x9
+ 703 0240 4D020000 		.4byte	.LASF27
+ 704 0244 05       		.byte	0x5
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 18
+
+
+ 705 0245 43       		.byte	0x43
+ 706 0246 67010000 		.4byte	0x167
+ 707 024a 00       		.byte	0
+ 708 024b 0A       		.uleb128 0xa
+ 709 024c 81000000 		.4byte	0x81
+ 710 0250 5B020000 		.4byte	0x25b
+ 711 0254 0B       		.uleb128 0xb
+ 712 0255 B5000000 		.4byte	0xb5
+ 713 0259 0E       		.byte	0xe
+ 714 025a 00       		.byte	0
+ 715 025b 03       		.uleb128 0x3
+ 716 025c 6D020000 		.4byte	.LASF48
+ 717 0260 05       		.byte	0x5
+ 718 0261 44       		.byte	0x44
+ 719 0262 28020000 		.4byte	0x228
+ 720 0266 0C       		.uleb128 0xc
+ 721 0267 7A040000 		.4byte	.LASF66
+ 722 026b 01       		.byte	0x1
+ 723 026c 2C000000 		.4byte	0x2c
+ 724 0270 01       		.byte	0x1
+ 725 0271 1D       		.byte	0x1d
+ 726 0272 89020000 		.4byte	0x289
+ 727 0276 0D       		.uleb128 0xd
+ 728 0277 87000000 		.4byte	.LASF49
+ 729 027b 00       		.byte	0
+ 730 027c 0D       		.uleb128 0xd
+ 731 027d 49030000 		.4byte	.LASF50
+ 732 0281 01       		.byte	0x1
+ 733 0282 0D       		.uleb128 0xd
+ 734 0283 27000000 		.4byte	.LASF51
+ 735 0287 02       		.byte	0x2
+ 736 0288 00       		.byte	0
+ 737 0289 0E       		.uleb128 0xe
+ 738 028a 00000000 		.4byte	.LASF67
+ 739 028e 01       		.byte	0x1
+ 740 028f 2A       		.byte	0x2a
+ 741 0290 00000000 		.4byte	.LFB63
+ 742 0294 8C000000 		.4byte	.LFE63-.LFB63
+ 743 0298 01       		.uleb128 0x1
+ 744 0299 9C       		.byte	0x9c
+ 745 029a 0F       		.uleb128 0xf
+ 746 029b 55020000 		.4byte	.LASF52
+ 747 029f 01       		.byte	0x1
+ 748 02a0 AE       		.byte	0xae
+ 749 02a1 81000000 		.4byte	0x81
+ 750 02a5 00000000 		.4byte	.LFB64
+ 751 02a9 0E000000 		.4byte	.LFE64-.LFB64
+ 752 02ad 01       		.uleb128 0x1
+ 753 02ae 9C       		.byte	0x9c
+ 754 02af 10       		.uleb128 0x10
+ 755 02b0 AC010000 		.4byte	.LASF53
+ 756 02b4 01       		.byte	0x1
+ 757 02b5 B8       		.byte	0xb8
+ 758 02b6 81000000 		.4byte	0x81
+ 759 02ba 00000000 		.4byte	.LFB65
+ 760 02be 30000000 		.4byte	.LFE65-.LFB65
+ 761 02c2 01       		.uleb128 0x1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 19
+
+
+ 762 02c3 9C       		.byte	0x9c
+ 763 02c4 10       		.uleb128 0x10
+ 764 02c5 FB010000 		.4byte	.LASF54
+ 765 02c9 01       		.byte	0x1
+ 766 02ca C9       		.byte	0xc9
+ 767 02cb 81000000 		.4byte	0x81
+ 768 02cf 00000000 		.4byte	.LFB66
+ 769 02d3 1C000000 		.4byte	.LFE66-.LFB66
+ 770 02d7 01       		.uleb128 0x1
+ 771 02d8 9C       		.byte	0x9c
+ 772 02d9 11       		.uleb128 0x11
+ 773 02da 0F000000 		.4byte	.LASF68
+ 774 02de 01       		.byte	0x1
+ 775 02df D8       		.byte	0xd8
+ 776 02e0 00000000 		.4byte	.LFB67
+ 777 02e4 38000000 		.4byte	.LFE67-.LFB67
+ 778 02e8 01       		.uleb128 0x1
+ 779 02e9 9C       		.byte	0x9c
+ 780 02ea FD020000 		.4byte	0x2fd
+ 781 02ee 12       		.uleb128 0x12
+ 782 02ef 9E020000 		.4byte	.LASF69
+ 783 02f3 01       		.byte	0x1
+ 784 02f4 D8       		.byte	0xd8
+ 785 02f5 81000000 		.4byte	0x81
+ 786 02f9 02       		.uleb128 0x2
+ 787 02fa 91       		.byte	0x91
+ 788 02fb 77       		.sleb128 -9
+ 789 02fc 00       		.byte	0
+ 790 02fd 0F       		.uleb128 0xf
+ 791 02fe 1A040000 		.4byte	.LASF55
+ 792 0302 01       		.byte	0x1
+ 793 0303 E7       		.byte	0xe7
+ 794 0304 12030000 		.4byte	0x312
+ 795 0308 00000000 		.4byte	.LFB68
+ 796 030c 20000000 		.4byte	.LFE68-.LFB68
+ 797 0310 01       		.uleb128 0x1
+ 798 0311 9C       		.byte	0x9c
+ 799 0312 13       		.uleb128 0x13
+ 800 0313 04       		.byte	0x4
+ 801 0314 5C010000 		.4byte	0x15c
+ 802 0318 0F       		.uleb128 0xf
+ 803 0319 96000000 		.4byte	.LASF56
+ 804 031d 01       		.byte	0x1
+ 805 031e EE       		.byte	0xee
+ 806 031f 2D030000 		.4byte	0x32d
+ 807 0323 00000000 		.4byte	.LFB69
+ 808 0327 20000000 		.4byte	.LFE69-.LFB69
+ 809 032b 01       		.uleb128 0x1
+ 810 032c 9C       		.byte	0x9c
+ 811 032d 13       		.uleb128 0x13
+ 812 032e 04       		.byte	0x4
+ 813 032f 5B020000 		.4byte	0x25b
+ 814 0333 14       		.uleb128 0x14
+ 815 0334 98010000 		.4byte	.LASF46
+ 816 0338 01       		.byte	0x1
+ 817 0339 11       		.byte	0x11
+ 818 033a 5C010000 		.4byte	0x15c
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 20
+
+
+ 819 033e 05       		.uleb128 0x5
+ 820 033f 03       		.byte	0x3
+ 821 0340 00000000 		.4byte	rxPacket_Controller
+ 822 0344 14       		.uleb128 0x14
+ 823 0345 83040000 		.4byte	.LASF57
+ 824 0349 01       		.byte	0x1
+ 825 034a 12       		.byte	0x12
+ 826 034b 12030000 		.4byte	0x312
+ 827 034f 05       		.uleb128 0x5
+ 828 0350 03       		.byte	0x3
+ 829 0351 08000000 		.4byte	pRxPacket_Controller
+ 830 0355 14       		.uleb128 0x14
+ 831 0356 8A020000 		.4byte	.LASF47
+ 832 035a 01       		.byte	0x1
+ 833 035b 13       		.byte	0x13
+ 834 035c 5B020000 		.4byte	0x25b
+ 835 0360 05       		.uleb128 0x5
+ 836 0361 03       		.byte	0x3
+ 837 0362 0C000000 		.4byte	txPacket_Controller
+ 838 0366 14       		.uleb128 0x14
+ 839 0367 D2020000 		.4byte	.LASF58
+ 840 036b 01       		.byte	0x1
+ 841 036c 14       		.byte	0x14
+ 842 036d 2D030000 		.4byte	0x32d
+ 843 0371 05       		.uleb128 0x5
+ 844 0372 03       		.byte	0x3
+ 845 0373 1C000000 		.4byte	pTxPacket_Controller
+ 846 0377 14       		.uleb128 0x14
+ 847 0378 C8030000 		.4byte	.LASF59
+ 848 037c 01       		.byte	0x1
+ 849 037d 17       		.byte	0x17
+ 850 037e 81000000 		.4byte	0x81
+ 851 0382 05       		.uleb128 0x5
+ 852 0383 03       		.byte	0x3
+ 853 0384 20000000 		.4byte	TestState
+ 854 0388 14       		.uleb128 0x14
+ 855 0389 0F020000 		.4byte	.LASF60
+ 856 038d 01       		.byte	0x1
+ 857 038e 19       		.byte	0x19
+ 858 038f 81000000 		.4byte	0x81
+ 859 0393 05       		.uleb128 0x5
+ 860 0394 03       		.byte	0x3
+ 861 0395 21000000 		.4byte	testvalue
+ 862 0399 0A       		.uleb128 0xa
+ 863 039a 8D000000 		.4byte	0x8d
+ 864 039e A9030000 		.4byte	0x3a9
+ 865 03a2 0B       		.uleb128 0xb
+ 866 03a3 B5000000 		.4byte	0xb5
+ 867 03a7 C7       		.byte	0xc7
+ 868 03a8 00       		.byte	0
+ 869 03a9 14       		.uleb128 0x14
+ 870 03aa 0B040000 		.4byte	.LASF61
+ 871 03ae 01       		.byte	0x1
+ 872 03af 1A       		.byte	0x1a
+ 873 03b0 99030000 		.4byte	0x399
+ 874 03b4 05       		.uleb128 0x5
+ 875 03b5 03       		.byte	0x3
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 21
+
+
+ 876 03b6 24000000 		.4byte	testvaluearray
+ 877 03ba 14       		.uleb128 0x14
+ 878 03bb DF030000 		.4byte	.LASF62
+ 879 03bf 01       		.byte	0x1
+ 880 03c0 1B       		.byte	0x1b
+ 881 03c1 81000000 		.4byte	0x81
+ 882 03c5 05       		.uleb128 0x5
+ 883 03c6 03       		.byte	0x3
+ 884 03c7 B4010000 		.4byte	testindex
+ 885 03cb 15       		.uleb128 0x15
+ 886 03cc 46040000 		.4byte	.LASF70
+ 887 03d0 06       		.byte	0x6
+ 888 03d1 1207     		.2byte	0x712
+ 889 03d3 D7030000 		.4byte	0x3d7
+ 890 03d7 16       		.uleb128 0x16
+ 891 03d8 76000000 		.4byte	0x76
+ 892 03dc 00       		.byte	0
+ 893              		.section	.debug_abbrev,"",%progbits
+ 894              	.Ldebug_abbrev0:
+ 895 0000 01       		.uleb128 0x1
+ 896 0001 11       		.uleb128 0x11
+ 897 0002 01       		.byte	0x1
+ 898 0003 25       		.uleb128 0x25
+ 899 0004 0E       		.uleb128 0xe
+ 900 0005 13       		.uleb128 0x13
+ 901 0006 0B       		.uleb128 0xb
+ 902 0007 03       		.uleb128 0x3
+ 903 0008 0E       		.uleb128 0xe
+ 904 0009 1B       		.uleb128 0x1b
+ 905 000a 0E       		.uleb128 0xe
+ 906 000b 55       		.uleb128 0x55
+ 907 000c 17       		.uleb128 0x17
+ 908 000d 11       		.uleb128 0x11
+ 909 000e 01       		.uleb128 0x1
+ 910 000f 10       		.uleb128 0x10
+ 911 0010 17       		.uleb128 0x17
+ 912 0011 00       		.byte	0
+ 913 0012 00       		.byte	0
+ 914 0013 02       		.uleb128 0x2
+ 915 0014 24       		.uleb128 0x24
+ 916 0015 00       		.byte	0
+ 917 0016 0B       		.uleb128 0xb
+ 918 0017 0B       		.uleb128 0xb
+ 919 0018 3E       		.uleb128 0x3e
+ 920 0019 0B       		.uleb128 0xb
+ 921 001a 03       		.uleb128 0x3
+ 922 001b 0E       		.uleb128 0xe
+ 923 001c 00       		.byte	0
+ 924 001d 00       		.byte	0
+ 925 001e 03       		.uleb128 0x3
+ 926 001f 16       		.uleb128 0x16
+ 927 0020 00       		.byte	0
+ 928 0021 03       		.uleb128 0x3
+ 929 0022 0E       		.uleb128 0xe
+ 930 0023 3A       		.uleb128 0x3a
+ 931 0024 0B       		.uleb128 0xb
+ 932 0025 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 22
+
+
+ 933 0026 0B       		.uleb128 0xb
+ 934 0027 49       		.uleb128 0x49
+ 935 0028 13       		.uleb128 0x13
+ 936 0029 00       		.byte	0
+ 937 002a 00       		.byte	0
+ 938 002b 04       		.uleb128 0x4
+ 939 002c 24       		.uleb128 0x24
+ 940 002d 00       		.byte	0
+ 941 002e 0B       		.uleb128 0xb
+ 942 002f 0B       		.uleb128 0xb
+ 943 0030 3E       		.uleb128 0x3e
+ 944 0031 0B       		.uleb128 0xb
+ 945 0032 03       		.uleb128 0x3
+ 946 0033 08       		.uleb128 0x8
+ 947 0034 00       		.byte	0
+ 948 0035 00       		.byte	0
+ 949 0036 05       		.uleb128 0x5
+ 950 0037 16       		.uleb128 0x16
+ 951 0038 00       		.byte	0
+ 952 0039 03       		.uleb128 0x3
+ 953 003a 0E       		.uleb128 0xe
+ 954 003b 3A       		.uleb128 0x3a
+ 955 003c 0B       		.uleb128 0xb
+ 956 003d 3B       		.uleb128 0x3b
+ 957 003e 05       		.uleb128 0x5
+ 958 003f 49       		.uleb128 0x49
+ 959 0040 13       		.uleb128 0x13
+ 960 0041 00       		.byte	0
+ 961 0042 00       		.byte	0
+ 962 0043 06       		.uleb128 0x6
+ 963 0044 13       		.uleb128 0x13
+ 964 0045 01       		.byte	0x1
+ 965 0046 03       		.uleb128 0x3
+ 966 0047 0E       		.uleb128 0xe
+ 967 0048 0B       		.uleb128 0xb
+ 968 0049 0B       		.uleb128 0xb
+ 969 004a 3A       		.uleb128 0x3a
+ 970 004b 0B       		.uleb128 0xb
+ 971 004c 3B       		.uleb128 0x3b
+ 972 004d 0B       		.uleb128 0xb
+ 973 004e 01       		.uleb128 0x1
+ 974 004f 13       		.uleb128 0x13
+ 975 0050 00       		.byte	0
+ 976 0051 00       		.byte	0
+ 977 0052 07       		.uleb128 0x7
+ 978 0053 0D       		.uleb128 0xd
+ 979 0054 00       		.byte	0
+ 980 0055 03       		.uleb128 0x3
+ 981 0056 0E       		.uleb128 0xe
+ 982 0057 3A       		.uleb128 0x3a
+ 983 0058 0B       		.uleb128 0xb
+ 984 0059 3B       		.uleb128 0x3b
+ 985 005a 0B       		.uleb128 0xb
+ 986 005b 49       		.uleb128 0x49
+ 987 005c 13       		.uleb128 0x13
+ 988 005d 38       		.uleb128 0x38
+ 989 005e 0B       		.uleb128 0xb
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 23
+
+
+ 990 005f 00       		.byte	0
+ 991 0060 00       		.byte	0
+ 992 0061 08       		.uleb128 0x8
+ 993 0062 17       		.uleb128 0x17
+ 994 0063 01       		.byte	0x1
+ 995 0064 03       		.uleb128 0x3
+ 996 0065 0E       		.uleb128 0xe
+ 997 0066 0B       		.uleb128 0xb
+ 998 0067 0B       		.uleb128 0xb
+ 999 0068 3A       		.uleb128 0x3a
+ 1000 0069 0B       		.uleb128 0xb
+ 1001 006a 3B       		.uleb128 0x3b
+ 1002 006b 0B       		.uleb128 0xb
+ 1003 006c 01       		.uleb128 0x1
+ 1004 006d 13       		.uleb128 0x13
+ 1005 006e 00       		.byte	0
+ 1006 006f 00       		.byte	0
+ 1007 0070 09       		.uleb128 0x9
+ 1008 0071 0D       		.uleb128 0xd
+ 1009 0072 00       		.byte	0
+ 1010 0073 03       		.uleb128 0x3
+ 1011 0074 0E       		.uleb128 0xe
+ 1012 0075 3A       		.uleb128 0x3a
+ 1013 0076 0B       		.uleb128 0xb
+ 1014 0077 3B       		.uleb128 0x3b
+ 1015 0078 0B       		.uleb128 0xb
+ 1016 0079 49       		.uleb128 0x49
+ 1017 007a 13       		.uleb128 0x13
+ 1018 007b 00       		.byte	0
+ 1019 007c 00       		.byte	0
+ 1020 007d 0A       		.uleb128 0xa
+ 1021 007e 01       		.uleb128 0x1
+ 1022 007f 01       		.byte	0x1
+ 1023 0080 49       		.uleb128 0x49
+ 1024 0081 13       		.uleb128 0x13
+ 1025 0082 01       		.uleb128 0x1
+ 1026 0083 13       		.uleb128 0x13
+ 1027 0084 00       		.byte	0
+ 1028 0085 00       		.byte	0
+ 1029 0086 0B       		.uleb128 0xb
+ 1030 0087 21       		.uleb128 0x21
+ 1031 0088 00       		.byte	0
+ 1032 0089 49       		.uleb128 0x49
+ 1033 008a 13       		.uleb128 0x13
+ 1034 008b 2F       		.uleb128 0x2f
+ 1035 008c 0B       		.uleb128 0xb
+ 1036 008d 00       		.byte	0
+ 1037 008e 00       		.byte	0
+ 1038 008f 0C       		.uleb128 0xc
+ 1039 0090 04       		.uleb128 0x4
+ 1040 0091 01       		.byte	0x1
+ 1041 0092 03       		.uleb128 0x3
+ 1042 0093 0E       		.uleb128 0xe
+ 1043 0094 0B       		.uleb128 0xb
+ 1044 0095 0B       		.uleb128 0xb
+ 1045 0096 49       		.uleb128 0x49
+ 1046 0097 13       		.uleb128 0x13
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 24
+
+
+ 1047 0098 3A       		.uleb128 0x3a
+ 1048 0099 0B       		.uleb128 0xb
+ 1049 009a 3B       		.uleb128 0x3b
+ 1050 009b 0B       		.uleb128 0xb
+ 1051 009c 01       		.uleb128 0x1
+ 1052 009d 13       		.uleb128 0x13
+ 1053 009e 00       		.byte	0
+ 1054 009f 00       		.byte	0
+ 1055 00a0 0D       		.uleb128 0xd
+ 1056 00a1 28       		.uleb128 0x28
+ 1057 00a2 00       		.byte	0
+ 1058 00a3 03       		.uleb128 0x3
+ 1059 00a4 0E       		.uleb128 0xe
+ 1060 00a5 1C       		.uleb128 0x1c
+ 1061 00a6 0B       		.uleb128 0xb
+ 1062 00a7 00       		.byte	0
+ 1063 00a8 00       		.byte	0
+ 1064 00a9 0E       		.uleb128 0xe
+ 1065 00aa 2E       		.uleb128 0x2e
+ 1066 00ab 00       		.byte	0
+ 1067 00ac 3F       		.uleb128 0x3f
+ 1068 00ad 19       		.uleb128 0x19
+ 1069 00ae 03       		.uleb128 0x3
+ 1070 00af 0E       		.uleb128 0xe
+ 1071 00b0 3A       		.uleb128 0x3a
+ 1072 00b1 0B       		.uleb128 0xb
+ 1073 00b2 3B       		.uleb128 0x3b
+ 1074 00b3 0B       		.uleb128 0xb
+ 1075 00b4 27       		.uleb128 0x27
+ 1076 00b5 19       		.uleb128 0x19
+ 1077 00b6 11       		.uleb128 0x11
+ 1078 00b7 01       		.uleb128 0x1
+ 1079 00b8 12       		.uleb128 0x12
+ 1080 00b9 06       		.uleb128 0x6
+ 1081 00ba 40       		.uleb128 0x40
+ 1082 00bb 18       		.uleb128 0x18
+ 1083 00bc 9642     		.uleb128 0x2116
+ 1084 00be 19       		.uleb128 0x19
+ 1085 00bf 00       		.byte	0
+ 1086 00c0 00       		.byte	0
+ 1087 00c1 0F       		.uleb128 0xf
+ 1088 00c2 2E       		.uleb128 0x2e
+ 1089 00c3 00       		.byte	0
+ 1090 00c4 3F       		.uleb128 0x3f
+ 1091 00c5 19       		.uleb128 0x19
+ 1092 00c6 03       		.uleb128 0x3
+ 1093 00c7 0E       		.uleb128 0xe
+ 1094 00c8 3A       		.uleb128 0x3a
+ 1095 00c9 0B       		.uleb128 0xb
+ 1096 00ca 3B       		.uleb128 0x3b
+ 1097 00cb 0B       		.uleb128 0xb
+ 1098 00cc 27       		.uleb128 0x27
+ 1099 00cd 19       		.uleb128 0x19
+ 1100 00ce 49       		.uleb128 0x49
+ 1101 00cf 13       		.uleb128 0x13
+ 1102 00d0 11       		.uleb128 0x11
+ 1103 00d1 01       		.uleb128 0x1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 25
+
+
+ 1104 00d2 12       		.uleb128 0x12
+ 1105 00d3 06       		.uleb128 0x6
+ 1106 00d4 40       		.uleb128 0x40
+ 1107 00d5 18       		.uleb128 0x18
+ 1108 00d6 9742     		.uleb128 0x2117
+ 1109 00d8 19       		.uleb128 0x19
+ 1110 00d9 00       		.byte	0
+ 1111 00da 00       		.byte	0
+ 1112 00db 10       		.uleb128 0x10
+ 1113 00dc 2E       		.uleb128 0x2e
+ 1114 00dd 00       		.byte	0
+ 1115 00de 3F       		.uleb128 0x3f
+ 1116 00df 19       		.uleb128 0x19
+ 1117 00e0 03       		.uleb128 0x3
+ 1118 00e1 0E       		.uleb128 0xe
+ 1119 00e2 3A       		.uleb128 0x3a
+ 1120 00e3 0B       		.uleb128 0xb
+ 1121 00e4 3B       		.uleb128 0x3b
+ 1122 00e5 0B       		.uleb128 0xb
+ 1123 00e6 27       		.uleb128 0x27
+ 1124 00e7 19       		.uleb128 0x19
+ 1125 00e8 49       		.uleb128 0x49
+ 1126 00e9 13       		.uleb128 0x13
+ 1127 00ea 11       		.uleb128 0x11
+ 1128 00eb 01       		.uleb128 0x1
+ 1129 00ec 12       		.uleb128 0x12
+ 1130 00ed 06       		.uleb128 0x6
+ 1131 00ee 40       		.uleb128 0x40
+ 1132 00ef 18       		.uleb128 0x18
+ 1133 00f0 9642     		.uleb128 0x2116
+ 1134 00f2 19       		.uleb128 0x19
+ 1135 00f3 00       		.byte	0
+ 1136 00f4 00       		.byte	0
+ 1137 00f5 11       		.uleb128 0x11
+ 1138 00f6 2E       		.uleb128 0x2e
+ 1139 00f7 01       		.byte	0x1
+ 1140 00f8 3F       		.uleb128 0x3f
+ 1141 00f9 19       		.uleb128 0x19
+ 1142 00fa 03       		.uleb128 0x3
+ 1143 00fb 0E       		.uleb128 0xe
+ 1144 00fc 3A       		.uleb128 0x3a
+ 1145 00fd 0B       		.uleb128 0xb
+ 1146 00fe 3B       		.uleb128 0x3b
+ 1147 00ff 0B       		.uleb128 0xb
+ 1148 0100 27       		.uleb128 0x27
+ 1149 0101 19       		.uleb128 0x19
+ 1150 0102 11       		.uleb128 0x11
+ 1151 0103 01       		.uleb128 0x1
+ 1152 0104 12       		.uleb128 0x12
+ 1153 0105 06       		.uleb128 0x6
+ 1154 0106 40       		.uleb128 0x40
+ 1155 0107 18       		.uleb128 0x18
+ 1156 0108 9642     		.uleb128 0x2116
+ 1157 010a 19       		.uleb128 0x19
+ 1158 010b 01       		.uleb128 0x1
+ 1159 010c 13       		.uleb128 0x13
+ 1160 010d 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 26
+
+
+ 1161 010e 00       		.byte	0
+ 1162 010f 12       		.uleb128 0x12
+ 1163 0110 05       		.uleb128 0x5
+ 1164 0111 00       		.byte	0
+ 1165 0112 03       		.uleb128 0x3
+ 1166 0113 0E       		.uleb128 0xe
+ 1167 0114 3A       		.uleb128 0x3a
+ 1168 0115 0B       		.uleb128 0xb
+ 1169 0116 3B       		.uleb128 0x3b
+ 1170 0117 0B       		.uleb128 0xb
+ 1171 0118 49       		.uleb128 0x49
+ 1172 0119 13       		.uleb128 0x13
+ 1173 011a 02       		.uleb128 0x2
+ 1174 011b 18       		.uleb128 0x18
+ 1175 011c 00       		.byte	0
+ 1176 011d 00       		.byte	0
+ 1177 011e 13       		.uleb128 0x13
+ 1178 011f 0F       		.uleb128 0xf
+ 1179 0120 00       		.byte	0
+ 1180 0121 0B       		.uleb128 0xb
+ 1181 0122 0B       		.uleb128 0xb
+ 1182 0123 49       		.uleb128 0x49
+ 1183 0124 13       		.uleb128 0x13
+ 1184 0125 00       		.byte	0
+ 1185 0126 00       		.byte	0
+ 1186 0127 14       		.uleb128 0x14
+ 1187 0128 34       		.uleb128 0x34
+ 1188 0129 00       		.byte	0
+ 1189 012a 03       		.uleb128 0x3
+ 1190 012b 0E       		.uleb128 0xe
+ 1191 012c 3A       		.uleb128 0x3a
+ 1192 012d 0B       		.uleb128 0xb
+ 1193 012e 3B       		.uleb128 0x3b
+ 1194 012f 0B       		.uleb128 0xb
+ 1195 0130 49       		.uleb128 0x49
+ 1196 0131 13       		.uleb128 0x13
+ 1197 0132 02       		.uleb128 0x2
+ 1198 0133 18       		.uleb128 0x18
+ 1199 0134 00       		.byte	0
+ 1200 0135 00       		.byte	0
+ 1201 0136 15       		.uleb128 0x15
+ 1202 0137 34       		.uleb128 0x34
+ 1203 0138 00       		.byte	0
+ 1204 0139 03       		.uleb128 0x3
+ 1205 013a 0E       		.uleb128 0xe
+ 1206 013b 3A       		.uleb128 0x3a
+ 1207 013c 0B       		.uleb128 0xb
+ 1208 013d 3B       		.uleb128 0x3b
+ 1209 013e 05       		.uleb128 0x5
+ 1210 013f 49       		.uleb128 0x49
+ 1211 0140 13       		.uleb128 0x13
+ 1212 0141 3F       		.uleb128 0x3f
+ 1213 0142 19       		.uleb128 0x19
+ 1214 0143 3C       		.uleb128 0x3c
+ 1215 0144 19       		.uleb128 0x19
+ 1216 0145 00       		.byte	0
+ 1217 0146 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 27
+
+
+ 1218 0147 16       		.uleb128 0x16
+ 1219 0148 35       		.uleb128 0x35
+ 1220 0149 00       		.byte	0
+ 1221 014a 49       		.uleb128 0x49
+ 1222 014b 13       		.uleb128 0x13
+ 1223 014c 00       		.byte	0
+ 1224 014d 00       		.byte	0
+ 1225 014e 00       		.byte	0
+ 1226              		.section	.debug_aranges,"",%progbits
+ 1227 0000 4C000000 		.4byte	0x4c
+ 1228 0004 0200     		.2byte	0x2
+ 1229 0006 00000000 		.4byte	.Ldebug_info0
+ 1230 000a 04       		.byte	0x4
+ 1231 000b 00       		.byte	0
+ 1232 000c 0000     		.2byte	0
+ 1233 000e 0000     		.2byte	0
+ 1234 0010 00000000 		.4byte	.LFB63
+ 1235 0014 8C000000 		.4byte	.LFE63-.LFB63
+ 1236 0018 00000000 		.4byte	.LFB64
+ 1237 001c 0E000000 		.4byte	.LFE64-.LFB64
+ 1238 0020 00000000 		.4byte	.LFB65
+ 1239 0024 30000000 		.4byte	.LFE65-.LFB65
+ 1240 0028 00000000 		.4byte	.LFB66
+ 1241 002c 1C000000 		.4byte	.LFE66-.LFB66
+ 1242 0030 00000000 		.4byte	.LFB67
+ 1243 0034 38000000 		.4byte	.LFE67-.LFB67
+ 1244 0038 00000000 		.4byte	.LFB68
+ 1245 003c 20000000 		.4byte	.LFE68-.LFB68
+ 1246 0040 00000000 		.4byte	.LFB69
+ 1247 0044 20000000 		.4byte	.LFE69-.LFB69
+ 1248 0048 00000000 		.4byte	0
+ 1249 004c 00000000 		.4byte	0
+ 1250              		.section	.debug_ranges,"",%progbits
+ 1251              	.Ldebug_ranges0:
+ 1252 0000 00000000 		.4byte	.LFB63
+ 1253 0004 8C000000 		.4byte	.LFE63
+ 1254 0008 00000000 		.4byte	.LFB64
+ 1255 000c 0E000000 		.4byte	.LFE64
+ 1256 0010 00000000 		.4byte	.LFB65
+ 1257 0014 30000000 		.4byte	.LFE65
+ 1258 0018 00000000 		.4byte	.LFB66
+ 1259 001c 1C000000 		.4byte	.LFE66
+ 1260 0020 00000000 		.4byte	.LFB67
+ 1261 0024 38000000 		.4byte	.LFE67
+ 1262 0028 00000000 		.4byte	.LFB68
+ 1263 002c 20000000 		.4byte	.LFE68
+ 1264 0030 00000000 		.4byte	.LFB69
+ 1265 0034 20000000 		.4byte	.LFE69
+ 1266 0038 00000000 		.4byte	0
+ 1267 003c 00000000 		.4byte	0
+ 1268              		.section	.debug_line,"",%progbits
+ 1269              	.Ldebug_line0:
+ 1270 0000 30020000 		.section	.debug_str,"MS",%progbits,1
+ 1270      02007101 
+ 1270      00000201 
+ 1270      FB0E0D00 
+ 1270      01010101 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 28
+
+
+ 1271              	.LASF67:
+ 1272 0000 436F6E74 		.ascii	"ControllerTest\000"
+ 1272      726F6C6C 
+ 1272      65725465 
+ 1272      737400
+ 1273              	.LASF68:
+ 1274 000f 43546573 		.ascii	"CTest_SendIgnitionState\000"
+ 1274      745F5365 
+ 1274      6E644967 
+ 1274      6E697469 
+ 1274      6F6E5374 
+ 1275              	.LASF51:
+ 1276 0027 4641494C 		.ascii	"FAIL\000"
+ 1276      00
+ 1277              	.LASF65:
+ 1278 002c 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\F1-TestFixture _Sand"
+ 1278      73657273 
+ 1278      5C6D6172 
+ 1278      74686E69 
+ 1278      636B5C44 
+ 1279 005b 626F785C 		.ascii	"box\\F1-TestFixture.cydsn\000"
+ 1279      46312D54 
+ 1279      65737446 
+ 1279      69787475 
+ 1279      72652E63 
+ 1280              	.LASF2:
+ 1281 0074 73686F72 		.ascii	"short int\000"
+ 1281      7420696E 
+ 1281      7400
+ 1282              	.LASF17:
+ 1283 007e 73697A65 		.ascii	"sizetype\000"
+ 1283      74797065 
+ 1283      00
+ 1284              	.LASF49:
+ 1285 0087 434F4E46 		.ascii	"CONFIRM_BOOTUP\000"
+ 1285      49524D5F 
+ 1285      424F4F54 
+ 1285      555000
+ 1286              	.LASF56:
+ 1287 0096 67657454 		.ascii	"getTxPacket_Controller\000"
+ 1287      78506163 
+ 1287      6B65745F 
+ 1287      436F6E74 
+ 1287      726F6C6C 
+ 1288              	.LASF63:
+ 1289 00ad 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1289      43313120 
+ 1289      352E342E 
+ 1289      31203230 
+ 1289      31363036 
+ 1290 00e0 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1290      20726576 
+ 1290      6973696F 
+ 1290      6E203233 
+ 1290      37373135 
+ 1291 0113 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1291      66756E63 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 29
+
+
+ 1291      74696F6E 
+ 1291      2D736563 
+ 1291      74696F6E 
+ 1292              	.LASF16:
+ 1293 013b 6C6F6E67 		.ascii	"long double\000"
+ 1293      20646F75 
+ 1293      626C6500 
+ 1294              	.LASF34:
+ 1295 0147 426C6F63 		.ascii	"BlockCurrent_4\000"
+ 1295      6B437572 
+ 1295      72656E74 
+ 1295      5F3400
+ 1296              	.LASF20:
+ 1297 0156 4F757470 		.ascii	"Outputs17_24\000"
+ 1297      75747331 
+ 1297      375F3234 
+ 1297      00
+ 1298              	.LASF28:
+ 1299 0163 52785061 		.ascii	"RxPacket_Controller\000"
+ 1299      636B6574 
+ 1299      5F436F6E 
+ 1299      74726F6C 
+ 1299      6C657200 
+ 1300              	.LASF37:
+ 1301 0177 53706561 		.ascii	"Speaker2_Overcurrent\000"
+ 1301      6B657232 
+ 1301      5F4F7665 
+ 1301      72637572 
+ 1301      72656E74 
+ 1302              	.LASF22:
+ 1303 018c 496E7075 		.ascii	"Input_Logic\000"
+ 1303      745F4C6F 
+ 1303      67696300 
+ 1304              	.LASF46:
+ 1305 0198 72785061 		.ascii	"rxPacket_Controller\000"
+ 1305      636B6574 
+ 1305      5F436F6E 
+ 1305      74726F6C 
+ 1305      6C657200 
+ 1306              	.LASF53:
+ 1307 01ac 43546573 		.ascii	"CTest_ReadPushbuttons\000"
+ 1307      745F5265 
+ 1307      61645075 
+ 1307      73686275 
+ 1307      74746F6E 
+ 1308              	.LASF31:
+ 1309 01c2 426C6F63 		.ascii	"BlockCurrent_1\000"
+ 1309      6B437572 
+ 1309      72656E74 
+ 1309      5F3100
+ 1310              	.LASF32:
+ 1311 01d1 426C6F63 		.ascii	"BlockCurrent_2\000"
+ 1311      6B437572 
+ 1311      72656E74 
+ 1311      5F3200
+ 1312              	.LASF33:
+ 1313 01e0 426C6F63 		.ascii	"BlockCurrent_3\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 30
+
+
+ 1313      6B437572 
+ 1313      72656E74 
+ 1313      5F3300
+ 1314              	.LASF19:
+ 1315 01ef 4F757470 		.ascii	"Outputs9_16\000"
+ 1315      75747339 
+ 1315      5F313600 
+ 1316              	.LASF54:
+ 1317 01fb 43546573 		.ascii	"CTest_ReadPowerMode\000"
+ 1317      745F5265 
+ 1317      6164506F 
+ 1317      7765724D 
+ 1317      6F646500 
+ 1318              	.LASF60:
+ 1319 020f 74657374 		.ascii	"testvalue\000"
+ 1319      76616C75 
+ 1319      6500
+ 1320              	.LASF13:
+ 1321 0219 666C6F61 		.ascii	"float\000"
+ 1321      7400
+ 1322              	.LASF6:
+ 1323 021f 6C6F6E67 		.ascii	"long long int\000"
+ 1323      206C6F6E 
+ 1323      6720696E 
+ 1323      7400
+ 1324              	.LASF7:
+ 1325 022d 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1325      206C6F6E 
+ 1325      6720756E 
+ 1325      7369676E 
+ 1325      65642069 
+ 1326              	.LASF4:
+ 1327 0244 6C6F6E67 		.ascii	"long int\000"
+ 1327      20696E74 
+ 1327      00
+ 1328              	.LASF27:
+ 1329 024d 5061796C 		.ascii	"Payload\000"
+ 1329      6F616400 
+ 1330              	.LASF52:
+ 1331 0255 43546573 		.ascii	"CTest_VerifyPacket_QUAD\000"
+ 1331      745F5665 
+ 1331      72696679 
+ 1331      5061636B 
+ 1331      65745F51 
+ 1332              	.LASF48:
+ 1333 026d 54785061 		.ascii	"TxPacket_Controller\000"
+ 1333      636B6574 
+ 1333      5F436F6E 
+ 1333      74726F6C 
+ 1333      6C657200 
+ 1334              	.LASF25:
+ 1335 0281 53697265 		.ascii	"Siren_EN\000"
+ 1335      6E5F454E 
+ 1335      00
+ 1336              	.LASF47:
+ 1337 028a 74785061 		.ascii	"txPacket_Controller\000"
+ 1337      636B6574 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 31
+
+
+ 1337      5F436F6E 
+ 1337      74726F6C 
+ 1337      6C657200 
+ 1338              	.LASF69:
+ 1339 029e 69676E69 		.ascii	"ignition_state\000"
+ 1339      74696F6E 
+ 1339      5F737461 
+ 1339      746500
+ 1340              	.LASF21:
+ 1341 02ad 4F757470 		.ascii	"Outputs25_32\000"
+ 1341      75747332 
+ 1341      355F3332 
+ 1341      00
+ 1342              	.LASF42:
+ 1343 02ba 52656C61 		.ascii	"RelayFirm_0\000"
+ 1343      79466972 
+ 1343      6D5F3000 
+ 1344              	.LASF43:
+ 1345 02c6 52656C61 		.ascii	"RelayFirm_1\000"
+ 1345      79466972 
+ 1345      6D5F3100 
+ 1346              	.LASF58:
+ 1347 02d2 70547850 		.ascii	"pTxPacket_Controller\000"
+ 1347      61636B65 
+ 1347      745F436F 
+ 1347      6E74726F 
+ 1347      6C6C6572 
+ 1348              	.LASF1:
+ 1349 02e7 756E7369 		.ascii	"unsigned char\000"
+ 1349      676E6564 
+ 1349      20636861 
+ 1349      7200
+ 1350              	.LASF0:
+ 1351 02f5 7369676E 		.ascii	"signed char\000"
+ 1351      65642063 
+ 1351      68617200 
+ 1352              	.LASF30:
+ 1353 0301 74784461 		.ascii	"txData_Controller\000"
+ 1353      74615F43 
+ 1353      6F6E7472 
+ 1353      6F6C6C65 
+ 1353      7200
+ 1354              	.LASF8:
+ 1355 0313 756E7369 		.ascii	"unsigned int\000"
+ 1355      676E6564 
+ 1355      20696E74 
+ 1355      00
+ 1356              	.LASF5:
+ 1357 0320 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1357      20756E73 
+ 1357      69676E65 
+ 1357      6420696E 
+ 1357      7400
+ 1358              	.LASF23:
+ 1359 0332 506F7765 		.ascii	"PowerState\000"
+ 1359      72537461 
+ 1359      746500
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 32
+
+
+ 1360              	.LASF44:
+ 1361 033d 52656C61 		.ascii	"RelayFirm_2\000"
+ 1361      79466972 
+ 1361      6D5F3200 
+ 1362              	.LASF50:
+ 1363 0349 54455354 		.ascii	"TEST_POWERMODES\000"
+ 1363      5F504F57 
+ 1363      45524D4F 
+ 1363      44455300 
+ 1364              	.LASF39:
+ 1365 0359 53697265 		.ascii	"SirenFirm_0\000"
+ 1365      6E466972 
+ 1365      6D5F3000 
+ 1366              	.LASF40:
+ 1367 0365 53697265 		.ascii	"SirenFirm_1\000"
+ 1367      6E466972 
+ 1367      6D5F3100 
+ 1368              	.LASF41:
+ 1369 0371 53697265 		.ascii	"SirenFirm_2\000"
+ 1369      6E466972 
+ 1369      6D5F3200 
+ 1370              	.LASF15:
+ 1371 037d 63686172 		.ascii	"char\000"
+ 1371      00
+ 1372              	.LASF10:
+ 1373 0382 696E7433 		.ascii	"int32_t\000"
+ 1373      325F7400 
+ 1374              	.LASF3:
+ 1375 038a 73686F72 		.ascii	"short unsigned int\000"
+ 1375      7420756E 
+ 1375      7369676E 
+ 1375      65642069 
+ 1375      6E7400
+ 1376              	.LASF11:
+ 1377 039d 75696E74 		.ascii	"uint8\000"
+ 1377      3800
+ 1378              	.LASF12:
+ 1379 03a3 75696E74 		.ascii	"uint16\000"
+ 1379      313600
+ 1380              	.LASF35:
+ 1381 03aa 566F6C74 		.ascii	"Voltage_BATT\000"
+ 1381      6167655F 
+ 1381      42415454 
+ 1381      00
+ 1382              	.LASF64:
+ 1383 03b7 436F6E74 		.ascii	"ControllerTest.c\000"
+ 1383      726F6C6C 
+ 1383      65725465 
+ 1383      73742E63 
+ 1383      00
+ 1384              	.LASF59:
+ 1385 03c8 54657374 		.ascii	"TestState\000"
+ 1385      53746174 
+ 1385      6500
+ 1386              	.LASF26:
+ 1387 03d2 62797465 		.ascii	"bytes\000"
+ 1387      7300
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 33
+
+
+ 1388              	.LASF14:
+ 1389 03d8 646F7562 		.ascii	"double\000"
+ 1389      6C6500
+ 1390              	.LASF62:
+ 1391 03df 74657374 		.ascii	"testindex\000"
+ 1391      696E6465 
+ 1391      7800
+ 1392              	.LASF24:
+ 1393 03e9 53697265 		.ascii	"Siren_RRB_EN\000"
+ 1393      6E5F5252 
+ 1393      425F454E 
+ 1393      00
+ 1394              	.LASF9:
+ 1395 03f6 5F5F696E 		.ascii	"__int32_t\000"
+ 1395      7433325F 
+ 1395      7400
+ 1396              	.LASF18:
+ 1397 0400 4F757470 		.ascii	"Outputs1_8\000"
+ 1397      75747331 
+ 1397      5F3800
+ 1398              	.LASF61:
+ 1399 040b 74657374 		.ascii	"testvaluearray\000"
+ 1399      76616C75 
+ 1399      65617272 
+ 1399      617900
+ 1400              	.LASF55:
+ 1401 041a 67657452 		.ascii	"getRxPacket_Controller\000"
+ 1401      78506163 
+ 1401      6B65745F 
+ 1401      436F6E74 
+ 1401      726F6C6C 
+ 1402              	.LASF36:
+ 1403 0431 53706561 		.ascii	"Speaker1_Overcurrent\000"
+ 1403      6B657231 
+ 1403      5F4F7665 
+ 1403      72637572 
+ 1403      72656E74 
+ 1404              	.LASF70:
+ 1405 0446 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1405      52784275 
+ 1405      66666572 
+ 1405      00
+ 1406              	.LASF45:
+ 1407 0453 63686563 		.ascii	"checkSum\000"
+ 1407      6B53756D 
+ 1407      00
+ 1408              	.LASF29:
+ 1409 045c 72784461 		.ascii	"rxData_Controller\000"
+ 1409      74615F43 
+ 1409      6F6E7472 
+ 1409      6F6C6C65 
+ 1409      7200
+ 1410              	.LASF38:
+ 1411 046e 52656C61 		.ascii	"RelayInputs\000"
+ 1411      79496E70 
+ 1411      75747300 
+ 1412              	.LASF66:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccTyumCa.s 			page 34
+
+
+ 1413 047a 44617461 		.ascii	"DataType\000"
+ 1413      54797065 
+ 1413      00
+ 1414              	.LASF57:
+ 1415 0483 70527850 		.ascii	"pRxPacket_Controller\000"
+ 1415      61636B65 
+ 1415      745F436F 
+ 1415      6E74726F 
+ 1415      6C6C6572 
+ 1416              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

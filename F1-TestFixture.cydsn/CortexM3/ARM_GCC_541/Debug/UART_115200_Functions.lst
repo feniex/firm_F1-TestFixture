@@ -1,0 +1,1990 @@
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"UART_115200_Functions.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.data
+  20              		.align	2
+  21              		.type	PacketList, %object
+  22              		.size	PacketList, 5
+  23              	PacketList:
+  24 0000 7E       		.byte	126
+  25 0001 53       		.byte	83
+  26 0002 03       		.byte	3
+  27 0003 0D       		.byte	13
+  28 0004 0A       		.byte	10
+  29              		.bss
+  30              		.align	2
+  31              	packetsuccess:
+  32 0000 0000     		.space	2
+  33 0002 0000     		.align	2
+  34              	rxPacket_DLink_S:
+  35 0004 000000   		.space	3
+  36              		.section	.text.processByteReceivedHandler_115200,"ax",%progbits
+  37              		.align	2
+  38              		.global	processByteReceivedHandler_115200
+  39              		.thumb
+  40              		.thumb_func
+  41              		.type	processByteReceivedHandler_115200, %function
+  42              	processByteReceivedHandler_115200:
+  43              	.LFB63:
+  44              		.file 1 "UART_115200_Functions.c"
+   1:UART_115200_Functions.c **** /* ========================================
+   2:UART_115200_Functions.c ****  *
+   3:UART_115200_Functions.c ****  * Copyright FENIEX INDUSTRIES, 2016
+   4:UART_115200_Functions.c ****  * 200W SIREN
+   5:UART_115200_Functions.c ****  *
+   6:UART_115200_Functions.c ****  * All Rights Reserved
+   7:UART_115200_Functions.c ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   8:UART_115200_Functions.c ****  *
+   9:UART_115200_Functions.c ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+  10:UART_115200_Functions.c ****  * WHICH IS THE PROPERTY OF your company.
+  11:UART_115200_Functions.c ****  *
+  12:UART_115200_Functions.c ****  * ========================================
+  13:UART_115200_Functions.c **** */
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 2
+
+
+  14:UART_115200_Functions.c **** 
+  15:UART_115200_Functions.c **** /**********CHANGE LOG**********/
+  16:UART_115200_Functions.c **** 
+  17:UART_115200_Functions.c **** 
+  18:UART_115200_Functions.c **** /**********PREPROCESSOR DIRECTIVES**********/
+  19:UART_115200_Functions.c **** #include "UART_115200_Functions.h"
+  20:UART_115200_Functions.c **** 
+  21:UART_115200_Functions.c **** #define HEADER_BYTE_COUNT       2
+  22:UART_115200_Functions.c **** #define EOP_BYTE_COUNT          2
+  23:UART_115200_Functions.c **** 
+  24:UART_115200_Functions.c **** #define HEADER_START_INDEX      0
+  25:UART_115200_Functions.c **** #define PAYLOAD_START_INDEX     HEADER_BYTE_COUNT
+  26:UART_115200_Functions.c **** 
+  27:UART_115200_Functions.c **** #define MAX_PAYLOAD_BYTE_COUNT  3
+  28:UART_115200_Functions.c **** #define PACKET_TYPE_COUNT       1
+  29:UART_115200_Functions.c **** 
+  30:UART_115200_Functions.c **** /**************************************/
+  31:UART_115200_Functions.c **** #define PACKET_VERIFICATION_COUNT   5
+  32:UART_115200_Functions.c **** 
+  33:UART_115200_Functions.c **** /**********DEFINED CONSTANTS**********/
+  34:UART_115200_Functions.c **** enum DataType           // MUX_115200 channel lineup
+  35:UART_115200_Functions.c **** { 
+  36:UART_115200_Functions.c ****     RTEST_DLINK,             //
+  37:UART_115200_Functions.c **** //    RTEST_DLINK2,        // 
+  38:UART_115200_Functions.c **** //    CTEST_USB_DEBUG,
+  39:UART_115200_Functions.c ****     //DIAG_UART_RX         //
+  40:UART_115200_Functions.c **** };
+  41:UART_115200_Functions.c **** 
+  42:UART_115200_Functions.c **** enum PacketState
+  43:UART_115200_Functions.c **** {
+  44:UART_115200_Functions.c ****     HEADER_STATE,
+  45:UART_115200_Functions.c ****     PAYLOAD_STATE,
+  46:UART_115200_Functions.c ****     EOP_STATE
+  47:UART_115200_Functions.c **** };
+  48:UART_115200_Functions.c **** 
+  49:UART_115200_Functions.c **** /**********DATA STRUCTURES**********/
+  50:UART_115200_Functions.c **** typedef struct
+  51:UART_115200_Functions.c **** {
+  52:UART_115200_Functions.c ****     const uint8 HEADER_BYTE;
+  53:UART_115200_Functions.c ****     const uint8 PACKET_TYPE;
+  54:UART_115200_Functions.c ****     const uint8 PAYLOAD_SIZE;
+  55:UART_115200_Functions.c ****     const uint8 EOP_CARRIAGE_RETURN;
+  56:UART_115200_Functions.c ****     const uint8 EOP_LINE_FEED;
+  57:UART_115200_Functions.c **** }Packet;
+  58:UART_115200_Functions.c **** 
+  59:UART_115200_Functions.c **** static Packet PacketList[PACKET_TYPE_COUNT] = 
+  60:UART_115200_Functions.c **** {
+  61:UART_115200_Functions.c ****     {'~', 'S', 3, '\r', '\n'},              // RTest - DataLink - (controller to siren)
+  62:UART_115200_Functions.c **** //    {'~', 'L', 111, '\r', '\n'},            // CTest - quad normal - (controller to relay)
+  63:UART_115200_Functions.c **** //    {'~', 'Y', 9, '\r', '\n'},              // RTest - quad serial - (relay to modules)
+  64:UART_115200_Functions.c **** //    {'~', 'C', 4, '\r', '\n'},              // (Quad-Controller packets)
+  65:UART_115200_Functions.c **** };
+  66:UART_115200_Functions.c **** 
+  67:UART_115200_Functions.c **** ///**********GLOBAL VARIABLES**********/
+  68:UART_115200_Functions.c **** //static uint16 singlepacketsuccess = 0;
+  69:UART_115200_Functions.c **** static uint16 packetsuccess[1] = {0};
+  70:UART_115200_Functions.c **** 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 3
+
+
+  71:UART_115200_Functions.c **** static RxPacket_DLink_S rxPacket_DLink_S;            
+  72:UART_115200_Functions.c **** 
+  73:UART_115200_Functions.c **** /**********LOCAL FUNCTION PROTOTYPES**********/
+  74:UART_115200_Functions.c **** static void detectPacket(uint8 dataByte);
+  75:UART_115200_Functions.c **** 
+  76:UART_115200_Functions.c **** /**********DEFINED GLOBAL FUNCTIONS**********/
+  77:UART_115200_Functions.c **** 
+  78:UART_115200_Functions.c **** //RxPacket_DL2 * getRxPacket_DL2(void)
+  79:UART_115200_Functions.c **** //{
+  80:UART_115200_Functions.c **** //    pRxPacket_DL2 = &rxPacket_DL2;
+  81:UART_115200_Functions.c **** //    
+  82:UART_115200_Functions.c **** //    return pRxPacket_DL2;
+  83:UART_115200_Functions.c **** //}
+  84:UART_115200_Functions.c **** 
+  85:UART_115200_Functions.c **** //RxPacket * getRxPacket(void)
+  86:UART_115200_Functions.c **** //{
+  87:UART_115200_Functions.c **** //    pRxPacket = &rxPacket;
+  88:UART_115200_Functions.c **** //    
+  89:UART_115200_Functions.c **** //    return pRxPacket;
+  90:UART_115200_Functions.c **** //}
+  91:UART_115200_Functions.c **** 
+  92:UART_115200_Functions.c **** /*******************************************************************************
+  93:UART_115200_Functions.c **** * Function Name: processByteReceivedHandler
+  94:UART_115200_Functions.c **** ********************************************************************************
+  95:UART_115200_Functions.c **** *
+  96:UART_115200_Functions.c **** * Summary:
+  97:UART_115200_Functions.c **** *  Triggers when a byte is received in UART, called in UART_ISR(). If in voice
+  98:UART_115200_Functions.c **** *  stream mode, the byte is sent directly to the DAC.
+  99:UART_115200_Functions.c **** *
+ 100:UART_115200_Functions.c **** * Parameters:
+ 101:UART_115200_Functions.c **** *  None.
+ 102:UART_115200_Functions.c **** *
+ 103:UART_115200_Functions.c **** * Return:
+ 104:UART_115200_Functions.c **** *  None.
+ 105:UART_115200_Functions.c **** *
+ 106:UART_115200_Functions.c **** *******************************************************************************/
+ 107:UART_115200_Functions.c **** void processByteReceivedHandler_115200(void)
+ 108:UART_115200_Functions.c **** {
+  45              		.loc 1 108 0
+  46              		.cfi_startproc
+  47              		@ args = 0, pretend = 0, frame = 0
+  48              		@ frame_needed = 1, uses_anonymous_args = 0
+  49              		@ link register save eliminated.
+  50 0000 80B4     		push	{r7}
+  51              		.cfi_def_cfa_offset 4
+  52              		.cfi_offset 7, -4
+  53 0002 00AF     		add	r7, sp, #0
+  54              		.cfi_def_cfa_register 7
+ 109:UART_115200_Functions.c **** //    uint8 dataByte = 0;
+ 110:UART_115200_Functions.c **** //    
+ 111:UART_115200_Functions.c **** //    static uint8 testbuffer[100];
+ 112:UART_115200_Functions.c **** //    static uint8 testbuffer_count = 0;
+ 113:UART_115200_Functions.c **** //    
+ 114:UART_115200_Functions.c **** //    do
+ 115:UART_115200_Functions.c **** //    {
+ 116:UART_115200_Functions.c **** //        dataByte = UART_115200_GetChar();
+ 117:UART_115200_Functions.c **** //        
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 4
+
+
+ 118:UART_115200_Functions.c **** //        testbuffer[testbuffer_count] = dataByte;
+ 119:UART_115200_Functions.c **** //        testbuffer_count++;
+ 120:UART_115200_Functions.c **** //        if(testbuffer_count >= 100)
+ 121:UART_115200_Functions.c **** //            testbuffer_count = 0;
+ 122:UART_115200_Functions.c **** //        
+ 123:UART_115200_Functions.c **** //        detectPacket(dataByte);
+ 124:UART_115200_Functions.c **** //        
+ 125:UART_115200_Functions.c **** //    }while(UART_115200_ReadRxStatus() & UART_115200_RX_STS_FIFO_NOTEMPTY);
+ 126:UART_115200_Functions.c ****     
+ 127:UART_115200_Functions.c ****     //UART_Timer_Start();
+ 128:UART_115200_Functions.c **** }
+  55              		.loc 1 128 0
+  56 0004 00BF     		nop
+  57 0006 BD46     		mov	sp, r7
+  58              		.cfi_def_cfa_register 13
+  59              		@ sp needed
+  60 0008 80BC     		pop	{r7}
+  61              		.cfi_restore 7
+  62              		.cfi_def_cfa_offset 0
+  63 000a 7047     		bx	lr
+  64              		.cfi_endproc
+  65              	.LFE63:
+  66              		.size	processByteReceivedHandler_115200, .-processByteReceivedHandler_115200
+  67              		.section	.text.detectPacket,"ax",%progbits
+  68              		.align	2
+  69              		.thumb
+  70              		.thumb_func
+  71              		.type	detectPacket, %function
+  72              	detectPacket:
+  73              	.LFB64:
+ 129:UART_115200_Functions.c **** 
+ 130:UART_115200_Functions.c **** 
+ 131:UART_115200_Functions.c **** /**********DEFINED LOCAL FUNCTIONS**********/
+ 132:UART_115200_Functions.c **** /*******************************************************************************
+ 133:UART_115200_Functions.c **** * Function Name: detectPacket
+ 134:UART_115200_Functions.c **** ********************************************************************************
+ 135:UART_115200_Functions.c **** *
+ 136:UART_115200_Functions.c **** * Summary:
+ 137:UART_115200_Functions.c **** *  Determines if the incoming byte belongs to a valid packet. If the packet is for
+ 138:UART_115200_Functions.c **** *  for starting voice stream, voice stream mode will be activated.
+ 139:UART_115200_Functions.c **** *
+ 140:UART_115200_Functions.c **** * Parameters:
+ 141:UART_115200_Functions.c **** *  dataByte: The byte to check
+ 142:UART_115200_Functions.c **** *
+ 143:UART_115200_Functions.c **** * Return:
+ 144:UART_115200_Functions.c **** *  None.
+ 145:UART_115200_Functions.c **** *
+ 146:UART_115200_Functions.c **** *******************************************************************************/
+ 147:UART_115200_Functions.c **** static void detectPacket(uint8 dataByte)
+ 148:UART_115200_Functions.c **** {
+  74              		.loc 1 148 0
+  75              		.cfi_startproc
+  76              		@ args = 0, pretend = 0, frame = 8
+  77              		@ frame_needed = 1, uses_anonymous_args = 0
+  78              		@ link register save eliminated.
+  79 0000 80B4     		push	{r7}
+  80              		.cfi_def_cfa_offset 4
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 5
+
+
+  81              		.cfi_offset 7, -4
+  82 0002 83B0     		sub	sp, sp, #12
+  83              		.cfi_def_cfa_offset 16
+  84 0004 00AF     		add	r7, sp, #0
+  85              		.cfi_def_cfa_register 7
+  86 0006 0346     		mov	r3, r0
+  87 0008 FB71     		strb	r3, [r7, #7]
+ 149:UART_115200_Functions.c ****     static uint8 packet[MAX_PAYLOAD_BYTE_COUNT+HEADER_BYTE_COUNT+EOP_BYTE_COUNT];   
+ 150:UART_115200_Functions.c ****     static enum PacketState currentState = HEADER_STATE;
+ 151:UART_115200_Functions.c ****     static enum DataType currentType = RTEST_DLINK;
+ 152:UART_115200_Functions.c ****     static uint8 currentPacketIndex = HEADER_START_INDEX;
+ 153:UART_115200_Functions.c ****     
+ 154:UART_115200_Functions.c ****     switch(currentState)
+  88              		.loc 1 154 0
+  89 000a 6D4B     		ldr	r3, .L18
+  90 000c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  91 000e 012B     		cmp	r3, #1
+  92 0010 43D0     		beq	.L4
+  93 0012 022B     		cmp	r3, #2
+  94 0014 61D0     		beq	.L5
+  95 0016 002B     		cmp	r3, #0
+  96 0018 00D0     		beq	.L6
+ 155:UART_115200_Functions.c ****     {
+ 156:UART_115200_Functions.c ****         case HEADER_STATE:
+ 157:UART_115200_Functions.c ****             if( (currentPacketIndex == HEADER_START_INDEX) && ( (dataByte == PacketList[RTEST_DLINK
+ 158:UART_115200_Functions.c **** //                                                                (dataByte == PacketList[CTEST_QUA
+ 159:UART_115200_Functions.c **** //                                                                (dataByte == PacketList[CTEST_AUD
+ 160:UART_115200_Functions.c **** //                                                                (dataByte == PacketList[QTEST_QUA
+ 161:UART_115200_Functions.c ****             {
+ 162:UART_115200_Functions.c ****                 packet[currentPacketIndex] = dataByte;
+ 163:UART_115200_Functions.c ****                 currentPacketIndex++;
+ 164:UART_115200_Functions.c ****             }
+ 165:UART_115200_Functions.c ****             else if( (currentPacketIndex == (HEADER_START_INDEX+1)) && ( (dataByte == PacketList[RT
+ 166:UART_115200_Functions.c **** //                                                                            (dataByte == PacketLi
+ 167:UART_115200_Functions.c **** //                                                                            (dataByte == PacketLi
+ 168:UART_115200_Functions.c **** //                                                                            (dataByte == PacketLi
+ 169:UART_115200_Functions.c ****             {
+ 170:UART_115200_Functions.c ****                 packet[currentPacketIndex] = dataByte;
+ 171:UART_115200_Functions.c ****                 currentPacketIndex++;
+ 172:UART_115200_Functions.c ****                 currentState = PAYLOAD_STATE;
+ 173:UART_115200_Functions.c ****                 
+ 174:UART_115200_Functions.c ****                 if(dataByte == PacketList[RTEST_DLINK].PACKET_TYPE)
+ 175:UART_115200_Functions.c ****                     currentType = RTEST_DLINK;
+ 176:UART_115200_Functions.c **** //                else if(dataByte == PacketList[CTEST_QUADSERIAL].PACKET_TYPE)
+ 177:UART_115200_Functions.c **** //                    currentType = CTEST_QUADSERIAL;
+ 178:UART_115200_Functions.c **** //                else if(dataByte == PacketList[CTEST_AUDIO].PACKET_TYPE)
+ 179:UART_115200_Functions.c **** //                    currentType = CTEST_AUDIO;
+ 180:UART_115200_Functions.c **** //                else if(dataByte == PacketList[QTEST_QUAD].PACKET_TYPE)
+ 181:UART_115200_Functions.c **** //                    currentType = QTEST_QUAD;
+ 182:UART_115200_Functions.c **** //                else
+ 183:UART_115200_Functions.c **** //                    currentType = CTEST_QUAD;
+ 184:UART_115200_Functions.c ****             }
+ 185:UART_115200_Functions.c ****             else
+ 186:UART_115200_Functions.c ****             {
+ 187:UART_115200_Functions.c ****                 currentPacketIndex = HEADER_START_INDEX;
+ 188:UART_115200_Functions.c ****                 currentType = RTEST_DLINK;
+ 189:UART_115200_Functions.c ****             }
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 6
+
+
+ 190:UART_115200_Functions.c ****             break;
+ 191:UART_115200_Functions.c ****             
+ 192:UART_115200_Functions.c ****         case PAYLOAD_STATE:
+ 193:UART_115200_Functions.c ****             packet[currentPacketIndex] = dataByte;
+ 194:UART_115200_Functions.c ****             currentPacketIndex++;
+ 195:UART_115200_Functions.c ****             
+ 196:UART_115200_Functions.c ****             if(currentPacketIndex >= (PAYLOAD_START_INDEX + PacketList[currentType].PAYLOAD_SIZE))
+ 197:UART_115200_Functions.c ****                 currentState = EOP_STATE;
+ 198:UART_115200_Functions.c ****             break;   
+ 199:UART_115200_Functions.c ****             
+ 200:UART_115200_Functions.c ****         case EOP_STATE:
+ 201:UART_115200_Functions.c ****             if((currentPacketIndex == (PAYLOAD_START_INDEX + PacketList[currentType].PAYLOAD_SIZE))
+ 202:UART_115200_Functions.c ****                 (dataByte == PacketList[currentType].EOP_CARRIAGE_RETURN))
+ 203:UART_115200_Functions.c ****             {
+ 204:UART_115200_Functions.c ****                 packet[currentPacketIndex] = dataByte;
+ 205:UART_115200_Functions.c ****                 currentPacketIndex++;
+ 206:UART_115200_Functions.c ****             }
+ 207:UART_115200_Functions.c ****             else if((currentPacketIndex == (PAYLOAD_START_INDEX + PacketList[currentType].PAYLOAD_S
+ 208:UART_115200_Functions.c ****                 (dataByte == PacketList[currentType].EOP_LINE_FEED))
+ 209:UART_115200_Functions.c ****             {
+ 210:UART_115200_Functions.c ****                 packet[currentPacketIndex] = dataByte;
+ 211:UART_115200_Functions.c ****                               
+ 212:UART_115200_Functions.c ****                 if(currentType == RTEST_DLINK)
+ 213:UART_115200_Functions.c ****                 {
+ 214:UART_115200_Functions.c **** //                   pRxPacket_Controller = getRxPacket_Controller();
+ 215:UART_115200_Functions.c **** //                   memcpy(&pRxPacket_Controller->bytes[0], &packet[2], PacketList[CTEST_RELAY].PA
+ 216:UART_115200_Functions.c ****                     packetsuccess[RTEST_DLINK]++;   
+ 217:UART_115200_Functions.c ****                 }
+ 218:UART_115200_Functions.c **** //                else if(currentType == CTEST_QUADSERIAL)
+ 219:UART_115200_Functions.c **** //                {
+ 220:UART_115200_Functions.c **** ////                   pRxPacket_Relay = getRxPacket_Relay();
+ 221:UART_115200_Functions.c **** ////                   memcpy(&pRxPacket_Relay->bytes[0], &packet[2], PacketList[RTEST_CONTROLLER].
+ 222:UART_115200_Functions.c **** //                   packetsuccess[CTEST_QUADSERIAL]++;   
+ 223:UART_115200_Functions.c **** //                }
+ 224:UART_115200_Functions.c **** //                else if(currentType == CTEST_AUDIO)
+ 225:UART_115200_Functions.c **** //                   packetsuccess[CTEST_AUDIO]++;
+ 226:UART_115200_Functions.c **** //
+ 227:UART_115200_Functions.c **** //                else if(currentType == QTEST_QUAD)
+ 228:UART_115200_Functions.c **** //                   packetsuccess[QTEST_QUAD]++;
+ 229:UART_115200_Functions.c **** //
+ 230:UART_115200_Functions.c **** ////                if(packetsuccess[0] > 1000)
+ 231:UART_115200_Functions.c **** ////                    packetsuccess[0] = 0;
+ 232:UART_115200_Functions.c **** ////                if(packetsuccess[2] > 1000)
+ 233:UART_115200_Functions.c **** ////                    packetsuccess[2] = 0;
+ 234:UART_115200_Functions.c **** //
+ 235:UART_115200_Functions.c **** ////                if(count >= 50)
+ 236:UART_115200_Functions.c **** ////                    packetsuccess[2] = 0;
+ 237:UART_115200_Functions.c **** ////                if(count == 0)
+ 238:UART_115200_Functions.c **** ////                    packetsuccess[2] = 0;
+ 239:UART_115200_Functions.c ****                 
+ 240:UART_115200_Functions.c ****                 currentPacketIndex = HEADER_START_INDEX;
+ 241:UART_115200_Functions.c ****                 currentState = HEADER_STATE;
+ 242:UART_115200_Functions.c ****                 currentType = RTEST_DLINK;
+ 243:UART_115200_Functions.c ****             }
+ 244:UART_115200_Functions.c ****             else
+ 245:UART_115200_Functions.c ****             {
+ 246:UART_115200_Functions.c ****                 currentPacketIndex = HEADER_START_INDEX;
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 7
+
+
+ 247:UART_115200_Functions.c ****                 currentState = HEADER_STATE;
+ 248:UART_115200_Functions.c ****                 currentType = RTEST_DLINK;
+ 249:UART_115200_Functions.c ****             }
+ 250:UART_115200_Functions.c ****             break;
+ 251:UART_115200_Functions.c ****     }
+ 252:UART_115200_Functions.c **** }
+  97              		.loc 1 252 0
+  98 001a CBE0     		b	.L17
+  99              	.L6:
+ 157:UART_115200_Functions.c **** //                                                                (dataByte == PacketList[CTEST_QUA
+ 100              		.loc 1 157 0
+ 101 001c 694B     		ldr	r3, .L18+4
+ 102 001e 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 103 0020 002B     		cmp	r3, #0
+ 104 0022 11D1     		bne	.L7
+ 157:UART_115200_Functions.c **** //                                                                (dataByte == PacketList[CTEST_QUA
+ 105              		.loc 1 157 0 is_stmt 0 discriminator 1
+ 106 0024 684B     		ldr	r3, .L18+8
+ 107 0026 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 108 0028 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 109 002a 9A42     		cmp	r2, r3
+ 110 002c 0CD1     		bne	.L7
+ 162:UART_115200_Functions.c ****                 currentPacketIndex++;
+ 111              		.loc 1 162 0 is_stmt 1
+ 112 002e 654B     		ldr	r3, .L18+4
+ 113 0030 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 114 0032 1946     		mov	r1, r3
+ 115 0034 654A     		ldr	r2, .L18+12
+ 116 0036 FB79     		ldrb	r3, [r7, #7]
+ 117 0038 5354     		strb	r3, [r2, r1]
+ 163:UART_115200_Functions.c ****             }
+ 118              		.loc 1 163 0
+ 119 003a 624B     		ldr	r3, .L18+4
+ 120 003c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 121 003e 0133     		adds	r3, r3, #1
+ 122 0040 DAB2     		uxtb	r2, r3
+ 123 0042 604B     		ldr	r3, .L18+4
+ 124 0044 1A70     		strb	r2, [r3]
+ 125 0046 27E0     		b	.L8
+ 126              	.L7:
+ 165:UART_115200_Functions.c **** //                                                                            (dataByte == PacketLi
+ 127              		.loc 1 165 0
+ 128 0048 5E4B     		ldr	r3, .L18+4
+ 129 004a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 130 004c 012B     		cmp	r3, #1
+ 131 004e 1CD1     		bne	.L9
+ 165:UART_115200_Functions.c **** //                                                                            (dataByte == PacketLi
+ 132              		.loc 1 165 0 is_stmt 0 discriminator 1
+ 133 0050 5D4B     		ldr	r3, .L18+8
+ 134 0052 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 135 0054 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 136 0056 9A42     		cmp	r2, r3
+ 137 0058 17D1     		bne	.L9
+ 170:UART_115200_Functions.c ****                 currentPacketIndex++;
+ 138              		.loc 1 170 0 is_stmt 1
+ 139 005a 5A4B     		ldr	r3, .L18+4
+ 140 005c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 8
+
+
+ 141 005e 1946     		mov	r1, r3
+ 142 0060 5A4A     		ldr	r2, .L18+12
+ 143 0062 FB79     		ldrb	r3, [r7, #7]
+ 144 0064 5354     		strb	r3, [r2, r1]
+ 171:UART_115200_Functions.c ****                 currentState = PAYLOAD_STATE;
+ 145              		.loc 1 171 0
+ 146 0066 574B     		ldr	r3, .L18+4
+ 147 0068 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 148 006a 0133     		adds	r3, r3, #1
+ 149 006c DAB2     		uxtb	r2, r3
+ 150 006e 554B     		ldr	r3, .L18+4
+ 151 0070 1A70     		strb	r2, [r3]
+ 172:UART_115200_Functions.c ****                 
+ 152              		.loc 1 172 0
+ 153 0072 534B     		ldr	r3, .L18
+ 154 0074 0122     		movs	r2, #1
+ 155 0076 1A70     		strb	r2, [r3]
+ 174:UART_115200_Functions.c ****                     currentType = RTEST_DLINK;
+ 156              		.loc 1 174 0
+ 157 0078 534B     		ldr	r3, .L18+8
+ 158 007a 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 159 007c FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 160 007e 9A42     		cmp	r2, r3
+ 161 0080 0AD1     		bne	.L8
+ 175:UART_115200_Functions.c **** //                else if(dataByte == PacketList[CTEST_QUADSERIAL].PACKET_TYPE)
+ 162              		.loc 1 175 0
+ 163 0082 534B     		ldr	r3, .L18+16
+ 164 0084 0022     		movs	r2, #0
+ 165 0086 1A70     		strb	r2, [r3]
+ 174:UART_115200_Functions.c ****                     currentType = RTEST_DLINK;
+ 166              		.loc 1 174 0
+ 167 0088 06E0     		b	.L8
+ 168              	.L9:
+ 187:UART_115200_Functions.c ****                 currentType = RTEST_DLINK;
+ 169              		.loc 1 187 0
+ 170 008a 4E4B     		ldr	r3, .L18+4
+ 171 008c 0022     		movs	r2, #0
+ 172 008e 1A70     		strb	r2, [r3]
+ 188:UART_115200_Functions.c ****             }
+ 173              		.loc 1 188 0
+ 174 0090 4F4B     		ldr	r3, .L18+16
+ 175 0092 0022     		movs	r2, #0
+ 176 0094 1A70     		strb	r2, [r3]
+ 190:UART_115200_Functions.c ****             
+ 177              		.loc 1 190 0
+ 178 0096 8DE0     		b	.L3
+ 179              	.L8:
+ 190:UART_115200_Functions.c ****             
+ 180              		.loc 1 190 0 is_stmt 0 discriminator 1
+ 181 0098 8CE0     		b	.L3
+ 182              	.L4:
+ 193:UART_115200_Functions.c ****             currentPacketIndex++;
+ 183              		.loc 1 193 0 is_stmt 1
+ 184 009a 4A4B     		ldr	r3, .L18+4
+ 185 009c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 186 009e 1946     		mov	r1, r3
+ 187 00a0 4A4A     		ldr	r2, .L18+12
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 9
+
+
+ 188 00a2 FB79     		ldrb	r3, [r7, #7]
+ 189 00a4 5354     		strb	r3, [r2, r1]
+ 194:UART_115200_Functions.c ****             
+ 190              		.loc 1 194 0
+ 191 00a6 474B     		ldr	r3, .L18+4
+ 192 00a8 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 193 00aa 0133     		adds	r3, r3, #1
+ 194 00ac DAB2     		uxtb	r2, r3
+ 195 00ae 454B     		ldr	r3, .L18+4
+ 196 00b0 1A70     		strb	r2, [r3]
+ 196:UART_115200_Functions.c ****                 currentState = EOP_STATE;
+ 197              		.loc 1 196 0
+ 198 00b2 444B     		ldr	r3, .L18+4
+ 199 00b4 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 200 00b6 1846     		mov	r0, r3
+ 201 00b8 454B     		ldr	r3, .L18+16
+ 202 00ba 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 203 00bc 1946     		mov	r1, r3
+ 204 00be 424A     		ldr	r2, .L18+8
+ 205 00c0 0B46     		mov	r3, r1
+ 206 00c2 9B00     		lsls	r3, r3, #2
+ 207 00c4 0B44     		add	r3, r3, r1
+ 208 00c6 1344     		add	r3, r3, r2
+ 209 00c8 0233     		adds	r3, r3, #2
+ 210 00ca 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 211 00cc 0233     		adds	r3, r3, #2
+ 212 00ce 9842     		cmp	r0, r3
+ 213 00d0 6FDB     		blt	.L16
+ 197:UART_115200_Functions.c ****             break;   
+ 214              		.loc 1 197 0
+ 215 00d2 3B4B     		ldr	r3, .L18
+ 216 00d4 0222     		movs	r2, #2
+ 217 00d6 1A70     		strb	r2, [r3]
+ 198:UART_115200_Functions.c ****             
+ 218              		.loc 1 198 0
+ 219 00d8 6BE0     		b	.L16
+ 220              	.L5:
+ 201:UART_115200_Functions.c ****                 (dataByte == PacketList[currentType].EOP_CARRIAGE_RETURN))
+ 221              		.loc 1 201 0
+ 222 00da 3A4B     		ldr	r3, .L18+4
+ 223 00dc 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 224 00de 1846     		mov	r0, r3
+ 225 00e0 3B4B     		ldr	r3, .L18+16
+ 226 00e2 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 227 00e4 1946     		mov	r1, r3
+ 228 00e6 384A     		ldr	r2, .L18+8
+ 229 00e8 0B46     		mov	r3, r1
+ 230 00ea 9B00     		lsls	r3, r3, #2
+ 231 00ec 0B44     		add	r3, r3, r1
+ 232 00ee 1344     		add	r3, r3, r2
+ 233 00f0 0233     		adds	r3, r3, #2
+ 234 00f2 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 235 00f4 0233     		adds	r3, r3, #2
+ 236 00f6 9842     		cmp	r0, r3
+ 237 00f8 19D1     		bne	.L12
+ 202:UART_115200_Functions.c ****             {
+ 238              		.loc 1 202 0 discriminator 1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 10
+
+
+ 239 00fa 354B     		ldr	r3, .L18+16
+ 240 00fc 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 241 00fe 1946     		mov	r1, r3
+ 242 0100 314A     		ldr	r2, .L18+8
+ 243 0102 0B46     		mov	r3, r1
+ 244 0104 9B00     		lsls	r3, r3, #2
+ 245 0106 0B44     		add	r3, r3, r1
+ 246 0108 1344     		add	r3, r3, r2
+ 247 010a 0333     		adds	r3, r3, #3
+ 248 010c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 201:UART_115200_Functions.c ****                 (dataByte == PacketList[currentType].EOP_CARRIAGE_RETURN))
+ 249              		.loc 1 201 0 discriminator 1
+ 250 010e FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 251 0110 9A42     		cmp	r2, r3
+ 252 0112 0CD1     		bne	.L12
+ 204:UART_115200_Functions.c ****                 currentPacketIndex++;
+ 253              		.loc 1 204 0
+ 254 0114 2B4B     		ldr	r3, .L18+4
+ 255 0116 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 256 0118 1946     		mov	r1, r3
+ 257 011a 2C4A     		ldr	r2, .L18+12
+ 258 011c FB79     		ldrb	r3, [r7, #7]
+ 259 011e 5354     		strb	r3, [r2, r1]
+ 205:UART_115200_Functions.c ****             }
+ 260              		.loc 1 205 0
+ 261 0120 284B     		ldr	r3, .L18+4
+ 262 0122 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 263 0124 0133     		adds	r3, r3, #1
+ 264 0126 DAB2     		uxtb	r2, r3
+ 265 0128 264B     		ldr	r3, .L18+4
+ 266 012a 1A70     		strb	r2, [r3]
+ 267 012c 40E0     		b	.L13
+ 268              	.L12:
+ 207:UART_115200_Functions.c ****                 (dataByte == PacketList[currentType].EOP_LINE_FEED))
+ 269              		.loc 1 207 0
+ 270 012e 254B     		ldr	r3, .L18+4
+ 271 0130 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 272 0132 1846     		mov	r0, r3
+ 273 0134 264B     		ldr	r3, .L18+16
+ 274 0136 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 275 0138 1946     		mov	r1, r3
+ 276 013a 234A     		ldr	r2, .L18+8
+ 277 013c 0B46     		mov	r3, r1
+ 278 013e 9B00     		lsls	r3, r3, #2
+ 279 0140 0B44     		add	r3, r3, r1
+ 280 0142 1344     		add	r3, r3, r2
+ 281 0144 0233     		adds	r3, r3, #2
+ 282 0146 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 283 0148 0333     		adds	r3, r3, #3
+ 284 014a 9842     		cmp	r0, r3
+ 285 014c 26D1     		bne	.L14
+ 208:UART_115200_Functions.c ****             {
+ 286              		.loc 1 208 0 discriminator 1
+ 287 014e 204B     		ldr	r3, .L18+16
+ 288 0150 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 289 0152 1946     		mov	r1, r3
+ 290 0154 1C4A     		ldr	r2, .L18+8
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 11
+
+
+ 291 0156 0B46     		mov	r3, r1
+ 292 0158 9B00     		lsls	r3, r3, #2
+ 293 015a 0B44     		add	r3, r3, r1
+ 294 015c 1344     		add	r3, r3, r2
+ 295 015e 0433     		adds	r3, r3, #4
+ 296 0160 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 207:UART_115200_Functions.c ****                 (dataByte == PacketList[currentType].EOP_LINE_FEED))
+ 297              		.loc 1 207 0 discriminator 1
+ 298 0162 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
+ 299 0164 9A42     		cmp	r2, r3
+ 300 0166 19D1     		bne	.L14
+ 210:UART_115200_Functions.c ****                               
+ 301              		.loc 1 210 0
+ 302 0168 164B     		ldr	r3, .L18+4
+ 303 016a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 304 016c 1946     		mov	r1, r3
+ 305 016e 174A     		ldr	r2, .L18+12
+ 306 0170 FB79     		ldrb	r3, [r7, #7]
+ 307 0172 5354     		strb	r3, [r2, r1]
+ 212:UART_115200_Functions.c ****                 {
+ 308              		.loc 1 212 0
+ 309 0174 164B     		ldr	r3, .L18+16
+ 310 0176 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 311 0178 002B     		cmp	r3, #0
+ 312 017a 05D1     		bne	.L15
+ 216:UART_115200_Functions.c ****                 }
+ 313              		.loc 1 216 0
+ 314 017c 154B     		ldr	r3, .L18+20
+ 315 017e 1B88     		ldrh	r3, [r3]
+ 316 0180 0133     		adds	r3, r3, #1
+ 317 0182 9AB2     		uxth	r2, r3
+ 318 0184 134B     		ldr	r3, .L18+20
+ 319 0186 1A80     		strh	r2, [r3]	@ movhi
+ 320              	.L15:
+ 240:UART_115200_Functions.c ****                 currentState = HEADER_STATE;
+ 321              		.loc 1 240 0
+ 322 0188 0E4B     		ldr	r3, .L18+4
+ 323 018a 0022     		movs	r2, #0
+ 324 018c 1A70     		strb	r2, [r3]
+ 241:UART_115200_Functions.c ****                 currentType = RTEST_DLINK;
+ 325              		.loc 1 241 0
+ 326 018e 0C4B     		ldr	r3, .L18
+ 327 0190 0022     		movs	r2, #0
+ 328 0192 1A70     		strb	r2, [r3]
+ 242:UART_115200_Functions.c ****             }
+ 329              		.loc 1 242 0
+ 330 0194 0E4B     		ldr	r3, .L18+16
+ 331 0196 0022     		movs	r2, #0
+ 332 0198 1A70     		strb	r2, [r3]
+ 333 019a 09E0     		b	.L13
+ 334              	.L14:
+ 246:UART_115200_Functions.c ****                 currentState = HEADER_STATE;
+ 335              		.loc 1 246 0
+ 336 019c 094B     		ldr	r3, .L18+4
+ 337 019e 0022     		movs	r2, #0
+ 338 01a0 1A70     		strb	r2, [r3]
+ 247:UART_115200_Functions.c ****                 currentType = RTEST_DLINK;
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 12
+
+
+ 339              		.loc 1 247 0
+ 340 01a2 074B     		ldr	r3, .L18
+ 341 01a4 0022     		movs	r2, #0
+ 342 01a6 1A70     		strb	r2, [r3]
+ 248:UART_115200_Functions.c ****             }
+ 343              		.loc 1 248 0
+ 344 01a8 094B     		ldr	r3, .L18+16
+ 345 01aa 0022     		movs	r2, #0
+ 346 01ac 1A70     		strb	r2, [r3]
+ 250:UART_115200_Functions.c ****     }
+ 347              		.loc 1 250 0
+ 348 01ae 01E0     		b	.L3
+ 349              	.L13:
+ 350 01b0 00E0     		b	.L3
+ 351              	.L16:
+ 198:UART_115200_Functions.c ****             
+ 352              		.loc 1 198 0
+ 353 01b2 00BF     		nop
+ 354              	.L3:
+ 355              	.L17:
+ 356              		.loc 1 252 0
+ 357 01b4 00BF     		nop
+ 358 01b6 0C37     		adds	r7, r7, #12
+ 359              		.cfi_def_cfa_offset 4
+ 360 01b8 BD46     		mov	sp, r7
+ 361              		.cfi_def_cfa_register 13
+ 362              		@ sp needed
+ 363 01ba 80BC     		pop	{r7}
+ 364              		.cfi_restore 7
+ 365              		.cfi_def_cfa_offset 0
+ 366 01bc 7047     		bx	lr
+ 367              	.L19:
+ 368 01be 00BF     		.align	2
+ 369              	.L18:
+ 370 01c0 07000000 		.word	currentState.6048
+ 371 01c4 08000000 		.word	currentPacketIndex.6050
+ 372 01c8 00000000 		.word	PacketList
+ 373 01cc 0C000000 		.word	packet.6047
+ 374 01d0 13000000 		.word	currentType.6049
+ 375 01d4 00000000 		.word	packetsuccess
+ 376              		.cfi_endproc
+ 377              	.LFE64:
+ 378              		.size	detectPacket, .-detectPacket
+ 379              		.section	.text.ResetPacketSuccess_115200,"ax",%progbits
+ 380              		.align	2
+ 381              		.global	ResetPacketSuccess_115200
+ 382              		.thumb
+ 383              		.thumb_func
+ 384              		.type	ResetPacketSuccess_115200, %function
+ 385              	ResetPacketSuccess_115200:
+ 386              	.LFB65:
+ 253:UART_115200_Functions.c **** 
+ 254:UART_115200_Functions.c **** //void sendPacketToController(void)                   //*** This part needs some work
+ 255:UART_115200_Functions.c **** //{
+ 256:UART_115200_Functions.c **** //    static uint16 iterator = 0;
+ 257:UART_115200_Functions.c **** //    static uint8 checkSumRelay = 0;
+ 258:UART_115200_Functions.c **** //    static uint8 checkSumRelayIterator = 0;
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 13
+
+
+ 259:UART_115200_Functions.c **** //    static uint8 toggleSend = 0;
+ 260:UART_115200_Functions.c **** //    
+ 261:UART_115200_Functions.c **** //    static TxPacket_Controller txPacket_Controller;            
+ 262:UART_115200_Functions.c **** //    static TxPacket_Controller * pTxPacket_Controller;
+ 263:UART_115200_Functions.c **** //    
+ 264:UART_115200_Functions.c **** //    pRxPacket_Controller = getRxPacket_Controller();
+ 265:UART_115200_Functions.c **** //
+ 266:UART_115200_Functions.c **** //    checkSumRelay = 0;
+ 267:UART_115200_Functions.c **** //    for(checkSumRelayIterator = 0; checkSumRelayIterator<PacketList[CTEST_RELAY].PAYLOAD_SIZE; ch
+ 268:UART_115200_Functions.c **** //    {
+ 269:UART_115200_Functions.c **** //        checkSumRelay ^= pTxPacket_Controller->bytes[checkSumRelayIterator];
+ 270:UART_115200_Functions.c **** //    }
+ 271:UART_115200_Functions.c **** //    
+ 272:UART_115200_Functions.c **** //    toggleSend^=0x01;
+ 273:UART_115200_Functions.c **** //    if(toggleSend == 1)
+ 274:UART_115200_Functions.c **** //    {
+ 275:UART_115200_Functions.c **** //
+ 276:UART_115200_Functions.c **** //        UART_230400_WriteTxData(0x7E);
+ 277:UART_115200_Functions.c **** //        UART_230400_WriteTxData('D');
+ 278:UART_115200_Functions.c **** //        for(iterator = 0; iterator<PacketList[CTEST_RELAY].PAYLOAD_SIZE; iterator++)             
+ 279:UART_115200_Functions.c **** //        {
+ 280:UART_115200_Functions.c **** //            UART_230400_WriteTxData(pTxPacket_Controller->bytes[iterator]);
+ 281:UART_115200_Functions.c **** //        }
+ 282:UART_115200_Functions.c **** //       
+ 283:UART_115200_Functions.c **** //        UART_230400_WriteTxData(checkSumRelay);
+ 284:UART_115200_Functions.c **** //        UART_230400_WriteTxData(0x0D);
+ 285:UART_115200_Functions.c **** //        UART_230400_WriteTxData(0x0A);
+ 286:UART_115200_Functions.c **** //    }
+ 287:UART_115200_Functions.c **** ////    else                                                                                    // 
+ 288:UART_115200_Functions.c **** ////    {
+ 289:UART_115200_Functions.c **** ////        for(iterator = 0; iterator<72; iterator++)
+ 290:UART_115200_Functions.c **** ////        {
+ 291:UART_115200_Functions.c **** ////            CONTROLLER_WriteTxData(gpsValuesToSend->byte[iterator]);
+ 292:UART_115200_Functions.c **** ////        }
+ 293:UART_115200_Functions.c **** ////    }
+ 294:UART_115200_Functions.c **** //}
+ 295:UART_115200_Functions.c **** 
+ 296:UART_115200_Functions.c **** void ResetPacketSuccess_115200(void)           //*** This can be improved
+ 297:UART_115200_Functions.c **** {
+ 387              		.loc 1 297 0
+ 388              		.cfi_startproc
+ 389              		@ args = 0, pretend = 0, frame = 0
+ 390              		@ frame_needed = 1, uses_anonymous_args = 0
+ 391              		@ link register save eliminated.
+ 392 0000 80B4     		push	{r7}
+ 393              		.cfi_def_cfa_offset 4
+ 394              		.cfi_offset 7, -4
+ 395 0002 00AF     		add	r7, sp, #0
+ 396              		.cfi_def_cfa_register 7
+ 298:UART_115200_Functions.c **** //    packetsuccess[0] = 0;
+ 299:UART_115200_Functions.c **** //    packetsuccess[1] = 0;
+ 300:UART_115200_Functions.c **** //    packetsuccess[2] = 0;
+ 301:UART_115200_Functions.c **** //    packetsuccess[3] = 0;
+ 302:UART_115200_Functions.c ****     
+ 303:UART_115200_Functions.c ****     return;
+ 397              		.loc 1 303 0
+ 398 0004 00BF     		nop
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 14
+
+
+ 304:UART_115200_Functions.c **** }
+ 399              		.loc 1 304 0
+ 400 0006 BD46     		mov	sp, r7
+ 401              		.cfi_def_cfa_register 13
+ 402              		@ sp needed
+ 403 0008 80BC     		pop	{r7}
+ 404              		.cfi_restore 7
+ 405              		.cfi_def_cfa_offset 0
+ 406 000a 7047     		bx	lr
+ 407              		.cfi_endproc
+ 408              	.LFE65:
+ 409              		.size	ResetPacketSuccess_115200, .-ResetPacketSuccess_115200
+ 410              		.section	.text.VerifyPacket_115200,"ax",%progbits
+ 411              		.align	2
+ 412              		.global	VerifyPacket_115200
+ 413              		.thumb
+ 414              		.thumb_func
+ 415              		.type	VerifyPacket_115200, %function
+ 416              	VerifyPacket_115200:
+ 417              	.LFB66:
+ 305:UART_115200_Functions.c **** 
+ 306:UART_115200_Functions.c **** uint8 VerifyPacket_115200(uint8 PacketType)
+ 307:UART_115200_Functions.c **** {
+ 418              		.loc 1 307 0
+ 419              		.cfi_startproc
+ 420              		@ args = 0, pretend = 0, frame = 8
+ 421              		@ frame_needed = 1, uses_anonymous_args = 0
+ 422              		@ link register save eliminated.
+ 423 0000 80B4     		push	{r7}
+ 424              		.cfi_def_cfa_offset 4
+ 425              		.cfi_offset 7, -4
+ 426 0002 83B0     		sub	sp, sp, #12
+ 427              		.cfi_def_cfa_offset 16
+ 428 0004 00AF     		add	r7, sp, #0
+ 429              		.cfi_def_cfa_register 7
+ 430 0006 0346     		mov	r3, r0
+ 431 0008 FB71     		strb	r3, [r7, #7]
+ 308:UART_115200_Functions.c ****     
+ 309:UART_115200_Functions.c ****     static uint16 singlepacketsuccess = 0;
+ 310:UART_115200_Functions.c ****     
+ 311:UART_115200_Functions.c **** //    if(PacketType == 0)
+ 312:UART_115200_Functions.c **** //        MUX_CTRL_460800_Write(0x00);
+ 313:UART_115200_Functions.c ****     
+ 314:UART_115200_Functions.c **** //    if(PacketType == 0)
+ 315:UART_115200_Functions.c **** //        singlepacketsuccess = packetsuccess[0];
+ 316:UART_115200_Functions.c **** ////    else if(PacketType == 1)
+ 317:UART_115200_Functions.c **** //        singlepacketsuccess = packetsuccess[1];
+ 318:UART_115200_Functions.c ****         
+ 319:UART_115200_Functions.c ****         
+ 320:UART_115200_Functions.c ****     if(packetsuccess[PacketType] >= PACKET_VERIFICATION_COUNT)                //maybe we wait until
+ 432              		.loc 1 320 0
+ 433 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 434 000c 064A     		ldr	r2, .L25
+ 435 000e 32F81330 		ldrh	r3, [r2, r3, lsl #1]
+ 436 0012 042B     		cmp	r3, #4
+ 437 0014 01D9     		bls	.L23
+ 321:UART_115200_Functions.c ****         return(1);
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 15
+
+
+ 438              		.loc 1 321 0
+ 439 0016 0123     		movs	r3, #1
+ 440 0018 00E0     		b	.L24
+ 441              	.L23:
+ 322:UART_115200_Functions.c ****     else
+ 323:UART_115200_Functions.c ****         return(0);
+ 442              		.loc 1 323 0
+ 443 001a 0023     		movs	r3, #0
+ 444              	.L24:
+ 324:UART_115200_Functions.c ****        
+ 325:UART_115200_Functions.c **** }
+ 445              		.loc 1 325 0
+ 446 001c 1846     		mov	r0, r3
+ 447 001e 0C37     		adds	r7, r7, #12
+ 448              		.cfi_def_cfa_offset 4
+ 449 0020 BD46     		mov	sp, r7
+ 450              		.cfi_def_cfa_register 13
+ 451              		@ sp needed
+ 452 0022 80BC     		pop	{r7}
+ 453              		.cfi_restore 7
+ 454              		.cfi_def_cfa_offset 0
+ 455 0024 7047     		bx	lr
+ 456              	.L26:
+ 457 0026 00BF     		.align	2
+ 458              	.L25:
+ 459 0028 00000000 		.word	packetsuccess
+ 460              		.cfi_endproc
+ 461              	.LFE66:
+ 462              		.size	VerifyPacket_115200, .-VerifyPacket_115200
+ 463              		.bss
+ 464              	currentState.6048:
+ 465 0007 00       		.space	1
+ 466              	currentPacketIndex.6050:
+ 467 0008 00       		.space	1
+ 468 0009 000000   		.align	2
+ 469              	packet.6047:
+ 470 000c 00000000 		.space	7
+ 470      000000
+ 471              	currentType.6049:
+ 472 0013 00       		.space	1
+ 473              		.align	1
+ 474              	singlepacketsuccess.6061:
+ 475 0014 0000     		.space	2
+ 476              		.text
+ 477              	.Letext0:
+ 478              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 479              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 480              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 481              		.file 5 "UART_115200_Functions.h"
+ 482              		.file 6 "Generated_Source\\PSoC5/core_cm3.h"
+ 483              		.section	.debug_info,"",%progbits
+ 484              	.Ldebug_info0:
+ 485 0000 F2020000 		.4byte	0x2f2
+ 486 0004 0400     		.2byte	0x4
+ 487 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 488 000a 04       		.byte	0x4
+ 489 000b 01       		.uleb128 0x1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 16
+
+
+ 490 000c 00000000 		.4byte	.LASF48
+ 491 0010 0C       		.byte	0xc
+ 492 0011 3A010000 		.4byte	.LASF49
+ 493 0015 9E010000 		.4byte	.LASF50
+ 494 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 495 001d 00000000 		.4byte	0
+ 496 0021 00000000 		.4byte	.Ldebug_line0
+ 497 0025 02       		.uleb128 0x2
+ 498 0026 01       		.byte	0x1
+ 499 0027 06       		.byte	0x6
+ 500 0028 3E030000 		.4byte	.LASF0
+ 501 002c 02       		.uleb128 0x2
+ 502 002d 01       		.byte	0x1
+ 503 002e 08       		.byte	0x8
+ 504 002f 20010000 		.4byte	.LASF1
+ 505 0033 02       		.uleb128 0x2
+ 506 0034 02       		.byte	0x2
+ 507 0035 05       		.byte	0x5
+ 508 0036 DB020000 		.4byte	.LASF2
+ 509 003a 02       		.uleb128 0x2
+ 510 003b 02       		.byte	0x2
+ 511 003c 07       		.byte	0x7
+ 512 003d 64010000 		.4byte	.LASF3
+ 513 0041 03       		.uleb128 0x3
+ 514 0042 AC000000 		.4byte	.LASF9
+ 515 0046 02       		.byte	0x2
+ 516 0047 3F       		.byte	0x3f
+ 517 0048 4C000000 		.4byte	0x4c
+ 518 004c 02       		.uleb128 0x2
+ 519 004d 04       		.byte	0x4
+ 520 004e 05       		.byte	0x5
+ 521 004f CA000000 		.4byte	.LASF4
+ 522 0053 02       		.uleb128 0x2
+ 523 0054 04       		.byte	0x4
+ 524 0055 07       		.byte	0x7
+ 525 0056 52010000 		.4byte	.LASF5
+ 526 005a 02       		.uleb128 0x2
+ 527 005b 08       		.byte	0x8
+ 528 005c 05       		.byte	0x5
+ 529 005d A2020000 		.4byte	.LASF6
+ 530 0061 02       		.uleb128 0x2
+ 531 0062 08       		.byte	0x8
+ 532 0063 07       		.byte	0x7
+ 533 0064 2D020000 		.4byte	.LASF7
+ 534 0068 04       		.uleb128 0x4
+ 535 0069 04       		.byte	0x4
+ 536 006a 05       		.byte	0x5
+ 537 006b 696E7400 		.ascii	"int\000"
+ 538 006f 02       		.uleb128 0x2
+ 539 0070 04       		.byte	0x4
+ 540 0071 07       		.byte	0x7
+ 541 0072 20020000 		.4byte	.LASF8
+ 542 0076 03       		.uleb128 0x3
+ 543 0077 0A010000 		.4byte	.LASF10
+ 544 007b 03       		.byte	0x3
+ 545 007c 2C       		.byte	0x2c
+ 546 007d 41000000 		.4byte	0x41
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 17
+
+
+ 547 0081 05       		.uleb128 0x5
+ 548 0082 E5020000 		.4byte	.LASF11
+ 549 0086 04       		.byte	0x4
+ 550 0087 E401     		.2byte	0x1e4
+ 551 0089 2C000000 		.4byte	0x2c
+ 552 008d 05       		.uleb128 0x5
+ 553 008e 06020000 		.4byte	.LASF12
+ 554 0092 04       		.byte	0x4
+ 555 0093 E501     		.2byte	0x1e5
+ 556 0095 3A000000 		.4byte	0x3a
+ 557 0099 02       		.uleb128 0x2
+ 558 009a 04       		.byte	0x4
+ 559 009b 04       		.byte	0x4
+ 560 009c 1A010000 		.4byte	.LASF13
+ 561 00a0 02       		.uleb128 0x2
+ 562 00a1 08       		.byte	0x8
+ 563 00a2 04       		.byte	0x4
+ 564 00a3 E6000000 		.4byte	.LASF14
+ 565 00a7 02       		.uleb128 0x2
+ 566 00a8 01       		.byte	0x1
+ 567 00a9 08       		.byte	0x8
+ 568 00aa B0020000 		.4byte	.LASF15
+ 569 00ae 02       		.uleb128 0x2
+ 570 00af 08       		.byte	0x8
+ 571 00b0 04       		.byte	0x4
+ 572 00b1 32030000 		.4byte	.LASF16
+ 573 00b5 02       		.uleb128 0x2
+ 574 00b6 04       		.byte	0x4
+ 575 00b7 07       		.byte	0x7
+ 576 00b8 99020000 		.4byte	.LASF17
+ 577 00bc 06       		.uleb128 0x6
+ 578 00bd ED000000 		.4byte	.LASF51
+ 579 00c1 03       		.byte	0x3
+ 580 00c2 05       		.byte	0x5
+ 581 00c3 1F       		.byte	0x1f
+ 582 00c4 ED000000 		.4byte	0xed
+ 583 00c8 07       		.uleb128 0x7
+ 584 00c9 0D030000 		.4byte	.LASF18
+ 585 00cd 05       		.byte	0x5
+ 586 00ce 21       		.byte	0x21
+ 587 00cf 81000000 		.4byte	0x81
+ 588 00d3 00       		.byte	0
+ 589 00d4 07       		.uleb128 0x7
+ 590 00d5 65020000 		.4byte	.LASF19
+ 591 00d9 05       		.byte	0x5
+ 592 00da 22       		.byte	0x22
+ 593 00db 81000000 		.4byte	0x81
+ 594 00df 01       		.byte	0x1
+ 595 00e0 07       		.uleb128 0x7
+ 596 00e1 77010000 		.4byte	.LASF20
+ 597 00e5 05       		.byte	0x5
+ 598 00e6 23       		.byte	0x23
+ 599 00e7 81000000 		.4byte	0x81
+ 600 00eb 02       		.byte	0x2
+ 601 00ec 00       		.byte	0
+ 602 00ed 08       		.uleb128 0x8
+ 603 00ee 70020000 		.4byte	.LASF47
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 18
+
+
+ 604 00f2 03       		.byte	0x3
+ 605 00f3 05       		.byte	0x5
+ 606 00f4 1B       		.byte	0x1b
+ 607 00f5 10010000 		.4byte	0x110
+ 608 00f9 09       		.uleb128 0x9
+ 609 00fa 2C030000 		.4byte	.LASF21
+ 610 00fe 05       		.byte	0x5
+ 611 00ff 1D       		.byte	0x1d
+ 612 0100 10010000 		.4byte	0x110
+ 613 0104 09       		.uleb128 0x9
+ 614 0105 12010000 		.4byte	.LASF22
+ 615 0109 05       		.byte	0x5
+ 616 010a 24       		.byte	0x24
+ 617 010b BC000000 		.4byte	0xbc
+ 618 010f 00       		.byte	0
+ 619 0110 0A       		.uleb128 0xa
+ 620 0111 81000000 		.4byte	0x81
+ 621 0115 20010000 		.4byte	0x120
+ 622 0119 0B       		.uleb128 0xb
+ 623 011a B5000000 		.4byte	0xb5
+ 624 011e 02       		.byte	0x2
+ 625 011f 00       		.byte	0
+ 626 0120 03       		.uleb128 0x3
+ 627 0121 9B000000 		.4byte	.LASF23
+ 628 0125 05       		.byte	0x5
+ 629 0126 25       		.byte	0x25
+ 630 0127 ED000000 		.4byte	0xed
+ 631 012b 0C       		.uleb128 0xc
+ 632 012c DD000000 		.4byte	.LASF24
+ 633 0130 01       		.byte	0x1
+ 634 0131 2C000000 		.4byte	0x2c
+ 635 0135 01       		.byte	0x1
+ 636 0136 22       		.byte	0x22
+ 637 0137 42010000 		.4byte	0x142
+ 638 013b 0D       		.uleb128 0xd
+ 639 013c 81020000 		.4byte	.LASF26
+ 640 0140 00       		.byte	0
+ 641 0141 00       		.byte	0
+ 642 0142 0C       		.uleb128 0xc
+ 643 0143 2E010000 		.4byte	.LASF25
+ 644 0147 01       		.byte	0x1
+ 645 0148 2C000000 		.4byte	0x2c
+ 646 014c 01       		.byte	0x1
+ 647 014d 2A       		.byte	0x2a
+ 648 014e 65010000 		.4byte	0x165
+ 649 0152 0D       		.uleb128 0xd
+ 650 0153 55030000 		.4byte	.LASF27
+ 651 0157 00       		.byte	0
+ 652 0158 0D       		.uleb128 0xd
+ 653 0159 F1010000 		.4byte	.LASF28
+ 654 015d 01       		.byte	0x1
+ 655 015e 0D       		.uleb128 0xd
+ 656 015f D3000000 		.4byte	.LASF29
+ 657 0163 02       		.byte	0x2
+ 658 0164 00       		.byte	0
+ 659 0165 0E       		.uleb128 0xe
+ 660 0166 05       		.byte	0x5
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 19
+
+
+ 661 0167 01       		.byte	0x1
+ 662 0168 32       		.byte	0x32
+ 663 0169 AA010000 		.4byte	0x1aa
+ 664 016d 07       		.uleb128 0x7
+ 665 016e B5020000 		.4byte	.LASF30
+ 666 0172 01       		.byte	0x1
+ 667 0173 34       		.byte	0x34
+ 668 0174 AA010000 		.4byte	0x1aa
+ 669 0178 00       		.byte	0
+ 670 0179 07       		.uleb128 0x7
+ 671 017a 8D020000 		.4byte	.LASF31
+ 672 017e 01       		.byte	0x1
+ 673 017f 35       		.byte	0x35
+ 674 0180 AA010000 		.4byte	0x1aa
+ 675 0184 01       		.byte	0x1
+ 676 0185 07       		.uleb128 0x7
+ 677 0186 62030000 		.4byte	.LASF32
+ 678 018a 01       		.byte	0x1
+ 679 018b 36       		.byte	0x36
+ 680 018c AA010000 		.4byte	0x1aa
+ 681 0190 02       		.byte	0x2
+ 682 0191 07       		.uleb128 0x7
+ 683 0192 51020000 		.4byte	.LASF33
+ 684 0196 01       		.byte	0x1
+ 685 0197 37       		.byte	0x37
+ 686 0198 AA010000 		.4byte	0x1aa
+ 687 019c 03       		.byte	0x3
+ 688 019d 07       		.uleb128 0x7
+ 689 019e CD020000 		.4byte	.LASF34
+ 690 01a2 01       		.byte	0x1
+ 691 01a3 38       		.byte	0x38
+ 692 01a4 AA010000 		.4byte	0x1aa
+ 693 01a8 04       		.byte	0x4
+ 694 01a9 00       		.byte	0
+ 695 01aa 0F       		.uleb128 0xf
+ 696 01ab 81000000 		.4byte	0x81
+ 697 01af 03       		.uleb128 0x3
+ 698 01b0 97010000 		.4byte	.LASF35
+ 699 01b4 01       		.byte	0x1
+ 700 01b5 39       		.byte	0x39
+ 701 01b6 65010000 		.4byte	0x165
+ 702 01ba 10       		.uleb128 0x10
+ 703 01bb EB020000 		.4byte	.LASF40
+ 704 01bf 01       		.byte	0x1
+ 705 01c0 6B       		.byte	0x6b
+ 706 01c1 00000000 		.4byte	.LFB63
+ 707 01c5 0C000000 		.4byte	.LFE63-.LFB63
+ 708 01c9 01       		.uleb128 0x1
+ 709 01ca 9C       		.byte	0x9c
+ 710 01cb 11       		.uleb128 0x11
+ 711 01cc 44020000 		.4byte	.LASF52
+ 712 01d0 01       		.byte	0x1
+ 713 01d1 93       		.byte	0x93
+ 714 01d2 00000000 		.4byte	.LFB64
+ 715 01d6 D8010000 		.4byte	.LFE64-.LFB64
+ 716 01da 01       		.uleb128 0x1
+ 717 01db 9C       		.byte	0x9c
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 20
+
+
+ 718 01dc 33020000 		.4byte	0x233
+ 719 01e0 12       		.uleb128 0x12
+ 720 01e1 8E010000 		.4byte	.LASF42
+ 721 01e5 01       		.byte	0x1
+ 722 01e6 93       		.byte	0x93
+ 723 01e7 81000000 		.4byte	0x81
+ 724 01eb 02       		.uleb128 0x2
+ 725 01ec 91       		.byte	0x91
+ 726 01ed 77       		.sleb128 -9
+ 727 01ee 13       		.uleb128 0x13
+ 728 01ef FF010000 		.4byte	.LASF36
+ 729 01f3 01       		.byte	0x1
+ 730 01f4 95       		.byte	0x95
+ 731 01f5 33020000 		.4byte	0x233
+ 732 01f9 05       		.uleb128 0x5
+ 733 01fa 03       		.byte	0x3
+ 734 01fb 0C000000 		.4byte	packet.6047
+ 735 01ff 13       		.uleb128 0x13
+ 736 0200 8E000000 		.4byte	.LASF37
+ 737 0204 01       		.byte	0x1
+ 738 0205 96       		.byte	0x96
+ 739 0206 42010000 		.4byte	0x142
+ 740 020a 05       		.uleb128 0x5
+ 741 020b 03       		.byte	0x3
+ 742 020c 07000000 		.4byte	currentState.6048
+ 743 0210 13       		.uleb128 0x13
+ 744 0211 C1020000 		.4byte	.LASF38
+ 745 0215 01       		.byte	0x1
+ 746 0216 97       		.byte	0x97
+ 747 0217 2B010000 		.4byte	0x12b
+ 748 021b 05       		.uleb128 0x5
+ 749 021c 03       		.byte	0x3
+ 750 021d 13000000 		.4byte	currentType.6049
+ 751 0221 13       		.uleb128 0x13
+ 752 0222 0D020000 		.4byte	.LASF39
+ 753 0226 01       		.byte	0x1
+ 754 0227 98       		.byte	0x98
+ 755 0228 81000000 		.4byte	0x81
+ 756 022c 05       		.uleb128 0x5
+ 757 022d 03       		.byte	0x3
+ 758 022e 08000000 		.4byte	currentPacketIndex.6050
+ 759 0232 00       		.byte	0
+ 760 0233 0A       		.uleb128 0xa
+ 761 0234 81000000 		.4byte	0x81
+ 762 0238 43020000 		.4byte	0x243
+ 763 023c 0B       		.uleb128 0xb
+ 764 023d B5000000 		.4byte	0xb5
+ 765 0241 06       		.byte	0x6
+ 766 0242 00       		.byte	0
+ 767 0243 14       		.uleb128 0x14
+ 768 0244 6F030000 		.4byte	.LASF41
+ 769 0248 01       		.byte	0x1
+ 770 0249 2801     		.2byte	0x128
+ 771 024b 00000000 		.4byte	.LFB65
+ 772 024f 0C000000 		.4byte	.LFE65-.LFB65
+ 773 0253 01       		.uleb128 0x1
+ 774 0254 9C       		.byte	0x9c
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 21
+
+
+ 775 0255 15       		.uleb128 0x15
+ 776 0256 B6000000 		.4byte	.LASF53
+ 777 025a 01       		.byte	0x1
+ 778 025b 3201     		.2byte	0x132
+ 779 025d 81000000 		.4byte	0x81
+ 780 0261 00000000 		.4byte	.LFB66
+ 781 0265 2C000000 		.4byte	.LFE66-.LFB66
+ 782 0269 01       		.uleb128 0x1
+ 783 026a 9C       		.byte	0x9c
+ 784 026b 91020000 		.4byte	0x291
+ 785 026f 16       		.uleb128 0x16
+ 786 0270 E6010000 		.4byte	.LASF43
+ 787 0274 01       		.byte	0x1
+ 788 0275 3201     		.2byte	0x132
+ 789 0277 81000000 		.4byte	0x81
+ 790 027b 02       		.uleb128 0x2
+ 791 027c 91       		.byte	0x91
+ 792 027d 77       		.sleb128 -9
+ 793 027e 17       		.uleb128 0x17
+ 794 027f 18030000 		.4byte	.LASF44
+ 795 0283 01       		.byte	0x1
+ 796 0284 3501     		.2byte	0x135
+ 797 0286 8D000000 		.4byte	0x8d
+ 798 028a 05       		.uleb128 0x5
+ 799 028b 03       		.byte	0x3
+ 800 028c 14000000 		.4byte	singlepacketsuccess.6061
+ 801 0290 00       		.byte	0
+ 802 0291 0A       		.uleb128 0xa
+ 803 0292 AF010000 		.4byte	0x1af
+ 804 0296 A1020000 		.4byte	0x2a1
+ 805 029a 0B       		.uleb128 0xb
+ 806 029b B5000000 		.4byte	0xb5
+ 807 029f 00       		.byte	0
+ 808 02a0 00       		.byte	0
+ 809 02a1 13       		.uleb128 0x13
+ 810 02a2 4A030000 		.4byte	.LASF45
+ 811 02a6 01       		.byte	0x1
+ 812 02a7 3B       		.byte	0x3b
+ 813 02a8 91020000 		.4byte	0x291
+ 814 02ac 05       		.uleb128 0x5
+ 815 02ad 03       		.byte	0x3
+ 816 02ae 00000000 		.4byte	PacketList
+ 817 02b2 0A       		.uleb128 0xa
+ 818 02b3 8D000000 		.4byte	0x8d
+ 819 02b7 C2020000 		.4byte	0x2c2
+ 820 02bb 0B       		.uleb128 0xb
+ 821 02bc B5000000 		.4byte	0xb5
+ 822 02c0 00       		.byte	0
+ 823 02c1 00       		.byte	0
+ 824 02c2 13       		.uleb128 0x13
+ 825 02c3 FC000000 		.4byte	.LASF46
+ 826 02c7 01       		.byte	0x1
+ 827 02c8 45       		.byte	0x45
+ 828 02c9 B2020000 		.4byte	0x2b2
+ 829 02cd 05       		.uleb128 0x5
+ 830 02ce 03       		.byte	0x3
+ 831 02cf 00000000 		.4byte	packetsuccess
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 22
+
+
+ 832 02d3 13       		.uleb128 0x13
+ 833 02d4 70020000 		.4byte	.LASF47
+ 834 02d8 01       		.byte	0x1
+ 835 02d9 47       		.byte	0x47
+ 836 02da 20010000 		.4byte	0x120
+ 837 02de 05       		.uleb128 0x5
+ 838 02df 03       		.byte	0x3
+ 839 02e0 04000000 		.4byte	rxPacket_DLink_S
+ 840 02e4 18       		.uleb128 0x18
+ 841 02e5 81010000 		.4byte	.LASF54
+ 842 02e9 06       		.byte	0x6
+ 843 02ea 1207     		.2byte	0x712
+ 844 02ec F0020000 		.4byte	0x2f0
+ 845 02f0 19       		.uleb128 0x19
+ 846 02f1 76000000 		.4byte	0x76
+ 847 02f5 00       		.byte	0
+ 848              		.section	.debug_abbrev,"",%progbits
+ 849              	.Ldebug_abbrev0:
+ 850 0000 01       		.uleb128 0x1
+ 851 0001 11       		.uleb128 0x11
+ 852 0002 01       		.byte	0x1
+ 853 0003 25       		.uleb128 0x25
+ 854 0004 0E       		.uleb128 0xe
+ 855 0005 13       		.uleb128 0x13
+ 856 0006 0B       		.uleb128 0xb
+ 857 0007 03       		.uleb128 0x3
+ 858 0008 0E       		.uleb128 0xe
+ 859 0009 1B       		.uleb128 0x1b
+ 860 000a 0E       		.uleb128 0xe
+ 861 000b 55       		.uleb128 0x55
+ 862 000c 17       		.uleb128 0x17
+ 863 000d 11       		.uleb128 0x11
+ 864 000e 01       		.uleb128 0x1
+ 865 000f 10       		.uleb128 0x10
+ 866 0010 17       		.uleb128 0x17
+ 867 0011 00       		.byte	0
+ 868 0012 00       		.byte	0
+ 869 0013 02       		.uleb128 0x2
+ 870 0014 24       		.uleb128 0x24
+ 871 0015 00       		.byte	0
+ 872 0016 0B       		.uleb128 0xb
+ 873 0017 0B       		.uleb128 0xb
+ 874 0018 3E       		.uleb128 0x3e
+ 875 0019 0B       		.uleb128 0xb
+ 876 001a 03       		.uleb128 0x3
+ 877 001b 0E       		.uleb128 0xe
+ 878 001c 00       		.byte	0
+ 879 001d 00       		.byte	0
+ 880 001e 03       		.uleb128 0x3
+ 881 001f 16       		.uleb128 0x16
+ 882 0020 00       		.byte	0
+ 883 0021 03       		.uleb128 0x3
+ 884 0022 0E       		.uleb128 0xe
+ 885 0023 3A       		.uleb128 0x3a
+ 886 0024 0B       		.uleb128 0xb
+ 887 0025 3B       		.uleb128 0x3b
+ 888 0026 0B       		.uleb128 0xb
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 23
+
+
+ 889 0027 49       		.uleb128 0x49
+ 890 0028 13       		.uleb128 0x13
+ 891 0029 00       		.byte	0
+ 892 002a 00       		.byte	0
+ 893 002b 04       		.uleb128 0x4
+ 894 002c 24       		.uleb128 0x24
+ 895 002d 00       		.byte	0
+ 896 002e 0B       		.uleb128 0xb
+ 897 002f 0B       		.uleb128 0xb
+ 898 0030 3E       		.uleb128 0x3e
+ 899 0031 0B       		.uleb128 0xb
+ 900 0032 03       		.uleb128 0x3
+ 901 0033 08       		.uleb128 0x8
+ 902 0034 00       		.byte	0
+ 903 0035 00       		.byte	0
+ 904 0036 05       		.uleb128 0x5
+ 905 0037 16       		.uleb128 0x16
+ 906 0038 00       		.byte	0
+ 907 0039 03       		.uleb128 0x3
+ 908 003a 0E       		.uleb128 0xe
+ 909 003b 3A       		.uleb128 0x3a
+ 910 003c 0B       		.uleb128 0xb
+ 911 003d 3B       		.uleb128 0x3b
+ 912 003e 05       		.uleb128 0x5
+ 913 003f 49       		.uleb128 0x49
+ 914 0040 13       		.uleb128 0x13
+ 915 0041 00       		.byte	0
+ 916 0042 00       		.byte	0
+ 917 0043 06       		.uleb128 0x6
+ 918 0044 13       		.uleb128 0x13
+ 919 0045 01       		.byte	0x1
+ 920 0046 03       		.uleb128 0x3
+ 921 0047 0E       		.uleb128 0xe
+ 922 0048 0B       		.uleb128 0xb
+ 923 0049 0B       		.uleb128 0xb
+ 924 004a 3A       		.uleb128 0x3a
+ 925 004b 0B       		.uleb128 0xb
+ 926 004c 3B       		.uleb128 0x3b
+ 927 004d 0B       		.uleb128 0xb
+ 928 004e 01       		.uleb128 0x1
+ 929 004f 13       		.uleb128 0x13
+ 930 0050 00       		.byte	0
+ 931 0051 00       		.byte	0
+ 932 0052 07       		.uleb128 0x7
+ 933 0053 0D       		.uleb128 0xd
+ 934 0054 00       		.byte	0
+ 935 0055 03       		.uleb128 0x3
+ 936 0056 0E       		.uleb128 0xe
+ 937 0057 3A       		.uleb128 0x3a
+ 938 0058 0B       		.uleb128 0xb
+ 939 0059 3B       		.uleb128 0x3b
+ 940 005a 0B       		.uleb128 0xb
+ 941 005b 49       		.uleb128 0x49
+ 942 005c 13       		.uleb128 0x13
+ 943 005d 38       		.uleb128 0x38
+ 944 005e 0B       		.uleb128 0xb
+ 945 005f 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 24
+
+
+ 946 0060 00       		.byte	0
+ 947 0061 08       		.uleb128 0x8
+ 948 0062 17       		.uleb128 0x17
+ 949 0063 01       		.byte	0x1
+ 950 0064 03       		.uleb128 0x3
+ 951 0065 0E       		.uleb128 0xe
+ 952 0066 0B       		.uleb128 0xb
+ 953 0067 0B       		.uleb128 0xb
+ 954 0068 3A       		.uleb128 0x3a
+ 955 0069 0B       		.uleb128 0xb
+ 956 006a 3B       		.uleb128 0x3b
+ 957 006b 0B       		.uleb128 0xb
+ 958 006c 01       		.uleb128 0x1
+ 959 006d 13       		.uleb128 0x13
+ 960 006e 00       		.byte	0
+ 961 006f 00       		.byte	0
+ 962 0070 09       		.uleb128 0x9
+ 963 0071 0D       		.uleb128 0xd
+ 964 0072 00       		.byte	0
+ 965 0073 03       		.uleb128 0x3
+ 966 0074 0E       		.uleb128 0xe
+ 967 0075 3A       		.uleb128 0x3a
+ 968 0076 0B       		.uleb128 0xb
+ 969 0077 3B       		.uleb128 0x3b
+ 970 0078 0B       		.uleb128 0xb
+ 971 0079 49       		.uleb128 0x49
+ 972 007a 13       		.uleb128 0x13
+ 973 007b 00       		.byte	0
+ 974 007c 00       		.byte	0
+ 975 007d 0A       		.uleb128 0xa
+ 976 007e 01       		.uleb128 0x1
+ 977 007f 01       		.byte	0x1
+ 978 0080 49       		.uleb128 0x49
+ 979 0081 13       		.uleb128 0x13
+ 980 0082 01       		.uleb128 0x1
+ 981 0083 13       		.uleb128 0x13
+ 982 0084 00       		.byte	0
+ 983 0085 00       		.byte	0
+ 984 0086 0B       		.uleb128 0xb
+ 985 0087 21       		.uleb128 0x21
+ 986 0088 00       		.byte	0
+ 987 0089 49       		.uleb128 0x49
+ 988 008a 13       		.uleb128 0x13
+ 989 008b 2F       		.uleb128 0x2f
+ 990 008c 0B       		.uleb128 0xb
+ 991 008d 00       		.byte	0
+ 992 008e 00       		.byte	0
+ 993 008f 0C       		.uleb128 0xc
+ 994 0090 04       		.uleb128 0x4
+ 995 0091 01       		.byte	0x1
+ 996 0092 03       		.uleb128 0x3
+ 997 0093 0E       		.uleb128 0xe
+ 998 0094 0B       		.uleb128 0xb
+ 999 0095 0B       		.uleb128 0xb
+ 1000 0096 49       		.uleb128 0x49
+ 1001 0097 13       		.uleb128 0x13
+ 1002 0098 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 25
+
+
+ 1003 0099 0B       		.uleb128 0xb
+ 1004 009a 3B       		.uleb128 0x3b
+ 1005 009b 0B       		.uleb128 0xb
+ 1006 009c 01       		.uleb128 0x1
+ 1007 009d 13       		.uleb128 0x13
+ 1008 009e 00       		.byte	0
+ 1009 009f 00       		.byte	0
+ 1010 00a0 0D       		.uleb128 0xd
+ 1011 00a1 28       		.uleb128 0x28
+ 1012 00a2 00       		.byte	0
+ 1013 00a3 03       		.uleb128 0x3
+ 1014 00a4 0E       		.uleb128 0xe
+ 1015 00a5 1C       		.uleb128 0x1c
+ 1016 00a6 0B       		.uleb128 0xb
+ 1017 00a7 00       		.byte	0
+ 1018 00a8 00       		.byte	0
+ 1019 00a9 0E       		.uleb128 0xe
+ 1020 00aa 13       		.uleb128 0x13
+ 1021 00ab 01       		.byte	0x1
+ 1022 00ac 0B       		.uleb128 0xb
+ 1023 00ad 0B       		.uleb128 0xb
+ 1024 00ae 3A       		.uleb128 0x3a
+ 1025 00af 0B       		.uleb128 0xb
+ 1026 00b0 3B       		.uleb128 0x3b
+ 1027 00b1 0B       		.uleb128 0xb
+ 1028 00b2 01       		.uleb128 0x1
+ 1029 00b3 13       		.uleb128 0x13
+ 1030 00b4 00       		.byte	0
+ 1031 00b5 00       		.byte	0
+ 1032 00b6 0F       		.uleb128 0xf
+ 1033 00b7 26       		.uleb128 0x26
+ 1034 00b8 00       		.byte	0
+ 1035 00b9 49       		.uleb128 0x49
+ 1036 00ba 13       		.uleb128 0x13
+ 1037 00bb 00       		.byte	0
+ 1038 00bc 00       		.byte	0
+ 1039 00bd 10       		.uleb128 0x10
+ 1040 00be 2E       		.uleb128 0x2e
+ 1041 00bf 00       		.byte	0
+ 1042 00c0 3F       		.uleb128 0x3f
+ 1043 00c1 19       		.uleb128 0x19
+ 1044 00c2 03       		.uleb128 0x3
+ 1045 00c3 0E       		.uleb128 0xe
+ 1046 00c4 3A       		.uleb128 0x3a
+ 1047 00c5 0B       		.uleb128 0xb
+ 1048 00c6 3B       		.uleb128 0x3b
+ 1049 00c7 0B       		.uleb128 0xb
+ 1050 00c8 27       		.uleb128 0x27
+ 1051 00c9 19       		.uleb128 0x19
+ 1052 00ca 11       		.uleb128 0x11
+ 1053 00cb 01       		.uleb128 0x1
+ 1054 00cc 12       		.uleb128 0x12
+ 1055 00cd 06       		.uleb128 0x6
+ 1056 00ce 40       		.uleb128 0x40
+ 1057 00cf 18       		.uleb128 0x18
+ 1058 00d0 9742     		.uleb128 0x2117
+ 1059 00d2 19       		.uleb128 0x19
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 26
+
+
+ 1060 00d3 00       		.byte	0
+ 1061 00d4 00       		.byte	0
+ 1062 00d5 11       		.uleb128 0x11
+ 1063 00d6 2E       		.uleb128 0x2e
+ 1064 00d7 01       		.byte	0x1
+ 1065 00d8 03       		.uleb128 0x3
+ 1066 00d9 0E       		.uleb128 0xe
+ 1067 00da 3A       		.uleb128 0x3a
+ 1068 00db 0B       		.uleb128 0xb
+ 1069 00dc 3B       		.uleb128 0x3b
+ 1070 00dd 0B       		.uleb128 0xb
+ 1071 00de 27       		.uleb128 0x27
+ 1072 00df 19       		.uleb128 0x19
+ 1073 00e0 11       		.uleb128 0x11
+ 1074 00e1 01       		.uleb128 0x1
+ 1075 00e2 12       		.uleb128 0x12
+ 1076 00e3 06       		.uleb128 0x6
+ 1077 00e4 40       		.uleb128 0x40
+ 1078 00e5 18       		.uleb128 0x18
+ 1079 00e6 9742     		.uleb128 0x2117
+ 1080 00e8 19       		.uleb128 0x19
+ 1081 00e9 01       		.uleb128 0x1
+ 1082 00ea 13       		.uleb128 0x13
+ 1083 00eb 00       		.byte	0
+ 1084 00ec 00       		.byte	0
+ 1085 00ed 12       		.uleb128 0x12
+ 1086 00ee 05       		.uleb128 0x5
+ 1087 00ef 00       		.byte	0
+ 1088 00f0 03       		.uleb128 0x3
+ 1089 00f1 0E       		.uleb128 0xe
+ 1090 00f2 3A       		.uleb128 0x3a
+ 1091 00f3 0B       		.uleb128 0xb
+ 1092 00f4 3B       		.uleb128 0x3b
+ 1093 00f5 0B       		.uleb128 0xb
+ 1094 00f6 49       		.uleb128 0x49
+ 1095 00f7 13       		.uleb128 0x13
+ 1096 00f8 02       		.uleb128 0x2
+ 1097 00f9 18       		.uleb128 0x18
+ 1098 00fa 00       		.byte	0
+ 1099 00fb 00       		.byte	0
+ 1100 00fc 13       		.uleb128 0x13
+ 1101 00fd 34       		.uleb128 0x34
+ 1102 00fe 00       		.byte	0
+ 1103 00ff 03       		.uleb128 0x3
+ 1104 0100 0E       		.uleb128 0xe
+ 1105 0101 3A       		.uleb128 0x3a
+ 1106 0102 0B       		.uleb128 0xb
+ 1107 0103 3B       		.uleb128 0x3b
+ 1108 0104 0B       		.uleb128 0xb
+ 1109 0105 49       		.uleb128 0x49
+ 1110 0106 13       		.uleb128 0x13
+ 1111 0107 02       		.uleb128 0x2
+ 1112 0108 18       		.uleb128 0x18
+ 1113 0109 00       		.byte	0
+ 1114 010a 00       		.byte	0
+ 1115 010b 14       		.uleb128 0x14
+ 1116 010c 2E       		.uleb128 0x2e
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 27
+
+
+ 1117 010d 00       		.byte	0
+ 1118 010e 3F       		.uleb128 0x3f
+ 1119 010f 19       		.uleb128 0x19
+ 1120 0110 03       		.uleb128 0x3
+ 1121 0111 0E       		.uleb128 0xe
+ 1122 0112 3A       		.uleb128 0x3a
+ 1123 0113 0B       		.uleb128 0xb
+ 1124 0114 3B       		.uleb128 0x3b
+ 1125 0115 05       		.uleb128 0x5
+ 1126 0116 27       		.uleb128 0x27
+ 1127 0117 19       		.uleb128 0x19
+ 1128 0118 11       		.uleb128 0x11
+ 1129 0119 01       		.uleb128 0x1
+ 1130 011a 12       		.uleb128 0x12
+ 1131 011b 06       		.uleb128 0x6
+ 1132 011c 40       		.uleb128 0x40
+ 1133 011d 18       		.uleb128 0x18
+ 1134 011e 9742     		.uleb128 0x2117
+ 1135 0120 19       		.uleb128 0x19
+ 1136 0121 00       		.byte	0
+ 1137 0122 00       		.byte	0
+ 1138 0123 15       		.uleb128 0x15
+ 1139 0124 2E       		.uleb128 0x2e
+ 1140 0125 01       		.byte	0x1
+ 1141 0126 3F       		.uleb128 0x3f
+ 1142 0127 19       		.uleb128 0x19
+ 1143 0128 03       		.uleb128 0x3
+ 1144 0129 0E       		.uleb128 0xe
+ 1145 012a 3A       		.uleb128 0x3a
+ 1146 012b 0B       		.uleb128 0xb
+ 1147 012c 3B       		.uleb128 0x3b
+ 1148 012d 05       		.uleb128 0x5
+ 1149 012e 27       		.uleb128 0x27
+ 1150 012f 19       		.uleb128 0x19
+ 1151 0130 49       		.uleb128 0x49
+ 1152 0131 13       		.uleb128 0x13
+ 1153 0132 11       		.uleb128 0x11
+ 1154 0133 01       		.uleb128 0x1
+ 1155 0134 12       		.uleb128 0x12
+ 1156 0135 06       		.uleb128 0x6
+ 1157 0136 40       		.uleb128 0x40
+ 1158 0137 18       		.uleb128 0x18
+ 1159 0138 9742     		.uleb128 0x2117
+ 1160 013a 19       		.uleb128 0x19
+ 1161 013b 01       		.uleb128 0x1
+ 1162 013c 13       		.uleb128 0x13
+ 1163 013d 00       		.byte	0
+ 1164 013e 00       		.byte	0
+ 1165 013f 16       		.uleb128 0x16
+ 1166 0140 05       		.uleb128 0x5
+ 1167 0141 00       		.byte	0
+ 1168 0142 03       		.uleb128 0x3
+ 1169 0143 0E       		.uleb128 0xe
+ 1170 0144 3A       		.uleb128 0x3a
+ 1171 0145 0B       		.uleb128 0xb
+ 1172 0146 3B       		.uleb128 0x3b
+ 1173 0147 05       		.uleb128 0x5
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 28
+
+
+ 1174 0148 49       		.uleb128 0x49
+ 1175 0149 13       		.uleb128 0x13
+ 1176 014a 02       		.uleb128 0x2
+ 1177 014b 18       		.uleb128 0x18
+ 1178 014c 00       		.byte	0
+ 1179 014d 00       		.byte	0
+ 1180 014e 17       		.uleb128 0x17
+ 1181 014f 34       		.uleb128 0x34
+ 1182 0150 00       		.byte	0
+ 1183 0151 03       		.uleb128 0x3
+ 1184 0152 0E       		.uleb128 0xe
+ 1185 0153 3A       		.uleb128 0x3a
+ 1186 0154 0B       		.uleb128 0xb
+ 1187 0155 3B       		.uleb128 0x3b
+ 1188 0156 05       		.uleb128 0x5
+ 1189 0157 49       		.uleb128 0x49
+ 1190 0158 13       		.uleb128 0x13
+ 1191 0159 02       		.uleb128 0x2
+ 1192 015a 18       		.uleb128 0x18
+ 1193 015b 00       		.byte	0
+ 1194 015c 00       		.byte	0
+ 1195 015d 18       		.uleb128 0x18
+ 1196 015e 34       		.uleb128 0x34
+ 1197 015f 00       		.byte	0
+ 1198 0160 03       		.uleb128 0x3
+ 1199 0161 0E       		.uleb128 0xe
+ 1200 0162 3A       		.uleb128 0x3a
+ 1201 0163 0B       		.uleb128 0xb
+ 1202 0164 3B       		.uleb128 0x3b
+ 1203 0165 05       		.uleb128 0x5
+ 1204 0166 49       		.uleb128 0x49
+ 1205 0167 13       		.uleb128 0x13
+ 1206 0168 3F       		.uleb128 0x3f
+ 1207 0169 19       		.uleb128 0x19
+ 1208 016a 3C       		.uleb128 0x3c
+ 1209 016b 19       		.uleb128 0x19
+ 1210 016c 00       		.byte	0
+ 1211 016d 00       		.byte	0
+ 1212 016e 19       		.uleb128 0x19
+ 1213 016f 35       		.uleb128 0x35
+ 1214 0170 00       		.byte	0
+ 1215 0171 49       		.uleb128 0x49
+ 1216 0172 13       		.uleb128 0x13
+ 1217 0173 00       		.byte	0
+ 1218 0174 00       		.byte	0
+ 1219 0175 00       		.byte	0
+ 1220              		.section	.debug_aranges,"",%progbits
+ 1221 0000 34000000 		.4byte	0x34
+ 1222 0004 0200     		.2byte	0x2
+ 1223 0006 00000000 		.4byte	.Ldebug_info0
+ 1224 000a 04       		.byte	0x4
+ 1225 000b 00       		.byte	0
+ 1226 000c 0000     		.2byte	0
+ 1227 000e 0000     		.2byte	0
+ 1228 0010 00000000 		.4byte	.LFB63
+ 1229 0014 0C000000 		.4byte	.LFE63-.LFB63
+ 1230 0018 00000000 		.4byte	.LFB64
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 29
+
+
+ 1231 001c D8010000 		.4byte	.LFE64-.LFB64
+ 1232 0020 00000000 		.4byte	.LFB65
+ 1233 0024 0C000000 		.4byte	.LFE65-.LFB65
+ 1234 0028 00000000 		.4byte	.LFB66
+ 1235 002c 2C000000 		.4byte	.LFE66-.LFB66
+ 1236 0030 00000000 		.4byte	0
+ 1237 0034 00000000 		.4byte	0
+ 1238              		.section	.debug_ranges,"",%progbits
+ 1239              	.Ldebug_ranges0:
+ 1240 0000 00000000 		.4byte	.LFB63
+ 1241 0004 0C000000 		.4byte	.LFE63
+ 1242 0008 00000000 		.4byte	.LFB64
+ 1243 000c D8010000 		.4byte	.LFE64
+ 1244 0010 00000000 		.4byte	.LFB65
+ 1245 0014 0C000000 		.4byte	.LFE65
+ 1246 0018 00000000 		.4byte	.LFB66
+ 1247 001c 2C000000 		.4byte	.LFE66
+ 1248 0020 00000000 		.4byte	0
+ 1249 0024 00000000 		.4byte	0
+ 1250              		.section	.debug_line,"",%progbits
+ 1251              	.Ldebug_line0:
+ 1252 0000 24020000 		.section	.debug_str,"MS",%progbits,1
+ 1252      02007801 
+ 1252      00000201 
+ 1252      FB0E0D00 
+ 1252      01010101 
+ 1253              	.LASF48:
+ 1254 0000 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1254      43313120 
+ 1254      352E342E 
+ 1254      31203230 
+ 1254      31363036 
+ 1255 0033 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1255      20726576 
+ 1255      6973696F 
+ 1255      6E203233 
+ 1255      37373135 
+ 1256 0066 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1256      66756E63 
+ 1256      74696F6E 
+ 1256      2D736563 
+ 1256      74696F6E 
+ 1257              	.LASF37:
+ 1258 008e 63757272 		.ascii	"currentState\000"
+ 1258      656E7453 
+ 1258      74617465 
+ 1258      00
+ 1259              	.LASF23:
+ 1260 009b 52785061 		.ascii	"RxPacket_DLink_S\000"
+ 1260      636B6574 
+ 1260      5F444C69 
+ 1260      6E6B5F53 
+ 1260      00
+ 1261              	.LASF9:
+ 1262 00ac 5F5F696E 		.ascii	"__int32_t\000"
+ 1262      7433325F 
+ 1262      7400
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 30
+
+
+ 1263              	.LASF53:
+ 1264 00b6 56657269 		.ascii	"VerifyPacket_115200\000"
+ 1264      66795061 
+ 1264      636B6574 
+ 1264      5F313135 
+ 1264      32303000 
+ 1265              	.LASF4:
+ 1266 00ca 6C6F6E67 		.ascii	"long int\000"
+ 1266      20696E74 
+ 1266      00
+ 1267              	.LASF29:
+ 1268 00d3 454F505F 		.ascii	"EOP_STATE\000"
+ 1268      53544154 
+ 1268      4500
+ 1269              	.LASF24:
+ 1270 00dd 44617461 		.ascii	"DataType\000"
+ 1270      54797065 
+ 1270      00
+ 1271              	.LASF14:
+ 1272 00e6 646F7562 		.ascii	"double\000"
+ 1272      6C6500
+ 1273              	.LASF51:
+ 1274 00ed 72784461 		.ascii	"rxData_DLink_S\000"
+ 1274      74615F44 
+ 1274      4C696E6B 
+ 1274      5F5300
+ 1275              	.LASF46:
+ 1276 00fc 7061636B 		.ascii	"packetsuccess\000"
+ 1276      65747375 
+ 1276      63636573 
+ 1276      7300
+ 1277              	.LASF10:
+ 1278 010a 696E7433 		.ascii	"int32_t\000"
+ 1278      325F7400 
+ 1279              	.LASF22:
+ 1280 0112 5061796C 		.ascii	"Payload\000"
+ 1280      6F616400 
+ 1281              	.LASF13:
+ 1282 011a 666C6F61 		.ascii	"float\000"
+ 1282      7400
+ 1283              	.LASF1:
+ 1284 0120 756E7369 		.ascii	"unsigned char\000"
+ 1284      676E6564 
+ 1284      20636861 
+ 1284      7200
+ 1285              	.LASF25:
+ 1286 012e 5061636B 		.ascii	"PacketState\000"
+ 1286      65745374 
+ 1286      61746500 
+ 1287              	.LASF49:
+ 1288 013a 55415254 		.ascii	"UART_115200_Functions.c\000"
+ 1288      5F313135 
+ 1288      3230305F 
+ 1288      46756E63 
+ 1288      74696F6E 
+ 1289              	.LASF5:
+ 1290 0152 6C6F6E67 		.ascii	"long unsigned int\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 31
+
+
+ 1290      20756E73 
+ 1290      69676E65 
+ 1290      6420696E 
+ 1290      7400
+ 1291              	.LASF3:
+ 1292 0164 73686F72 		.ascii	"short unsigned int\000"
+ 1292      7420756E 
+ 1292      7369676E 
+ 1292      65642069 
+ 1292      6E7400
+ 1293              	.LASF20:
+ 1294 0177 4475616C 		.ascii	"DualDelay\000"
+ 1294      44656C61 
+ 1294      7900
+ 1295              	.LASF54:
+ 1296 0181 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1296      52784275 
+ 1296      66666572 
+ 1296      00
+ 1297              	.LASF42:
+ 1298 018e 64617461 		.ascii	"dataByte\000"
+ 1298      42797465 
+ 1298      00
+ 1299              	.LASF35:
+ 1300 0197 5061636B 		.ascii	"Packet\000"
+ 1300      657400
+ 1301              	.LASF50:
+ 1302 019e 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\F1-TestFixture _Sand"
+ 1302      73657273 
+ 1302      5C6D6172 
+ 1302      74686E69 
+ 1302      636B5C44 
+ 1303 01cd 626F785C 		.ascii	"box\\F1-TestFixture.cydsn\000"
+ 1303      46312D54 
+ 1303      65737446 
+ 1303      69787475 
+ 1303      72652E63 
+ 1304              	.LASF43:
+ 1305 01e6 5061636B 		.ascii	"PacketType\000"
+ 1305      65745479 
+ 1305      706500
+ 1306              	.LASF28:
+ 1307 01f1 5041594C 		.ascii	"PAYLOAD_STATE\000"
+ 1307      4F41445F 
+ 1307      53544154 
+ 1307      4500
+ 1308              	.LASF36:
+ 1309 01ff 7061636B 		.ascii	"packet\000"
+ 1309      657400
+ 1310              	.LASF12:
+ 1311 0206 75696E74 		.ascii	"uint16\000"
+ 1311      313600
+ 1312              	.LASF39:
+ 1313 020d 63757272 		.ascii	"currentPacketIndex\000"
+ 1313      656E7450 
+ 1313      61636B65 
+ 1313      74496E64 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 32
+
+
+ 1313      657800
+ 1314              	.LASF8:
+ 1315 0220 756E7369 		.ascii	"unsigned int\000"
+ 1315      676E6564 
+ 1315      20696E74 
+ 1315      00
+ 1316              	.LASF7:
+ 1317 022d 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1317      206C6F6E 
+ 1317      6720756E 
+ 1317      7369676E 
+ 1317      65642069 
+ 1318              	.LASF52:
+ 1319 0244 64657465 		.ascii	"detectPacket\000"
+ 1319      63745061 
+ 1319      636B6574 
+ 1319      00
+ 1320              	.LASF33:
+ 1321 0251 454F505F 		.ascii	"EOP_CARRIAGE_RETURN\000"
+ 1321      43415252 
+ 1321      49414745 
+ 1321      5F524554 
+ 1321      55524E00 
+ 1322              	.LASF19:
+ 1323 0265 53697265 		.ascii	"Siren2Tone\000"
+ 1323      6E32546F 
+ 1323      6E6500
+ 1324              	.LASF47:
+ 1325 0270 72785061 		.ascii	"rxPacket_DLink_S\000"
+ 1325      636B6574 
+ 1325      5F444C69 
+ 1325      6E6B5F53 
+ 1325      00
+ 1326              	.LASF26:
+ 1327 0281 52544553 		.ascii	"RTEST_DLINK\000"
+ 1327      545F444C 
+ 1327      494E4B00 
+ 1328              	.LASF31:
+ 1329 028d 5041434B 		.ascii	"PACKET_TYPE\000"
+ 1329      45545F54 
+ 1329      59504500 
+ 1330              	.LASF17:
+ 1331 0299 73697A65 		.ascii	"sizetype\000"
+ 1331      74797065 
+ 1331      00
+ 1332              	.LASF6:
+ 1333 02a2 6C6F6E67 		.ascii	"long long int\000"
+ 1333      206C6F6E 
+ 1333      6720696E 
+ 1333      7400
+ 1334              	.LASF15:
+ 1335 02b0 63686172 		.ascii	"char\000"
+ 1335      00
+ 1336              	.LASF30:
+ 1337 02b5 48454144 		.ascii	"HEADER_BYTE\000"
+ 1337      45525F42 
+ 1337      59544500 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 33
+
+
+ 1338              	.LASF38:
+ 1339 02c1 63757272 		.ascii	"currentType\000"
+ 1339      656E7454 
+ 1339      79706500 
+ 1340              	.LASF34:
+ 1341 02cd 454F505F 		.ascii	"EOP_LINE_FEED\000"
+ 1341      4C494E45 
+ 1341      5F464545 
+ 1341      4400
+ 1342              	.LASF2:
+ 1343 02db 73686F72 		.ascii	"short int\000"
+ 1343      7420696E 
+ 1343      7400
+ 1344              	.LASF11:
+ 1345 02e5 75696E74 		.ascii	"uint8\000"
+ 1345      3800
+ 1346              	.LASF40:
+ 1347 02eb 70726F63 		.ascii	"processByteReceivedHandler_115200\000"
+ 1347      65737342 
+ 1347      79746552 
+ 1347      65636569 
+ 1347      76656448 
+ 1348              	.LASF18:
+ 1349 030d 53697265 		.ascii	"Siren1Tone\000"
+ 1349      6E31546F 
+ 1349      6E6500
+ 1350              	.LASF44:
+ 1351 0318 73696E67 		.ascii	"singlepacketsuccess\000"
+ 1351      6C657061 
+ 1351      636B6574 
+ 1351      73756363 
+ 1351      65737300 
+ 1352              	.LASF21:
+ 1353 032c 62797465 		.ascii	"bytes\000"
+ 1353      7300
+ 1354              	.LASF16:
+ 1355 0332 6C6F6E67 		.ascii	"long double\000"
+ 1355      20646F75 
+ 1355      626C6500 
+ 1356              	.LASF0:
+ 1357 033e 7369676E 		.ascii	"signed char\000"
+ 1357      65642063 
+ 1357      68617200 
+ 1358              	.LASF45:
+ 1359 034a 5061636B 		.ascii	"PacketList\000"
+ 1359      65744C69 
+ 1359      737400
+ 1360              	.LASF27:
+ 1361 0355 48454144 		.ascii	"HEADER_STATE\000"
+ 1361      45525F53 
+ 1361      54415445 
+ 1361      00
+ 1362              	.LASF32:
+ 1363 0362 5041594C 		.ascii	"PAYLOAD_SIZE\000"
+ 1363      4F41445F 
+ 1363      53495A45 
+ 1363      00
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccFcGV5E.s 			page 34
+
+
+ 1364              	.LASF41:
+ 1365 036f 52657365 		.ascii	"ResetPacketSuccess_115200\000"
+ 1365      74506163 
+ 1365      6B657453 
+ 1365      75636365 
+ 1365      73735F31 
+ 1366              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -1,0 +1,1969 @@
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"DAC1_ISR.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.DAC1_ISR_Interrupt,"ax",%progbits
+  19              		.align	2
+  20              		.global	DAC1_ISR_Interrupt
+  21              		.thumb
+  22              		.thumb_func
+  23              		.type	DAC1_ISR_Interrupt, %function
+  24              	DAC1_ISR_Interrupt:
+  25              	.LFB66:
+  26              		.file 1 ".\\Generated_Source\\PSoC5\\DAC1_ISR.c"
+   1:.\Generated_Source\PSoC5/DAC1_ISR.c **** /*******************************************************************************
+   2:.\Generated_Source\PSoC5/DAC1_ISR.c **** * File Name: DAC1_ISR.c  
+   3:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Version 1.70
+   4:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+   5:.\Generated_Source\PSoC5/DAC1_ISR.c **** *  Description:
+   6:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   API for controlling the state of an interrupt.
+   7:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+   8:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+   9:.\Generated_Source\PSoC5/DAC1_ISR.c **** *  Note:
+  10:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+  11:.\Generated_Source\PSoC5/DAC1_ISR.c **** ********************************************************************************
+  12:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  13:.\Generated_Source\PSoC5/DAC1_ISR.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  14:.\Generated_Source\PSoC5/DAC1_ISR.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  15:.\Generated_Source\PSoC5/DAC1_ISR.c **** * the software package with which this file was provided.
+  16:.\Generated_Source\PSoC5/DAC1_ISR.c **** *******************************************************************************/
+  17:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+  18:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+  19:.\Generated_Source\PSoC5/DAC1_ISR.c **** #include <cydevice_trm.h>
+  20:.\Generated_Source\PSoC5/DAC1_ISR.c **** #include <CyLib.h>
+  21:.\Generated_Source\PSoC5/DAC1_ISR.c **** #include <DAC1_ISR.h>
+  22:.\Generated_Source\PSoC5/DAC1_ISR.c **** #include "cyapicallbacks.h"
+  23:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+  24:.\Generated_Source\PSoC5/DAC1_ISR.c **** #if !defined(DAC1_ISR__REMOVED) /* Check for removal by optimization */
+  25:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+  26:.\Generated_Source\PSoC5/DAC1_ISR.c **** /*******************************************************************************
+  27:.\Generated_Source\PSoC5/DAC1_ISR.c **** *  Place your includes, defines and code here 
+  28:.\Generated_Source\PSoC5/DAC1_ISR.c **** ********************************************************************************/
+  29:.\Generated_Source\PSoC5/DAC1_ISR.c **** /* `#START DAC1_ISR_intc` */
+  30:.\Generated_Source\PSoC5/DAC1_ISR.c **** #include "DACaudio.h"
+  31:.\Generated_Source\PSoC5/DAC1_ISR.c **** /* `#END` */
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 2
+
+
+  32:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+  33:.\Generated_Source\PSoC5/DAC1_ISR.c **** #ifndef CYINT_IRQ_BASE
+  34:.\Generated_Source\PSoC5/DAC1_ISR.c **** #define CYINT_IRQ_BASE      16
+  35:.\Generated_Source\PSoC5/DAC1_ISR.c **** #endif /* CYINT_IRQ_BASE */
+  36:.\Generated_Source\PSoC5/DAC1_ISR.c **** #ifndef CYINT_VECT_TABLE
+  37:.\Generated_Source\PSoC5/DAC1_ISR.c **** #define CYINT_VECT_TABLE    ((cyisraddress **) CYREG_NVIC_VECT_OFFSET)
+  38:.\Generated_Source\PSoC5/DAC1_ISR.c **** #endif /* CYINT_VECT_TABLE */
+  39:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+  40:.\Generated_Source\PSoC5/DAC1_ISR.c **** /* Declared in startup, used to set unused interrupts to. */
+  41:.\Generated_Source\PSoC5/DAC1_ISR.c **** CY_ISR_PROTO(IntDefaultHandler);
+  42:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+  43:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+  44:.\Generated_Source\PSoC5/DAC1_ISR.c **** /*******************************************************************************
+  45:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Function Name: DAC1_ISR_Start
+  46:.\Generated_Source\PSoC5/DAC1_ISR.c **** ********************************************************************************
+  47:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+  48:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Summary:
+  49:.\Generated_Source\PSoC5/DAC1_ISR.c **** *  Set up the interrupt and enable it. This function disables the interrupt, 
+  50:.\Generated_Source\PSoC5/DAC1_ISR.c **** *  sets the default interrupt vector, sets the priority from the value in the
+  51:.\Generated_Source\PSoC5/DAC1_ISR.c **** *  Design Wide Resources Interrupt Editor, then enables the interrupt to the 
+  52:.\Generated_Source\PSoC5/DAC1_ISR.c **** *  interrupt controller.
+  53:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+  54:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Parameters:  
+  55:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+  56:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+  57:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Return:
+  58:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+  59:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+  60:.\Generated_Source\PSoC5/DAC1_ISR.c **** *******************************************************************************/
+  61:.\Generated_Source\PSoC5/DAC1_ISR.c **** void DAC1_ISR_Start(void)
+  62:.\Generated_Source\PSoC5/DAC1_ISR.c **** {
+  63:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* For all we know the interrupt is active. */
+  64:.\Generated_Source\PSoC5/DAC1_ISR.c ****     DAC1_ISR_Disable();
+  65:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+  66:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* Set the ISR to point to the DAC1_ISR Interrupt. */
+  67:.\Generated_Source\PSoC5/DAC1_ISR.c ****     DAC1_ISR_SetVector(&DAC1_ISR_Interrupt);
+  68:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+  69:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* Set the priority. */
+  70:.\Generated_Source\PSoC5/DAC1_ISR.c ****     DAC1_ISR_SetPriority((uint8)DAC1_ISR_INTC_PRIOR_NUMBER);
+  71:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+  72:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* Enable it. */
+  73:.\Generated_Source\PSoC5/DAC1_ISR.c ****     DAC1_ISR_Enable();
+  74:.\Generated_Source\PSoC5/DAC1_ISR.c **** }
+  75:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+  76:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+  77:.\Generated_Source\PSoC5/DAC1_ISR.c **** /*******************************************************************************
+  78:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Function Name: DAC1_ISR_StartEx
+  79:.\Generated_Source\PSoC5/DAC1_ISR.c **** ********************************************************************************
+  80:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+  81:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Summary:
+  82:.\Generated_Source\PSoC5/DAC1_ISR.c **** *  Sets up the interrupt and enables it. This function disables the interrupt,
+  83:.\Generated_Source\PSoC5/DAC1_ISR.c **** *  sets the interrupt vector based on the address passed in, sets the priority 
+  84:.\Generated_Source\PSoC5/DAC1_ISR.c **** *  from the value in the Design Wide Resources Interrupt Editor, then enables 
+  85:.\Generated_Source\PSoC5/DAC1_ISR.c **** *  the interrupt to the interrupt controller.
+  86:.\Generated_Source\PSoC5/DAC1_ISR.c **** *  
+  87:.\Generated_Source\PSoC5/DAC1_ISR.c **** *  When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
+  88:.\Generated_Source\PSoC5/DAC1_ISR.c **** *  used to provide consistent definition across compilers:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 3
+
+
+  89:.\Generated_Source\PSoC5/DAC1_ISR.c **** *  
+  90:.\Generated_Source\PSoC5/DAC1_ISR.c **** *  Function definition example:
+  91:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   CY_ISR(MyISR)
+  92:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   {
+  93:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   }
+  94:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Function prototype example:
+  95:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   CY_ISR_PROTO(MyISR);
+  96:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+  97:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Parameters:  
+  98:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   address: Address of the ISR to set in the interrupt vector table.
+  99:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 100:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Return:
+ 101:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 102:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 103:.\Generated_Source\PSoC5/DAC1_ISR.c **** *******************************************************************************/
+ 104:.\Generated_Source\PSoC5/DAC1_ISR.c **** void DAC1_ISR_StartEx(cyisraddress address)
+ 105:.\Generated_Source\PSoC5/DAC1_ISR.c **** {
+ 106:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* For all we know the interrupt is active. */
+ 107:.\Generated_Source\PSoC5/DAC1_ISR.c ****     DAC1_ISR_Disable();
+ 108:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 109:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* Set the ISR to point to the DAC1_ISR Interrupt. */
+ 110:.\Generated_Source\PSoC5/DAC1_ISR.c ****     DAC1_ISR_SetVector(address);
+ 111:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 112:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* Set the priority. */
+ 113:.\Generated_Source\PSoC5/DAC1_ISR.c ****     DAC1_ISR_SetPriority((uint8)DAC1_ISR_INTC_PRIOR_NUMBER);
+ 114:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 115:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* Enable it. */
+ 116:.\Generated_Source\PSoC5/DAC1_ISR.c ****     DAC1_ISR_Enable();
+ 117:.\Generated_Source\PSoC5/DAC1_ISR.c **** }
+ 118:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 119:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 120:.\Generated_Source\PSoC5/DAC1_ISR.c **** /*******************************************************************************
+ 121:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Function Name: DAC1_ISR_Stop
+ 122:.\Generated_Source\PSoC5/DAC1_ISR.c **** ********************************************************************************
+ 123:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 124:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Summary:
+ 125:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Disables and removes the interrupt.
+ 126:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 127:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Parameters:  
+ 128:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 129:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 130:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Return:
+ 131:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 132:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 133:.\Generated_Source\PSoC5/DAC1_ISR.c **** *******************************************************************************/
+ 134:.\Generated_Source\PSoC5/DAC1_ISR.c **** void DAC1_ISR_Stop(void)
+ 135:.\Generated_Source\PSoC5/DAC1_ISR.c **** {
+ 136:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* Disable this interrupt. */
+ 137:.\Generated_Source\PSoC5/DAC1_ISR.c ****     DAC1_ISR_Disable();
+ 138:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 139:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* Set the ISR to point to the passive one. */
+ 140:.\Generated_Source\PSoC5/DAC1_ISR.c ****     DAC1_ISR_SetVector(&IntDefaultHandler);
+ 141:.\Generated_Source\PSoC5/DAC1_ISR.c **** }
+ 142:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 143:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 144:.\Generated_Source\PSoC5/DAC1_ISR.c **** /*******************************************************************************
+ 145:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Function Name: DAC1_ISR_Interrupt
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 4
+
+
+ 146:.\Generated_Source\PSoC5/DAC1_ISR.c **** ********************************************************************************
+ 147:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 148:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Summary:
+ 149:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   The default Interrupt Service Routine for DAC1_ISR.
+ 150:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 151:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Add custom code between the coments to keep the next version of this file
+ 152:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   from over writting your code.
+ 153:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 154:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Parameters:  
+ 155:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 156:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Return:
+ 157:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 158:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 159:.\Generated_Source\PSoC5/DAC1_ISR.c **** *******************************************************************************/
+ 160:.\Generated_Source\PSoC5/DAC1_ISR.c **** CY_ISR(DAC1_ISR_Interrupt)
+ 161:.\Generated_Source\PSoC5/DAC1_ISR.c **** {
+  27              		.loc 1 161 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 08B5     		push	{r3, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 3, -8
+  34              		.cfi_offset 14, -4
+ 162:.\Generated_Source\PSoC5/DAC1_ISR.c ****     #ifdef DAC1_ISR_INTERRUPT_INTERRUPT_CALLBACK
+ 163:.\Generated_Source\PSoC5/DAC1_ISR.c ****         DAC1_ISR_Interrupt_InterruptCallback();
+ 164:.\Generated_Source\PSoC5/DAC1_ISR.c ****     #endif /* DAC1_ISR_INTERRUPT_INTERRUPT_CALLBACK */ 
+ 165:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 166:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /*  Place your Interrupt code here. */
+ 167:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* `#START DAC1_ISR_Interrupt` */
+ 168:.\Generated_Source\PSoC5/DAC1_ISR.c ****     updateDAC1();
+  35              		.loc 1 168 0
+  36 0002 FFF7FEFF 		bl	updateDAC1
+  37              	.LVL0:
+  38 0006 08BD     		pop	{r3, pc}
+  39              		.cfi_endproc
+  40              	.LFE66:
+  41              		.size	DAC1_ISR_Interrupt, .-DAC1_ISR_Interrupt
+  42              		.section	.text.DAC1_ISR_SetVector,"ax",%progbits
+  43              		.align	2
+  44              		.global	DAC1_ISR_SetVector
+  45              		.thumb
+  46              		.thumb_func
+  47              		.type	DAC1_ISR_SetVector, %function
+  48              	DAC1_ISR_SetVector:
+  49              	.LFB67:
+ 169:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* `#END` */
+ 170:.\Generated_Source\PSoC5/DAC1_ISR.c **** }
+ 171:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 172:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 173:.\Generated_Source\PSoC5/DAC1_ISR.c **** /*******************************************************************************
+ 174:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Function Name: DAC1_ISR_SetVector
+ 175:.\Generated_Source\PSoC5/DAC1_ISR.c **** ********************************************************************************
+ 176:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 177:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Summary:
+ 178:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Change the ISR vector for the Interrupt. Note calling DAC1_ISR_Start
+ 179:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   will override any effect this method would have had. To set the vector 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 5
+
+
+ 180:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   before the component has been started use DAC1_ISR_StartEx instead.
+ 181:.\Generated_Source\PSoC5/DAC1_ISR.c **** * 
+ 182:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
+ 183:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   used to provide consistent definition across compilers:
+ 184:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 185:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Function definition example:
+ 186:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   CY_ISR(MyISR)
+ 187:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   {
+ 188:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   }
+ 189:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 190:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Function prototype example:
+ 191:.\Generated_Source\PSoC5/DAC1_ISR.c **** *     CY_ISR_PROTO(MyISR);
+ 192:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 193:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Parameters:
+ 194:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   address: Address of the ISR to set in the interrupt vector table.
+ 195:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 196:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Return:
+ 197:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 198:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 199:.\Generated_Source\PSoC5/DAC1_ISR.c **** *******************************************************************************/
+ 200:.\Generated_Source\PSoC5/DAC1_ISR.c **** void DAC1_ISR_SetVector(cyisraddress address)
+ 201:.\Generated_Source\PSoC5/DAC1_ISR.c **** {
+  50              		.loc 1 201 0
+  51              		.cfi_startproc
+  52              		@ args = 0, pretend = 0, frame = 0
+  53              		@ frame_needed = 0, uses_anonymous_args = 0
+  54              		@ link register save eliminated.
+  55              	.LVL1:
+ 202:.\Generated_Source\PSoC5/DAC1_ISR.c ****     cyisraddress * ramVectorTable;
+ 203:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 204:.\Generated_Source\PSoC5/DAC1_ISR.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
+  56              		.loc 1 204 0
+  57 0000 014B     		ldr	r3, .L4
+  58 0002 1B68     		ldr	r3, [r3]
+  59              	.LVL2:
+ 205:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 206:.\Generated_Source\PSoC5/DAC1_ISR.c ****     ramVectorTable[CYINT_IRQ_BASE + (uint32)DAC1_ISR__INTC_NUMBER] = address;
+  60              		.loc 1 206 0
+  61 0004 1864     		str	r0, [r3, #64]
+  62 0006 7047     		bx	lr
+  63              	.L5:
+  64              		.align	2
+  65              	.L4:
+  66 0008 08ED00E0 		.word	-536810232
+  67              		.cfi_endproc
+  68              	.LFE67:
+  69              		.size	DAC1_ISR_SetVector, .-DAC1_ISR_SetVector
+  70              		.section	.text.DAC1_ISR_GetVector,"ax",%progbits
+  71              		.align	2
+  72              		.global	DAC1_ISR_GetVector
+  73              		.thumb
+  74              		.thumb_func
+  75              		.type	DAC1_ISR_GetVector, %function
+  76              	DAC1_ISR_GetVector:
+  77              	.LFB68:
+ 207:.\Generated_Source\PSoC5/DAC1_ISR.c **** }
+ 208:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 6
+
+
+ 209:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 210:.\Generated_Source\PSoC5/DAC1_ISR.c **** /*******************************************************************************
+ 211:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Function Name: DAC1_ISR_GetVector
+ 212:.\Generated_Source\PSoC5/DAC1_ISR.c **** ********************************************************************************
+ 213:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 214:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Summary:
+ 215:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Gets the "address" of the current ISR vector for the Interrupt.
+ 216:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 217:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Parameters:
+ 218:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 219:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 220:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Return:
+ 221:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Address of the ISR in the interrupt vector table.
+ 222:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 223:.\Generated_Source\PSoC5/DAC1_ISR.c **** *******************************************************************************/
+ 224:.\Generated_Source\PSoC5/DAC1_ISR.c **** cyisraddress DAC1_ISR_GetVector(void)
+ 225:.\Generated_Source\PSoC5/DAC1_ISR.c **** {
+  78              		.loc 1 225 0
+  79              		.cfi_startproc
+  80              		@ args = 0, pretend = 0, frame = 0
+  81              		@ frame_needed = 0, uses_anonymous_args = 0
+  82              		@ link register save eliminated.
+ 226:.\Generated_Source\PSoC5/DAC1_ISR.c ****     cyisraddress * ramVectorTable;
+ 227:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 228:.\Generated_Source\PSoC5/DAC1_ISR.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
+  83              		.loc 1 228 0
+  84 0000 014B     		ldr	r3, .L7
+  85 0002 1B68     		ldr	r3, [r3]
+  86              	.LVL3:
+ 229:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 230:.\Generated_Source\PSoC5/DAC1_ISR.c ****     return ramVectorTable[CYINT_IRQ_BASE + (uint32)DAC1_ISR__INTC_NUMBER];
+ 231:.\Generated_Source\PSoC5/DAC1_ISR.c **** }
+  87              		.loc 1 231 0
+  88 0004 186C     		ldr	r0, [r3, #64]
+  89 0006 7047     		bx	lr
+  90              	.L8:
+  91              		.align	2
+  92              	.L7:
+  93 0008 08ED00E0 		.word	-536810232
+  94              		.cfi_endproc
+  95              	.LFE68:
+  96              		.size	DAC1_ISR_GetVector, .-DAC1_ISR_GetVector
+  97              		.section	.text.DAC1_ISR_SetPriority,"ax",%progbits
+  98              		.align	2
+  99              		.global	DAC1_ISR_SetPriority
+ 100              		.thumb
+ 101              		.thumb_func
+ 102              		.type	DAC1_ISR_SetPriority, %function
+ 103              	DAC1_ISR_SetPriority:
+ 104              	.LFB69:
+ 232:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 233:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 234:.\Generated_Source\PSoC5/DAC1_ISR.c **** /*******************************************************************************
+ 235:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Function Name: DAC1_ISR_SetPriority
+ 236:.\Generated_Source\PSoC5/DAC1_ISR.c **** ********************************************************************************
+ 237:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 238:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Summary:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 7
+
+
+ 239:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Sets the Priority of the Interrupt. 
+ 240:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 241:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Note calling DAC1_ISR_Start or DAC1_ISR_StartEx will 
+ 242:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   override any effect this API would have had. This API should only be called
+ 243:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   after DAC1_ISR_Start or DAC1_ISR_StartEx has been called. 
+ 244:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   To set the initial priority for the component, use the Design-Wide Resources
+ 245:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Interrupt Editor.
+ 246:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 247:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Note This API has no effect on Non-maskable interrupt NMI).
+ 248:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 249:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Parameters:
+ 250:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   priority: Priority of the interrupt, 0 being the highest priority
+ 251:.\Generated_Source\PSoC5/DAC1_ISR.c **** *             PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
+ 252:.\Generated_Source\PSoC5/DAC1_ISR.c **** *             PSoC 4: Priority is from 0 to 3.
+ 253:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 254:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Return:
+ 255:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 256:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 257:.\Generated_Source\PSoC5/DAC1_ISR.c **** *******************************************************************************/
+ 258:.\Generated_Source\PSoC5/DAC1_ISR.c **** void DAC1_ISR_SetPriority(uint8 priority)
+ 259:.\Generated_Source\PSoC5/DAC1_ISR.c **** {
+ 105              		.loc 1 259 0
+ 106              		.cfi_startproc
+ 107              		@ args = 0, pretend = 0, frame = 0
+ 108              		@ frame_needed = 0, uses_anonymous_args = 0
+ 109              		@ link register save eliminated.
+ 110              	.LVL4:
+ 260:.\Generated_Source\PSoC5/DAC1_ISR.c ****     *DAC1_ISR_INTC_PRIOR = priority << 5;
+ 111              		.loc 1 260 0
+ 112 0000 4001     		lsls	r0, r0, #5
+ 113              	.LVL5:
+ 114 0002 C0B2     		uxtb	r0, r0
+ 115 0004 014B     		ldr	r3, .L10
+ 116 0006 1870     		strb	r0, [r3]
+ 117 0008 7047     		bx	lr
+ 118              	.L11:
+ 119 000a 00BF     		.align	2
+ 120              	.L10:
+ 121 000c 00E400E0 		.word	-536812544
+ 122              		.cfi_endproc
+ 123              	.LFE69:
+ 124              		.size	DAC1_ISR_SetPriority, .-DAC1_ISR_SetPriority
+ 125              		.section	.text.DAC1_ISR_GetPriority,"ax",%progbits
+ 126              		.align	2
+ 127              		.global	DAC1_ISR_GetPriority
+ 128              		.thumb
+ 129              		.thumb_func
+ 130              		.type	DAC1_ISR_GetPriority, %function
+ 131              	DAC1_ISR_GetPriority:
+ 132              	.LFB70:
+ 261:.\Generated_Source\PSoC5/DAC1_ISR.c **** }
+ 262:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 263:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 264:.\Generated_Source\PSoC5/DAC1_ISR.c **** /*******************************************************************************
+ 265:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Function Name: DAC1_ISR_GetPriority
+ 266:.\Generated_Source\PSoC5/DAC1_ISR.c **** ********************************************************************************
+ 267:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 8
+
+
+ 268:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Summary:
+ 269:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Gets the Priority of the Interrupt.
+ 270:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 271:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Parameters:
+ 272:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 273:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 274:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Return:
+ 275:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Priority of the interrupt, 0 being the highest priority
+ 276:.\Generated_Source\PSoC5/DAC1_ISR.c **** *    PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
+ 277:.\Generated_Source\PSoC5/DAC1_ISR.c **** *    PSoC 4: Priority is from 0 to 3.
+ 278:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 279:.\Generated_Source\PSoC5/DAC1_ISR.c **** *******************************************************************************/
+ 280:.\Generated_Source\PSoC5/DAC1_ISR.c **** uint8 DAC1_ISR_GetPriority(void)
+ 281:.\Generated_Source\PSoC5/DAC1_ISR.c **** {
+ 133              		.loc 1 281 0
+ 134              		.cfi_startproc
+ 135              		@ args = 0, pretend = 0, frame = 0
+ 136              		@ frame_needed = 0, uses_anonymous_args = 0
+ 137              		@ link register save eliminated.
+ 282:.\Generated_Source\PSoC5/DAC1_ISR.c ****     uint8 priority;
+ 283:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 284:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 285:.\Generated_Source\PSoC5/DAC1_ISR.c ****     priority = *DAC1_ISR_INTC_PRIOR >> 5;
+ 138              		.loc 1 285 0
+ 139 0000 014B     		ldr	r3, .L13
+ 140 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 141              	.LVL6:
+ 286:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 287:.\Generated_Source\PSoC5/DAC1_ISR.c ****     return priority;
+ 288:.\Generated_Source\PSoC5/DAC1_ISR.c **** }
+ 142              		.loc 1 288 0
+ 143 0004 4009     		lsrs	r0, r0, #5
+ 144              	.LVL7:
+ 145 0006 7047     		bx	lr
+ 146              	.L14:
+ 147              		.align	2
+ 148              	.L13:
+ 149 0008 00E400E0 		.word	-536812544
+ 150              		.cfi_endproc
+ 151              	.LFE70:
+ 152              		.size	DAC1_ISR_GetPriority, .-DAC1_ISR_GetPriority
+ 153              		.section	.text.DAC1_ISR_Enable,"ax",%progbits
+ 154              		.align	2
+ 155              		.global	DAC1_ISR_Enable
+ 156              		.thumb
+ 157              		.thumb_func
+ 158              		.type	DAC1_ISR_Enable, %function
+ 159              	DAC1_ISR_Enable:
+ 160              	.LFB71:
+ 289:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 290:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 291:.\Generated_Source\PSoC5/DAC1_ISR.c **** /*******************************************************************************
+ 292:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Function Name: DAC1_ISR_Enable
+ 293:.\Generated_Source\PSoC5/DAC1_ISR.c **** ********************************************************************************
+ 294:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 295:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Summary:
+ 296:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Enables the interrupt to the interrupt controller. Do not call this function
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 9
+
+
+ 297:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   unless ISR_Start() has been called or the functionality of the ISR_Start() 
+ 298:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   function, which sets the vector and the priority, has been called.
+ 299:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 300:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Parameters:
+ 301:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 302:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 303:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Return:
+ 304:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 305:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 306:.\Generated_Source\PSoC5/DAC1_ISR.c **** *******************************************************************************/
+ 307:.\Generated_Source\PSoC5/DAC1_ISR.c **** void DAC1_ISR_Enable(void)
+ 308:.\Generated_Source\PSoC5/DAC1_ISR.c **** {
+ 161              		.loc 1 308 0
+ 162              		.cfi_startproc
+ 163              		@ args = 0, pretend = 0, frame = 0
+ 164              		@ frame_needed = 0, uses_anonymous_args = 0
+ 165              		@ link register save eliminated.
+ 309:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* Enable the general interrupt. */
+ 310:.\Generated_Source\PSoC5/DAC1_ISR.c ****     *DAC1_ISR_INTC_SET_EN = DAC1_ISR__INTC_MASK;
+ 166              		.loc 1 310 0
+ 167 0000 0122     		movs	r2, #1
+ 168 0002 014B     		ldr	r3, .L16
+ 169 0004 1A60     		str	r2, [r3]
+ 170 0006 7047     		bx	lr
+ 171              	.L17:
+ 172              		.align	2
+ 173              	.L16:
+ 174 0008 00E100E0 		.word	-536813312
+ 175              		.cfi_endproc
+ 176              	.LFE71:
+ 177              		.size	DAC1_ISR_Enable, .-DAC1_ISR_Enable
+ 178              		.section	.text.DAC1_ISR_GetState,"ax",%progbits
+ 179              		.align	2
+ 180              		.global	DAC1_ISR_GetState
+ 181              		.thumb
+ 182              		.thumb_func
+ 183              		.type	DAC1_ISR_GetState, %function
+ 184              	DAC1_ISR_GetState:
+ 185              	.LFB72:
+ 311:.\Generated_Source\PSoC5/DAC1_ISR.c **** }
+ 312:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 313:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 314:.\Generated_Source\PSoC5/DAC1_ISR.c **** /*******************************************************************************
+ 315:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Function Name: DAC1_ISR_GetState
+ 316:.\Generated_Source\PSoC5/DAC1_ISR.c **** ********************************************************************************
+ 317:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 318:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Summary:
+ 319:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Gets the state (enabled, disabled) of the Interrupt.
+ 320:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 321:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Parameters:
+ 322:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 323:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 324:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Return:
+ 325:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   1 if enabled, 0 if disabled.
+ 326:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 327:.\Generated_Source\PSoC5/DAC1_ISR.c **** *******************************************************************************/
+ 328:.\Generated_Source\PSoC5/DAC1_ISR.c **** uint8 DAC1_ISR_GetState(void)
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 10
+
+
+ 329:.\Generated_Source\PSoC5/DAC1_ISR.c **** {
+ 186              		.loc 1 329 0
+ 187              		.cfi_startproc
+ 188              		@ args = 0, pretend = 0, frame = 0
+ 189              		@ frame_needed = 0, uses_anonymous_args = 0
+ 190              		@ link register save eliminated.
+ 330:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* Get the state of the general interrupt. */
+ 331:.\Generated_Source\PSoC5/DAC1_ISR.c ****     return ((*DAC1_ISR_INTC_SET_EN & (uint32)DAC1_ISR__INTC_MASK) != 0u) ? 1u:0u;
+ 191              		.loc 1 331 0
+ 192 0000 024B     		ldr	r3, .L19
+ 193 0002 1868     		ldr	r0, [r3]
+ 332:.\Generated_Source\PSoC5/DAC1_ISR.c **** }
+ 194              		.loc 1 332 0
+ 195 0004 00F00100 		and	r0, r0, #1
+ 196 0008 7047     		bx	lr
+ 197              	.L20:
+ 198 000a 00BF     		.align	2
+ 199              	.L19:
+ 200 000c 00E100E0 		.word	-536813312
+ 201              		.cfi_endproc
+ 202              	.LFE72:
+ 203              		.size	DAC1_ISR_GetState, .-DAC1_ISR_GetState
+ 204              		.section	.text.DAC1_ISR_Disable,"ax",%progbits
+ 205              		.align	2
+ 206              		.global	DAC1_ISR_Disable
+ 207              		.thumb
+ 208              		.thumb_func
+ 209              		.type	DAC1_ISR_Disable, %function
+ 210              	DAC1_ISR_Disable:
+ 211              	.LFB73:
+ 333:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 334:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 335:.\Generated_Source\PSoC5/DAC1_ISR.c **** /*******************************************************************************
+ 336:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Function Name: DAC1_ISR_Disable
+ 337:.\Generated_Source\PSoC5/DAC1_ISR.c **** ********************************************************************************
+ 338:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 339:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Summary:
+ 340:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Disables the Interrupt in the interrupt controller.
+ 341:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 342:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Parameters:
+ 343:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 344:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 345:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Return:
+ 346:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 347:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 348:.\Generated_Source\PSoC5/DAC1_ISR.c **** *******************************************************************************/
+ 349:.\Generated_Source\PSoC5/DAC1_ISR.c **** void DAC1_ISR_Disable(void)
+ 350:.\Generated_Source\PSoC5/DAC1_ISR.c **** {
+ 212              		.loc 1 350 0
+ 213              		.cfi_startproc
+ 214              		@ args = 0, pretend = 0, frame = 0
+ 215              		@ frame_needed = 0, uses_anonymous_args = 0
+ 216              		@ link register save eliminated.
+ 351:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* Disable the general interrupt. */
+ 352:.\Generated_Source\PSoC5/DAC1_ISR.c ****     *DAC1_ISR_INTC_CLR_EN = DAC1_ISR__INTC_MASK;
+ 217              		.loc 1 352 0
+ 218 0000 0122     		movs	r2, #1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 11
+
+
+ 219 0002 014B     		ldr	r3, .L22
+ 220 0004 1A60     		str	r2, [r3]
+ 221 0006 7047     		bx	lr
+ 222              	.L23:
+ 223              		.align	2
+ 224              	.L22:
+ 225 0008 80E100E0 		.word	-536813184
+ 226              		.cfi_endproc
+ 227              	.LFE73:
+ 228              		.size	DAC1_ISR_Disable, .-DAC1_ISR_Disable
+ 229              		.section	.text.DAC1_ISR_Start,"ax",%progbits
+ 230              		.align	2
+ 231              		.global	DAC1_ISR_Start
+ 232              		.thumb
+ 233              		.thumb_func
+ 234              		.type	DAC1_ISR_Start, %function
+ 235              	DAC1_ISR_Start:
+ 236              	.LFB63:
+  62:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* For all we know the interrupt is active. */
+ 237              		.loc 1 62 0
+ 238              		.cfi_startproc
+ 239              		@ args = 0, pretend = 0, frame = 0
+ 240              		@ frame_needed = 0, uses_anonymous_args = 0
+ 241 0000 08B5     		push	{r3, lr}
+ 242              		.cfi_def_cfa_offset 8
+ 243              		.cfi_offset 3, -8
+ 244              		.cfi_offset 14, -4
+  64:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 245              		.loc 1 64 0
+ 246 0002 FFF7FEFF 		bl	DAC1_ISR_Disable
+ 247              	.LVL8:
+  67:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 248              		.loc 1 67 0
+ 249 0006 0448     		ldr	r0, .L26
+ 250 0008 FFF7FEFF 		bl	DAC1_ISR_SetVector
+ 251              	.LVL9:
+  70:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 252              		.loc 1 70 0
+ 253 000c 0620     		movs	r0, #6
+ 254 000e FFF7FEFF 		bl	DAC1_ISR_SetPriority
+ 255              	.LVL10:
+  73:.\Generated_Source\PSoC5/DAC1_ISR.c **** }
+ 256              		.loc 1 73 0
+ 257 0012 FFF7FEFF 		bl	DAC1_ISR_Enable
+ 258              	.LVL11:
+ 259 0016 08BD     		pop	{r3, pc}
+ 260              	.L27:
+ 261              		.align	2
+ 262              	.L26:
+ 263 0018 00000000 		.word	DAC1_ISR_Interrupt
+ 264              		.cfi_endproc
+ 265              	.LFE63:
+ 266              		.size	DAC1_ISR_Start, .-DAC1_ISR_Start
+ 267              		.section	.text.DAC1_ISR_StartEx,"ax",%progbits
+ 268              		.align	2
+ 269              		.global	DAC1_ISR_StartEx
+ 270              		.thumb
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 12
+
+
+ 271              		.thumb_func
+ 272              		.type	DAC1_ISR_StartEx, %function
+ 273              	DAC1_ISR_StartEx:
+ 274              	.LFB64:
+ 105:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* For all we know the interrupt is active. */
+ 275              		.loc 1 105 0
+ 276              		.cfi_startproc
+ 277              		@ args = 0, pretend = 0, frame = 0
+ 278              		@ frame_needed = 0, uses_anonymous_args = 0
+ 279              	.LVL12:
+ 280 0000 10B5     		push	{r4, lr}
+ 281              		.cfi_def_cfa_offset 8
+ 282              		.cfi_offset 4, -8
+ 283              		.cfi_offset 14, -4
+ 284 0002 0446     		mov	r4, r0
+ 107:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 285              		.loc 1 107 0
+ 286 0004 FFF7FEFF 		bl	DAC1_ISR_Disable
+ 287              	.LVL13:
+ 110:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 288              		.loc 1 110 0
+ 289 0008 2046     		mov	r0, r4
+ 290 000a FFF7FEFF 		bl	DAC1_ISR_SetVector
+ 291              	.LVL14:
+ 113:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 292              		.loc 1 113 0
+ 293 000e 0620     		movs	r0, #6
+ 294 0010 FFF7FEFF 		bl	DAC1_ISR_SetPriority
+ 295              	.LVL15:
+ 116:.\Generated_Source\PSoC5/DAC1_ISR.c **** }
+ 296              		.loc 1 116 0
+ 297 0014 FFF7FEFF 		bl	DAC1_ISR_Enable
+ 298              	.LVL16:
+ 299 0018 10BD     		pop	{r4, pc}
+ 300              		.cfi_endproc
+ 301              	.LFE64:
+ 302              		.size	DAC1_ISR_StartEx, .-DAC1_ISR_StartEx
+ 303 001a 00BF     		.section	.text.DAC1_ISR_Stop,"ax",%progbits
+ 304              		.align	2
+ 305              		.global	DAC1_ISR_Stop
+ 306              		.thumb
+ 307              		.thumb_func
+ 308              		.type	DAC1_ISR_Stop, %function
+ 309              	DAC1_ISR_Stop:
+ 310              	.LFB65:
+ 135:.\Generated_Source\PSoC5/DAC1_ISR.c ****     /* Disable this interrupt. */
+ 311              		.loc 1 135 0
+ 312              		.cfi_startproc
+ 313              		@ args = 0, pretend = 0, frame = 0
+ 314              		@ frame_needed = 0, uses_anonymous_args = 0
+ 315 0000 08B5     		push	{r3, lr}
+ 316              		.cfi_def_cfa_offset 8
+ 317              		.cfi_offset 3, -8
+ 318              		.cfi_offset 14, -4
+ 137:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 319              		.loc 1 137 0
+ 320 0002 FFF7FEFF 		bl	DAC1_ISR_Disable
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 13
+
+
+ 321              	.LVL17:
+ 140:.\Generated_Source\PSoC5/DAC1_ISR.c **** }
+ 322              		.loc 1 140 0
+ 323 0006 0248     		ldr	r0, .L32
+ 324 0008 FFF7FEFF 		bl	DAC1_ISR_SetVector
+ 325              	.LVL18:
+ 326 000c 08BD     		pop	{r3, pc}
+ 327              	.L33:
+ 328 000e 00BF     		.align	2
+ 329              	.L32:
+ 330 0010 00000000 		.word	IntDefaultHandler
+ 331              		.cfi_endproc
+ 332              	.LFE65:
+ 333              		.size	DAC1_ISR_Stop, .-DAC1_ISR_Stop
+ 334              		.section	.text.DAC1_ISR_SetPending,"ax",%progbits
+ 335              		.align	2
+ 336              		.global	DAC1_ISR_SetPending
+ 337              		.thumb
+ 338              		.thumb_func
+ 339              		.type	DAC1_ISR_SetPending, %function
+ 340              	DAC1_ISR_SetPending:
+ 341              	.LFB74:
+ 353:.\Generated_Source\PSoC5/DAC1_ISR.c **** }
+ 354:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 355:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 356:.\Generated_Source\PSoC5/DAC1_ISR.c **** /*******************************************************************************
+ 357:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Function Name: DAC1_ISR_SetPending
+ 358:.\Generated_Source\PSoC5/DAC1_ISR.c **** ********************************************************************************
+ 359:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 360:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Summary:
+ 361:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Causes the Interrupt to enter the pending state, a software method of
+ 362:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   generating the interrupt.
+ 363:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 364:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Parameters:
+ 365:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 366:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 367:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Return:
+ 368:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 369:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 370:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Side Effects:
+ 371:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   If interrupts are enabled and the interrupt is set up properly, the ISR is
+ 372:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   entered (depending on the priority of this interrupt and other pending 
+ 373:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   interrupts).
+ 374:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 375:.\Generated_Source\PSoC5/DAC1_ISR.c **** *******************************************************************************/
+ 376:.\Generated_Source\PSoC5/DAC1_ISR.c **** void DAC1_ISR_SetPending(void)
+ 377:.\Generated_Source\PSoC5/DAC1_ISR.c **** {
+ 342              		.loc 1 377 0
+ 343              		.cfi_startproc
+ 344              		@ args = 0, pretend = 0, frame = 0
+ 345              		@ frame_needed = 0, uses_anonymous_args = 0
+ 346              		@ link register save eliminated.
+ 378:.\Generated_Source\PSoC5/DAC1_ISR.c ****     *DAC1_ISR_INTC_SET_PD = DAC1_ISR__INTC_MASK;
+ 347              		.loc 1 378 0
+ 348 0000 0122     		movs	r2, #1
+ 349 0002 014B     		ldr	r3, .L35
+ 350 0004 1A60     		str	r2, [r3]
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 14
+
+
+ 351 0006 7047     		bx	lr
+ 352              	.L36:
+ 353              		.align	2
+ 354              	.L35:
+ 355 0008 00E200E0 		.word	-536813056
+ 356              		.cfi_endproc
+ 357              	.LFE74:
+ 358              		.size	DAC1_ISR_SetPending, .-DAC1_ISR_SetPending
+ 359              		.section	.text.DAC1_ISR_ClearPending,"ax",%progbits
+ 360              		.align	2
+ 361              		.global	DAC1_ISR_ClearPending
+ 362              		.thumb
+ 363              		.thumb_func
+ 364              		.type	DAC1_ISR_ClearPending, %function
+ 365              	DAC1_ISR_ClearPending:
+ 366              	.LFB75:
+ 379:.\Generated_Source\PSoC5/DAC1_ISR.c **** }
+ 380:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 381:.\Generated_Source\PSoC5/DAC1_ISR.c **** 
+ 382:.\Generated_Source\PSoC5/DAC1_ISR.c **** /*******************************************************************************
+ 383:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Function Name: DAC1_ISR_ClearPending
+ 384:.\Generated_Source\PSoC5/DAC1_ISR.c **** ********************************************************************************
+ 385:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 386:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Summary:
+ 387:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Clears a pending interrupt in the interrupt controller.
+ 388:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 389:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   Note Some interrupt sources are clear-on-read and require the block 
+ 390:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   interrupt/status register to be read/cleared with the appropriate block API 
+ 391:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   (GPIO, UART, and so on). Otherwise the ISR will continue to remain in 
+ 392:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   pending state even though the interrupt itself is cleared using this API.
+ 393:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 394:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Parameters:
+ 395:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 396:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 397:.\Generated_Source\PSoC5/DAC1_ISR.c **** * Return:
+ 398:.\Generated_Source\PSoC5/DAC1_ISR.c **** *   None
+ 399:.\Generated_Source\PSoC5/DAC1_ISR.c **** *
+ 400:.\Generated_Source\PSoC5/DAC1_ISR.c **** *******************************************************************************/
+ 401:.\Generated_Source\PSoC5/DAC1_ISR.c **** void DAC1_ISR_ClearPending(void)
+ 402:.\Generated_Source\PSoC5/DAC1_ISR.c **** {
+ 367              		.loc 1 402 0
+ 368              		.cfi_startproc
+ 369              		@ args = 0, pretend = 0, frame = 0
+ 370              		@ frame_needed = 0, uses_anonymous_args = 0
+ 371              		@ link register save eliminated.
+ 403:.\Generated_Source\PSoC5/DAC1_ISR.c ****     *DAC1_ISR_INTC_CLR_PD = DAC1_ISR__INTC_MASK;
+ 372              		.loc 1 403 0
+ 373 0000 0122     		movs	r2, #1
+ 374 0002 014B     		ldr	r3, .L38
+ 375 0004 1A60     		str	r2, [r3]
+ 376 0006 7047     		bx	lr
+ 377              	.L39:
+ 378              		.align	2
+ 379              	.L38:
+ 380 0008 80E200E0 		.word	-536812928
+ 381              		.cfi_endproc
+ 382              	.LFE75:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 15
+
+
+ 383              		.size	DAC1_ISR_ClearPending, .-DAC1_ISR_ClearPending
+ 384              		.text
+ 385              	.Letext0:
+ 386              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 387              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 388              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 389              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 390              		.file 6 "./DACaudio.h"
+ 391              		.section	.debug_info,"",%progbits
+ 392              	.Ldebug_info0:
+ 393 0000 01030000 		.4byte	0x301
+ 394 0004 0400     		.2byte	0x4
+ 395 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 396 000a 04       		.byte	0x4
+ 397 000b 01       		.uleb128 0x1
+ 398 000c 38010000 		.4byte	.LASF35
+ 399 0010 01       		.byte	0x1
+ 400 0011 C6010000 		.4byte	.LASF36
+ 401 0015 2A020000 		.4byte	.LASF37
+ 402 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 403 001d 00000000 		.4byte	0
+ 404 0021 00000000 		.4byte	.Ldebug_line0
+ 405 0025 02       		.uleb128 0x2
+ 406 0026 04       		.byte	0x4
+ 407 0027 05       		.byte	0x5
+ 408 0028 696E7400 		.ascii	"int\000"
+ 409 002c 03       		.uleb128 0x3
+ 410 002d 04       		.byte	0x4
+ 411 002e 07       		.byte	0x7
+ 412 002f 0C010000 		.4byte	.LASF0
+ 413 0033 03       		.uleb128 0x3
+ 414 0034 01       		.byte	0x1
+ 415 0035 06       		.byte	0x6
+ 416 0036 25030000 		.4byte	.LASF1
+ 417 003a 03       		.uleb128 0x3
+ 418 003b 01       		.byte	0x1
+ 419 003c 08       		.byte	0x8
+ 420 003d BE000000 		.4byte	.LASF2
+ 421 0041 03       		.uleb128 0x3
+ 422 0042 02       		.byte	0x2
+ 423 0043 05       		.byte	0x5
+ 424 0044 CF020000 		.4byte	.LASF3
+ 425 0048 03       		.uleb128 0x3
+ 426 0049 02       		.byte	0x2
+ 427 004a 07       		.byte	0x7
+ 428 004b 9E000000 		.4byte	.LASF4
+ 429 004f 04       		.uleb128 0x4
+ 430 0050 26000000 		.4byte	.LASF11
+ 431 0054 02       		.byte	0x2
+ 432 0055 3F       		.byte	0x3f
+ 433 0056 5A000000 		.4byte	0x5a
+ 434 005a 03       		.uleb128 0x3
+ 435 005b 04       		.byte	0x4
+ 436 005c 05       		.byte	0x5
+ 437 005d 03030000 		.4byte	.LASF5
+ 438 0061 03       		.uleb128 0x3
+ 439 0062 04       		.byte	0x4
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 16
+
+
+ 440 0063 07       		.byte	0x7
+ 441 0064 8C000000 		.4byte	.LASF6
+ 442 0068 03       		.uleb128 0x3
+ 443 0069 08       		.byte	0x8
+ 444 006a 05       		.byte	0x5
+ 445 006b AD020000 		.4byte	.LASF7
+ 446 006f 03       		.uleb128 0x3
+ 447 0070 08       		.byte	0x8
+ 448 0071 07       		.byte	0x7
+ 449 0072 21010000 		.4byte	.LASF8
+ 450 0076 03       		.uleb128 0x3
+ 451 0077 04       		.byte	0x4
+ 452 0078 07       		.byte	0x7
+ 453 0079 21020000 		.4byte	.LASF9
+ 454 007d 05       		.uleb128 0x5
+ 455 007e 04       		.byte	0x4
+ 456 007f 83000000 		.4byte	0x83
+ 457 0083 06       		.uleb128 0x6
+ 458 0084 03       		.uleb128 0x3
+ 459 0085 01       		.byte	0x1
+ 460 0086 08       		.byte	0x8
+ 461 0087 BB020000 		.4byte	.LASF10
+ 462 008b 04       		.uleb128 0x4
+ 463 008c 19020000 		.4byte	.LASF12
+ 464 0090 03       		.byte	0x3
+ 465 0091 2C       		.byte	0x2c
+ 466 0092 4F000000 		.4byte	0x4f
+ 467 0096 04       		.uleb128 0x4
+ 468 0097 EA020000 		.4byte	.LASF13
+ 469 009b 04       		.byte	0x4
+ 470 009c C2       		.byte	0xc2
+ 471 009d 3A000000 		.4byte	0x3a
+ 472 00a1 04       		.uleb128 0x4
+ 473 00a2 05010000 		.4byte	.LASF14
+ 474 00a6 04       		.byte	0x4
+ 475 00a7 C4       		.byte	0xc4
+ 476 00a8 61000000 		.4byte	0x61
+ 477 00ac 03       		.uleb128 0x3
+ 478 00ad 04       		.byte	0x4
+ 479 00ae 04       		.byte	0x4
+ 480 00af 5C000000 		.4byte	.LASF15
+ 481 00b3 03       		.uleb128 0x3
+ 482 00b4 08       		.byte	0x8
+ 483 00b5 04       		.byte	0x4
+ 484 00b6 CC000000 		.4byte	.LASF16
+ 485 00ba 07       		.uleb128 0x7
+ 486 00bb 87000000 		.4byte	.LASF17
+ 487 00bf 04       		.byte	0x4
+ 488 00c0 6C01     		.2byte	0x16c
+ 489 00c2 C6000000 		.4byte	0xc6
+ 490 00c6 08       		.uleb128 0x8
+ 491 00c7 96000000 		.4byte	0x96
+ 492 00cb 07       		.uleb128 0x7
+ 493 00cc 0C030000 		.4byte	.LASF18
+ 494 00d0 04       		.byte	0x4
+ 495 00d1 6E01     		.2byte	0x16e
+ 496 00d3 D7000000 		.4byte	0xd7
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 17
+
+
+ 497 00d7 08       		.uleb128 0x8
+ 498 00d8 A1000000 		.4byte	0xa1
+ 499 00dc 07       		.uleb128 0x7
+ 500 00dd EA010000 		.4byte	.LASF19
+ 501 00e1 04       		.byte	0x4
+ 502 00e2 7E01     		.2byte	0x17e
+ 503 00e4 7D000000 		.4byte	0x7d
+ 504 00e8 09       		.uleb128 0x9
+ 505 00e9 12030000 		.4byte	.LASF20
+ 506 00ed 01       		.byte	0x1
+ 507 00ee A0       		.byte	0xa0
+ 508 00ef 00000000 		.4byte	.LFB66
+ 509 00f3 08000000 		.4byte	.LFE66-.LFB66
+ 510 00f7 01       		.uleb128 0x1
+ 511 00f8 9C       		.byte	0x9c
+ 512 00f9 07010000 		.4byte	0x107
+ 513 00fd 0A       		.uleb128 0xa
+ 514 00fe 06000000 		.4byte	.LVL0
+ 515 0102 FD020000 		.4byte	0x2fd
+ 516 0106 00       		.byte	0
+ 517 0107 09       		.uleb128 0x9
+ 518 0108 D3000000 		.4byte	.LASF21
+ 519 010c 01       		.byte	0x1
+ 520 010d C8       		.byte	0xc8
+ 521 010e 00000000 		.4byte	.LFB67
+ 522 0112 0C000000 		.4byte	.LFE67-.LFB67
+ 523 0116 01       		.uleb128 0x1
+ 524 0117 9C       		.byte	0x9c
+ 525 0118 37010000 		.4byte	0x137
+ 526 011c 0B       		.uleb128 0xb
+ 527 011d 19010000 		.4byte	.LASF24
+ 528 0121 01       		.byte	0x1
+ 529 0122 C8       		.byte	0xc8
+ 530 0123 DC000000 		.4byte	0xdc
+ 531 0127 01       		.uleb128 0x1
+ 532 0128 50       		.byte	0x50
+ 533 0129 0C       		.uleb128 0xc
+ 534 012a C0020000 		.4byte	.LASF22
+ 535 012e 01       		.byte	0x1
+ 536 012f CA       		.byte	0xca
+ 537 0130 37010000 		.4byte	0x137
+ 538 0134 01       		.uleb128 0x1
+ 539 0135 53       		.byte	0x53
+ 540 0136 00       		.byte	0
+ 541 0137 05       		.uleb128 0x5
+ 542 0138 04       		.byte	0x4
+ 543 0139 DC000000 		.4byte	0xdc
+ 544 013d 0D       		.uleb128 0xd
+ 545 013e F0020000 		.4byte	.LASF26
+ 546 0142 01       		.byte	0x1
+ 547 0143 E0       		.byte	0xe0
+ 548 0144 DC000000 		.4byte	0xdc
+ 549 0148 00000000 		.4byte	.LFB68
+ 550 014c 0C000000 		.4byte	.LFE68-.LFB68
+ 551 0150 01       		.uleb128 0x1
+ 552 0151 9C       		.byte	0x9c
+ 553 0152 64010000 		.4byte	0x164
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 18
+
+
+ 554 0156 0C       		.uleb128 0xc
+ 555 0157 C0020000 		.4byte	.LASF22
+ 556 015b 01       		.byte	0x1
+ 557 015c E2       		.byte	0xe2
+ 558 015d 37010000 		.4byte	0x137
+ 559 0161 01       		.uleb128 0x1
+ 560 0162 53       		.byte	0x53
+ 561 0163 00       		.byte	0
+ 562 0164 0E       		.uleb128 0xe
+ 563 0165 62000000 		.4byte	.LASF23
+ 564 0169 01       		.byte	0x1
+ 565 016a 0201     		.2byte	0x102
+ 566 016c 00000000 		.4byte	.LFB69
+ 567 0170 10000000 		.4byte	.LFE69-.LFB69
+ 568 0174 01       		.uleb128 0x1
+ 569 0175 9C       		.byte	0x9c
+ 570 0176 8B010000 		.4byte	0x18b
+ 571 017a 0F       		.uleb128 0xf
+ 572 017b E6000000 		.4byte	.LASF25
+ 573 017f 01       		.byte	0x1
+ 574 0180 0201     		.2byte	0x102
+ 575 0182 96000000 		.4byte	0x96
+ 576 0186 00000000 		.4byte	.LLST0
+ 577 018a 00       		.byte	0
+ 578 018b 10       		.uleb128 0x10
+ 579 018c 00000000 		.4byte	.LASF27
+ 580 0190 01       		.byte	0x1
+ 581 0191 1801     		.2byte	0x118
+ 582 0193 96000000 		.4byte	0x96
+ 583 0197 00000000 		.4byte	.LFB70
+ 584 019b 0C000000 		.4byte	.LFE70-.LFB70
+ 585 019f 01       		.uleb128 0x1
+ 586 01a0 9C       		.byte	0x9c
+ 587 01a1 B6010000 		.4byte	0x1b6
+ 588 01a5 11       		.uleb128 0x11
+ 589 01a6 E6000000 		.4byte	.LASF25
+ 590 01aa 01       		.byte	0x1
+ 591 01ab 1A01     		.2byte	0x11a
+ 592 01ad 96000000 		.4byte	0x96
+ 593 01b1 21000000 		.4byte	.LLST1
+ 594 01b5 00       		.byte	0
+ 595 01b6 12       		.uleb128 0x12
+ 596 01b7 77000000 		.4byte	.LASF28
+ 597 01bb 01       		.byte	0x1
+ 598 01bc 3301     		.2byte	0x133
+ 599 01be 00000000 		.4byte	.LFB71
+ 600 01c2 0C000000 		.4byte	.LFE71-.LFB71
+ 601 01c6 01       		.uleb128 0x1
+ 602 01c7 9C       		.byte	0x9c
+ 603 01c8 13       		.uleb128 0x13
+ 604 01c9 3B000000 		.4byte	.LASF38
+ 605 01cd 01       		.byte	0x1
+ 606 01ce 4801     		.2byte	0x148
+ 607 01d0 96000000 		.4byte	0x96
+ 608 01d4 00000000 		.4byte	.LFB72
+ 609 01d8 10000000 		.4byte	.LFE72-.LFB72
+ 610 01dc 01       		.uleb128 0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 19
+
+
+ 611 01dd 9C       		.byte	0x9c
+ 612 01de 12       		.uleb128 0x12
+ 613 01df D9020000 		.4byte	.LASF29
+ 614 01e3 01       		.byte	0x1
+ 615 01e4 5D01     		.2byte	0x15d
+ 616 01e6 00000000 		.4byte	.LFB73
+ 617 01ea 0C000000 		.4byte	.LFE73-.LFB73
+ 618 01ee 01       		.uleb128 0x1
+ 619 01ef 9C       		.byte	0x9c
+ 620 01f0 09       		.uleb128 0x9
+ 621 01f1 4D000000 		.4byte	.LASF30
+ 622 01f5 01       		.byte	0x1
+ 623 01f6 3D       		.byte	0x3d
+ 624 01f7 00000000 		.4byte	.LFB63
+ 625 01fb 1C000000 		.4byte	.LFE63-.LFB63
+ 626 01ff 01       		.uleb128 0x1
+ 627 0200 9C       		.byte	0x9c
+ 628 0201 42020000 		.4byte	0x242
+ 629 0205 0A       		.uleb128 0xa
+ 630 0206 06000000 		.4byte	.LVL8
+ 631 020a DE010000 		.4byte	0x1de
+ 632 020e 14       		.uleb128 0x14
+ 633 020f 0C000000 		.4byte	.LVL9
+ 634 0213 07010000 		.4byte	0x107
+ 635 0217 25020000 		.4byte	0x225
+ 636 021b 15       		.uleb128 0x15
+ 637 021c 01       		.uleb128 0x1
+ 638 021d 50       		.byte	0x50
+ 639 021e 05       		.uleb128 0x5
+ 640 021f 03       		.byte	0x3
+ 641 0220 00000000 		.4byte	DAC1_ISR_Interrupt
+ 642 0224 00       		.byte	0
+ 643 0225 14       		.uleb128 0x14
+ 644 0226 12000000 		.4byte	.LVL10
+ 645 022a 64010000 		.4byte	0x164
+ 646 022e 38020000 		.4byte	0x238
+ 647 0232 15       		.uleb128 0x15
+ 648 0233 01       		.uleb128 0x1
+ 649 0234 50       		.byte	0x50
+ 650 0235 01       		.uleb128 0x1
+ 651 0236 36       		.byte	0x36
+ 652 0237 00       		.byte	0
+ 653 0238 0A       		.uleb128 0xa
+ 654 0239 16000000 		.4byte	.LVL11
+ 655 023d B6010000 		.4byte	0x1b6
+ 656 0241 00       		.byte	0
+ 657 0242 09       		.uleb128 0x9
+ 658 0243 15000000 		.4byte	.LASF31
+ 659 0247 01       		.byte	0x1
+ 660 0248 68       		.byte	0x68
+ 661 0249 00000000 		.4byte	.LFB64
+ 662 024d 1A000000 		.4byte	.LFE64-.LFB64
+ 663 0251 01       		.uleb128 0x1
+ 664 0252 9C       		.byte	0x9c
+ 665 0253 A0020000 		.4byte	0x2a0
+ 666 0257 16       		.uleb128 0x16
+ 667 0258 19010000 		.4byte	.LASF24
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 20
+
+
+ 668 025c 01       		.byte	0x1
+ 669 025d 68       		.byte	0x68
+ 670 025e DC000000 		.4byte	0xdc
+ 671 0262 38000000 		.4byte	.LLST2
+ 672 0266 0A       		.uleb128 0xa
+ 673 0267 08000000 		.4byte	.LVL13
+ 674 026b DE010000 		.4byte	0x1de
+ 675 026f 14       		.uleb128 0x14
+ 676 0270 0E000000 		.4byte	.LVL14
+ 677 0274 07010000 		.4byte	0x107
+ 678 0278 83020000 		.4byte	0x283
+ 679 027c 15       		.uleb128 0x15
+ 680 027d 01       		.uleb128 0x1
+ 681 027e 50       		.byte	0x50
+ 682 027f 02       		.uleb128 0x2
+ 683 0280 74       		.byte	0x74
+ 684 0281 00       		.sleb128 0
+ 685 0282 00       		.byte	0
+ 686 0283 14       		.uleb128 0x14
+ 687 0284 14000000 		.4byte	.LVL15
+ 688 0288 64010000 		.4byte	0x164
+ 689 028c 96020000 		.4byte	0x296
+ 690 0290 15       		.uleb128 0x15
+ 691 0291 01       		.uleb128 0x1
+ 692 0292 50       		.byte	0x50
+ 693 0293 01       		.uleb128 0x1
+ 694 0294 36       		.byte	0x36
+ 695 0295 00       		.byte	0
+ 696 0296 0A       		.uleb128 0xa
+ 697 0297 18000000 		.4byte	.LVL16
+ 698 029b B6010000 		.4byte	0x1b6
+ 699 029f 00       		.byte	0
+ 700 02a0 09       		.uleb128 0x9
+ 701 02a1 F7010000 		.4byte	.LASF32
+ 702 02a5 01       		.byte	0x1
+ 703 02a6 86       		.byte	0x86
+ 704 02a7 00000000 		.4byte	.LFB65
+ 705 02ab 14000000 		.4byte	.LFE65-.LFB65
+ 706 02af 01       		.uleb128 0x1
+ 707 02b0 9C       		.byte	0x9c
+ 708 02b1 C8020000 		.4byte	0x2c8
+ 709 02b5 0A       		.uleb128 0xa
+ 710 02b6 06000000 		.4byte	.LVL17
+ 711 02ba DE010000 		.4byte	0x1de
+ 712 02be 0A       		.uleb128 0xa
+ 713 02bf 0C000000 		.4byte	.LVL18
+ 714 02c3 07010000 		.4byte	0x107
+ 715 02c7 00       		.byte	0
+ 716 02c8 12       		.uleb128 0x12
+ 717 02c9 05020000 		.4byte	.LASF33
+ 718 02cd 01       		.byte	0x1
+ 719 02ce 7801     		.2byte	0x178
+ 720 02d0 00000000 		.4byte	.LFB74
+ 721 02d4 0C000000 		.4byte	.LFE74-.LFB74
+ 722 02d8 01       		.uleb128 0x1
+ 723 02d9 9C       		.byte	0x9c
+ 724 02da 12       		.uleb128 0x12
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 21
+
+
+ 725 02db EF000000 		.4byte	.LASF34
+ 726 02df 01       		.byte	0x1
+ 727 02e0 9101     		.2byte	0x191
+ 728 02e2 00000000 		.4byte	.LFB75
+ 729 02e6 0C000000 		.4byte	.LFE75-.LFB75
+ 730 02ea 01       		.uleb128 0x1
+ 731 02eb 9C       		.byte	0x9c
+ 732 02ec 17       		.uleb128 0x17
+ 733 02ed B1000000 		.4byte	.LASF39
+ 734 02f1 05       		.byte	0x5
+ 735 02f2 2A06     		.2byte	0x62a
+ 736 02f4 F8020000 		.4byte	0x2f8
+ 737 02f8 08       		.uleb128 0x8
+ 738 02f9 8B000000 		.4byte	0x8b
+ 739 02fd 18       		.uleb128 0x18
+ 740 02fe 30000000 		.4byte	.LASF40
+ 741 0302 06       		.byte	0x6
+ 742 0303 1C       		.byte	0x1c
+ 743 0304 00       		.byte	0
+ 744              		.section	.debug_abbrev,"",%progbits
+ 745              	.Ldebug_abbrev0:
+ 746 0000 01       		.uleb128 0x1
+ 747 0001 11       		.uleb128 0x11
+ 748 0002 01       		.byte	0x1
+ 749 0003 25       		.uleb128 0x25
+ 750 0004 0E       		.uleb128 0xe
+ 751 0005 13       		.uleb128 0x13
+ 752 0006 0B       		.uleb128 0xb
+ 753 0007 03       		.uleb128 0x3
+ 754 0008 0E       		.uleb128 0xe
+ 755 0009 1B       		.uleb128 0x1b
+ 756 000a 0E       		.uleb128 0xe
+ 757 000b 55       		.uleb128 0x55
+ 758 000c 17       		.uleb128 0x17
+ 759 000d 11       		.uleb128 0x11
+ 760 000e 01       		.uleb128 0x1
+ 761 000f 10       		.uleb128 0x10
+ 762 0010 17       		.uleb128 0x17
+ 763 0011 00       		.byte	0
+ 764 0012 00       		.byte	0
+ 765 0013 02       		.uleb128 0x2
+ 766 0014 24       		.uleb128 0x24
+ 767 0015 00       		.byte	0
+ 768 0016 0B       		.uleb128 0xb
+ 769 0017 0B       		.uleb128 0xb
+ 770 0018 3E       		.uleb128 0x3e
+ 771 0019 0B       		.uleb128 0xb
+ 772 001a 03       		.uleb128 0x3
+ 773 001b 08       		.uleb128 0x8
+ 774 001c 00       		.byte	0
+ 775 001d 00       		.byte	0
+ 776 001e 03       		.uleb128 0x3
+ 777 001f 24       		.uleb128 0x24
+ 778 0020 00       		.byte	0
+ 779 0021 0B       		.uleb128 0xb
+ 780 0022 0B       		.uleb128 0xb
+ 781 0023 3E       		.uleb128 0x3e
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 22
+
+
+ 782 0024 0B       		.uleb128 0xb
+ 783 0025 03       		.uleb128 0x3
+ 784 0026 0E       		.uleb128 0xe
+ 785 0027 00       		.byte	0
+ 786 0028 00       		.byte	0
+ 787 0029 04       		.uleb128 0x4
+ 788 002a 16       		.uleb128 0x16
+ 789 002b 00       		.byte	0
+ 790 002c 03       		.uleb128 0x3
+ 791 002d 0E       		.uleb128 0xe
+ 792 002e 3A       		.uleb128 0x3a
+ 793 002f 0B       		.uleb128 0xb
+ 794 0030 3B       		.uleb128 0x3b
+ 795 0031 0B       		.uleb128 0xb
+ 796 0032 49       		.uleb128 0x49
+ 797 0033 13       		.uleb128 0x13
+ 798 0034 00       		.byte	0
+ 799 0035 00       		.byte	0
+ 800 0036 05       		.uleb128 0x5
+ 801 0037 0F       		.uleb128 0xf
+ 802 0038 00       		.byte	0
+ 803 0039 0B       		.uleb128 0xb
+ 804 003a 0B       		.uleb128 0xb
+ 805 003b 49       		.uleb128 0x49
+ 806 003c 13       		.uleb128 0x13
+ 807 003d 00       		.byte	0
+ 808 003e 00       		.byte	0
+ 809 003f 06       		.uleb128 0x6
+ 810 0040 15       		.uleb128 0x15
+ 811 0041 00       		.byte	0
+ 812 0042 27       		.uleb128 0x27
+ 813 0043 19       		.uleb128 0x19
+ 814 0044 00       		.byte	0
+ 815 0045 00       		.byte	0
+ 816 0046 07       		.uleb128 0x7
+ 817 0047 16       		.uleb128 0x16
+ 818 0048 00       		.byte	0
+ 819 0049 03       		.uleb128 0x3
+ 820 004a 0E       		.uleb128 0xe
+ 821 004b 3A       		.uleb128 0x3a
+ 822 004c 0B       		.uleb128 0xb
+ 823 004d 3B       		.uleb128 0x3b
+ 824 004e 05       		.uleb128 0x5
+ 825 004f 49       		.uleb128 0x49
+ 826 0050 13       		.uleb128 0x13
+ 827 0051 00       		.byte	0
+ 828 0052 00       		.byte	0
+ 829 0053 08       		.uleb128 0x8
+ 830 0054 35       		.uleb128 0x35
+ 831 0055 00       		.byte	0
+ 832 0056 49       		.uleb128 0x49
+ 833 0057 13       		.uleb128 0x13
+ 834 0058 00       		.byte	0
+ 835 0059 00       		.byte	0
+ 836 005a 09       		.uleb128 0x9
+ 837 005b 2E       		.uleb128 0x2e
+ 838 005c 01       		.byte	0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 23
+
+
+ 839 005d 3F       		.uleb128 0x3f
+ 840 005e 19       		.uleb128 0x19
+ 841 005f 03       		.uleb128 0x3
+ 842 0060 0E       		.uleb128 0xe
+ 843 0061 3A       		.uleb128 0x3a
+ 844 0062 0B       		.uleb128 0xb
+ 845 0063 3B       		.uleb128 0x3b
+ 846 0064 0B       		.uleb128 0xb
+ 847 0065 27       		.uleb128 0x27
+ 848 0066 19       		.uleb128 0x19
+ 849 0067 11       		.uleb128 0x11
+ 850 0068 01       		.uleb128 0x1
+ 851 0069 12       		.uleb128 0x12
+ 852 006a 06       		.uleb128 0x6
+ 853 006b 40       		.uleb128 0x40
+ 854 006c 18       		.uleb128 0x18
+ 855 006d 9742     		.uleb128 0x2117
+ 856 006f 19       		.uleb128 0x19
+ 857 0070 01       		.uleb128 0x1
+ 858 0071 13       		.uleb128 0x13
+ 859 0072 00       		.byte	0
+ 860 0073 00       		.byte	0
+ 861 0074 0A       		.uleb128 0xa
+ 862 0075 898201   		.uleb128 0x4109
+ 863 0078 00       		.byte	0
+ 864 0079 11       		.uleb128 0x11
+ 865 007a 01       		.uleb128 0x1
+ 866 007b 31       		.uleb128 0x31
+ 867 007c 13       		.uleb128 0x13
+ 868 007d 00       		.byte	0
+ 869 007e 00       		.byte	0
+ 870 007f 0B       		.uleb128 0xb
+ 871 0080 05       		.uleb128 0x5
+ 872 0081 00       		.byte	0
+ 873 0082 03       		.uleb128 0x3
+ 874 0083 0E       		.uleb128 0xe
+ 875 0084 3A       		.uleb128 0x3a
+ 876 0085 0B       		.uleb128 0xb
+ 877 0086 3B       		.uleb128 0x3b
+ 878 0087 0B       		.uleb128 0xb
+ 879 0088 49       		.uleb128 0x49
+ 880 0089 13       		.uleb128 0x13
+ 881 008a 02       		.uleb128 0x2
+ 882 008b 18       		.uleb128 0x18
+ 883 008c 00       		.byte	0
+ 884 008d 00       		.byte	0
+ 885 008e 0C       		.uleb128 0xc
+ 886 008f 34       		.uleb128 0x34
+ 887 0090 00       		.byte	0
+ 888 0091 03       		.uleb128 0x3
+ 889 0092 0E       		.uleb128 0xe
+ 890 0093 3A       		.uleb128 0x3a
+ 891 0094 0B       		.uleb128 0xb
+ 892 0095 3B       		.uleb128 0x3b
+ 893 0096 0B       		.uleb128 0xb
+ 894 0097 49       		.uleb128 0x49
+ 895 0098 13       		.uleb128 0x13
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 24
+
+
+ 896 0099 02       		.uleb128 0x2
+ 897 009a 18       		.uleb128 0x18
+ 898 009b 00       		.byte	0
+ 899 009c 00       		.byte	0
+ 900 009d 0D       		.uleb128 0xd
+ 901 009e 2E       		.uleb128 0x2e
+ 902 009f 01       		.byte	0x1
+ 903 00a0 3F       		.uleb128 0x3f
+ 904 00a1 19       		.uleb128 0x19
+ 905 00a2 03       		.uleb128 0x3
+ 906 00a3 0E       		.uleb128 0xe
+ 907 00a4 3A       		.uleb128 0x3a
+ 908 00a5 0B       		.uleb128 0xb
+ 909 00a6 3B       		.uleb128 0x3b
+ 910 00a7 0B       		.uleb128 0xb
+ 911 00a8 27       		.uleb128 0x27
+ 912 00a9 19       		.uleb128 0x19
+ 913 00aa 49       		.uleb128 0x49
+ 914 00ab 13       		.uleb128 0x13
+ 915 00ac 11       		.uleb128 0x11
+ 916 00ad 01       		.uleb128 0x1
+ 917 00ae 12       		.uleb128 0x12
+ 918 00af 06       		.uleb128 0x6
+ 919 00b0 40       		.uleb128 0x40
+ 920 00b1 18       		.uleb128 0x18
+ 921 00b2 9742     		.uleb128 0x2117
+ 922 00b4 19       		.uleb128 0x19
+ 923 00b5 01       		.uleb128 0x1
+ 924 00b6 13       		.uleb128 0x13
+ 925 00b7 00       		.byte	0
+ 926 00b8 00       		.byte	0
+ 927 00b9 0E       		.uleb128 0xe
+ 928 00ba 2E       		.uleb128 0x2e
+ 929 00bb 01       		.byte	0x1
+ 930 00bc 3F       		.uleb128 0x3f
+ 931 00bd 19       		.uleb128 0x19
+ 932 00be 03       		.uleb128 0x3
+ 933 00bf 0E       		.uleb128 0xe
+ 934 00c0 3A       		.uleb128 0x3a
+ 935 00c1 0B       		.uleb128 0xb
+ 936 00c2 3B       		.uleb128 0x3b
+ 937 00c3 05       		.uleb128 0x5
+ 938 00c4 27       		.uleb128 0x27
+ 939 00c5 19       		.uleb128 0x19
+ 940 00c6 11       		.uleb128 0x11
+ 941 00c7 01       		.uleb128 0x1
+ 942 00c8 12       		.uleb128 0x12
+ 943 00c9 06       		.uleb128 0x6
+ 944 00ca 40       		.uleb128 0x40
+ 945 00cb 18       		.uleb128 0x18
+ 946 00cc 9742     		.uleb128 0x2117
+ 947 00ce 19       		.uleb128 0x19
+ 948 00cf 01       		.uleb128 0x1
+ 949 00d0 13       		.uleb128 0x13
+ 950 00d1 00       		.byte	0
+ 951 00d2 00       		.byte	0
+ 952 00d3 0F       		.uleb128 0xf
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 25
+
+
+ 953 00d4 05       		.uleb128 0x5
+ 954 00d5 00       		.byte	0
+ 955 00d6 03       		.uleb128 0x3
+ 956 00d7 0E       		.uleb128 0xe
+ 957 00d8 3A       		.uleb128 0x3a
+ 958 00d9 0B       		.uleb128 0xb
+ 959 00da 3B       		.uleb128 0x3b
+ 960 00db 05       		.uleb128 0x5
+ 961 00dc 49       		.uleb128 0x49
+ 962 00dd 13       		.uleb128 0x13
+ 963 00de 02       		.uleb128 0x2
+ 964 00df 17       		.uleb128 0x17
+ 965 00e0 00       		.byte	0
+ 966 00e1 00       		.byte	0
+ 967 00e2 10       		.uleb128 0x10
+ 968 00e3 2E       		.uleb128 0x2e
+ 969 00e4 01       		.byte	0x1
+ 970 00e5 3F       		.uleb128 0x3f
+ 971 00e6 19       		.uleb128 0x19
+ 972 00e7 03       		.uleb128 0x3
+ 973 00e8 0E       		.uleb128 0xe
+ 974 00e9 3A       		.uleb128 0x3a
+ 975 00ea 0B       		.uleb128 0xb
+ 976 00eb 3B       		.uleb128 0x3b
+ 977 00ec 05       		.uleb128 0x5
+ 978 00ed 27       		.uleb128 0x27
+ 979 00ee 19       		.uleb128 0x19
+ 980 00ef 49       		.uleb128 0x49
+ 981 00f0 13       		.uleb128 0x13
+ 982 00f1 11       		.uleb128 0x11
+ 983 00f2 01       		.uleb128 0x1
+ 984 00f3 12       		.uleb128 0x12
+ 985 00f4 06       		.uleb128 0x6
+ 986 00f5 40       		.uleb128 0x40
+ 987 00f6 18       		.uleb128 0x18
+ 988 00f7 9742     		.uleb128 0x2117
+ 989 00f9 19       		.uleb128 0x19
+ 990 00fa 01       		.uleb128 0x1
+ 991 00fb 13       		.uleb128 0x13
+ 992 00fc 00       		.byte	0
+ 993 00fd 00       		.byte	0
+ 994 00fe 11       		.uleb128 0x11
+ 995 00ff 34       		.uleb128 0x34
+ 996 0100 00       		.byte	0
+ 997 0101 03       		.uleb128 0x3
+ 998 0102 0E       		.uleb128 0xe
+ 999 0103 3A       		.uleb128 0x3a
+ 1000 0104 0B       		.uleb128 0xb
+ 1001 0105 3B       		.uleb128 0x3b
+ 1002 0106 05       		.uleb128 0x5
+ 1003 0107 49       		.uleb128 0x49
+ 1004 0108 13       		.uleb128 0x13
+ 1005 0109 02       		.uleb128 0x2
+ 1006 010a 17       		.uleb128 0x17
+ 1007 010b 00       		.byte	0
+ 1008 010c 00       		.byte	0
+ 1009 010d 12       		.uleb128 0x12
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 26
+
+
+ 1010 010e 2E       		.uleb128 0x2e
+ 1011 010f 00       		.byte	0
+ 1012 0110 3F       		.uleb128 0x3f
+ 1013 0111 19       		.uleb128 0x19
+ 1014 0112 03       		.uleb128 0x3
+ 1015 0113 0E       		.uleb128 0xe
+ 1016 0114 3A       		.uleb128 0x3a
+ 1017 0115 0B       		.uleb128 0xb
+ 1018 0116 3B       		.uleb128 0x3b
+ 1019 0117 05       		.uleb128 0x5
+ 1020 0118 27       		.uleb128 0x27
+ 1021 0119 19       		.uleb128 0x19
+ 1022 011a 11       		.uleb128 0x11
+ 1023 011b 01       		.uleb128 0x1
+ 1024 011c 12       		.uleb128 0x12
+ 1025 011d 06       		.uleb128 0x6
+ 1026 011e 40       		.uleb128 0x40
+ 1027 011f 18       		.uleb128 0x18
+ 1028 0120 9742     		.uleb128 0x2117
+ 1029 0122 19       		.uleb128 0x19
+ 1030 0123 00       		.byte	0
+ 1031 0124 00       		.byte	0
+ 1032 0125 13       		.uleb128 0x13
+ 1033 0126 2E       		.uleb128 0x2e
+ 1034 0127 00       		.byte	0
+ 1035 0128 3F       		.uleb128 0x3f
+ 1036 0129 19       		.uleb128 0x19
+ 1037 012a 03       		.uleb128 0x3
+ 1038 012b 0E       		.uleb128 0xe
+ 1039 012c 3A       		.uleb128 0x3a
+ 1040 012d 0B       		.uleb128 0xb
+ 1041 012e 3B       		.uleb128 0x3b
+ 1042 012f 05       		.uleb128 0x5
+ 1043 0130 27       		.uleb128 0x27
+ 1044 0131 19       		.uleb128 0x19
+ 1045 0132 49       		.uleb128 0x49
+ 1046 0133 13       		.uleb128 0x13
+ 1047 0134 11       		.uleb128 0x11
+ 1048 0135 01       		.uleb128 0x1
+ 1049 0136 12       		.uleb128 0x12
+ 1050 0137 06       		.uleb128 0x6
+ 1051 0138 40       		.uleb128 0x40
+ 1052 0139 18       		.uleb128 0x18
+ 1053 013a 9742     		.uleb128 0x2117
+ 1054 013c 19       		.uleb128 0x19
+ 1055 013d 00       		.byte	0
+ 1056 013e 00       		.byte	0
+ 1057 013f 14       		.uleb128 0x14
+ 1058 0140 898201   		.uleb128 0x4109
+ 1059 0143 01       		.byte	0x1
+ 1060 0144 11       		.uleb128 0x11
+ 1061 0145 01       		.uleb128 0x1
+ 1062 0146 31       		.uleb128 0x31
+ 1063 0147 13       		.uleb128 0x13
+ 1064 0148 01       		.uleb128 0x1
+ 1065 0149 13       		.uleb128 0x13
+ 1066 014a 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 27
+
+
+ 1067 014b 00       		.byte	0
+ 1068 014c 15       		.uleb128 0x15
+ 1069 014d 8A8201   		.uleb128 0x410a
+ 1070 0150 00       		.byte	0
+ 1071 0151 02       		.uleb128 0x2
+ 1072 0152 18       		.uleb128 0x18
+ 1073 0153 9142     		.uleb128 0x2111
+ 1074 0155 18       		.uleb128 0x18
+ 1075 0156 00       		.byte	0
+ 1076 0157 00       		.byte	0
+ 1077 0158 16       		.uleb128 0x16
+ 1078 0159 05       		.uleb128 0x5
+ 1079 015a 00       		.byte	0
+ 1080 015b 03       		.uleb128 0x3
+ 1081 015c 0E       		.uleb128 0xe
+ 1082 015d 3A       		.uleb128 0x3a
+ 1083 015e 0B       		.uleb128 0xb
+ 1084 015f 3B       		.uleb128 0x3b
+ 1085 0160 0B       		.uleb128 0xb
+ 1086 0161 49       		.uleb128 0x49
+ 1087 0162 13       		.uleb128 0x13
+ 1088 0163 02       		.uleb128 0x2
+ 1089 0164 17       		.uleb128 0x17
+ 1090 0165 00       		.byte	0
+ 1091 0166 00       		.byte	0
+ 1092 0167 17       		.uleb128 0x17
+ 1093 0168 34       		.uleb128 0x34
+ 1094 0169 00       		.byte	0
+ 1095 016a 03       		.uleb128 0x3
+ 1096 016b 0E       		.uleb128 0xe
+ 1097 016c 3A       		.uleb128 0x3a
+ 1098 016d 0B       		.uleb128 0xb
+ 1099 016e 3B       		.uleb128 0x3b
+ 1100 016f 05       		.uleb128 0x5
+ 1101 0170 49       		.uleb128 0x49
+ 1102 0171 13       		.uleb128 0x13
+ 1103 0172 3F       		.uleb128 0x3f
+ 1104 0173 19       		.uleb128 0x19
+ 1105 0174 3C       		.uleb128 0x3c
+ 1106 0175 19       		.uleb128 0x19
+ 1107 0176 00       		.byte	0
+ 1108 0177 00       		.byte	0
+ 1109 0178 18       		.uleb128 0x18
+ 1110 0179 2E       		.uleb128 0x2e
+ 1111 017a 00       		.byte	0
+ 1112 017b 3F       		.uleb128 0x3f
+ 1113 017c 19       		.uleb128 0x19
+ 1114 017d 03       		.uleb128 0x3
+ 1115 017e 0E       		.uleb128 0xe
+ 1116 017f 3A       		.uleb128 0x3a
+ 1117 0180 0B       		.uleb128 0xb
+ 1118 0181 3B       		.uleb128 0x3b
+ 1119 0182 0B       		.uleb128 0xb
+ 1120 0183 27       		.uleb128 0x27
+ 1121 0184 19       		.uleb128 0x19
+ 1122 0185 3C       		.uleb128 0x3c
+ 1123 0186 19       		.uleb128 0x19
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 28
+
+
+ 1124 0187 00       		.byte	0
+ 1125 0188 00       		.byte	0
+ 1126 0189 00       		.byte	0
+ 1127              		.section	.debug_loc,"",%progbits
+ 1128              	.Ldebug_loc0:
+ 1129              	.LLST0:
+ 1130 0000 00000000 		.4byte	.LVL4
+ 1131 0004 02000000 		.4byte	.LVL5
+ 1132 0008 0100     		.2byte	0x1
+ 1133 000a 50       		.byte	0x50
+ 1134 000b 02000000 		.4byte	.LVL5
+ 1135 000f 10000000 		.4byte	.LFE69
+ 1136 0013 0400     		.2byte	0x4
+ 1137 0015 F3       		.byte	0xf3
+ 1138 0016 01       		.uleb128 0x1
+ 1139 0017 50       		.byte	0x50
+ 1140 0018 9F       		.byte	0x9f
+ 1141 0019 00000000 		.4byte	0
+ 1142 001d 00000000 		.4byte	0
+ 1143              	.LLST1:
+ 1144 0021 04000000 		.4byte	.LVL6
+ 1145 0025 06000000 		.4byte	.LVL7
+ 1146 0029 0500     		.2byte	0x5
+ 1147 002b 70       		.byte	0x70
+ 1148 002c 00       		.sleb128 0
+ 1149 002d 35       		.byte	0x35
+ 1150 002e 25       		.byte	0x25
+ 1151 002f 9F       		.byte	0x9f
+ 1152 0030 00000000 		.4byte	0
+ 1153 0034 00000000 		.4byte	0
+ 1154              	.LLST2:
+ 1155 0038 00000000 		.4byte	.LVL12
+ 1156 003c 07000000 		.4byte	.LVL13-1
+ 1157 0040 0100     		.2byte	0x1
+ 1158 0042 50       		.byte	0x50
+ 1159 0043 07000000 		.4byte	.LVL13-1
+ 1160 0047 1A000000 		.4byte	.LFE64
+ 1161 004b 0100     		.2byte	0x1
+ 1162 004d 54       		.byte	0x54
+ 1163 004e 00000000 		.4byte	0
+ 1164 0052 00000000 		.4byte	0
+ 1165              		.section	.debug_aranges,"",%progbits
+ 1166 0000 7C000000 		.4byte	0x7c
+ 1167 0004 0200     		.2byte	0x2
+ 1168 0006 00000000 		.4byte	.Ldebug_info0
+ 1169 000a 04       		.byte	0x4
+ 1170 000b 00       		.byte	0
+ 1171 000c 0000     		.2byte	0
+ 1172 000e 0000     		.2byte	0
+ 1173 0010 00000000 		.4byte	.LFB66
+ 1174 0014 08000000 		.4byte	.LFE66-.LFB66
+ 1175 0018 00000000 		.4byte	.LFB67
+ 1176 001c 0C000000 		.4byte	.LFE67-.LFB67
+ 1177 0020 00000000 		.4byte	.LFB68
+ 1178 0024 0C000000 		.4byte	.LFE68-.LFB68
+ 1179 0028 00000000 		.4byte	.LFB69
+ 1180 002c 10000000 		.4byte	.LFE69-.LFB69
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 29
+
+
+ 1181 0030 00000000 		.4byte	.LFB70
+ 1182 0034 0C000000 		.4byte	.LFE70-.LFB70
+ 1183 0038 00000000 		.4byte	.LFB71
+ 1184 003c 0C000000 		.4byte	.LFE71-.LFB71
+ 1185 0040 00000000 		.4byte	.LFB72
+ 1186 0044 10000000 		.4byte	.LFE72-.LFB72
+ 1187 0048 00000000 		.4byte	.LFB73
+ 1188 004c 0C000000 		.4byte	.LFE73-.LFB73
+ 1189 0050 00000000 		.4byte	.LFB63
+ 1190 0054 1C000000 		.4byte	.LFE63-.LFB63
+ 1191 0058 00000000 		.4byte	.LFB64
+ 1192 005c 1A000000 		.4byte	.LFE64-.LFB64
+ 1193 0060 00000000 		.4byte	.LFB65
+ 1194 0064 14000000 		.4byte	.LFE65-.LFB65
+ 1195 0068 00000000 		.4byte	.LFB74
+ 1196 006c 0C000000 		.4byte	.LFE74-.LFB74
+ 1197 0070 00000000 		.4byte	.LFB75
+ 1198 0074 0C000000 		.4byte	.LFE75-.LFB75
+ 1199 0078 00000000 		.4byte	0
+ 1200 007c 00000000 		.4byte	0
+ 1201              		.section	.debug_ranges,"",%progbits
+ 1202              	.Ldebug_ranges0:
+ 1203 0000 00000000 		.4byte	.LFB66
+ 1204 0004 08000000 		.4byte	.LFE66
+ 1205 0008 00000000 		.4byte	.LFB67
+ 1206 000c 0C000000 		.4byte	.LFE67
+ 1207 0010 00000000 		.4byte	.LFB68
+ 1208 0014 0C000000 		.4byte	.LFE68
+ 1209 0018 00000000 		.4byte	.LFB69
+ 1210 001c 10000000 		.4byte	.LFE69
+ 1211 0020 00000000 		.4byte	.LFB70
+ 1212 0024 0C000000 		.4byte	.LFE70
+ 1213 0028 00000000 		.4byte	.LFB71
+ 1214 002c 0C000000 		.4byte	.LFE71
+ 1215 0030 00000000 		.4byte	.LFB72
+ 1216 0034 10000000 		.4byte	.LFE72
+ 1217 0038 00000000 		.4byte	.LFB73
+ 1218 003c 0C000000 		.4byte	.LFE73
+ 1219 0040 00000000 		.4byte	.LFB63
+ 1220 0044 1C000000 		.4byte	.LFE63
+ 1221 0048 00000000 		.4byte	.LFB64
+ 1222 004c 1A000000 		.4byte	.LFE64
+ 1223 0050 00000000 		.4byte	.LFB65
+ 1224 0054 14000000 		.4byte	.LFE65
+ 1225 0058 00000000 		.4byte	.LFB74
+ 1226 005c 0C000000 		.4byte	.LFE74
+ 1227 0060 00000000 		.4byte	.LFB75
+ 1228 0064 0C000000 		.4byte	.LFE75
+ 1229 0068 00000000 		.4byte	0
+ 1230 006c 00000000 		.4byte	0
+ 1231              		.section	.debug_line,"",%progbits
+ 1232              	.Ldebug_line0:
+ 1233 0000 61020000 		.section	.debug_str,"MS",%progbits,1
+ 1233      02007401 
+ 1233      00000201 
+ 1233      FB0E0D00 
+ 1233      01010101 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 30
+
+
+ 1234              	.LASF27:
+ 1235 0000 44414331 		.ascii	"DAC1_ISR_GetPriority\000"
+ 1235      5F495352 
+ 1235      5F476574 
+ 1235      5072696F 
+ 1235      72697479 
+ 1236              	.LASF31:
+ 1237 0015 44414331 		.ascii	"DAC1_ISR_StartEx\000"
+ 1237      5F495352 
+ 1237      5F537461 
+ 1237      72744578 
+ 1237      00
+ 1238              	.LASF11:
+ 1239 0026 5F5F696E 		.ascii	"__int32_t\000"
+ 1239      7433325F 
+ 1239      7400
+ 1240              	.LASF40:
+ 1241 0030 75706461 		.ascii	"updateDAC1\000"
+ 1241      74654441 
+ 1241      433100
+ 1242              	.LASF38:
+ 1243 003b 44414331 		.ascii	"DAC1_ISR_GetState\000"
+ 1243      5F495352 
+ 1243      5F476574 
+ 1243      53746174 
+ 1243      6500
+ 1244              	.LASF30:
+ 1245 004d 44414331 		.ascii	"DAC1_ISR_Start\000"
+ 1245      5F495352 
+ 1245      5F537461 
+ 1245      727400
+ 1246              	.LASF15:
+ 1247 005c 666C6F61 		.ascii	"float\000"
+ 1247      7400
+ 1248              	.LASF23:
+ 1249 0062 44414331 		.ascii	"DAC1_ISR_SetPriority\000"
+ 1249      5F495352 
+ 1249      5F536574 
+ 1249      5072696F 
+ 1249      72697479 
+ 1250              	.LASF28:
+ 1251 0077 44414331 		.ascii	"DAC1_ISR_Enable\000"
+ 1251      5F495352 
+ 1251      5F456E61 
+ 1251      626C6500 
+ 1252              	.LASF17:
+ 1253 0087 72656738 		.ascii	"reg8\000"
+ 1253      00
+ 1254              	.LASF6:
+ 1255 008c 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1255      20756E73 
+ 1255      69676E65 
+ 1255      6420696E 
+ 1255      7400
+ 1256              	.LASF4:
+ 1257 009e 73686F72 		.ascii	"short unsigned int\000"
+ 1257      7420756E 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 31
+
+
+ 1257      7369676E 
+ 1257      65642069 
+ 1257      6E7400
+ 1258              	.LASF39:
+ 1259 00b1 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1259      52784275 
+ 1259      66666572 
+ 1259      00
+ 1260              	.LASF2:
+ 1261 00be 756E7369 		.ascii	"unsigned char\000"
+ 1261      676E6564 
+ 1261      20636861 
+ 1261      7200
+ 1262              	.LASF16:
+ 1263 00cc 646F7562 		.ascii	"double\000"
+ 1263      6C6500
+ 1264              	.LASF21:
+ 1265 00d3 44414331 		.ascii	"DAC1_ISR_SetVector\000"
+ 1265      5F495352 
+ 1265      5F536574 
+ 1265      56656374 
+ 1265      6F7200
+ 1266              	.LASF25:
+ 1267 00e6 7072696F 		.ascii	"priority\000"
+ 1267      72697479 
+ 1267      00
+ 1268              	.LASF34:
+ 1269 00ef 44414331 		.ascii	"DAC1_ISR_ClearPending\000"
+ 1269      5F495352 
+ 1269      5F436C65 
+ 1269      61725065 
+ 1269      6E64696E 
+ 1270              	.LASF14:
+ 1271 0105 75696E74 		.ascii	"uint32\000"
+ 1271      333200
+ 1272              	.LASF0:
+ 1273 010c 756E7369 		.ascii	"unsigned int\000"
+ 1273      676E6564 
+ 1273      20696E74 
+ 1273      00
+ 1274              	.LASF24:
+ 1275 0119 61646472 		.ascii	"address\000"
+ 1275      65737300 
+ 1276              	.LASF8:
+ 1277 0121 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1277      206C6F6E 
+ 1277      6720756E 
+ 1277      7369676E 
+ 1277      65642069 
+ 1278              	.LASF35:
+ 1279 0138 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 1279      4320342E 
+ 1279      392E3320 
+ 1279      32303135 
+ 1279      30333033 
+ 1280 016b 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m3 -mthumb -g -O"
+ 1280      20726576 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 32
+
+
+ 1280      6973696F 
+ 1280      6E203232 
+ 1280      31323230 
+ 1281 019e 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1281      66756E63 
+ 1281      74696F6E 
+ 1281      2D736563 
+ 1281      74696F6E 
+ 1282              	.LASF36:
+ 1283 01c6 2E5C4765 		.ascii	".\\Generated_Source\\PSoC5\\DAC1_ISR.c\000"
+ 1283      6E657261 
+ 1283      7465645F 
+ 1283      536F7572 
+ 1283      63655C50 
+ 1284              	.LASF19:
+ 1285 01ea 63796973 		.ascii	"cyisraddress\000"
+ 1285      72616464 
+ 1285      72657373 
+ 1285      00
+ 1286              	.LASF32:
+ 1287 01f7 44414331 		.ascii	"DAC1_ISR_Stop\000"
+ 1287      5F495352 
+ 1287      5F53746F 
+ 1287      7000
+ 1288              	.LASF33:
+ 1289 0205 44414331 		.ascii	"DAC1_ISR_SetPending\000"
+ 1289      5F495352 
+ 1289      5F536574 
+ 1289      50656E64 
+ 1289      696E6700 
+ 1290              	.LASF12:
+ 1291 0219 696E7433 		.ascii	"int32_t\000"
+ 1291      325F7400 
+ 1292              	.LASF9:
+ 1293 0221 73697A65 		.ascii	"sizetype\000"
+ 1293      74797065 
+ 1293      00
+ 1294              	.LASF37:
+ 1295 022a 5C5C4441 		.ascii	"\\\\DATA\\Folder Redirection\\faithc\\Desktop\\FAIT"
+ 1295      54415C46 
+ 1295      6F6C6465 
+ 1295      72205265 
+ 1295      64697265 
+ 1296 0257 48532052 		.ascii	"HS RELEASED FIRMWARE\\SirenProject200W_RevF\\SirenP"
+ 1296      454C4541 
+ 1296      53454420 
+ 1296      4649524D 
+ 1296      57415245 
+ 1297 0288 726F6A65 		.ascii	"roject200W_RevD\\ReleaseVersion.cydsn\000"
+ 1297      63743230 
+ 1297      30575F52 
+ 1297      6576445C 
+ 1297      52656C65 
+ 1298              	.LASF7:
+ 1299 02ad 6C6F6E67 		.ascii	"long long int\000"
+ 1299      206C6F6E 
+ 1299      6720696E 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccC2120r.s 			page 33
+
+
+ 1299      7400
+ 1300              	.LASF10:
+ 1301 02bb 63686172 		.ascii	"char\000"
+ 1301      00
+ 1302              	.LASF22:
+ 1303 02c0 72616D56 		.ascii	"ramVectorTable\000"
+ 1303      6563746F 
+ 1303      72546162 
+ 1303      6C6500
+ 1304              	.LASF3:
+ 1305 02cf 73686F72 		.ascii	"short int\000"
+ 1305      7420696E 
+ 1305      7400
+ 1306              	.LASF29:
+ 1307 02d9 44414331 		.ascii	"DAC1_ISR_Disable\000"
+ 1307      5F495352 
+ 1307      5F446973 
+ 1307      61626C65 
+ 1307      00
+ 1308              	.LASF13:
+ 1309 02ea 75696E74 		.ascii	"uint8\000"
+ 1309      3800
+ 1310              	.LASF26:
+ 1311 02f0 44414331 		.ascii	"DAC1_ISR_GetVector\000"
+ 1311      5F495352 
+ 1311      5F476574 
+ 1311      56656374 
+ 1311      6F7200
+ 1312              	.LASF5:
+ 1313 0303 6C6F6E67 		.ascii	"long int\000"
+ 1313      20696E74 
+ 1313      00
+ 1314              	.LASF18:
+ 1315 030c 72656733 		.ascii	"reg32\000"
+ 1315      3200
+ 1316              	.LASF20:
+ 1317 0312 44414331 		.ascii	"DAC1_ISR_Interrupt\000"
+ 1317      5F495352 
+ 1317      5F496E74 
+ 1317      65727275 
+ 1317      707400
+ 1318              	.LASF1:
+ 1319 0325 7369676E 		.ascii	"signed char\000"
+ 1319      65642063 
+ 1319      68617200 
+ 1320              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

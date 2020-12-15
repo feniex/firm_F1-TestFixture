@@ -1,0 +1,1181 @@
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"CD4051BPW_Driver.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.initDiagnostics,"ax",%progbits
+  20              		.align	2
+  21              		.global	initDiagnostics
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	initDiagnostics, %function
+  25              	initDiagnostics:
+  26              	.LFB63:
+  27              		.file 1 "CD4051BPW_Driver.c"
+   1:CD4051BPW_Driver.c **** /* ========================================
+   2:CD4051BPW_Driver.c ****  *
+   3:CD4051BPW_Driver.c ****  * Copyright YOUR COMPANY, THE YEAR
+   4:CD4051BPW_Driver.c ****  * All Rights Reserved
+   5:CD4051BPW_Driver.c ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:CD4051BPW_Driver.c ****  *
+   7:CD4051BPW_Driver.c ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:CD4051BPW_Driver.c ****  * WHICH IS THE PROPERTY OF your company.
+   9:CD4051BPW_Driver.c ****  *
+  10:CD4051BPW_Driver.c ****  * ========================================
+  11:CD4051BPW_Driver.c **** */
+  12:CD4051BPW_Driver.c **** 
+  13:CD4051BPW_Driver.c **** #include <CD4051BPW_Driver.h>
+  14:CD4051BPW_Driver.c **** 
+  15:CD4051BPW_Driver.c **** #define OTHER_CHIP_EN 33
+  16:CD4051BPW_Driver.c **** 
+  17:CD4051BPW_Driver.c **** void initDiagnostics(void)
+  18:CD4051BPW_Driver.c **** {
+  28              		.loc 1 18 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 1, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33 0000 80B4     		push	{r7}
+  34              		.cfi_def_cfa_offset 4
+  35              		.cfi_offset 7, -4
+  36 0002 00AF     		add	r7, sp, #0
+  37              		.cfi_def_cfa_register 7
+  19:CD4051BPW_Driver.c ****     //DIAG_INH_1_Write(0);
+  20:CD4051BPW_Driver.c ****     //DIAG_INH_2_Write(0);
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 2
+
+
+  21:CD4051BPW_Driver.c ****     //DIAG_INH_3_Write(0);
+  22:CD4051BPW_Driver.c **** }
+  38              		.loc 1 22 0
+  39 0004 00BF     		nop
+  40 0006 BD46     		mov	sp, r7
+  41              		.cfi_def_cfa_register 13
+  42              		@ sp needed
+  43 0008 80BC     		pop	{r7}
+  44              		.cfi_restore 7
+  45              		.cfi_def_cfa_offset 0
+  46 000a 7047     		bx	lr
+  47              		.cfi_endproc
+  48              	.LFE63:
+  49              		.size	initDiagnostics, .-initDiagnostics
+  50              		.section	.text.getMuxValue,"ax",%progbits
+  51              		.align	2
+  52              		.thumb
+  53              		.thumb_func
+  54              		.type	getMuxValue, %function
+  55              	getMuxValue:
+  56              	.LFB64:
+  23:CD4051BPW_Driver.c **** 
+  24:CD4051BPW_Driver.c **** static unsigned char getMuxValue(diagnostic_inputs_t channelToRead)
+  25:CD4051BPW_Driver.c **** {
+  57              		.loc 1 25 0
+  58              		.cfi_startproc
+  59              		@ args = 0, pretend = 0, frame = 8
+  60              		@ frame_needed = 1, uses_anonymous_args = 0
+  61              		@ link register save eliminated.
+  62 0000 80B4     		push	{r7}
+  63              		.cfi_def_cfa_offset 4
+  64              		.cfi_offset 7, -4
+  65 0002 83B0     		sub	sp, sp, #12
+  66              		.cfi_def_cfa_offset 16
+  67 0004 00AF     		add	r7, sp, #0
+  68              		.cfi_def_cfa_register 7
+  69 0006 0346     		mov	r3, r0
+  70 0008 FB71     		strb	r3, [r7, #7]
+  26:CD4051BPW_Driver.c ****     static unsigned char lookUpChipMuxValues[40] = {0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7,
+  27:CD4051BPW_Driver.c ****                                                     0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7,
+  28:CD4051BPW_Driver.c ****                                                     0, 0, 1, 1, 2, 3, 4, 5};
+  29:CD4051BPW_Driver.c ****     
+  30:CD4051BPW_Driver.c ****     return lookUpChipMuxValues[channelToRead];
+  71              		.loc 1 30 0
+  72 000a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+  73 000c 034A     		ldr	r2, .L4
+  74 000e D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
+  31:CD4051BPW_Driver.c **** }
+  75              		.loc 1 31 0
+  76 0010 1846     		mov	r0, r3
+  77 0012 0C37     		adds	r7, r7, #12
+  78              		.cfi_def_cfa_offset 4
+  79 0014 BD46     		mov	sp, r7
+  80              		.cfi_def_cfa_register 13
+  81              		@ sp needed
+  82 0016 80BC     		pop	{r7}
+  83              		.cfi_restore 7
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 3
+
+
+  84              		.cfi_def_cfa_offset 0
+  85 0018 7047     		bx	lr
+  86              	.L5:
+  87 001a 00BF     		.align	2
+  88              	.L4:
+  89 001c 00000000 		.word	lookUpChipMuxValues.6059
+  90              		.cfi_endproc
+  91              	.LFE64:
+  92              		.size	getMuxValue, .-getMuxValue
+  93              		.section	.text.selectADCChannelMux,"ax",%progbits
+  94              		.align	2
+  95              		.global	selectADCChannelMux
+  96              		.thumb
+  97              		.thumb_func
+  98              		.type	selectADCChannelMux, %function
+  99              	selectADCChannelMux:
+ 100              	.LFB65:
+  32:CD4051BPW_Driver.c **** 
+  33:CD4051BPW_Driver.c **** void selectADCChannelMux(diagnostic_inputs_t channelToRead)
+  34:CD4051BPW_Driver.c **** {
+ 101              		.loc 1 34 0
+ 102              		.cfi_startproc
+ 103              		@ args = 0, pretend = 0, frame = 16
+ 104              		@ frame_needed = 1, uses_anonymous_args = 0
+ 105 0000 80B5     		push	{r7, lr}
+ 106              		.cfi_def_cfa_offset 8
+ 107              		.cfi_offset 7, -8
+ 108              		.cfi_offset 14, -4
+ 109 0002 84B0     		sub	sp, sp, #16
+ 110              		.cfi_def_cfa_offset 24
+ 111 0004 00AF     		add	r7, sp, #0
+ 112              		.cfi_def_cfa_register 7
+ 113 0006 0346     		mov	r3, r0
+ 114 0008 FB71     		strb	r3, [r7, #7]
+  35:CD4051BPW_Driver.c ****     unsigned char localMuxValue = 0;
+ 115              		.loc 1 35 0
+ 116 000a 0023     		movs	r3, #0
+ 117 000c FB73     		strb	r3, [r7, #15]
+  36:CD4051BPW_Driver.c ****     
+  37:CD4051BPW_Driver.c ****     localMuxValue = getMuxValue(channelToRead);
+ 118              		.loc 1 37 0
+ 119 000e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 120 0010 1846     		mov	r0, r3
+ 121 0012 FFF7FEFF 		bl	getMuxValue
+ 122 0016 0346     		mov	r3, r0
+ 123 0018 FB73     		strb	r3, [r7, #15]
+  38:CD4051BPW_Driver.c ****     
+  39:CD4051BPW_Driver.c ****     if(channelToRead<=CHANNEL16)
+  40:CD4051BPW_Driver.c ****     {
+  41:CD4051BPW_Driver.c **** //        DIAG_INH_1_Write(0);
+  42:CD4051BPW_Driver.c **** //        DIAG_INH_2_Write(1);
+  43:CD4051BPW_Driver.c **** //        DIAG_INH_3_Write(1);
+  44:CD4051BPW_Driver.c ****         
+  45:CD4051BPW_Driver.c **** //        DIAG_BCD_C_Write(((localMuxValue&0x04)>>2));
+  46:CD4051BPW_Driver.c **** //        DIAG_BCD_B_Write(((localMuxValue&0x02)>>1));
+  47:CD4051BPW_Driver.c **** //        DIAG_BCD_A_Write(localMuxValue&0x01);
+  48:CD4051BPW_Driver.c ****     }
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 4
+
+
+  49:CD4051BPW_Driver.c ****     else if(channelToRead>CHANNEL16 && channelToRead<=CHANNEL32)
+  50:CD4051BPW_Driver.c ****     {
+  51:CD4051BPW_Driver.c **** //        DIAG_INH_1_Write(1);
+  52:CD4051BPW_Driver.c **** //        DIAG_INH_2_Write(0);
+  53:CD4051BPW_Driver.c **** //        DIAG_INH_3_Write(1);
+  54:CD4051BPW_Driver.c ****         
+  55:CD4051BPW_Driver.c **** //        DIAG_BCD_C_Write(((localMuxValue&0x04)>>2));
+  56:CD4051BPW_Driver.c **** //        DIAG_BCD_B_Write(((localMuxValue&0x02)>>1));
+  57:CD4051BPW_Driver.c **** //        DIAG_BCD_A_Write(localMuxValue&0x01);
+  58:CD4051BPW_Driver.c ****     }
+  59:CD4051BPW_Driver.c ****     else if(channelToRead == VSENSEBATT)
+  60:CD4051BPW_Driver.c ****     {
+  61:CD4051BPW_Driver.c **** //        DIAG_INH_1_Write(1);
+  62:CD4051BPW_Driver.c **** //        DIAG_INH_2_Write(1);
+  63:CD4051BPW_Driver.c **** //        DIAG_INH_3_Write(0);
+  64:CD4051BPW_Driver.c ****         
+  65:CD4051BPW_Driver.c **** //        DIAG_BCD_C_Write(((localMuxValue&0x04)>>2));
+  66:CD4051BPW_Driver.c **** //        DIAG_BCD_B_Write(((localMuxValue&0x02)>>1));
+  67:CD4051BPW_Driver.c **** //        DIAG_BCD_A_Write(localMuxValue&0x01);
+  68:CD4051BPW_Driver.c ****     }
+  69:CD4051BPW_Driver.c ****     else if(channelToRead>CHANNEL32)
+  70:CD4051BPW_Driver.c ****     {
+  71:CD4051BPW_Driver.c **** //        DIAG_INH_1_Write(1);
+  72:CD4051BPW_Driver.c **** //        DIAG_INH_2_Write(1);
+  73:CD4051BPW_Driver.c **** //        DIAG_INH_3_Write(0);
+  74:CD4051BPW_Driver.c ****         
+  75:CD4051BPW_Driver.c **** //        DIAG_BCD_C_Write(((localMuxValue&0x04)>>2));
+  76:CD4051BPW_Driver.c **** //        DIAG_BCD_B_Write(((localMuxValue&0x02)>>1));
+  77:CD4051BPW_Driver.c **** //        DIAG_BCD_A_Write(localMuxValue&0x01);
+  78:CD4051BPW_Driver.c ****     }
+  79:CD4051BPW_Driver.c **** }
+ 124              		.loc 1 79 0
+ 125 001a 00BF     		nop
+ 126 001c 1037     		adds	r7, r7, #16
+ 127              		.cfi_def_cfa_offset 8
+ 128 001e BD46     		mov	sp, r7
+ 129              		.cfi_def_cfa_register 13
+ 130              		@ sp needed
+ 131 0020 80BD     		pop	{r7, pc}
+ 132              		.cfi_endproc
+ 133              	.LFE65:
+ 134              		.size	selectADCChannelMux, .-selectADCChannelMux
+ 135 0022 00BF     		.data
+ 136              		.align	2
+ 137              		.type	lookUpChipMuxValues.6059, %object
+ 138              		.size	lookUpChipMuxValues.6059, 40
+ 139              	lookUpChipMuxValues.6059:
+ 140 0000 00       		.byte	0
+ 141 0001 00       		.byte	0
+ 142 0002 01       		.byte	1
+ 143 0003 01       		.byte	1
+ 144 0004 02       		.byte	2
+ 145 0005 02       		.byte	2
+ 146 0006 03       		.byte	3
+ 147 0007 03       		.byte	3
+ 148 0008 04       		.byte	4
+ 149 0009 04       		.byte	4
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 5
+
+
+ 150 000a 05       		.byte	5
+ 151 000b 05       		.byte	5
+ 152 000c 06       		.byte	6
+ 153 000d 06       		.byte	6
+ 154 000e 07       		.byte	7
+ 155 000f 07       		.byte	7
+ 156 0010 00       		.byte	0
+ 157 0011 00       		.byte	0
+ 158 0012 01       		.byte	1
+ 159 0013 01       		.byte	1
+ 160 0014 02       		.byte	2
+ 161 0015 02       		.byte	2
+ 162 0016 03       		.byte	3
+ 163 0017 03       		.byte	3
+ 164 0018 04       		.byte	4
+ 165 0019 04       		.byte	4
+ 166 001a 05       		.byte	5
+ 167 001b 05       		.byte	5
+ 168 001c 06       		.byte	6
+ 169 001d 06       		.byte	6
+ 170 001e 07       		.byte	7
+ 171 001f 07       		.byte	7
+ 172 0020 00       		.byte	0
+ 173 0021 00       		.byte	0
+ 174 0022 01       		.byte	1
+ 175 0023 01       		.byte	1
+ 176 0024 02       		.byte	2
+ 177 0025 03       		.byte	3
+ 178 0026 04       		.byte	4
+ 179 0027 05       		.byte	5
+ 180              		.text
+ 181              	.Letext0:
+ 182              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 183              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 184              		.file 4 "./CD4051BPW_Driver.h"
+ 185              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 186              		.section	.debug_info,"",%progbits
+ 187              	.Ldebug_info0:
+ 188 0000 46020000 		.4byte	0x246
+ 189 0004 0400     		.2byte	0x4
+ 190 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 191 000a 04       		.byte	0x4
+ 192 000b 01       		.uleb128 0x1
+ 193 000c 8C000000 		.4byte	.LASF60
+ 194 0010 0C       		.byte	0xc
+ 195 0011 1A010000 		.4byte	.LASF61
+ 196 0015 0C020000 		.4byte	.LASF62
+ 197 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 198 001d 00000000 		.4byte	0
+ 199 0021 00000000 		.4byte	.Ldebug_line0
+ 200 0025 02       		.uleb128 0x2
+ 201 0026 01       		.byte	0x1
+ 202 0027 06       		.byte	0x6
+ 203 0028 CC010000 		.4byte	.LASF0
+ 204 002c 02       		.uleb128 0x2
+ 205 002d 01       		.byte	0x1
+ 206 002e 08       		.byte	0x8
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 6
+
+
+ 207 002f BE010000 		.4byte	.LASF1
+ 208 0033 02       		.uleb128 0x2
+ 209 0034 02       		.byte	0x2
+ 210 0035 05       		.byte	0x5
+ 211 0036 54000000 		.4byte	.LASF2
+ 212 003a 02       		.uleb128 0x2
+ 213 003b 02       		.byte	0x2
+ 214 003c 07       		.byte	0x7
+ 215 003d 6A020000 		.4byte	.LASF3
+ 216 0041 03       		.uleb128 0x3
+ 217 0042 05030000 		.4byte	.LASF9
+ 218 0046 02       		.byte	0x2
+ 219 0047 3F       		.byte	0x3f
+ 220 0048 4C000000 		.4byte	0x4c
+ 221 004c 02       		.uleb128 0x2
+ 222 004d 04       		.byte	0x4
+ 223 004e 05       		.byte	0x5
+ 224 004f 91010000 		.4byte	.LASF4
+ 225 0053 02       		.uleb128 0x2
+ 226 0054 04       		.byte	0x4
+ 227 0055 07       		.byte	0x7
+ 228 0056 D7020000 		.4byte	.LASF5
+ 229 005a 02       		.uleb128 0x2
+ 230 005b 08       		.byte	0x8
+ 231 005c 05       		.byte	0x5
+ 232 005d 83010000 		.4byte	.LASF6
+ 233 0061 02       		.uleb128 0x2
+ 234 0062 08       		.byte	0x8
+ 235 0063 07       		.byte	0x7
+ 236 0064 D8010000 		.4byte	.LASF7
+ 237 0068 04       		.uleb128 0x4
+ 238 0069 04       		.byte	0x4
+ 239 006a 05       		.byte	0x5
+ 240 006b 696E7400 		.ascii	"int\000"
+ 241 006f 02       		.uleb128 0x2
+ 242 0070 04       		.byte	0x4
+ 243 0071 07       		.byte	0x7
+ 244 0072 FF010000 		.4byte	.LASF8
+ 245 0076 03       		.uleb128 0x3
+ 246 0077 62020000 		.4byte	.LASF10
+ 247 007b 03       		.byte	0x3
+ 248 007c 2C       		.byte	0x2c
+ 249 007d 41000000 		.4byte	0x41
+ 250 0081 02       		.uleb128 0x2
+ 251 0082 04       		.byte	0x4
+ 252 0083 04       		.byte	0x4
+ 253 0084 7D010000 		.4byte	.LASF11
+ 254 0088 02       		.uleb128 0x2
+ 255 0089 08       		.byte	0x8
+ 256 008a 04       		.byte	0x4
+ 257 008b FE020000 		.4byte	.LASF12
+ 258 008f 02       		.uleb128 0x2
+ 259 0090 01       		.byte	0x1
+ 260 0091 08       		.byte	0x8
+ 261 0092 54020000 		.4byte	.LASF13
+ 262 0096 02       		.uleb128 0x2
+ 263 0097 08       		.byte	0x8
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 7
+
+
+ 264 0098 04       		.byte	0x4
+ 265 0099 B2010000 		.4byte	.LASF14
+ 266 009d 02       		.uleb128 0x2
+ 267 009e 04       		.byte	0x4
+ 268 009f 07       		.byte	0x7
+ 269 00a0 1D030000 		.4byte	.LASF15
+ 270 00a4 05       		.uleb128 0x5
+ 271 00a5 01       		.byte	0x1
+ 272 00a6 2C000000 		.4byte	0x2c
+ 273 00aa 04       		.byte	0x4
+ 274 00ab 0F       		.byte	0xf
+ 275 00ac A1010000 		.4byte	0x1a1
+ 276 00b0 06       		.uleb128 0x6
+ 277 00b1 26030000 		.4byte	.LASF16
+ 278 00b5 00       		.byte	0
+ 279 00b6 06       		.uleb128 0x6
+ 280 00b7 2F030000 		.4byte	.LASF17
+ 281 00bb 01       		.byte	0x1
+ 282 00bc 06       		.uleb128 0x6
+ 283 00bd 38030000 		.4byte	.LASF18
+ 284 00c1 02       		.byte	0x2
+ 285 00c2 06       		.uleb128 0x6
+ 286 00c3 41030000 		.4byte	.LASF19
+ 287 00c7 03       		.byte	0x3
+ 288 00c8 06       		.uleb128 0x6
+ 289 00c9 4A030000 		.4byte	.LASF20
+ 290 00cd 04       		.byte	0x4
+ 291 00ce 06       		.uleb128 0x6
+ 292 00cf 53030000 		.4byte	.LASF21
+ 293 00d3 05       		.byte	0x5
+ 294 00d4 06       		.uleb128 0x6
+ 295 00d5 5C030000 		.4byte	.LASF22
+ 296 00d9 06       		.byte	0x6
+ 297 00da 06       		.uleb128 0x6
+ 298 00db 65030000 		.4byte	.LASF23
+ 299 00df 07       		.byte	0x7
+ 300 00e0 06       		.uleb128 0x6
+ 301 00e1 6E030000 		.4byte	.LASF24
+ 302 00e5 08       		.byte	0x8
+ 303 00e6 06       		.uleb128 0x6
+ 304 00e7 87020000 		.4byte	.LASF25
+ 305 00eb 09       		.byte	0x9
+ 306 00ec 06       		.uleb128 0x6
+ 307 00ed 91020000 		.4byte	.LASF26
+ 308 00f1 0A       		.byte	0xa
+ 309 00f2 06       		.uleb128 0x6
+ 310 00f3 9B020000 		.4byte	.LASF27
+ 311 00f7 0B       		.byte	0xb
+ 312 00f8 06       		.uleb128 0x6
+ 313 00f9 A5020000 		.4byte	.LASF28
+ 314 00fd 0C       		.byte	0xc
+ 315 00fe 06       		.uleb128 0x6
+ 316 00ff AF020000 		.4byte	.LASF29
+ 317 0103 0D       		.byte	0xd
+ 318 0104 06       		.uleb128 0x6
+ 319 0105 B9020000 		.4byte	.LASF30
+ 320 0109 0E       		.byte	0xe
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 8
+
+
+ 321 010a 06       		.uleb128 0x6
+ 322 010b C3020000 		.4byte	.LASF31
+ 323 010f 0F       		.byte	0xf
+ 324 0110 06       		.uleb128 0x6
+ 325 0111 CD020000 		.4byte	.LASF32
+ 326 0115 10       		.byte	0x10
+ 327 0116 06       		.uleb128 0x6
+ 328 0117 7D020000 		.4byte	.LASF33
+ 329 011b 11       		.byte	0x11
+ 330 011c 06       		.uleb128 0x6
+ 331 011d E9020000 		.4byte	.LASF34
+ 332 0121 12       		.byte	0x12
+ 333 0122 06       		.uleb128 0x6
+ 334 0123 90030000 		.4byte	.LASF35
+ 335 0127 13       		.byte	0x13
+ 336 0128 06       		.uleb128 0x6
+ 337 0129 2D010000 		.4byte	.LASF36
+ 338 012d 14       		.byte	0x14
+ 339 012e 06       		.uleb128 0x6
+ 340 012f AE030000 		.4byte	.LASF37
+ 341 0133 15       		.byte	0x15
+ 342 0134 06       		.uleb128 0x6
+ 343 0135 00000000 		.4byte	.LASF38
+ 344 0139 16       		.byte	0x16
+ 345 013a 06       		.uleb128 0x6
+ 346 013b 0A000000 		.4byte	.LASF39
+ 347 013f 17       		.byte	0x17
+ 348 0140 06       		.uleb128 0x6
+ 349 0141 14000000 		.4byte	.LASF40
+ 350 0145 18       		.byte	0x18
+ 351 0146 06       		.uleb128 0x6
+ 352 0147 1E000000 		.4byte	.LASF41
+ 353 014b 19       		.byte	0x19
+ 354 014c 06       		.uleb128 0x6
+ 355 014d 28000000 		.4byte	.LASF42
+ 356 0151 1A       		.byte	0x1a
+ 357 0152 06       		.uleb128 0x6
+ 358 0153 32000000 		.4byte	.LASF43
+ 359 0157 1B       		.byte	0x1b
+ 360 0158 06       		.uleb128 0x6
+ 361 0159 3C000000 		.4byte	.LASF44
+ 362 015d 1C       		.byte	0x1c
+ 363 015e 06       		.uleb128 0x6
+ 364 015f 4B010000 		.4byte	.LASF45
+ 365 0163 1D       		.byte	0x1d
+ 366 0164 06       		.uleb128 0x6
+ 367 0165 55010000 		.4byte	.LASF46
+ 368 0169 1E       		.byte	0x1e
+ 369 016a 06       		.uleb128 0x6
+ 370 016b 5F010000 		.4byte	.LASF47
+ 371 016f 1F       		.byte	0x1f
+ 372 0170 06       		.uleb128 0x6
+ 373 0171 5E000000 		.4byte	.LASF48
+ 374 0175 20       		.byte	0x20
+ 375 0176 06       		.uleb128 0x6
+ 376 0177 6A000000 		.4byte	.LASF49
+ 377 017b 21       		.byte	0x21
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 9
+
+
+ 378 017c 06       		.uleb128 0x6
+ 379 017d 9A010000 		.4byte	.LASF50
+ 380 0181 22       		.byte	0x22
+ 381 0182 06       		.uleb128 0x6
+ 382 0183 A6010000 		.4byte	.LASF51
+ 383 0187 23       		.byte	0x23
+ 384 0188 06       		.uleb128 0x6
+ 385 0189 F3020000 		.4byte	.LASF52
+ 386 018d 24       		.byte	0x24
+ 387 018e 06       		.uleb128 0x6
+ 388 018f 59020000 		.4byte	.LASF53
+ 389 0193 25       		.byte	0x25
+ 390 0194 06       		.uleb128 0x6
+ 391 0195 83000000 		.4byte	.LASF54
+ 392 0199 26       		.byte	0x26
+ 393 019a 06       		.uleb128 0x6
+ 394 019b 76000000 		.4byte	.LASF55
+ 395 019f 27       		.byte	0x27
+ 396 01a0 00       		.byte	0
+ 397 01a1 03       		.uleb128 0x3
+ 398 01a2 69010000 		.4byte	.LASF56
+ 399 01a6 04       		.byte	0x4
+ 400 01a7 38       		.byte	0x38
+ 401 01a8 A4000000 		.4byte	0xa4
+ 402 01ac 07       		.uleb128 0x7
+ 403 01ad EF010000 		.4byte	.LASF63
+ 404 01b1 01       		.byte	0x1
+ 405 01b2 11       		.byte	0x11
+ 406 01b3 00000000 		.4byte	.LFB63
+ 407 01b7 0C000000 		.4byte	.LFE63-.LFB63
+ 408 01bb 01       		.uleb128 0x1
+ 409 01bc 9C       		.byte	0x9c
+ 410 01bd 08       		.uleb128 0x8
+ 411 01be 84030000 		.4byte	.LASF64
+ 412 01c2 01       		.byte	0x1
+ 413 01c3 18       		.byte	0x18
+ 414 01c4 2C000000 		.4byte	0x2c
+ 415 01c8 00000000 		.4byte	.LFB64
+ 416 01cc 20000000 		.4byte	.LFE64-.LFB64
+ 417 01d0 01       		.uleb128 0x1
+ 418 01d1 9C       		.byte	0x9c
+ 419 01d2 F6010000 		.4byte	0x1f6
+ 420 01d6 09       		.uleb128 0x9
+ 421 01d7 0F030000 		.4byte	.LASF57
+ 422 01db 01       		.byte	0x1
+ 423 01dc 18       		.byte	0x18
+ 424 01dd A1010000 		.4byte	0x1a1
+ 425 01e1 02       		.uleb128 0x2
+ 426 01e2 91       		.byte	0x91
+ 427 01e3 77       		.sleb128 -9
+ 428 01e4 0A       		.uleb128 0xa
+ 429 01e5 37010000 		.4byte	.LASF58
+ 430 01e9 01       		.byte	0x1
+ 431 01ea 1A       		.byte	0x1a
+ 432 01eb F6010000 		.4byte	0x1f6
+ 433 01ef 05       		.uleb128 0x5
+ 434 01f0 03       		.byte	0x3
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 10
+
+
+ 435 01f1 00000000 		.4byte	lookUpChipMuxValues.6059
+ 436 01f5 00       		.byte	0
+ 437 01f6 0B       		.uleb128 0xb
+ 438 01f7 2C000000 		.4byte	0x2c
+ 439 01fb 06020000 		.4byte	0x206
+ 440 01ff 0C       		.uleb128 0xc
+ 441 0200 9D000000 		.4byte	0x9d
+ 442 0204 27       		.byte	0x27
+ 443 0205 00       		.byte	0
+ 444 0206 0D       		.uleb128 0xd
+ 445 0207 9A030000 		.4byte	.LASF65
+ 446 020b 01       		.byte	0x1
+ 447 020c 21       		.byte	0x21
+ 448 020d 00000000 		.4byte	.LFB65
+ 449 0211 22000000 		.4byte	.LFE65-.LFB65
+ 450 0215 01       		.uleb128 0x1
+ 451 0216 9C       		.byte	0x9c
+ 452 0217 38020000 		.4byte	0x238
+ 453 021b 09       		.uleb128 0x9
+ 454 021c 0F030000 		.4byte	.LASF57
+ 455 0220 01       		.byte	0x1
+ 456 0221 21       		.byte	0x21
+ 457 0222 A1010000 		.4byte	0x1a1
+ 458 0226 02       		.uleb128 0x2
+ 459 0227 91       		.byte	0x91
+ 460 0228 6F       		.sleb128 -17
+ 461 0229 0A       		.uleb128 0xa
+ 462 022a 46000000 		.4byte	.LASF59
+ 463 022e 01       		.byte	0x1
+ 464 022f 23       		.byte	0x23
+ 465 0230 2C000000 		.4byte	0x2c
+ 466 0234 02       		.uleb128 0x2
+ 467 0235 91       		.byte	0x91
+ 468 0236 77       		.sleb128 -9
+ 469 0237 00       		.byte	0
+ 470 0238 0E       		.uleb128 0xe
+ 471 0239 77030000 		.4byte	.LASF66
+ 472 023d 05       		.byte	0x5
+ 473 023e 1207     		.2byte	0x712
+ 474 0240 44020000 		.4byte	0x244
+ 475 0244 0F       		.uleb128 0xf
+ 476 0245 76000000 		.4byte	0x76
+ 477 0249 00       		.byte	0
+ 478              		.section	.debug_abbrev,"",%progbits
+ 479              	.Ldebug_abbrev0:
+ 480 0000 01       		.uleb128 0x1
+ 481 0001 11       		.uleb128 0x11
+ 482 0002 01       		.byte	0x1
+ 483 0003 25       		.uleb128 0x25
+ 484 0004 0E       		.uleb128 0xe
+ 485 0005 13       		.uleb128 0x13
+ 486 0006 0B       		.uleb128 0xb
+ 487 0007 03       		.uleb128 0x3
+ 488 0008 0E       		.uleb128 0xe
+ 489 0009 1B       		.uleb128 0x1b
+ 490 000a 0E       		.uleb128 0xe
+ 491 000b 55       		.uleb128 0x55
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 11
+
+
+ 492 000c 17       		.uleb128 0x17
+ 493 000d 11       		.uleb128 0x11
+ 494 000e 01       		.uleb128 0x1
+ 495 000f 10       		.uleb128 0x10
+ 496 0010 17       		.uleb128 0x17
+ 497 0011 00       		.byte	0
+ 498 0012 00       		.byte	0
+ 499 0013 02       		.uleb128 0x2
+ 500 0014 24       		.uleb128 0x24
+ 501 0015 00       		.byte	0
+ 502 0016 0B       		.uleb128 0xb
+ 503 0017 0B       		.uleb128 0xb
+ 504 0018 3E       		.uleb128 0x3e
+ 505 0019 0B       		.uleb128 0xb
+ 506 001a 03       		.uleb128 0x3
+ 507 001b 0E       		.uleb128 0xe
+ 508 001c 00       		.byte	0
+ 509 001d 00       		.byte	0
+ 510 001e 03       		.uleb128 0x3
+ 511 001f 16       		.uleb128 0x16
+ 512 0020 00       		.byte	0
+ 513 0021 03       		.uleb128 0x3
+ 514 0022 0E       		.uleb128 0xe
+ 515 0023 3A       		.uleb128 0x3a
+ 516 0024 0B       		.uleb128 0xb
+ 517 0025 3B       		.uleb128 0x3b
+ 518 0026 0B       		.uleb128 0xb
+ 519 0027 49       		.uleb128 0x49
+ 520 0028 13       		.uleb128 0x13
+ 521 0029 00       		.byte	0
+ 522 002a 00       		.byte	0
+ 523 002b 04       		.uleb128 0x4
+ 524 002c 24       		.uleb128 0x24
+ 525 002d 00       		.byte	0
+ 526 002e 0B       		.uleb128 0xb
+ 527 002f 0B       		.uleb128 0xb
+ 528 0030 3E       		.uleb128 0x3e
+ 529 0031 0B       		.uleb128 0xb
+ 530 0032 03       		.uleb128 0x3
+ 531 0033 08       		.uleb128 0x8
+ 532 0034 00       		.byte	0
+ 533 0035 00       		.byte	0
+ 534 0036 05       		.uleb128 0x5
+ 535 0037 04       		.uleb128 0x4
+ 536 0038 01       		.byte	0x1
+ 537 0039 0B       		.uleb128 0xb
+ 538 003a 0B       		.uleb128 0xb
+ 539 003b 49       		.uleb128 0x49
+ 540 003c 13       		.uleb128 0x13
+ 541 003d 3A       		.uleb128 0x3a
+ 542 003e 0B       		.uleb128 0xb
+ 543 003f 3B       		.uleb128 0x3b
+ 544 0040 0B       		.uleb128 0xb
+ 545 0041 01       		.uleb128 0x1
+ 546 0042 13       		.uleb128 0x13
+ 547 0043 00       		.byte	0
+ 548 0044 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 12
+
+
+ 549 0045 06       		.uleb128 0x6
+ 550 0046 28       		.uleb128 0x28
+ 551 0047 00       		.byte	0
+ 552 0048 03       		.uleb128 0x3
+ 553 0049 0E       		.uleb128 0xe
+ 554 004a 1C       		.uleb128 0x1c
+ 555 004b 0B       		.uleb128 0xb
+ 556 004c 00       		.byte	0
+ 557 004d 00       		.byte	0
+ 558 004e 07       		.uleb128 0x7
+ 559 004f 2E       		.uleb128 0x2e
+ 560 0050 00       		.byte	0
+ 561 0051 3F       		.uleb128 0x3f
+ 562 0052 19       		.uleb128 0x19
+ 563 0053 03       		.uleb128 0x3
+ 564 0054 0E       		.uleb128 0xe
+ 565 0055 3A       		.uleb128 0x3a
+ 566 0056 0B       		.uleb128 0xb
+ 567 0057 3B       		.uleb128 0x3b
+ 568 0058 0B       		.uleb128 0xb
+ 569 0059 27       		.uleb128 0x27
+ 570 005a 19       		.uleb128 0x19
+ 571 005b 11       		.uleb128 0x11
+ 572 005c 01       		.uleb128 0x1
+ 573 005d 12       		.uleb128 0x12
+ 574 005e 06       		.uleb128 0x6
+ 575 005f 40       		.uleb128 0x40
+ 576 0060 18       		.uleb128 0x18
+ 577 0061 9742     		.uleb128 0x2117
+ 578 0063 19       		.uleb128 0x19
+ 579 0064 00       		.byte	0
+ 580 0065 00       		.byte	0
+ 581 0066 08       		.uleb128 0x8
+ 582 0067 2E       		.uleb128 0x2e
+ 583 0068 01       		.byte	0x1
+ 584 0069 03       		.uleb128 0x3
+ 585 006a 0E       		.uleb128 0xe
+ 586 006b 3A       		.uleb128 0x3a
+ 587 006c 0B       		.uleb128 0xb
+ 588 006d 3B       		.uleb128 0x3b
+ 589 006e 0B       		.uleb128 0xb
+ 590 006f 27       		.uleb128 0x27
+ 591 0070 19       		.uleb128 0x19
+ 592 0071 49       		.uleb128 0x49
+ 593 0072 13       		.uleb128 0x13
+ 594 0073 11       		.uleb128 0x11
+ 595 0074 01       		.uleb128 0x1
+ 596 0075 12       		.uleb128 0x12
+ 597 0076 06       		.uleb128 0x6
+ 598 0077 40       		.uleb128 0x40
+ 599 0078 18       		.uleb128 0x18
+ 600 0079 9742     		.uleb128 0x2117
+ 601 007b 19       		.uleb128 0x19
+ 602 007c 01       		.uleb128 0x1
+ 603 007d 13       		.uleb128 0x13
+ 604 007e 00       		.byte	0
+ 605 007f 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 13
+
+
+ 606 0080 09       		.uleb128 0x9
+ 607 0081 05       		.uleb128 0x5
+ 608 0082 00       		.byte	0
+ 609 0083 03       		.uleb128 0x3
+ 610 0084 0E       		.uleb128 0xe
+ 611 0085 3A       		.uleb128 0x3a
+ 612 0086 0B       		.uleb128 0xb
+ 613 0087 3B       		.uleb128 0x3b
+ 614 0088 0B       		.uleb128 0xb
+ 615 0089 49       		.uleb128 0x49
+ 616 008a 13       		.uleb128 0x13
+ 617 008b 02       		.uleb128 0x2
+ 618 008c 18       		.uleb128 0x18
+ 619 008d 00       		.byte	0
+ 620 008e 00       		.byte	0
+ 621 008f 0A       		.uleb128 0xa
+ 622 0090 34       		.uleb128 0x34
+ 623 0091 00       		.byte	0
+ 624 0092 03       		.uleb128 0x3
+ 625 0093 0E       		.uleb128 0xe
+ 626 0094 3A       		.uleb128 0x3a
+ 627 0095 0B       		.uleb128 0xb
+ 628 0096 3B       		.uleb128 0x3b
+ 629 0097 0B       		.uleb128 0xb
+ 630 0098 49       		.uleb128 0x49
+ 631 0099 13       		.uleb128 0x13
+ 632 009a 02       		.uleb128 0x2
+ 633 009b 18       		.uleb128 0x18
+ 634 009c 00       		.byte	0
+ 635 009d 00       		.byte	0
+ 636 009e 0B       		.uleb128 0xb
+ 637 009f 01       		.uleb128 0x1
+ 638 00a0 01       		.byte	0x1
+ 639 00a1 49       		.uleb128 0x49
+ 640 00a2 13       		.uleb128 0x13
+ 641 00a3 01       		.uleb128 0x1
+ 642 00a4 13       		.uleb128 0x13
+ 643 00a5 00       		.byte	0
+ 644 00a6 00       		.byte	0
+ 645 00a7 0C       		.uleb128 0xc
+ 646 00a8 21       		.uleb128 0x21
+ 647 00a9 00       		.byte	0
+ 648 00aa 49       		.uleb128 0x49
+ 649 00ab 13       		.uleb128 0x13
+ 650 00ac 2F       		.uleb128 0x2f
+ 651 00ad 0B       		.uleb128 0xb
+ 652 00ae 00       		.byte	0
+ 653 00af 00       		.byte	0
+ 654 00b0 0D       		.uleb128 0xd
+ 655 00b1 2E       		.uleb128 0x2e
+ 656 00b2 01       		.byte	0x1
+ 657 00b3 3F       		.uleb128 0x3f
+ 658 00b4 19       		.uleb128 0x19
+ 659 00b5 03       		.uleb128 0x3
+ 660 00b6 0E       		.uleb128 0xe
+ 661 00b7 3A       		.uleb128 0x3a
+ 662 00b8 0B       		.uleb128 0xb
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 14
+
+
+ 663 00b9 3B       		.uleb128 0x3b
+ 664 00ba 0B       		.uleb128 0xb
+ 665 00bb 27       		.uleb128 0x27
+ 666 00bc 19       		.uleb128 0x19
+ 667 00bd 11       		.uleb128 0x11
+ 668 00be 01       		.uleb128 0x1
+ 669 00bf 12       		.uleb128 0x12
+ 670 00c0 06       		.uleb128 0x6
+ 671 00c1 40       		.uleb128 0x40
+ 672 00c2 18       		.uleb128 0x18
+ 673 00c3 9642     		.uleb128 0x2116
+ 674 00c5 19       		.uleb128 0x19
+ 675 00c6 01       		.uleb128 0x1
+ 676 00c7 13       		.uleb128 0x13
+ 677 00c8 00       		.byte	0
+ 678 00c9 00       		.byte	0
+ 679 00ca 0E       		.uleb128 0xe
+ 680 00cb 34       		.uleb128 0x34
+ 681 00cc 00       		.byte	0
+ 682 00cd 03       		.uleb128 0x3
+ 683 00ce 0E       		.uleb128 0xe
+ 684 00cf 3A       		.uleb128 0x3a
+ 685 00d0 0B       		.uleb128 0xb
+ 686 00d1 3B       		.uleb128 0x3b
+ 687 00d2 05       		.uleb128 0x5
+ 688 00d3 49       		.uleb128 0x49
+ 689 00d4 13       		.uleb128 0x13
+ 690 00d5 3F       		.uleb128 0x3f
+ 691 00d6 19       		.uleb128 0x19
+ 692 00d7 3C       		.uleb128 0x3c
+ 693 00d8 19       		.uleb128 0x19
+ 694 00d9 00       		.byte	0
+ 695 00da 00       		.byte	0
+ 696 00db 0F       		.uleb128 0xf
+ 697 00dc 35       		.uleb128 0x35
+ 698 00dd 00       		.byte	0
+ 699 00de 49       		.uleb128 0x49
+ 700 00df 13       		.uleb128 0x13
+ 701 00e0 00       		.byte	0
+ 702 00e1 00       		.byte	0
+ 703 00e2 00       		.byte	0
+ 704              		.section	.debug_aranges,"",%progbits
+ 705 0000 2C000000 		.4byte	0x2c
+ 706 0004 0200     		.2byte	0x2
+ 707 0006 00000000 		.4byte	.Ldebug_info0
+ 708 000a 04       		.byte	0x4
+ 709 000b 00       		.byte	0
+ 710 000c 0000     		.2byte	0
+ 711 000e 0000     		.2byte	0
+ 712 0010 00000000 		.4byte	.LFB63
+ 713 0014 0C000000 		.4byte	.LFE63-.LFB63
+ 714 0018 00000000 		.4byte	.LFB64
+ 715 001c 20000000 		.4byte	.LFE64-.LFB64
+ 716 0020 00000000 		.4byte	.LFB65
+ 717 0024 22000000 		.4byte	.LFE65-.LFB65
+ 718 0028 00000000 		.4byte	0
+ 719 002c 00000000 		.4byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 15
+
+
+ 720              		.section	.debug_ranges,"",%progbits
+ 721              	.Ldebug_ranges0:
+ 722 0000 00000000 		.4byte	.LFB63
+ 723 0004 0C000000 		.4byte	.LFE63
+ 724 0008 00000000 		.4byte	.LFB64
+ 725 000c 20000000 		.4byte	.LFE64
+ 726 0010 00000000 		.4byte	.LFB65
+ 727 0014 22000000 		.4byte	.LFE65
+ 728 0018 00000000 		.4byte	0
+ 729 001c 00000000 		.4byte	0
+ 730              		.section	.debug_line,"",%progbits
+ 731              	.Ldebug_line0:
+ 732 0000 9E010000 		.section	.debug_str,"MS",%progbits,1
+ 732      02006301 
+ 732      00000201 
+ 732      FB0E0D00 
+ 732      01010101 
+ 733              	.LASF38:
+ 734 0000 4348414E 		.ascii	"CHANNEL23\000"
+ 734      4E454C32 
+ 734      3300
+ 735              	.LASF39:
+ 736 000a 4348414E 		.ascii	"CHANNEL24\000"
+ 736      4E454C32 
+ 736      3400
+ 737              	.LASF40:
+ 738 0014 4348414E 		.ascii	"CHANNEL25\000"
+ 738      4E454C32 
+ 738      3500
+ 739              	.LASF41:
+ 740 001e 4348414E 		.ascii	"CHANNEL26\000"
+ 740      4E454C32 
+ 740      3600
+ 741              	.LASF42:
+ 742 0028 4348414E 		.ascii	"CHANNEL27\000"
+ 742      4E454C32 
+ 742      3700
+ 743              	.LASF43:
+ 744 0032 4348414E 		.ascii	"CHANNEL28\000"
+ 744      4E454C32 
+ 744      3800
+ 745              	.LASF44:
+ 746 003c 4348414E 		.ascii	"CHANNEL29\000"
+ 746      4E454C32 
+ 746      3900
+ 747              	.LASF59:
+ 748 0046 6C6F6361 		.ascii	"localMuxValue\000"
+ 748      6C4D7578 
+ 748      56616C75 
+ 748      6500
+ 749              	.LASF2:
+ 750 0054 73686F72 		.ascii	"short int\000"
+ 750      7420696E 
+ 750      7400
+ 751              	.LASF48:
+ 752 005e 4348414E 		.ascii	"CHANNELHC1a\000"
+ 752      4E454C48 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 16
+
+
+ 752      43316100 
+ 753              	.LASF49:
+ 754 006a 4348414E 		.ascii	"CHANNELHC1b\000"
+ 754      4E454C48 
+ 754      43316200 
+ 755              	.LASF55:
+ 756 0076 43555252 		.ascii	"CURRENTSENSE\000"
+ 756      454E5453 
+ 756      454E5345 
+ 756      00
+ 757              	.LASF54:
+ 758 0083 5653454E 		.ascii	"VSENSE3V\000"
+ 758      53453356 
+ 758      00
+ 759              	.LASF60:
+ 760 008c 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 760      43313120 
+ 760      352E342E 
+ 760      31203230 
+ 760      31363036 
+ 761 00bf 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 761      20726576 
+ 761      6973696F 
+ 761      6E203233 
+ 761      37373135 
+ 762 00f2 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 762      66756E63 
+ 762      74696F6E 
+ 762      2D736563 
+ 762      74696F6E 
+ 763              	.LASF61:
+ 764 011a 43443430 		.ascii	"CD4051BPW_Driver.c\000"
+ 764      35314250 
+ 764      575F4472 
+ 764      69766572 
+ 764      2E6300
+ 765              	.LASF36:
+ 766 012d 4348414E 		.ascii	"CHANNEL21\000"
+ 766      4E454C32 
+ 766      3100
+ 767              	.LASF58:
+ 768 0137 6C6F6F6B 		.ascii	"lookUpChipMuxValues\000"
+ 768      55704368 
+ 768      69704D75 
+ 768      7856616C 
+ 768      75657300 
+ 769              	.LASF45:
+ 770 014b 4348414E 		.ascii	"CHANNEL30\000"
+ 770      4E454C33 
+ 770      3000
+ 771              	.LASF46:
+ 772 0155 4348414E 		.ascii	"CHANNEL31\000"
+ 772      4E454C33 
+ 772      3100
+ 773              	.LASF47:
+ 774 015f 4348414E 		.ascii	"CHANNEL32\000"
+ 774      4E454C33 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 17
+
+
+ 774      3200
+ 775              	.LASF56:
+ 776 0169 64696167 		.ascii	"diagnostic_inputs_t\000"
+ 776      6E6F7374 
+ 776      69635F69 
+ 776      6E707574 
+ 776      735F7400 
+ 777              	.LASF11:
+ 778 017d 666C6F61 		.ascii	"float\000"
+ 778      7400
+ 779              	.LASF6:
+ 780 0183 6C6F6E67 		.ascii	"long long int\000"
+ 780      206C6F6E 
+ 780      6720696E 
+ 780      7400
+ 781              	.LASF4:
+ 782 0191 6C6F6E67 		.ascii	"long int\000"
+ 782      20696E74 
+ 782      00
+ 783              	.LASF50:
+ 784 019a 4348414E 		.ascii	"CHANNELHC2a\000"
+ 784      4E454C48 
+ 784      43326100 
+ 785              	.LASF51:
+ 786 01a6 4348414E 		.ascii	"CHANNELHC2b\000"
+ 786      4E454C48 
+ 786      43326200 
+ 787              	.LASF14:
+ 788 01b2 6C6F6E67 		.ascii	"long double\000"
+ 788      20646F75 
+ 788      626C6500 
+ 789              	.LASF1:
+ 790 01be 756E7369 		.ascii	"unsigned char\000"
+ 790      676E6564 
+ 790      20636861 
+ 790      7200
+ 791              	.LASF0:
+ 792 01cc 7369676E 		.ascii	"signed char\000"
+ 792      65642063 
+ 792      68617200 
+ 793              	.LASF7:
+ 794 01d8 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 794      206C6F6E 
+ 794      6720756E 
+ 794      7369676E 
+ 794      65642069 
+ 795              	.LASF63:
+ 796 01ef 696E6974 		.ascii	"initDiagnostics\000"
+ 796      44696167 
+ 796      6E6F7374 
+ 796      69637300 
+ 797              	.LASF8:
+ 798 01ff 756E7369 		.ascii	"unsigned int\000"
+ 798      676E6564 
+ 798      20696E74 
+ 798      00
+ 799              	.LASF62:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 18
+
+
+ 800 020c 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\F1-TestFixture _Sand"
+ 800      73657273 
+ 800      5C6D6172 
+ 800      74686E69 
+ 800      636B5C44 
+ 801 023b 626F785C 		.ascii	"box\\F1-TestFixture.cydsn\000"
+ 801      46312D54 
+ 801      65737446 
+ 801      69787475 
+ 801      72652E63 
+ 802              	.LASF13:
+ 803 0254 63686172 		.ascii	"char\000"
+ 803      00
+ 804              	.LASF53:
+ 805 0259 5653454E 		.ascii	"VSENSE5V\000"
+ 805      53453556 
+ 805      00
+ 806              	.LASF10:
+ 807 0262 696E7433 		.ascii	"int32_t\000"
+ 807      325F7400 
+ 808              	.LASF3:
+ 809 026a 73686F72 		.ascii	"short unsigned int\000"
+ 809      7420756E 
+ 809      7369676E 
+ 809      65642069 
+ 809      6E7400
+ 810              	.LASF33:
+ 811 027d 4348414E 		.ascii	"CHANNEL18\000"
+ 811      4E454C31 
+ 811      3800
+ 812              	.LASF25:
+ 813 0287 4348414E 		.ascii	"CHANNEL10\000"
+ 813      4E454C31 
+ 813      3000
+ 814              	.LASF26:
+ 815 0291 4348414E 		.ascii	"CHANNEL11\000"
+ 815      4E454C31 
+ 815      3100
+ 816              	.LASF27:
+ 817 029b 4348414E 		.ascii	"CHANNEL12\000"
+ 817      4E454C31 
+ 817      3200
+ 818              	.LASF28:
+ 819 02a5 4348414E 		.ascii	"CHANNEL13\000"
+ 819      4E454C31 
+ 819      3300
+ 820              	.LASF29:
+ 821 02af 4348414E 		.ascii	"CHANNEL14\000"
+ 821      4E454C31 
+ 821      3400
+ 822              	.LASF30:
+ 823 02b9 4348414E 		.ascii	"CHANNEL15\000"
+ 823      4E454C31 
+ 823      3500
+ 824              	.LASF31:
+ 825 02c3 4348414E 		.ascii	"CHANNEL16\000"
+ 825      4E454C31 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 19
+
+
+ 825      3600
+ 826              	.LASF32:
+ 827 02cd 4348414E 		.ascii	"CHANNEL17\000"
+ 827      4E454C31 
+ 827      3700
+ 828              	.LASF5:
+ 829 02d7 6C6F6E67 		.ascii	"long unsigned int\000"
+ 829      20756E73 
+ 829      69676E65 
+ 829      6420696E 
+ 829      7400
+ 830              	.LASF34:
+ 831 02e9 4348414E 		.ascii	"CHANNEL19\000"
+ 831      4E454C31 
+ 831      3900
+ 832              	.LASF52:
+ 833 02f3 5653454E 		.ascii	"VSENSEBATT\000"
+ 833      53454241 
+ 833      545400
+ 834              	.LASF12:
+ 835 02fe 646F7562 		.ascii	"double\000"
+ 835      6C6500
+ 836              	.LASF9:
+ 837 0305 5F5F696E 		.ascii	"__int32_t\000"
+ 837      7433325F 
+ 837      7400
+ 838              	.LASF57:
+ 839 030f 6368616E 		.ascii	"channelToRead\000"
+ 839      6E656C54 
+ 839      6F526561 
+ 839      6400
+ 840              	.LASF15:
+ 841 031d 73697A65 		.ascii	"sizetype\000"
+ 841      74797065 
+ 841      00
+ 842              	.LASF16:
+ 843 0326 4348414E 		.ascii	"CHANNEL1\000"
+ 843      4E454C31 
+ 843      00
+ 844              	.LASF17:
+ 845 032f 4348414E 		.ascii	"CHANNEL2\000"
+ 845      4E454C32 
+ 845      00
+ 846              	.LASF18:
+ 847 0338 4348414E 		.ascii	"CHANNEL3\000"
+ 847      4E454C33 
+ 847      00
+ 848              	.LASF19:
+ 849 0341 4348414E 		.ascii	"CHANNEL4\000"
+ 849      4E454C34 
+ 849      00
+ 850              	.LASF20:
+ 851 034a 4348414E 		.ascii	"CHANNEL5\000"
+ 851      4E454C35 
+ 851      00
+ 852              	.LASF21:
+ 853 0353 4348414E 		.ascii	"CHANNEL6\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cclzVB35.s 			page 20
+
+
+ 853      4E454C36 
+ 853      00
+ 854              	.LASF22:
+ 855 035c 4348414E 		.ascii	"CHANNEL7\000"
+ 855      4E454C37 
+ 855      00
+ 856              	.LASF23:
+ 857 0365 4348414E 		.ascii	"CHANNEL8\000"
+ 857      4E454C38 
+ 857      00
+ 858              	.LASF24:
+ 859 036e 4348414E 		.ascii	"CHANNEL9\000"
+ 859      4E454C39 
+ 859      00
+ 860              	.LASF66:
+ 861 0377 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 861      52784275 
+ 861      66666572 
+ 861      00
+ 862              	.LASF64:
+ 863 0384 6765744D 		.ascii	"getMuxValue\000"
+ 863      75785661 
+ 863      6C756500 
+ 864              	.LASF35:
+ 865 0390 4348414E 		.ascii	"CHANNEL20\000"
+ 865      4E454C32 
+ 865      3000
+ 866              	.LASF65:
+ 867 039a 73656C65 		.ascii	"selectADCChannelMux\000"
+ 867      63744144 
+ 867      43436861 
+ 867      6E6E656C 
+ 867      4D757800 
+ 868              	.LASF37:
+ 869 03ae 4348414E 		.ascii	"CHANNEL22\000"
+ 869      4E454C32 
+ 869      3200
+ 870              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

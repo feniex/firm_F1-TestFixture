@@ -1,0 +1,2012 @@
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"PWMtimer1_ISR.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.PWMtimer1_ISR_Interrupt,"ax",%progbits
+  19              		.align	2
+  20              		.global	PWMtimer1_ISR_Interrupt
+  21              		.thumb
+  22              		.thumb_func
+  23              		.type	PWMtimer1_ISR_Interrupt, %function
+  24              	PWMtimer1_ISR_Interrupt:
+  25              	.LFB66:
+  26              		.file 1 ".\\Generated_Source\\PSoC5\\PWMtimer1_ISR.c"
+   1:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /*******************************************************************************
+   2:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * File Name: PWMtimer1_ISR.c  
+   3:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Version 1.70
+   4:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+   5:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *  Description:
+   6:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   API for controlling the state of an interrupt.
+   7:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+   8:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+   9:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *  Note:
+  10:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+  11:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** ********************************************************************************
+  12:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  13:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  14:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  15:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * the software package with which this file was provided.
+  16:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *******************************************************************************/
+  17:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+  18:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+  19:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** #include <cydevice_trm.h>
+  20:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** #include <CyLib.h>
+  21:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** #include <PWMtimer1_ISR.h>
+  22:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** #include "cyapicallbacks.h"
+  23:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+  24:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** #if !defined(PWMtimer1_ISR__REMOVED) /* Check for removal by optimization */
+  25:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+  26:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /*******************************************************************************
+  27:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *  Place your includes, defines and code here 
+  28:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** ********************************************************************************/
+  29:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /* `#START PWMtimer1_ISR_intc` */
+  30:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** #include <stdbool.h>
+  31:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** #include "Tones.h"
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 2
+
+
+  32:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /* `#END` */
+  33:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+  34:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** #ifndef CYINT_IRQ_BASE
+  35:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** #define CYINT_IRQ_BASE      16
+  36:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** #endif /* CYINT_IRQ_BASE */
+  37:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** #ifndef CYINT_VECT_TABLE
+  38:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** #define CYINT_VECT_TABLE    ((cyisraddress **) CYREG_NVIC_VECT_OFFSET)
+  39:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** #endif /* CYINT_VECT_TABLE */
+  40:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+  41:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /* Declared in startup, used to set unused interrupts to. */
+  42:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** CY_ISR_PROTO(IntDefaultHandler);
+  43:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+  44:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+  45:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /*******************************************************************************
+  46:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Function Name: PWMtimer1_ISR_Start
+  47:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** ********************************************************************************
+  48:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+  49:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Summary:
+  50:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *  Set up the interrupt and enable it. This function disables the interrupt, 
+  51:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *  sets the default interrupt vector, sets the priority from the value in the
+  52:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *  Design Wide Resources Interrupt Editor, then enables the interrupt to the 
+  53:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *  interrupt controller.
+  54:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+  55:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Parameters:  
+  56:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+  57:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+  58:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Return:
+  59:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+  60:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+  61:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *******************************************************************************/
+  62:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** void PWMtimer1_ISR_Start(void)
+  63:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** {
+  64:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* For all we know the interrupt is active. */
+  65:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     PWMtimer1_ISR_Disable();
+  66:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+  67:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* Set the ISR to point to the PWMtimer1_ISR Interrupt. */
+  68:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     PWMtimer1_ISR_SetVector(&PWMtimer1_ISR_Interrupt);
+  69:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+  70:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* Set the priority. */
+  71:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     PWMtimer1_ISR_SetPriority((uint8)PWMtimer1_ISR_INTC_PRIOR_NUMBER);
+  72:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+  73:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* Enable it. */
+  74:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     PWMtimer1_ISR_Enable();
+  75:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** }
+  76:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+  77:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+  78:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /*******************************************************************************
+  79:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Function Name: PWMtimer1_ISR_StartEx
+  80:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** ********************************************************************************
+  81:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+  82:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Summary:
+  83:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *  Sets up the interrupt and enables it. This function disables the interrupt,
+  84:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *  sets the interrupt vector based on the address passed in, sets the priority 
+  85:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *  from the value in the Design Wide Resources Interrupt Editor, then enables 
+  86:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *  the interrupt to the interrupt controller.
+  87:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *  
+  88:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *  When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 3
+
+
+  89:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *  used to provide consistent definition across compilers:
+  90:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *  
+  91:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *  Function definition example:
+  92:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   CY_ISR(MyISR)
+  93:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   {
+  94:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   }
+  95:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Function prototype example:
+  96:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   CY_ISR_PROTO(MyISR);
+  97:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+  98:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Parameters:  
+  99:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   address: Address of the ISR to set in the interrupt vector table.
+ 100:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 101:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Return:
+ 102:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 103:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 104:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *******************************************************************************/
+ 105:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** void PWMtimer1_ISR_StartEx(cyisraddress address)
+ 106:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** {
+ 107:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* For all we know the interrupt is active. */
+ 108:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     PWMtimer1_ISR_Disable();
+ 109:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 110:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* Set the ISR to point to the PWMtimer1_ISR Interrupt. */
+ 111:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     PWMtimer1_ISR_SetVector(address);
+ 112:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 113:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* Set the priority. */
+ 114:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     PWMtimer1_ISR_SetPriority((uint8)PWMtimer1_ISR_INTC_PRIOR_NUMBER);
+ 115:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 116:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* Enable it. */
+ 117:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     PWMtimer1_ISR_Enable();
+ 118:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** }
+ 119:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 120:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 121:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /*******************************************************************************
+ 122:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Function Name: PWMtimer1_ISR_Stop
+ 123:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** ********************************************************************************
+ 124:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 125:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Summary:
+ 126:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Disables and removes the interrupt.
+ 127:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 128:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Parameters:  
+ 129:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 130:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 131:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Return:
+ 132:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 133:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 134:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *******************************************************************************/
+ 135:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** void PWMtimer1_ISR_Stop(void)
+ 136:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** {
+ 137:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* Disable this interrupt. */
+ 138:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     PWMtimer1_ISR_Disable();
+ 139:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 140:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* Set the ISR to point to the passive one. */
+ 141:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     PWMtimer1_ISR_SetVector(&IntDefaultHandler);
+ 142:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** }
+ 143:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 144:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 145:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /*******************************************************************************
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 4
+
+
+ 146:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Function Name: PWMtimer1_ISR_Interrupt
+ 147:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** ********************************************************************************
+ 148:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 149:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Summary:
+ 150:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   The default Interrupt Service Routine for PWMtimer1_ISR.
+ 151:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 152:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Add custom code between the coments to keep the next version of this file
+ 153:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   from over writting your code.
+ 154:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 155:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Parameters:  
+ 156:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 157:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Return:
+ 158:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 159:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 160:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *******************************************************************************/
+ 161:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** CY_ISR(PWMtimer1_ISR_Interrupt)
+ 162:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** {
+  27              		.loc 1 162 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31 0000 08B5     		push	{r3, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 3, -8
+  34              		.cfi_offset 14, -4
+ 163:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     #ifdef PWMtimer1_ISR_INTERRUPT_INTERRUPT_CALLBACK
+ 164:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****         PWMtimer1_ISR_Interrupt_InterruptCallback();
+ 165:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     #endif /* PWMtimer1_ISR_INTERRUPT_INTERRUPT_CALLBACK */ 
+ 166:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 167:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /*  Place your Interrupt code here. */
+ 168:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* `#START PWMtimer1_ISR_Interrupt` */
+ 169:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     processPWMtimerRoutine(false);
+  35              		.loc 1 169 0
+  36 0002 0020     		movs	r0, #0
+  37 0004 FFF7FEFF 		bl	processPWMtimerRoutine
+  38              	.LVL0:
+  39 0008 08BD     		pop	{r3, pc}
+  40              		.cfi_endproc
+  41              	.LFE66:
+  42              		.size	PWMtimer1_ISR_Interrupt, .-PWMtimer1_ISR_Interrupt
+  43 000a 00BF     		.section	.text.PWMtimer1_ISR_SetVector,"ax",%progbits
+  44              		.align	2
+  45              		.global	PWMtimer1_ISR_SetVector
+  46              		.thumb
+  47              		.thumb_func
+  48              		.type	PWMtimer1_ISR_SetVector, %function
+  49              	PWMtimer1_ISR_SetVector:
+  50              	.LFB67:
+ 170:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* `#END` */
+ 171:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** }
+ 172:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 173:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 174:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /*******************************************************************************
+ 175:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Function Name: PWMtimer1_ISR_SetVector
+ 176:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** ********************************************************************************
+ 177:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 178:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Summary:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 5
+
+
+ 179:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Change the ISR vector for the Interrupt. Note calling PWMtimer1_ISR_Start
+ 180:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   will override any effect this method would have had. To set the vector 
+ 181:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   before the component has been started use PWMtimer1_ISR_StartEx instead.
+ 182:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * 
+ 183:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
+ 184:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   used to provide consistent definition across compilers:
+ 185:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 186:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Function definition example:
+ 187:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   CY_ISR(MyISR)
+ 188:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   {
+ 189:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   }
+ 190:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 191:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Function prototype example:
+ 192:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *     CY_ISR_PROTO(MyISR);
+ 193:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 194:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Parameters:
+ 195:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   address: Address of the ISR to set in the interrupt vector table.
+ 196:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 197:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Return:
+ 198:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 199:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 200:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *******************************************************************************/
+ 201:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** void PWMtimer1_ISR_SetVector(cyisraddress address)
+ 202:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** {
+  51              		.loc 1 202 0
+  52              		.cfi_startproc
+  53              		@ args = 0, pretend = 0, frame = 0
+  54              		@ frame_needed = 0, uses_anonymous_args = 0
+  55              		@ link register save eliminated.
+  56              	.LVL1:
+ 203:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     cyisraddress * ramVectorTable;
+ 204:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 205:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
+  57              		.loc 1 205 0
+  58 0000 024B     		ldr	r3, .L4
+  59 0002 1B68     		ldr	r3, [r3]
+  60              	.LVL2:
+ 206:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 207:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     ramVectorTable[CYINT_IRQ_BASE + (uint32)PWMtimer1_ISR__INTC_NUMBER] = address;
+  61              		.loc 1 207 0
+  62 0004 C3F88C00 		str	r0, [r3, #140]
+  63 0008 7047     		bx	lr
+  64              	.L5:
+  65 000a 00BF     		.align	2
+  66              	.L4:
+  67 000c 08ED00E0 		.word	-536810232
+  68              		.cfi_endproc
+  69              	.LFE67:
+  70              		.size	PWMtimer1_ISR_SetVector, .-PWMtimer1_ISR_SetVector
+  71              		.section	.text.PWMtimer1_ISR_GetVector,"ax",%progbits
+  72              		.align	2
+  73              		.global	PWMtimer1_ISR_GetVector
+  74              		.thumb
+  75              		.thumb_func
+  76              		.type	PWMtimer1_ISR_GetVector, %function
+  77              	PWMtimer1_ISR_GetVector:
+  78              	.LFB68:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 6
+
+
+ 208:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** }
+ 209:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 210:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 211:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /*******************************************************************************
+ 212:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Function Name: PWMtimer1_ISR_GetVector
+ 213:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** ********************************************************************************
+ 214:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 215:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Summary:
+ 216:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Gets the "address" of the current ISR vector for the Interrupt.
+ 217:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 218:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Parameters:
+ 219:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 220:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 221:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Return:
+ 222:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Address of the ISR in the interrupt vector table.
+ 223:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 224:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *******************************************************************************/
+ 225:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** cyisraddress PWMtimer1_ISR_GetVector(void)
+ 226:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** {
+  79              		.loc 1 226 0
+  80              		.cfi_startproc
+  81              		@ args = 0, pretend = 0, frame = 0
+  82              		@ frame_needed = 0, uses_anonymous_args = 0
+  83              		@ link register save eliminated.
+ 227:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     cyisraddress * ramVectorTable;
+ 228:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 229:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
+  84              		.loc 1 229 0
+  85 0000 024B     		ldr	r3, .L7
+  86 0002 1B68     		ldr	r3, [r3]
+  87              	.LVL3:
+ 230:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 231:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     return ramVectorTable[CYINT_IRQ_BASE + (uint32)PWMtimer1_ISR__INTC_NUMBER];
+ 232:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** }
+  88              		.loc 1 232 0
+  89 0004 D3F88C00 		ldr	r0, [r3, #140]
+  90 0008 7047     		bx	lr
+  91              	.L8:
+  92 000a 00BF     		.align	2
+  93              	.L7:
+  94 000c 08ED00E0 		.word	-536810232
+  95              		.cfi_endproc
+  96              	.LFE68:
+  97              		.size	PWMtimer1_ISR_GetVector, .-PWMtimer1_ISR_GetVector
+  98              		.section	.text.PWMtimer1_ISR_SetPriority,"ax",%progbits
+  99              		.align	2
+ 100              		.global	PWMtimer1_ISR_SetPriority
+ 101              		.thumb
+ 102              		.thumb_func
+ 103              		.type	PWMtimer1_ISR_SetPriority, %function
+ 104              	PWMtimer1_ISR_SetPriority:
+ 105              	.LFB69:
+ 233:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 234:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 235:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /*******************************************************************************
+ 236:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Function Name: PWMtimer1_ISR_SetPriority
+ 237:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** ********************************************************************************
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 7
+
+
+ 238:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 239:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Summary:
+ 240:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Sets the Priority of the Interrupt. 
+ 241:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 242:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Note calling PWMtimer1_ISR_Start or PWMtimer1_ISR_StartEx will 
+ 243:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   override any effect this API would have had. This API should only be called
+ 244:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   after PWMtimer1_ISR_Start or PWMtimer1_ISR_StartEx has been called. 
+ 245:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   To set the initial priority for the component, use the Design-Wide Resources
+ 246:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Interrupt Editor.
+ 247:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 248:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Note This API has no effect on Non-maskable interrupt NMI).
+ 249:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 250:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Parameters:
+ 251:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   priority: Priority of the interrupt, 0 being the highest priority
+ 252:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *             PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
+ 253:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *             PSoC 4: Priority is from 0 to 3.
+ 254:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 255:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Return:
+ 256:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 257:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 258:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *******************************************************************************/
+ 259:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** void PWMtimer1_ISR_SetPriority(uint8 priority)
+ 260:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** {
+ 106              		.loc 1 260 0
+ 107              		.cfi_startproc
+ 108              		@ args = 0, pretend = 0, frame = 0
+ 109              		@ frame_needed = 0, uses_anonymous_args = 0
+ 110              		@ link register save eliminated.
+ 111              	.LVL4:
+ 261:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     *PWMtimer1_ISR_INTC_PRIOR = priority << 5;
+ 112              		.loc 1 261 0
+ 113 0000 4001     		lsls	r0, r0, #5
+ 114              	.LVL5:
+ 115 0002 C0B2     		uxtb	r0, r0
+ 116 0004 014B     		ldr	r3, .L10
+ 117 0006 1870     		strb	r0, [r3]
+ 118 0008 7047     		bx	lr
+ 119              	.L11:
+ 120 000a 00BF     		.align	2
+ 121              	.L10:
+ 122 000c 13E400E0 		.word	-536812525
+ 123              		.cfi_endproc
+ 124              	.LFE69:
+ 125              		.size	PWMtimer1_ISR_SetPriority, .-PWMtimer1_ISR_SetPriority
+ 126              		.section	.text.PWMtimer1_ISR_GetPriority,"ax",%progbits
+ 127              		.align	2
+ 128              		.global	PWMtimer1_ISR_GetPriority
+ 129              		.thumb
+ 130              		.thumb_func
+ 131              		.type	PWMtimer1_ISR_GetPriority, %function
+ 132              	PWMtimer1_ISR_GetPriority:
+ 133              	.LFB70:
+ 262:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** }
+ 263:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 264:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 265:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /*******************************************************************************
+ 266:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Function Name: PWMtimer1_ISR_GetPriority
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 8
+
+
+ 267:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** ********************************************************************************
+ 268:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 269:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Summary:
+ 270:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Gets the Priority of the Interrupt.
+ 271:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 272:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Parameters:
+ 273:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 274:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 275:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Return:
+ 276:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Priority of the interrupt, 0 being the highest priority
+ 277:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *    PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
+ 278:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *    PSoC 4: Priority is from 0 to 3.
+ 279:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 280:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *******************************************************************************/
+ 281:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** uint8 PWMtimer1_ISR_GetPriority(void)
+ 282:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** {
+ 134              		.loc 1 282 0
+ 135              		.cfi_startproc
+ 136              		@ args = 0, pretend = 0, frame = 0
+ 137              		@ frame_needed = 0, uses_anonymous_args = 0
+ 138              		@ link register save eliminated.
+ 283:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     uint8 priority;
+ 284:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 285:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 286:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     priority = *PWMtimer1_ISR_INTC_PRIOR >> 5;
+ 139              		.loc 1 286 0
+ 140 0000 014B     		ldr	r3, .L13
+ 141 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 142              	.LVL6:
+ 287:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 288:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     return priority;
+ 289:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** }
+ 143              		.loc 1 289 0
+ 144 0004 4009     		lsrs	r0, r0, #5
+ 145              	.LVL7:
+ 146 0006 7047     		bx	lr
+ 147              	.L14:
+ 148              		.align	2
+ 149              	.L13:
+ 150 0008 13E400E0 		.word	-536812525
+ 151              		.cfi_endproc
+ 152              	.LFE70:
+ 153              		.size	PWMtimer1_ISR_GetPriority, .-PWMtimer1_ISR_GetPriority
+ 154              		.section	.text.PWMtimer1_ISR_Enable,"ax",%progbits
+ 155              		.align	2
+ 156              		.global	PWMtimer1_ISR_Enable
+ 157              		.thumb
+ 158              		.thumb_func
+ 159              		.type	PWMtimer1_ISR_Enable, %function
+ 160              	PWMtimer1_ISR_Enable:
+ 161              	.LFB71:
+ 290:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 291:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 292:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /*******************************************************************************
+ 293:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Function Name: PWMtimer1_ISR_Enable
+ 294:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** ********************************************************************************
+ 295:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 9
+
+
+ 296:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Summary:
+ 297:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Enables the interrupt to the interrupt controller. Do not call this function
+ 298:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   unless ISR_Start() has been called or the functionality of the ISR_Start() 
+ 299:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   function, which sets the vector and the priority, has been called.
+ 300:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 301:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Parameters:
+ 302:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 303:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 304:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Return:
+ 305:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 306:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 307:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *******************************************************************************/
+ 308:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** void PWMtimer1_ISR_Enable(void)
+ 309:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** {
+ 162              		.loc 1 309 0
+ 163              		.cfi_startproc
+ 164              		@ args = 0, pretend = 0, frame = 0
+ 165              		@ frame_needed = 0, uses_anonymous_args = 0
+ 166              		@ link register save eliminated.
+ 310:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* Enable the general interrupt. */
+ 311:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     *PWMtimer1_ISR_INTC_SET_EN = PWMtimer1_ISR__INTC_MASK;
+ 167              		.loc 1 311 0
+ 168 0000 4FF40022 		mov	r2, #524288
+ 169 0004 014B     		ldr	r3, .L16
+ 170 0006 1A60     		str	r2, [r3]
+ 171 0008 7047     		bx	lr
+ 172              	.L17:
+ 173 000a 00BF     		.align	2
+ 174              	.L16:
+ 175 000c 00E100E0 		.word	-536813312
+ 176              		.cfi_endproc
+ 177              	.LFE71:
+ 178              		.size	PWMtimer1_ISR_Enable, .-PWMtimer1_ISR_Enable
+ 179              		.section	.text.PWMtimer1_ISR_GetState,"ax",%progbits
+ 180              		.align	2
+ 181              		.global	PWMtimer1_ISR_GetState
+ 182              		.thumb
+ 183              		.thumb_func
+ 184              		.type	PWMtimer1_ISR_GetState, %function
+ 185              	PWMtimer1_ISR_GetState:
+ 186              	.LFB72:
+ 312:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** }
+ 313:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 314:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 315:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /*******************************************************************************
+ 316:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Function Name: PWMtimer1_ISR_GetState
+ 317:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** ********************************************************************************
+ 318:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 319:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Summary:
+ 320:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Gets the state (enabled, disabled) of the Interrupt.
+ 321:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 322:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Parameters:
+ 323:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 324:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 325:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Return:
+ 326:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   1 if enabled, 0 if disabled.
+ 327:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 10
+
+
+ 328:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *******************************************************************************/
+ 329:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** uint8 PWMtimer1_ISR_GetState(void)
+ 330:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** {
+ 187              		.loc 1 330 0
+ 188              		.cfi_startproc
+ 189              		@ args = 0, pretend = 0, frame = 0
+ 190              		@ frame_needed = 0, uses_anonymous_args = 0
+ 191              		@ link register save eliminated.
+ 331:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* Get the state of the general interrupt. */
+ 332:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     return ((*PWMtimer1_ISR_INTC_SET_EN & (uint32)PWMtimer1_ISR__INTC_MASK) != 0u) ? 1u:0u;
+ 192              		.loc 1 332 0
+ 193 0000 044B     		ldr	r3, .L21
+ 194 0002 1B68     		ldr	r3, [r3]
+ 195 0004 13F4002F 		tst	r3, #524288
+ 196 0008 01D0     		beq	.L20
+ 197 000a 0120     		movs	r0, #1
+ 198 000c 7047     		bx	lr
+ 199              	.L20:
+ 200 000e 0020     		movs	r0, #0
+ 333:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** }
+ 201              		.loc 1 333 0
+ 202 0010 7047     		bx	lr
+ 203              	.L22:
+ 204 0012 00BF     		.align	2
+ 205              	.L21:
+ 206 0014 00E100E0 		.word	-536813312
+ 207              		.cfi_endproc
+ 208              	.LFE72:
+ 209              		.size	PWMtimer1_ISR_GetState, .-PWMtimer1_ISR_GetState
+ 210              		.section	.text.PWMtimer1_ISR_Disable,"ax",%progbits
+ 211              		.align	2
+ 212              		.global	PWMtimer1_ISR_Disable
+ 213              		.thumb
+ 214              		.thumb_func
+ 215              		.type	PWMtimer1_ISR_Disable, %function
+ 216              	PWMtimer1_ISR_Disable:
+ 217              	.LFB73:
+ 334:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 335:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 336:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /*******************************************************************************
+ 337:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Function Name: PWMtimer1_ISR_Disable
+ 338:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** ********************************************************************************
+ 339:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 340:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Summary:
+ 341:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Disables the Interrupt in the interrupt controller.
+ 342:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 343:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Parameters:
+ 344:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 345:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 346:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Return:
+ 347:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 348:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 349:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *******************************************************************************/
+ 350:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** void PWMtimer1_ISR_Disable(void)
+ 351:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** {
+ 218              		.loc 1 351 0
+ 219              		.cfi_startproc
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 11
+
+
+ 220              		@ args = 0, pretend = 0, frame = 0
+ 221              		@ frame_needed = 0, uses_anonymous_args = 0
+ 222              		@ link register save eliminated.
+ 352:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* Disable the general interrupt. */
+ 353:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     *PWMtimer1_ISR_INTC_CLR_EN = PWMtimer1_ISR__INTC_MASK;
+ 223              		.loc 1 353 0
+ 224 0000 4FF40022 		mov	r2, #524288
+ 225 0004 014B     		ldr	r3, .L24
+ 226 0006 1A60     		str	r2, [r3]
+ 227 0008 7047     		bx	lr
+ 228              	.L25:
+ 229 000a 00BF     		.align	2
+ 230              	.L24:
+ 231 000c 80E100E0 		.word	-536813184
+ 232              		.cfi_endproc
+ 233              	.LFE73:
+ 234              		.size	PWMtimer1_ISR_Disable, .-PWMtimer1_ISR_Disable
+ 235              		.section	.text.PWMtimer1_ISR_Start,"ax",%progbits
+ 236              		.align	2
+ 237              		.global	PWMtimer1_ISR_Start
+ 238              		.thumb
+ 239              		.thumb_func
+ 240              		.type	PWMtimer1_ISR_Start, %function
+ 241              	PWMtimer1_ISR_Start:
+ 242              	.LFB63:
+  63:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* For all we know the interrupt is active. */
+ 243              		.loc 1 63 0
+ 244              		.cfi_startproc
+ 245              		@ args = 0, pretend = 0, frame = 0
+ 246              		@ frame_needed = 0, uses_anonymous_args = 0
+ 247 0000 08B5     		push	{r3, lr}
+ 248              		.cfi_def_cfa_offset 8
+ 249              		.cfi_offset 3, -8
+ 250              		.cfi_offset 14, -4
+  65:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 251              		.loc 1 65 0
+ 252 0002 FFF7FEFF 		bl	PWMtimer1_ISR_Disable
+ 253              	.LVL8:
+  68:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 254              		.loc 1 68 0
+ 255 0006 0448     		ldr	r0, .L28
+ 256 0008 FFF7FEFF 		bl	PWMtimer1_ISR_SetVector
+ 257              	.LVL9:
+  71:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 258              		.loc 1 71 0
+ 259 000c 0620     		movs	r0, #6
+ 260 000e FFF7FEFF 		bl	PWMtimer1_ISR_SetPriority
+ 261              	.LVL10:
+  74:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** }
+ 262              		.loc 1 74 0
+ 263 0012 FFF7FEFF 		bl	PWMtimer1_ISR_Enable
+ 264              	.LVL11:
+ 265 0016 08BD     		pop	{r3, pc}
+ 266              	.L29:
+ 267              		.align	2
+ 268              	.L28:
+ 269 0018 00000000 		.word	PWMtimer1_ISR_Interrupt
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 12
+
+
+ 270              		.cfi_endproc
+ 271              	.LFE63:
+ 272              		.size	PWMtimer1_ISR_Start, .-PWMtimer1_ISR_Start
+ 273              		.section	.text.PWMtimer1_ISR_StartEx,"ax",%progbits
+ 274              		.align	2
+ 275              		.global	PWMtimer1_ISR_StartEx
+ 276              		.thumb
+ 277              		.thumb_func
+ 278              		.type	PWMtimer1_ISR_StartEx, %function
+ 279              	PWMtimer1_ISR_StartEx:
+ 280              	.LFB64:
+ 106:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* For all we know the interrupt is active. */
+ 281              		.loc 1 106 0
+ 282              		.cfi_startproc
+ 283              		@ args = 0, pretend = 0, frame = 0
+ 284              		@ frame_needed = 0, uses_anonymous_args = 0
+ 285              	.LVL12:
+ 286 0000 10B5     		push	{r4, lr}
+ 287              		.cfi_def_cfa_offset 8
+ 288              		.cfi_offset 4, -8
+ 289              		.cfi_offset 14, -4
+ 290 0002 0446     		mov	r4, r0
+ 108:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 291              		.loc 1 108 0
+ 292 0004 FFF7FEFF 		bl	PWMtimer1_ISR_Disable
+ 293              	.LVL13:
+ 111:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 294              		.loc 1 111 0
+ 295 0008 2046     		mov	r0, r4
+ 296 000a FFF7FEFF 		bl	PWMtimer1_ISR_SetVector
+ 297              	.LVL14:
+ 114:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 298              		.loc 1 114 0
+ 299 000e 0620     		movs	r0, #6
+ 300 0010 FFF7FEFF 		bl	PWMtimer1_ISR_SetPriority
+ 301              	.LVL15:
+ 117:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** }
+ 302              		.loc 1 117 0
+ 303 0014 FFF7FEFF 		bl	PWMtimer1_ISR_Enable
+ 304              	.LVL16:
+ 305 0018 10BD     		pop	{r4, pc}
+ 306              		.cfi_endproc
+ 307              	.LFE64:
+ 308              		.size	PWMtimer1_ISR_StartEx, .-PWMtimer1_ISR_StartEx
+ 309 001a 00BF     		.section	.text.PWMtimer1_ISR_Stop,"ax",%progbits
+ 310              		.align	2
+ 311              		.global	PWMtimer1_ISR_Stop
+ 312              		.thumb
+ 313              		.thumb_func
+ 314              		.type	PWMtimer1_ISR_Stop, %function
+ 315              	PWMtimer1_ISR_Stop:
+ 316              	.LFB65:
+ 136:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     /* Disable this interrupt. */
+ 317              		.loc 1 136 0
+ 318              		.cfi_startproc
+ 319              		@ args = 0, pretend = 0, frame = 0
+ 320              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 13
+
+
+ 321 0000 08B5     		push	{r3, lr}
+ 322              		.cfi_def_cfa_offset 8
+ 323              		.cfi_offset 3, -8
+ 324              		.cfi_offset 14, -4
+ 138:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 325              		.loc 1 138 0
+ 326 0002 FFF7FEFF 		bl	PWMtimer1_ISR_Disable
+ 327              	.LVL17:
+ 141:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** }
+ 328              		.loc 1 141 0
+ 329 0006 0248     		ldr	r0, .L34
+ 330 0008 FFF7FEFF 		bl	PWMtimer1_ISR_SetVector
+ 331              	.LVL18:
+ 332 000c 08BD     		pop	{r3, pc}
+ 333              	.L35:
+ 334 000e 00BF     		.align	2
+ 335              	.L34:
+ 336 0010 00000000 		.word	IntDefaultHandler
+ 337              		.cfi_endproc
+ 338              	.LFE65:
+ 339              		.size	PWMtimer1_ISR_Stop, .-PWMtimer1_ISR_Stop
+ 340              		.section	.text.PWMtimer1_ISR_SetPending,"ax",%progbits
+ 341              		.align	2
+ 342              		.global	PWMtimer1_ISR_SetPending
+ 343              		.thumb
+ 344              		.thumb_func
+ 345              		.type	PWMtimer1_ISR_SetPending, %function
+ 346              	PWMtimer1_ISR_SetPending:
+ 347              	.LFB74:
+ 354:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** }
+ 355:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 356:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 357:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /*******************************************************************************
+ 358:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Function Name: PWMtimer1_ISR_SetPending
+ 359:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** ********************************************************************************
+ 360:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 361:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Summary:
+ 362:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Causes the Interrupt to enter the pending state, a software method of
+ 363:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   generating the interrupt.
+ 364:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 365:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Parameters:
+ 366:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 367:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 368:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Return:
+ 369:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 370:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 371:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Side Effects:
+ 372:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   If interrupts are enabled and the interrupt is set up properly, the ISR is
+ 373:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   entered (depending on the priority of this interrupt and other pending 
+ 374:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   interrupts).
+ 375:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 376:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *******************************************************************************/
+ 377:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** void PWMtimer1_ISR_SetPending(void)
+ 378:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** {
+ 348              		.loc 1 378 0
+ 349              		.cfi_startproc
+ 350              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 14
+
+
+ 351              		@ frame_needed = 0, uses_anonymous_args = 0
+ 352              		@ link register save eliminated.
+ 379:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     *PWMtimer1_ISR_INTC_SET_PD = PWMtimer1_ISR__INTC_MASK;
+ 353              		.loc 1 379 0
+ 354 0000 4FF40022 		mov	r2, #524288
+ 355 0004 014B     		ldr	r3, .L37
+ 356 0006 1A60     		str	r2, [r3]
+ 357 0008 7047     		bx	lr
+ 358              	.L38:
+ 359 000a 00BF     		.align	2
+ 360              	.L37:
+ 361 000c 00E200E0 		.word	-536813056
+ 362              		.cfi_endproc
+ 363              	.LFE74:
+ 364              		.size	PWMtimer1_ISR_SetPending, .-PWMtimer1_ISR_SetPending
+ 365              		.section	.text.PWMtimer1_ISR_ClearPending,"ax",%progbits
+ 366              		.align	2
+ 367              		.global	PWMtimer1_ISR_ClearPending
+ 368              		.thumb
+ 369              		.thumb_func
+ 370              		.type	PWMtimer1_ISR_ClearPending, %function
+ 371              	PWMtimer1_ISR_ClearPending:
+ 372              	.LFB75:
+ 380:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** }
+ 381:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 382:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** 
+ 383:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** /*******************************************************************************
+ 384:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Function Name: PWMtimer1_ISR_ClearPending
+ 385:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** ********************************************************************************
+ 386:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 387:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Summary:
+ 388:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Clears a pending interrupt in the interrupt controller.
+ 389:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 390:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   Note Some interrupt sources are clear-on-read and require the block 
+ 391:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   interrupt/status register to be read/cleared with the appropriate block API 
+ 392:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   (GPIO, UART, and so on). Otherwise the ISR will continue to remain in 
+ 393:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   pending state even though the interrupt itself is cleared using this API.
+ 394:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 395:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Parameters:
+ 396:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 397:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 398:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** * Return:
+ 399:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *   None
+ 400:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *
+ 401:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** *******************************************************************************/
+ 402:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** void PWMtimer1_ISR_ClearPending(void)
+ 403:.\Generated_Source\PSoC5/PWMtimer1_ISR.c **** {
+ 373              		.loc 1 403 0
+ 374              		.cfi_startproc
+ 375              		@ args = 0, pretend = 0, frame = 0
+ 376              		@ frame_needed = 0, uses_anonymous_args = 0
+ 377              		@ link register save eliminated.
+ 404:.\Generated_Source\PSoC5/PWMtimer1_ISR.c ****     *PWMtimer1_ISR_INTC_CLR_PD = PWMtimer1_ISR__INTC_MASK;
+ 378              		.loc 1 404 0
+ 379 0000 4FF40022 		mov	r2, #524288
+ 380 0004 014B     		ldr	r3, .L40
+ 381 0006 1A60     		str	r2, [r3]
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 15
+
+
+ 382 0008 7047     		bx	lr
+ 383              	.L41:
+ 384 000a 00BF     		.align	2
+ 385              	.L40:
+ 386 000c 80E200E0 		.word	-536812928
+ 387              		.cfi_endproc
+ 388              	.LFE75:
+ 389              		.size	PWMtimer1_ISR_ClearPending, .-PWMtimer1_ISR_ClearPending
+ 390              		.text
+ 391              	.Letext0:
+ 392              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 393              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 394              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 395              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 396              		.file 6 "./Tones.h"
+ 397              		.section	.debug_info,"",%progbits
+ 398              	.Ldebug_info0:
+ 399 0000 11030000 		.4byte	0x311
+ 400 0004 0400     		.2byte	0x4
+ 401 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 402 000a 04       		.byte	0x4
+ 403 000b 01       		.uleb128 0x1
+ 404 000c 3B010000 		.4byte	.LASF35
+ 405 0010 01       		.byte	0x1
+ 406 0011 89000000 		.4byte	.LASF36
+ 407 0015 2A020000 		.4byte	.LASF37
+ 408 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 409 001d 00000000 		.4byte	0
+ 410 0021 00000000 		.4byte	.Ldebug_line0
+ 411 0025 02       		.uleb128 0x2
+ 412 0026 04       		.byte	0x4
+ 413 0027 05       		.byte	0x5
+ 414 0028 696E7400 		.ascii	"int\000"
+ 415 002c 03       		.uleb128 0x3
+ 416 002d 04       		.byte	0x4
+ 417 002e 07       		.byte	0x7
+ 418 002f C9010000 		.4byte	.LASF0
+ 419 0033 03       		.uleb128 0x3
+ 420 0034 01       		.byte	0x1
+ 421 0035 06       		.byte	0x6
+ 422 0036 4B030000 		.4byte	.LASF1
+ 423 003a 03       		.uleb128 0x3
+ 424 003b 01       		.byte	0x1
+ 425 003c 08       		.byte	0x8
+ 426 003d 02010000 		.4byte	.LASF2
+ 427 0041 03       		.uleb128 0x3
+ 428 0042 02       		.byte	0x2
+ 429 0043 05       		.byte	0x5
+ 430 0044 00030000 		.4byte	.LASF3
+ 431 0048 03       		.uleb128 0x3
+ 432 0049 02       		.byte	0x2
+ 433 004a 07       		.byte	0x7
+ 434 004b C9000000 		.4byte	.LASF4
+ 435 004f 04       		.uleb128 0x4
+ 436 0050 2F000000 		.4byte	.LASF11
+ 437 0054 02       		.byte	0x2
+ 438 0055 3F       		.byte	0x3f
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 16
+
+
+ 439 0056 5A000000 		.4byte	0x5a
+ 440 005a 03       		.uleb128 0x3
+ 441 005b 04       		.byte	0x4
+ 442 005c 05       		.byte	0x5
+ 443 005d 28030000 		.4byte	.LASF5
+ 444 0061 03       		.uleb128 0x3
+ 445 0062 04       		.byte	0x4
+ 446 0063 07       		.byte	0x7
+ 447 0064 B7000000 		.4byte	.LASF6
+ 448 0068 03       		.uleb128 0x3
+ 449 0069 08       		.byte	0x8
+ 450 006a 05       		.byte	0x5
+ 451 006b AD020000 		.4byte	.LASF7
+ 452 006f 03       		.uleb128 0x3
+ 453 0070 08       		.byte	0x8
+ 454 0071 07       		.byte	0x7
+ 455 0072 DE010000 		.4byte	.LASF8
+ 456 0076 03       		.uleb128 0x3
+ 457 0077 04       		.byte	0x4
+ 458 0078 07       		.byte	0x7
+ 459 0079 21020000 		.4byte	.LASF9
+ 460 007d 05       		.uleb128 0x5
+ 461 007e 04       		.byte	0x4
+ 462 007f 83000000 		.4byte	0x83
+ 463 0083 06       		.uleb128 0x6
+ 464 0084 03       		.uleb128 0x3
+ 465 0085 01       		.byte	0x1
+ 466 0086 08       		.byte	0x8
+ 467 0087 D6020000 		.4byte	.LASF10
+ 468 008b 04       		.uleb128 0x4
+ 469 008c 19020000 		.4byte	.LASF12
+ 470 0090 03       		.byte	0x3
+ 471 0091 2C       		.byte	0x2c
+ 472 0092 4F000000 		.4byte	0x4f
+ 473 0096 04       		.uleb128 0x4
+ 474 0097 0A030000 		.4byte	.LASF13
+ 475 009b 04       		.byte	0x4
+ 476 009c C2       		.byte	0xc2
+ 477 009d 3A000000 		.4byte	0x3a
+ 478 00a1 04       		.uleb128 0x4
+ 479 00a2 34010000 		.4byte	.LASF14
+ 480 00a6 04       		.byte	0x4
+ 481 00a7 C4       		.byte	0xc4
+ 482 00a8 61000000 		.4byte	0x61
+ 483 00ac 03       		.uleb128 0x3
+ 484 00ad 04       		.byte	0x4
+ 485 00ae 04       		.byte	0x4
+ 486 00af 69000000 		.4byte	.LASF15
+ 487 00b3 03       		.uleb128 0x3
+ 488 00b4 08       		.byte	0x8
+ 489 00b5 04       		.byte	0x4
+ 490 00b6 10010000 		.4byte	.LASF16
+ 491 00ba 07       		.uleb128 0x7
+ 492 00bb B2000000 		.4byte	.LASF17
+ 493 00bf 04       		.byte	0x4
+ 494 00c0 6C01     		.2byte	0x16c
+ 495 00c2 C6000000 		.4byte	0xc6
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 17
+
+
+ 496 00c6 08       		.uleb128 0x8
+ 497 00c7 96000000 		.4byte	0x96
+ 498 00cb 07       		.uleb128 0x7
+ 499 00cc 16000000 		.4byte	.LASF18
+ 500 00d0 04       		.byte	0x4
+ 501 00d1 6E01     		.2byte	0x16e
+ 502 00d3 D7000000 		.4byte	0xd7
+ 503 00d7 08       		.uleb128 0x8
+ 504 00d8 A1000000 		.4byte	0xa1
+ 505 00dc 07       		.uleb128 0x7
+ 506 00dd F5010000 		.4byte	.LASF19
+ 507 00e1 04       		.byte	0x4
+ 508 00e2 7E01     		.2byte	0x17e
+ 509 00e4 7D000000 		.4byte	0x7d
+ 510 00e8 09       		.uleb128 0x9
+ 511 00e9 51000000 		.4byte	.LASF20
+ 512 00ed 01       		.byte	0x1
+ 513 00ee A1       		.byte	0xa1
+ 514 00ef 00000000 		.4byte	.LFB66
+ 515 00f3 0A000000 		.4byte	.LFE66-.LFB66
+ 516 00f7 01       		.uleb128 0x1
+ 517 00f8 9C       		.byte	0x9c
+ 518 00f9 0D010000 		.4byte	0x10d
+ 519 00fd 0A       		.uleb128 0xa
+ 520 00fe 08000000 		.4byte	.LVL0
+ 521 0102 03030000 		.4byte	0x303
+ 522 0106 0B       		.uleb128 0xb
+ 523 0107 01       		.uleb128 0x1
+ 524 0108 50       		.byte	0x50
+ 525 0109 01       		.uleb128 0x1
+ 526 010a 30       		.byte	0x30
+ 527 010b 00       		.byte	0
+ 528 010c 00       		.byte	0
+ 529 010d 09       		.uleb128 0x9
+ 530 010e 10030000 		.4byte	.LASF21
+ 531 0112 01       		.byte	0x1
+ 532 0113 C9       		.byte	0xc9
+ 533 0114 00000000 		.4byte	.LFB67
+ 534 0118 10000000 		.4byte	.LFE67-.LFB67
+ 535 011c 01       		.uleb128 0x1
+ 536 011d 9C       		.byte	0x9c
+ 537 011e 3D010000 		.4byte	0x13d
+ 538 0122 0C       		.uleb128 0xc
+ 539 0123 D6010000 		.4byte	.LASF24
+ 540 0127 01       		.byte	0x1
+ 541 0128 C9       		.byte	0xc9
+ 542 0129 DC000000 		.4byte	0xdc
+ 543 012d 01       		.uleb128 0x1
+ 544 012e 50       		.byte	0x50
+ 545 012f 0D       		.uleb128 0xd
+ 546 0130 DB020000 		.4byte	.LASF22
+ 547 0134 01       		.byte	0x1
+ 548 0135 CB       		.byte	0xcb
+ 549 0136 3D010000 		.4byte	0x13d
+ 550 013a 01       		.uleb128 0x1
+ 551 013b 53       		.byte	0x53
+ 552 013c 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 18
+
+
+ 553 013d 05       		.uleb128 0x5
+ 554 013e 04       		.byte	0x4
+ 555 013f DC000000 		.4byte	0xdc
+ 556 0143 0E       		.uleb128 0xe
+ 557 0144 39000000 		.4byte	.LASF26
+ 558 0148 01       		.byte	0x1
+ 559 0149 E1       		.byte	0xe1
+ 560 014a DC000000 		.4byte	0xdc
+ 561 014e 00000000 		.4byte	.LFB68
+ 562 0152 10000000 		.4byte	.LFE68-.LFB68
+ 563 0156 01       		.uleb128 0x1
+ 564 0157 9C       		.byte	0x9c
+ 565 0158 6A010000 		.4byte	0x16a
+ 566 015c 0D       		.uleb128 0xd
+ 567 015d DB020000 		.4byte	.LASF22
+ 568 0161 01       		.byte	0x1
+ 569 0162 E3       		.byte	0xe3
+ 570 0163 3D010000 		.4byte	0x13d
+ 571 0167 01       		.uleb128 0x1
+ 572 0168 53       		.byte	0x53
+ 573 0169 00       		.byte	0
+ 574 016a 0F       		.uleb128 0xf
+ 575 016b 6F000000 		.4byte	.LASF23
+ 576 016f 01       		.byte	0x1
+ 577 0170 0301     		.2byte	0x103
+ 578 0172 00000000 		.4byte	.LFB69
+ 579 0176 10000000 		.4byte	.LFE69-.LFB69
+ 580 017a 01       		.uleb128 0x1
+ 581 017b 9C       		.byte	0x9c
+ 582 017c 91010000 		.4byte	0x191
+ 583 0180 10       		.uleb128 0x10
+ 584 0181 2B010000 		.4byte	.LASF25
+ 585 0185 01       		.byte	0x1
+ 586 0186 0301     		.2byte	0x103
+ 587 0188 96000000 		.4byte	0x96
+ 588 018c 00000000 		.4byte	.LLST0
+ 589 0190 00       		.byte	0
+ 590 0191 11       		.uleb128 0x11
+ 591 0192 31030000 		.4byte	.LASF27
+ 592 0196 01       		.byte	0x1
+ 593 0197 1901     		.2byte	0x119
+ 594 0199 96000000 		.4byte	0x96
+ 595 019d 00000000 		.4byte	.LFB70
+ 596 01a1 0C000000 		.4byte	.LFE70-.LFB70
+ 597 01a5 01       		.uleb128 0x1
+ 598 01a6 9C       		.byte	0x9c
+ 599 01a7 BC010000 		.4byte	0x1bc
+ 600 01ab 12       		.uleb128 0x12
+ 601 01ac 2B010000 		.4byte	.LASF25
+ 602 01b0 01       		.byte	0x1
+ 603 01b1 1B01     		.2byte	0x11b
+ 604 01b3 96000000 		.4byte	0x96
+ 605 01b7 21000000 		.4byte	.LLST1
+ 606 01bb 00       		.byte	0
+ 607 01bc 13       		.uleb128 0x13
+ 608 01bd 57030000 		.4byte	.LASF28
+ 609 01c1 01       		.byte	0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 19
+
+
+ 610 01c2 3401     		.2byte	0x134
+ 611 01c4 00000000 		.4byte	.LFB71
+ 612 01c8 10000000 		.4byte	.LFE71-.LFB71
+ 613 01cc 01       		.uleb128 0x1
+ 614 01cd 9C       		.byte	0x9c
+ 615 01ce 14       		.uleb128 0x14
+ 616 01cf 02020000 		.4byte	.LASF38
+ 617 01d3 01       		.byte	0x1
+ 618 01d4 4901     		.2byte	0x149
+ 619 01d6 96000000 		.4byte	0x96
+ 620 01da 00000000 		.4byte	.LFB72
+ 621 01de 18000000 		.4byte	.LFE72-.LFB72
+ 622 01e2 01       		.uleb128 0x1
+ 623 01e3 9C       		.byte	0x9c
+ 624 01e4 13       		.uleb128 0x13
+ 625 01e5 EA020000 		.4byte	.LASF29
+ 626 01e9 01       		.byte	0x1
+ 627 01ea 5E01     		.2byte	0x15e
+ 628 01ec 00000000 		.4byte	.LFB73
+ 629 01f0 10000000 		.4byte	.LFE73-.LFB73
+ 630 01f4 01       		.uleb128 0x1
+ 631 01f5 9C       		.byte	0x9c
+ 632 01f6 09       		.uleb128 0x9
+ 633 01f7 17010000 		.4byte	.LASF30
+ 634 01fb 01       		.byte	0x1
+ 635 01fc 3E       		.byte	0x3e
+ 636 01fd 00000000 		.4byte	.LFB63
+ 637 0201 1C000000 		.4byte	.LFE63-.LFB63
+ 638 0205 01       		.uleb128 0x1
+ 639 0206 9C       		.byte	0x9c
+ 640 0207 48020000 		.4byte	0x248
+ 641 020b 15       		.uleb128 0x15
+ 642 020c 06000000 		.4byte	.LVL8
+ 643 0210 E4010000 		.4byte	0x1e4
+ 644 0214 16       		.uleb128 0x16
+ 645 0215 0C000000 		.4byte	.LVL9
+ 646 0219 0D010000 		.4byte	0x10d
+ 647 021d 2B020000 		.4byte	0x22b
+ 648 0221 0B       		.uleb128 0xb
+ 649 0222 01       		.uleb128 0x1
+ 650 0223 50       		.byte	0x50
+ 651 0224 05       		.uleb128 0x5
+ 652 0225 03       		.byte	0x3
+ 653 0226 00000000 		.4byte	PWMtimer1_ISR_Interrupt
+ 654 022a 00       		.byte	0
+ 655 022b 16       		.uleb128 0x16
+ 656 022c 12000000 		.4byte	.LVL10
+ 657 0230 6A010000 		.4byte	0x16a
+ 658 0234 3E020000 		.4byte	0x23e
+ 659 0238 0B       		.uleb128 0xb
+ 660 0239 01       		.uleb128 0x1
+ 661 023a 50       		.byte	0x50
+ 662 023b 01       		.uleb128 0x1
+ 663 023c 36       		.byte	0x36
+ 664 023d 00       		.byte	0
+ 665 023e 15       		.uleb128 0x15
+ 666 023f 16000000 		.4byte	.LVL11
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 20
+
+
+ 667 0243 BC010000 		.4byte	0x1bc
+ 668 0247 00       		.byte	0
+ 669 0248 09       		.uleb128 0x9
+ 670 0249 00000000 		.4byte	.LASF31
+ 671 024d 01       		.byte	0x1
+ 672 024e 69       		.byte	0x69
+ 673 024f 00000000 		.4byte	.LFB64
+ 674 0253 1A000000 		.4byte	.LFE64-.LFB64
+ 675 0257 01       		.uleb128 0x1
+ 676 0258 9C       		.byte	0x9c
+ 677 0259 A6020000 		.4byte	0x2a6
+ 678 025d 17       		.uleb128 0x17
+ 679 025e D6010000 		.4byte	.LASF24
+ 680 0262 01       		.byte	0x1
+ 681 0263 69       		.byte	0x69
+ 682 0264 DC000000 		.4byte	0xdc
+ 683 0268 38000000 		.4byte	.LLST2
+ 684 026c 15       		.uleb128 0x15
+ 685 026d 08000000 		.4byte	.LVL13
+ 686 0271 E4010000 		.4byte	0x1e4
+ 687 0275 16       		.uleb128 0x16
+ 688 0276 0E000000 		.4byte	.LVL14
+ 689 027a 0D010000 		.4byte	0x10d
+ 690 027e 89020000 		.4byte	0x289
+ 691 0282 0B       		.uleb128 0xb
+ 692 0283 01       		.uleb128 0x1
+ 693 0284 50       		.byte	0x50
+ 694 0285 02       		.uleb128 0x2
+ 695 0286 74       		.byte	0x74
+ 696 0287 00       		.sleb128 0
+ 697 0288 00       		.byte	0
+ 698 0289 16       		.uleb128 0x16
+ 699 028a 14000000 		.4byte	.LVL15
+ 700 028e 6A010000 		.4byte	0x16a
+ 701 0292 9C020000 		.4byte	0x29c
+ 702 0296 0B       		.uleb128 0xb
+ 703 0297 01       		.uleb128 0x1
+ 704 0298 50       		.byte	0x50
+ 705 0299 01       		.uleb128 0x1
+ 706 029a 36       		.byte	0x36
+ 707 029b 00       		.byte	0
+ 708 029c 15       		.uleb128 0x15
+ 709 029d 18000000 		.4byte	.LVL16
+ 710 02a1 BC010000 		.4byte	0x1bc
+ 711 02a5 00       		.byte	0
+ 712 02a6 09       		.uleb128 0x9
+ 713 02a7 1C000000 		.4byte	.LASF32
+ 714 02ab 01       		.byte	0x1
+ 715 02ac 87       		.byte	0x87
+ 716 02ad 00000000 		.4byte	.LFB65
+ 717 02b1 14000000 		.4byte	.LFE65-.LFB65
+ 718 02b5 01       		.uleb128 0x1
+ 719 02b6 9C       		.byte	0x9c
+ 720 02b7 CE020000 		.4byte	0x2ce
+ 721 02bb 15       		.uleb128 0x15
+ 722 02bc 06000000 		.4byte	.LVL17
+ 723 02c0 E4010000 		.4byte	0x1e4
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 21
+
+
+ 724 02c4 15       		.uleb128 0x15
+ 725 02c5 0C000000 		.4byte	.LVL18
+ 726 02c9 0D010000 		.4byte	0x10d
+ 727 02cd 00       		.byte	0
+ 728 02ce 13       		.uleb128 0x13
+ 729 02cf E9000000 		.4byte	.LASF33
+ 730 02d3 01       		.byte	0x1
+ 731 02d4 7901     		.2byte	0x179
+ 732 02d6 00000000 		.4byte	.LFB74
+ 733 02da 10000000 		.4byte	.LFE74-.LFB74
+ 734 02de 01       		.uleb128 0x1
+ 735 02df 9C       		.byte	0x9c
+ 736 02e0 13       		.uleb128 0x13
+ 737 02e1 BB020000 		.4byte	.LASF34
+ 738 02e5 01       		.byte	0x1
+ 739 02e6 9201     		.2byte	0x192
+ 740 02e8 00000000 		.4byte	.LFB75
+ 741 02ec 10000000 		.4byte	.LFE75-.LFB75
+ 742 02f0 01       		.uleb128 0x1
+ 743 02f1 9C       		.byte	0x9c
+ 744 02f2 18       		.uleb128 0x18
+ 745 02f3 DC000000 		.4byte	.LASF39
+ 746 02f7 05       		.byte	0x5
+ 747 02f8 2A06     		.2byte	0x62a
+ 748 02fa FE020000 		.4byte	0x2fe
+ 749 02fe 08       		.uleb128 0x8
+ 750 02ff 8B000000 		.4byte	0x8b
+ 751 0303 19       		.uleb128 0x19
+ 752 0304 6C030000 		.4byte	.LASF40
+ 753 0308 06       		.byte	0x6
+ 754 0309 1B       		.byte	0x1b
+ 755 030a 96000000 		.4byte	0x96
+ 756 030e 1A       		.uleb128 0x1a
+ 757 030f 96000000 		.4byte	0x96
+ 758 0313 00       		.byte	0
+ 759 0314 00       		.byte	0
+ 760              		.section	.debug_abbrev,"",%progbits
+ 761              	.Ldebug_abbrev0:
+ 762 0000 01       		.uleb128 0x1
+ 763 0001 11       		.uleb128 0x11
+ 764 0002 01       		.byte	0x1
+ 765 0003 25       		.uleb128 0x25
+ 766 0004 0E       		.uleb128 0xe
+ 767 0005 13       		.uleb128 0x13
+ 768 0006 0B       		.uleb128 0xb
+ 769 0007 03       		.uleb128 0x3
+ 770 0008 0E       		.uleb128 0xe
+ 771 0009 1B       		.uleb128 0x1b
+ 772 000a 0E       		.uleb128 0xe
+ 773 000b 55       		.uleb128 0x55
+ 774 000c 17       		.uleb128 0x17
+ 775 000d 11       		.uleb128 0x11
+ 776 000e 01       		.uleb128 0x1
+ 777 000f 10       		.uleb128 0x10
+ 778 0010 17       		.uleb128 0x17
+ 779 0011 00       		.byte	0
+ 780 0012 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 22
+
+
+ 781 0013 02       		.uleb128 0x2
+ 782 0014 24       		.uleb128 0x24
+ 783 0015 00       		.byte	0
+ 784 0016 0B       		.uleb128 0xb
+ 785 0017 0B       		.uleb128 0xb
+ 786 0018 3E       		.uleb128 0x3e
+ 787 0019 0B       		.uleb128 0xb
+ 788 001a 03       		.uleb128 0x3
+ 789 001b 08       		.uleb128 0x8
+ 790 001c 00       		.byte	0
+ 791 001d 00       		.byte	0
+ 792 001e 03       		.uleb128 0x3
+ 793 001f 24       		.uleb128 0x24
+ 794 0020 00       		.byte	0
+ 795 0021 0B       		.uleb128 0xb
+ 796 0022 0B       		.uleb128 0xb
+ 797 0023 3E       		.uleb128 0x3e
+ 798 0024 0B       		.uleb128 0xb
+ 799 0025 03       		.uleb128 0x3
+ 800 0026 0E       		.uleb128 0xe
+ 801 0027 00       		.byte	0
+ 802 0028 00       		.byte	0
+ 803 0029 04       		.uleb128 0x4
+ 804 002a 16       		.uleb128 0x16
+ 805 002b 00       		.byte	0
+ 806 002c 03       		.uleb128 0x3
+ 807 002d 0E       		.uleb128 0xe
+ 808 002e 3A       		.uleb128 0x3a
+ 809 002f 0B       		.uleb128 0xb
+ 810 0030 3B       		.uleb128 0x3b
+ 811 0031 0B       		.uleb128 0xb
+ 812 0032 49       		.uleb128 0x49
+ 813 0033 13       		.uleb128 0x13
+ 814 0034 00       		.byte	0
+ 815 0035 00       		.byte	0
+ 816 0036 05       		.uleb128 0x5
+ 817 0037 0F       		.uleb128 0xf
+ 818 0038 00       		.byte	0
+ 819 0039 0B       		.uleb128 0xb
+ 820 003a 0B       		.uleb128 0xb
+ 821 003b 49       		.uleb128 0x49
+ 822 003c 13       		.uleb128 0x13
+ 823 003d 00       		.byte	0
+ 824 003e 00       		.byte	0
+ 825 003f 06       		.uleb128 0x6
+ 826 0040 15       		.uleb128 0x15
+ 827 0041 00       		.byte	0
+ 828 0042 27       		.uleb128 0x27
+ 829 0043 19       		.uleb128 0x19
+ 830 0044 00       		.byte	0
+ 831 0045 00       		.byte	0
+ 832 0046 07       		.uleb128 0x7
+ 833 0047 16       		.uleb128 0x16
+ 834 0048 00       		.byte	0
+ 835 0049 03       		.uleb128 0x3
+ 836 004a 0E       		.uleb128 0xe
+ 837 004b 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 23
+
+
+ 838 004c 0B       		.uleb128 0xb
+ 839 004d 3B       		.uleb128 0x3b
+ 840 004e 05       		.uleb128 0x5
+ 841 004f 49       		.uleb128 0x49
+ 842 0050 13       		.uleb128 0x13
+ 843 0051 00       		.byte	0
+ 844 0052 00       		.byte	0
+ 845 0053 08       		.uleb128 0x8
+ 846 0054 35       		.uleb128 0x35
+ 847 0055 00       		.byte	0
+ 848 0056 49       		.uleb128 0x49
+ 849 0057 13       		.uleb128 0x13
+ 850 0058 00       		.byte	0
+ 851 0059 00       		.byte	0
+ 852 005a 09       		.uleb128 0x9
+ 853 005b 2E       		.uleb128 0x2e
+ 854 005c 01       		.byte	0x1
+ 855 005d 3F       		.uleb128 0x3f
+ 856 005e 19       		.uleb128 0x19
+ 857 005f 03       		.uleb128 0x3
+ 858 0060 0E       		.uleb128 0xe
+ 859 0061 3A       		.uleb128 0x3a
+ 860 0062 0B       		.uleb128 0xb
+ 861 0063 3B       		.uleb128 0x3b
+ 862 0064 0B       		.uleb128 0xb
+ 863 0065 27       		.uleb128 0x27
+ 864 0066 19       		.uleb128 0x19
+ 865 0067 11       		.uleb128 0x11
+ 866 0068 01       		.uleb128 0x1
+ 867 0069 12       		.uleb128 0x12
+ 868 006a 06       		.uleb128 0x6
+ 869 006b 40       		.uleb128 0x40
+ 870 006c 18       		.uleb128 0x18
+ 871 006d 9742     		.uleb128 0x2117
+ 872 006f 19       		.uleb128 0x19
+ 873 0070 01       		.uleb128 0x1
+ 874 0071 13       		.uleb128 0x13
+ 875 0072 00       		.byte	0
+ 876 0073 00       		.byte	0
+ 877 0074 0A       		.uleb128 0xa
+ 878 0075 898201   		.uleb128 0x4109
+ 879 0078 01       		.byte	0x1
+ 880 0079 11       		.uleb128 0x11
+ 881 007a 01       		.uleb128 0x1
+ 882 007b 31       		.uleb128 0x31
+ 883 007c 13       		.uleb128 0x13
+ 884 007d 00       		.byte	0
+ 885 007e 00       		.byte	0
+ 886 007f 0B       		.uleb128 0xb
+ 887 0080 8A8201   		.uleb128 0x410a
+ 888 0083 00       		.byte	0
+ 889 0084 02       		.uleb128 0x2
+ 890 0085 18       		.uleb128 0x18
+ 891 0086 9142     		.uleb128 0x2111
+ 892 0088 18       		.uleb128 0x18
+ 893 0089 00       		.byte	0
+ 894 008a 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 24
+
+
+ 895 008b 0C       		.uleb128 0xc
+ 896 008c 05       		.uleb128 0x5
+ 897 008d 00       		.byte	0
+ 898 008e 03       		.uleb128 0x3
+ 899 008f 0E       		.uleb128 0xe
+ 900 0090 3A       		.uleb128 0x3a
+ 901 0091 0B       		.uleb128 0xb
+ 902 0092 3B       		.uleb128 0x3b
+ 903 0093 0B       		.uleb128 0xb
+ 904 0094 49       		.uleb128 0x49
+ 905 0095 13       		.uleb128 0x13
+ 906 0096 02       		.uleb128 0x2
+ 907 0097 18       		.uleb128 0x18
+ 908 0098 00       		.byte	0
+ 909 0099 00       		.byte	0
+ 910 009a 0D       		.uleb128 0xd
+ 911 009b 34       		.uleb128 0x34
+ 912 009c 00       		.byte	0
+ 913 009d 03       		.uleb128 0x3
+ 914 009e 0E       		.uleb128 0xe
+ 915 009f 3A       		.uleb128 0x3a
+ 916 00a0 0B       		.uleb128 0xb
+ 917 00a1 3B       		.uleb128 0x3b
+ 918 00a2 0B       		.uleb128 0xb
+ 919 00a3 49       		.uleb128 0x49
+ 920 00a4 13       		.uleb128 0x13
+ 921 00a5 02       		.uleb128 0x2
+ 922 00a6 18       		.uleb128 0x18
+ 923 00a7 00       		.byte	0
+ 924 00a8 00       		.byte	0
+ 925 00a9 0E       		.uleb128 0xe
+ 926 00aa 2E       		.uleb128 0x2e
+ 927 00ab 01       		.byte	0x1
+ 928 00ac 3F       		.uleb128 0x3f
+ 929 00ad 19       		.uleb128 0x19
+ 930 00ae 03       		.uleb128 0x3
+ 931 00af 0E       		.uleb128 0xe
+ 932 00b0 3A       		.uleb128 0x3a
+ 933 00b1 0B       		.uleb128 0xb
+ 934 00b2 3B       		.uleb128 0x3b
+ 935 00b3 0B       		.uleb128 0xb
+ 936 00b4 27       		.uleb128 0x27
+ 937 00b5 19       		.uleb128 0x19
+ 938 00b6 49       		.uleb128 0x49
+ 939 00b7 13       		.uleb128 0x13
+ 940 00b8 11       		.uleb128 0x11
+ 941 00b9 01       		.uleb128 0x1
+ 942 00ba 12       		.uleb128 0x12
+ 943 00bb 06       		.uleb128 0x6
+ 944 00bc 40       		.uleb128 0x40
+ 945 00bd 18       		.uleb128 0x18
+ 946 00be 9742     		.uleb128 0x2117
+ 947 00c0 19       		.uleb128 0x19
+ 948 00c1 01       		.uleb128 0x1
+ 949 00c2 13       		.uleb128 0x13
+ 950 00c3 00       		.byte	0
+ 951 00c4 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 25
+
+
+ 952 00c5 0F       		.uleb128 0xf
+ 953 00c6 2E       		.uleb128 0x2e
+ 954 00c7 01       		.byte	0x1
+ 955 00c8 3F       		.uleb128 0x3f
+ 956 00c9 19       		.uleb128 0x19
+ 957 00ca 03       		.uleb128 0x3
+ 958 00cb 0E       		.uleb128 0xe
+ 959 00cc 3A       		.uleb128 0x3a
+ 960 00cd 0B       		.uleb128 0xb
+ 961 00ce 3B       		.uleb128 0x3b
+ 962 00cf 05       		.uleb128 0x5
+ 963 00d0 27       		.uleb128 0x27
+ 964 00d1 19       		.uleb128 0x19
+ 965 00d2 11       		.uleb128 0x11
+ 966 00d3 01       		.uleb128 0x1
+ 967 00d4 12       		.uleb128 0x12
+ 968 00d5 06       		.uleb128 0x6
+ 969 00d6 40       		.uleb128 0x40
+ 970 00d7 18       		.uleb128 0x18
+ 971 00d8 9742     		.uleb128 0x2117
+ 972 00da 19       		.uleb128 0x19
+ 973 00db 01       		.uleb128 0x1
+ 974 00dc 13       		.uleb128 0x13
+ 975 00dd 00       		.byte	0
+ 976 00de 00       		.byte	0
+ 977 00df 10       		.uleb128 0x10
+ 978 00e0 05       		.uleb128 0x5
+ 979 00e1 00       		.byte	0
+ 980 00e2 03       		.uleb128 0x3
+ 981 00e3 0E       		.uleb128 0xe
+ 982 00e4 3A       		.uleb128 0x3a
+ 983 00e5 0B       		.uleb128 0xb
+ 984 00e6 3B       		.uleb128 0x3b
+ 985 00e7 05       		.uleb128 0x5
+ 986 00e8 49       		.uleb128 0x49
+ 987 00e9 13       		.uleb128 0x13
+ 988 00ea 02       		.uleb128 0x2
+ 989 00eb 17       		.uleb128 0x17
+ 990 00ec 00       		.byte	0
+ 991 00ed 00       		.byte	0
+ 992 00ee 11       		.uleb128 0x11
+ 993 00ef 2E       		.uleb128 0x2e
+ 994 00f0 01       		.byte	0x1
+ 995 00f1 3F       		.uleb128 0x3f
+ 996 00f2 19       		.uleb128 0x19
+ 997 00f3 03       		.uleb128 0x3
+ 998 00f4 0E       		.uleb128 0xe
+ 999 00f5 3A       		.uleb128 0x3a
+ 1000 00f6 0B       		.uleb128 0xb
+ 1001 00f7 3B       		.uleb128 0x3b
+ 1002 00f8 05       		.uleb128 0x5
+ 1003 00f9 27       		.uleb128 0x27
+ 1004 00fa 19       		.uleb128 0x19
+ 1005 00fb 49       		.uleb128 0x49
+ 1006 00fc 13       		.uleb128 0x13
+ 1007 00fd 11       		.uleb128 0x11
+ 1008 00fe 01       		.uleb128 0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 26
+
+
+ 1009 00ff 12       		.uleb128 0x12
+ 1010 0100 06       		.uleb128 0x6
+ 1011 0101 40       		.uleb128 0x40
+ 1012 0102 18       		.uleb128 0x18
+ 1013 0103 9742     		.uleb128 0x2117
+ 1014 0105 19       		.uleb128 0x19
+ 1015 0106 01       		.uleb128 0x1
+ 1016 0107 13       		.uleb128 0x13
+ 1017 0108 00       		.byte	0
+ 1018 0109 00       		.byte	0
+ 1019 010a 12       		.uleb128 0x12
+ 1020 010b 34       		.uleb128 0x34
+ 1021 010c 00       		.byte	0
+ 1022 010d 03       		.uleb128 0x3
+ 1023 010e 0E       		.uleb128 0xe
+ 1024 010f 3A       		.uleb128 0x3a
+ 1025 0110 0B       		.uleb128 0xb
+ 1026 0111 3B       		.uleb128 0x3b
+ 1027 0112 05       		.uleb128 0x5
+ 1028 0113 49       		.uleb128 0x49
+ 1029 0114 13       		.uleb128 0x13
+ 1030 0115 02       		.uleb128 0x2
+ 1031 0116 17       		.uleb128 0x17
+ 1032 0117 00       		.byte	0
+ 1033 0118 00       		.byte	0
+ 1034 0119 13       		.uleb128 0x13
+ 1035 011a 2E       		.uleb128 0x2e
+ 1036 011b 00       		.byte	0
+ 1037 011c 3F       		.uleb128 0x3f
+ 1038 011d 19       		.uleb128 0x19
+ 1039 011e 03       		.uleb128 0x3
+ 1040 011f 0E       		.uleb128 0xe
+ 1041 0120 3A       		.uleb128 0x3a
+ 1042 0121 0B       		.uleb128 0xb
+ 1043 0122 3B       		.uleb128 0x3b
+ 1044 0123 05       		.uleb128 0x5
+ 1045 0124 27       		.uleb128 0x27
+ 1046 0125 19       		.uleb128 0x19
+ 1047 0126 11       		.uleb128 0x11
+ 1048 0127 01       		.uleb128 0x1
+ 1049 0128 12       		.uleb128 0x12
+ 1050 0129 06       		.uleb128 0x6
+ 1051 012a 40       		.uleb128 0x40
+ 1052 012b 18       		.uleb128 0x18
+ 1053 012c 9742     		.uleb128 0x2117
+ 1054 012e 19       		.uleb128 0x19
+ 1055 012f 00       		.byte	0
+ 1056 0130 00       		.byte	0
+ 1057 0131 14       		.uleb128 0x14
+ 1058 0132 2E       		.uleb128 0x2e
+ 1059 0133 00       		.byte	0
+ 1060 0134 3F       		.uleb128 0x3f
+ 1061 0135 19       		.uleb128 0x19
+ 1062 0136 03       		.uleb128 0x3
+ 1063 0137 0E       		.uleb128 0xe
+ 1064 0138 3A       		.uleb128 0x3a
+ 1065 0139 0B       		.uleb128 0xb
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 27
+
+
+ 1066 013a 3B       		.uleb128 0x3b
+ 1067 013b 05       		.uleb128 0x5
+ 1068 013c 27       		.uleb128 0x27
+ 1069 013d 19       		.uleb128 0x19
+ 1070 013e 49       		.uleb128 0x49
+ 1071 013f 13       		.uleb128 0x13
+ 1072 0140 11       		.uleb128 0x11
+ 1073 0141 01       		.uleb128 0x1
+ 1074 0142 12       		.uleb128 0x12
+ 1075 0143 06       		.uleb128 0x6
+ 1076 0144 40       		.uleb128 0x40
+ 1077 0145 18       		.uleb128 0x18
+ 1078 0146 9742     		.uleb128 0x2117
+ 1079 0148 19       		.uleb128 0x19
+ 1080 0149 00       		.byte	0
+ 1081 014a 00       		.byte	0
+ 1082 014b 15       		.uleb128 0x15
+ 1083 014c 898201   		.uleb128 0x4109
+ 1084 014f 00       		.byte	0
+ 1085 0150 11       		.uleb128 0x11
+ 1086 0151 01       		.uleb128 0x1
+ 1087 0152 31       		.uleb128 0x31
+ 1088 0153 13       		.uleb128 0x13
+ 1089 0154 00       		.byte	0
+ 1090 0155 00       		.byte	0
+ 1091 0156 16       		.uleb128 0x16
+ 1092 0157 898201   		.uleb128 0x4109
+ 1093 015a 01       		.byte	0x1
+ 1094 015b 11       		.uleb128 0x11
+ 1095 015c 01       		.uleb128 0x1
+ 1096 015d 31       		.uleb128 0x31
+ 1097 015e 13       		.uleb128 0x13
+ 1098 015f 01       		.uleb128 0x1
+ 1099 0160 13       		.uleb128 0x13
+ 1100 0161 00       		.byte	0
+ 1101 0162 00       		.byte	0
+ 1102 0163 17       		.uleb128 0x17
+ 1103 0164 05       		.uleb128 0x5
+ 1104 0165 00       		.byte	0
+ 1105 0166 03       		.uleb128 0x3
+ 1106 0167 0E       		.uleb128 0xe
+ 1107 0168 3A       		.uleb128 0x3a
+ 1108 0169 0B       		.uleb128 0xb
+ 1109 016a 3B       		.uleb128 0x3b
+ 1110 016b 0B       		.uleb128 0xb
+ 1111 016c 49       		.uleb128 0x49
+ 1112 016d 13       		.uleb128 0x13
+ 1113 016e 02       		.uleb128 0x2
+ 1114 016f 17       		.uleb128 0x17
+ 1115 0170 00       		.byte	0
+ 1116 0171 00       		.byte	0
+ 1117 0172 18       		.uleb128 0x18
+ 1118 0173 34       		.uleb128 0x34
+ 1119 0174 00       		.byte	0
+ 1120 0175 03       		.uleb128 0x3
+ 1121 0176 0E       		.uleb128 0xe
+ 1122 0177 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 28
+
+
+ 1123 0178 0B       		.uleb128 0xb
+ 1124 0179 3B       		.uleb128 0x3b
+ 1125 017a 05       		.uleb128 0x5
+ 1126 017b 49       		.uleb128 0x49
+ 1127 017c 13       		.uleb128 0x13
+ 1128 017d 3F       		.uleb128 0x3f
+ 1129 017e 19       		.uleb128 0x19
+ 1130 017f 3C       		.uleb128 0x3c
+ 1131 0180 19       		.uleb128 0x19
+ 1132 0181 00       		.byte	0
+ 1133 0182 00       		.byte	0
+ 1134 0183 19       		.uleb128 0x19
+ 1135 0184 2E       		.uleb128 0x2e
+ 1136 0185 01       		.byte	0x1
+ 1137 0186 3F       		.uleb128 0x3f
+ 1138 0187 19       		.uleb128 0x19
+ 1139 0188 03       		.uleb128 0x3
+ 1140 0189 0E       		.uleb128 0xe
+ 1141 018a 3A       		.uleb128 0x3a
+ 1142 018b 0B       		.uleb128 0xb
+ 1143 018c 3B       		.uleb128 0x3b
+ 1144 018d 0B       		.uleb128 0xb
+ 1145 018e 27       		.uleb128 0x27
+ 1146 018f 19       		.uleb128 0x19
+ 1147 0190 49       		.uleb128 0x49
+ 1148 0191 13       		.uleb128 0x13
+ 1149 0192 3C       		.uleb128 0x3c
+ 1150 0193 19       		.uleb128 0x19
+ 1151 0194 00       		.byte	0
+ 1152 0195 00       		.byte	0
+ 1153 0196 1A       		.uleb128 0x1a
+ 1154 0197 05       		.uleb128 0x5
+ 1155 0198 00       		.byte	0
+ 1156 0199 49       		.uleb128 0x49
+ 1157 019a 13       		.uleb128 0x13
+ 1158 019b 00       		.byte	0
+ 1159 019c 00       		.byte	0
+ 1160 019d 00       		.byte	0
+ 1161              		.section	.debug_loc,"",%progbits
+ 1162              	.Ldebug_loc0:
+ 1163              	.LLST0:
+ 1164 0000 00000000 		.4byte	.LVL4
+ 1165 0004 02000000 		.4byte	.LVL5
+ 1166 0008 0100     		.2byte	0x1
+ 1167 000a 50       		.byte	0x50
+ 1168 000b 02000000 		.4byte	.LVL5
+ 1169 000f 10000000 		.4byte	.LFE69
+ 1170 0013 0400     		.2byte	0x4
+ 1171 0015 F3       		.byte	0xf3
+ 1172 0016 01       		.uleb128 0x1
+ 1173 0017 50       		.byte	0x50
+ 1174 0018 9F       		.byte	0x9f
+ 1175 0019 00000000 		.4byte	0
+ 1176 001d 00000000 		.4byte	0
+ 1177              	.LLST1:
+ 1178 0021 04000000 		.4byte	.LVL6
+ 1179 0025 06000000 		.4byte	.LVL7
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 29
+
+
+ 1180 0029 0500     		.2byte	0x5
+ 1181 002b 70       		.byte	0x70
+ 1182 002c 00       		.sleb128 0
+ 1183 002d 35       		.byte	0x35
+ 1184 002e 25       		.byte	0x25
+ 1185 002f 9F       		.byte	0x9f
+ 1186 0030 00000000 		.4byte	0
+ 1187 0034 00000000 		.4byte	0
+ 1188              	.LLST2:
+ 1189 0038 00000000 		.4byte	.LVL12
+ 1190 003c 07000000 		.4byte	.LVL13-1
+ 1191 0040 0100     		.2byte	0x1
+ 1192 0042 50       		.byte	0x50
+ 1193 0043 07000000 		.4byte	.LVL13-1
+ 1194 0047 1A000000 		.4byte	.LFE64
+ 1195 004b 0100     		.2byte	0x1
+ 1196 004d 54       		.byte	0x54
+ 1197 004e 00000000 		.4byte	0
+ 1198 0052 00000000 		.4byte	0
+ 1199              		.section	.debug_aranges,"",%progbits
+ 1200 0000 7C000000 		.4byte	0x7c
+ 1201 0004 0200     		.2byte	0x2
+ 1202 0006 00000000 		.4byte	.Ldebug_info0
+ 1203 000a 04       		.byte	0x4
+ 1204 000b 00       		.byte	0
+ 1205 000c 0000     		.2byte	0
+ 1206 000e 0000     		.2byte	0
+ 1207 0010 00000000 		.4byte	.LFB66
+ 1208 0014 0A000000 		.4byte	.LFE66-.LFB66
+ 1209 0018 00000000 		.4byte	.LFB67
+ 1210 001c 10000000 		.4byte	.LFE67-.LFB67
+ 1211 0020 00000000 		.4byte	.LFB68
+ 1212 0024 10000000 		.4byte	.LFE68-.LFB68
+ 1213 0028 00000000 		.4byte	.LFB69
+ 1214 002c 10000000 		.4byte	.LFE69-.LFB69
+ 1215 0030 00000000 		.4byte	.LFB70
+ 1216 0034 0C000000 		.4byte	.LFE70-.LFB70
+ 1217 0038 00000000 		.4byte	.LFB71
+ 1218 003c 10000000 		.4byte	.LFE71-.LFB71
+ 1219 0040 00000000 		.4byte	.LFB72
+ 1220 0044 18000000 		.4byte	.LFE72-.LFB72
+ 1221 0048 00000000 		.4byte	.LFB73
+ 1222 004c 10000000 		.4byte	.LFE73-.LFB73
+ 1223 0050 00000000 		.4byte	.LFB63
+ 1224 0054 1C000000 		.4byte	.LFE63-.LFB63
+ 1225 0058 00000000 		.4byte	.LFB64
+ 1226 005c 1A000000 		.4byte	.LFE64-.LFB64
+ 1227 0060 00000000 		.4byte	.LFB65
+ 1228 0064 14000000 		.4byte	.LFE65-.LFB65
+ 1229 0068 00000000 		.4byte	.LFB74
+ 1230 006c 10000000 		.4byte	.LFE74-.LFB74
+ 1231 0070 00000000 		.4byte	.LFB75
+ 1232 0074 10000000 		.4byte	.LFE75-.LFB75
+ 1233 0078 00000000 		.4byte	0
+ 1234 007c 00000000 		.4byte	0
+ 1235              		.section	.debug_ranges,"",%progbits
+ 1236              	.Ldebug_ranges0:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 30
+
+
+ 1237 0000 00000000 		.4byte	.LFB66
+ 1238 0004 0A000000 		.4byte	.LFE66
+ 1239 0008 00000000 		.4byte	.LFB67
+ 1240 000c 10000000 		.4byte	.LFE67
+ 1241 0010 00000000 		.4byte	.LFB68
+ 1242 0014 10000000 		.4byte	.LFE68
+ 1243 0018 00000000 		.4byte	.LFB69
+ 1244 001c 10000000 		.4byte	.LFE69
+ 1245 0020 00000000 		.4byte	.LFB70
+ 1246 0024 0C000000 		.4byte	.LFE70
+ 1247 0028 00000000 		.4byte	.LFB71
+ 1248 002c 10000000 		.4byte	.LFE71
+ 1249 0030 00000000 		.4byte	.LFB72
+ 1250 0034 18000000 		.4byte	.LFE72
+ 1251 0038 00000000 		.4byte	.LFB73
+ 1252 003c 10000000 		.4byte	.LFE73
+ 1253 0040 00000000 		.4byte	.LFB63
+ 1254 0044 1C000000 		.4byte	.LFE63
+ 1255 0048 00000000 		.4byte	.LFB64
+ 1256 004c 1A000000 		.4byte	.LFE64
+ 1257 0050 00000000 		.4byte	.LFB65
+ 1258 0054 14000000 		.4byte	.LFE65
+ 1259 0058 00000000 		.4byte	.LFB74
+ 1260 005c 10000000 		.4byte	.LFE74
+ 1261 0060 00000000 		.4byte	.LFB75
+ 1262 0064 10000000 		.4byte	.LFE75
+ 1263 0068 00000000 		.4byte	0
+ 1264 006c 00000000 		.4byte	0
+ 1265              		.section	.debug_line,"",%progbits
+ 1266              	.Ldebug_line0:
+ 1267 0000 63020000 		.section	.debug_str,"MS",%progbits,1
+ 1267      02007601 
+ 1267      00000201 
+ 1267      FB0E0D00 
+ 1267      01010101 
+ 1268              	.LASF31:
+ 1269 0000 50574D74 		.ascii	"PWMtimer1_ISR_StartEx\000"
+ 1269      696D6572 
+ 1269      315F4953 
+ 1269      525F5374 
+ 1269      61727445 
+ 1270              	.LASF18:
+ 1271 0016 72656733 		.ascii	"reg32\000"
+ 1271      3200
+ 1272              	.LASF32:
+ 1273 001c 50574D74 		.ascii	"PWMtimer1_ISR_Stop\000"
+ 1273      696D6572 
+ 1273      315F4953 
+ 1273      525F5374 
+ 1273      6F7000
+ 1274              	.LASF11:
+ 1275 002f 5F5F696E 		.ascii	"__int32_t\000"
+ 1275      7433325F 
+ 1275      7400
+ 1276              	.LASF26:
+ 1277 0039 50574D74 		.ascii	"PWMtimer1_ISR_GetVector\000"
+ 1277      696D6572 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 31
+
+
+ 1277      315F4953 
+ 1277      525F4765 
+ 1277      74566563 
+ 1278              	.LASF20:
+ 1279 0051 50574D74 		.ascii	"PWMtimer1_ISR_Interrupt\000"
+ 1279      696D6572 
+ 1279      315F4953 
+ 1279      525F496E 
+ 1279      74657272 
+ 1280              	.LASF15:
+ 1281 0069 666C6F61 		.ascii	"float\000"
+ 1281      7400
+ 1282              	.LASF23:
+ 1283 006f 50574D74 		.ascii	"PWMtimer1_ISR_SetPriority\000"
+ 1283      696D6572 
+ 1283      315F4953 
+ 1283      525F5365 
+ 1283      74507269 
+ 1284              	.LASF36:
+ 1285 0089 2E5C4765 		.ascii	".\\Generated_Source\\PSoC5\\PWMtimer1_ISR.c\000"
+ 1285      6E657261 
+ 1285      7465645F 
+ 1285      536F7572 
+ 1285      63655C50 
+ 1286              	.LASF17:
+ 1287 00b2 72656738 		.ascii	"reg8\000"
+ 1287      00
+ 1288              	.LASF6:
+ 1289 00b7 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1289      20756E73 
+ 1289      69676E65 
+ 1289      6420696E 
+ 1289      7400
+ 1290              	.LASF4:
+ 1291 00c9 73686F72 		.ascii	"short unsigned int\000"
+ 1291      7420756E 
+ 1291      7369676E 
+ 1291      65642069 
+ 1291      6E7400
+ 1292              	.LASF39:
+ 1293 00dc 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1293      52784275 
+ 1293      66666572 
+ 1293      00
+ 1294              	.LASF33:
+ 1295 00e9 50574D74 		.ascii	"PWMtimer1_ISR_SetPending\000"
+ 1295      696D6572 
+ 1295      315F4953 
+ 1295      525F5365 
+ 1295      7450656E 
+ 1296              	.LASF2:
+ 1297 0102 756E7369 		.ascii	"unsigned char\000"
+ 1297      676E6564 
+ 1297      20636861 
+ 1297      7200
+ 1298              	.LASF16:
+ 1299 0110 646F7562 		.ascii	"double\000"
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 32
+
+
+ 1299      6C6500
+ 1300              	.LASF30:
+ 1301 0117 50574D74 		.ascii	"PWMtimer1_ISR_Start\000"
+ 1301      696D6572 
+ 1301      315F4953 
+ 1301      525F5374 
+ 1301      61727400 
+ 1302              	.LASF25:
+ 1303 012b 7072696F 		.ascii	"priority\000"
+ 1303      72697479 
+ 1303      00
+ 1304              	.LASF14:
+ 1305 0134 75696E74 		.ascii	"uint32\000"
+ 1305      333200
+ 1306              	.LASF35:
+ 1307 013b 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 1307      4320342E 
+ 1307      392E3320 
+ 1307      32303135 
+ 1307      30333033 
+ 1308 016e 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m3 -mthumb -g -O"
+ 1308      20726576 
+ 1308      6973696F 
+ 1308      6E203232 
+ 1308      31323230 
+ 1309 01a1 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1309      66756E63 
+ 1309      74696F6E 
+ 1309      2D736563 
+ 1309      74696F6E 
+ 1310              	.LASF0:
+ 1311 01c9 756E7369 		.ascii	"unsigned int\000"
+ 1311      676E6564 
+ 1311      20696E74 
+ 1311      00
+ 1312              	.LASF24:
+ 1313 01d6 61646472 		.ascii	"address\000"
+ 1313      65737300 
+ 1314              	.LASF8:
+ 1315 01de 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1315      206C6F6E 
+ 1315      6720756E 
+ 1315      7369676E 
+ 1315      65642069 
+ 1316              	.LASF19:
+ 1317 01f5 63796973 		.ascii	"cyisraddress\000"
+ 1317      72616464 
+ 1317      72657373 
+ 1317      00
+ 1318              	.LASF38:
+ 1319 0202 50574D74 		.ascii	"PWMtimer1_ISR_GetState\000"
+ 1319      696D6572 
+ 1319      315F4953 
+ 1319      525F4765 
+ 1319      74537461 
+ 1320              	.LASF12:
+ 1321 0219 696E7433 		.ascii	"int32_t\000"
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 33
+
+
+ 1321      325F7400 
+ 1322              	.LASF9:
+ 1323 0221 73697A65 		.ascii	"sizetype\000"
+ 1323      74797065 
+ 1323      00
+ 1324              	.LASF37:
+ 1325 022a 5C5C4441 		.ascii	"\\\\DATA\\Folder Redirection\\faithc\\Desktop\\FAIT"
+ 1325      54415C46 
+ 1325      6F6C6465 
+ 1325      72205265 
+ 1325      64697265 
+ 1326 0257 48532052 		.ascii	"HS RELEASED FIRMWARE\\SirenProject200W_RevF\\SirenP"
+ 1326      454C4541 
+ 1326      53454420 
+ 1326      4649524D 
+ 1326      57415245 
+ 1327 0288 726F6A65 		.ascii	"roject200W_RevD\\ReleaseVersion.cydsn\000"
+ 1327      63743230 
+ 1327      30575F52 
+ 1327      6576445C 
+ 1327      52656C65 
+ 1328              	.LASF7:
+ 1329 02ad 6C6F6E67 		.ascii	"long long int\000"
+ 1329      206C6F6E 
+ 1329      6720696E 
+ 1329      7400
+ 1330              	.LASF34:
+ 1331 02bb 50574D74 		.ascii	"PWMtimer1_ISR_ClearPending\000"
+ 1331      696D6572 
+ 1331      315F4953 
+ 1331      525F436C 
+ 1331      65617250 
+ 1332              	.LASF10:
+ 1333 02d6 63686172 		.ascii	"char\000"
+ 1333      00
+ 1334              	.LASF22:
+ 1335 02db 72616D56 		.ascii	"ramVectorTable\000"
+ 1335      6563746F 
+ 1335      72546162 
+ 1335      6C6500
+ 1336              	.LASF29:
+ 1337 02ea 50574D74 		.ascii	"PWMtimer1_ISR_Disable\000"
+ 1337      696D6572 
+ 1337      315F4953 
+ 1337      525F4469 
+ 1337      7361626C 
+ 1338              	.LASF3:
+ 1339 0300 73686F72 		.ascii	"short int\000"
+ 1339      7420696E 
+ 1339      7400
+ 1340              	.LASF13:
+ 1341 030a 75696E74 		.ascii	"uint8\000"
+ 1341      3800
+ 1342              	.LASF21:
+ 1343 0310 50574D74 		.ascii	"PWMtimer1_ISR_SetVector\000"
+ 1343      696D6572 
+ 1343      315F4953 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccL3tGSL.s 			page 34
+
+
+ 1343      525F5365 
+ 1343      74566563 
+ 1344              	.LASF5:
+ 1345 0328 6C6F6E67 		.ascii	"long int\000"
+ 1345      20696E74 
+ 1345      00
+ 1346              	.LASF27:
+ 1347 0331 50574D74 		.ascii	"PWMtimer1_ISR_GetPriority\000"
+ 1347      696D6572 
+ 1347      315F4953 
+ 1347      525F4765 
+ 1347      74507269 
+ 1348              	.LASF1:
+ 1349 034b 7369676E 		.ascii	"signed char\000"
+ 1349      65642063 
+ 1349      68617200 
+ 1350              	.LASF28:
+ 1351 0357 50574D74 		.ascii	"PWMtimer1_ISR_Enable\000"
+ 1351      696D6572 
+ 1351      315F4953 
+ 1351      525F456E 
+ 1351      61626C65 
+ 1352              	.LASF40:
+ 1353 036c 70726F63 		.ascii	"processPWMtimerRoutine\000"
+ 1353      65737350 
+ 1353      574D7469 
+ 1353      6D657252 
+ 1353      6F757469 
+ 1354              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

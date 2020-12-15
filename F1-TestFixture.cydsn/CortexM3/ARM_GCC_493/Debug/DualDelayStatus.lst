@@ -1,0 +1,950 @@
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccr37aYB.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"DualDelayStatus.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.DualDelayStatus_Read,"ax",%progbits
+  19              		.align	2
+  20              		.global	DualDelayStatus_Read
+  21              		.thumb
+  22              		.thumb_func
+  23              		.type	DualDelayStatus_Read, %function
+  24              	DualDelayStatus_Read:
+  25              	.LFB0:
+  26              		.file 1 ".\\Generated_Source\\PSoC5\\DualDelayStatus.c"
+   1:.\Generated_Source\PSoC5/DualDelayStatus.c **** /*******************************************************************************
+   2:.\Generated_Source\PSoC5/DualDelayStatus.c **** * File Name: DualDelayStatus.c  
+   3:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Version 1.90
+   4:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+   5:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Description:
+   6:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  This file contains API to enable firmware to read the value of a Status 
+   7:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  Register.
+   8:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+   9:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Note:
+  10:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+  11:.\Generated_Source\PSoC5/DualDelayStatus.c **** ********************************************************************************
+  12:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  13:.\Generated_Source\PSoC5/DualDelayStatus.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  14:.\Generated_Source\PSoC5/DualDelayStatus.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  15:.\Generated_Source\PSoC5/DualDelayStatus.c **** * the software package with which this file was provided.
+  16:.\Generated_Source\PSoC5/DualDelayStatus.c **** *******************************************************************************/
+  17:.\Generated_Source\PSoC5/DualDelayStatus.c **** 
+  18:.\Generated_Source\PSoC5/DualDelayStatus.c **** #include "DualDelayStatus.h"
+  19:.\Generated_Source\PSoC5/DualDelayStatus.c **** 
+  20:.\Generated_Source\PSoC5/DualDelayStatus.c **** #if !defined(DualDelayStatus_sts_intr_sts_reg__REMOVED) /* Check for removal by optimization */
+  21:.\Generated_Source\PSoC5/DualDelayStatus.c **** 
+  22:.\Generated_Source\PSoC5/DualDelayStatus.c **** 
+  23:.\Generated_Source\PSoC5/DualDelayStatus.c **** /*******************************************************************************
+  24:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Function Name: DualDelayStatus_Read
+  25:.\Generated_Source\PSoC5/DualDelayStatus.c **** ********************************************************************************
+  26:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+  27:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Summary:
+  28:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  Reads the current value assigned to the Status Register.
+  29:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+  30:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Parameters:
+  31:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  None.
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccr37aYB.s 			page 2
+
+
+  32:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+  33:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Return:
+  34:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  The current value in the Status Register.
+  35:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+  36:.\Generated_Source\PSoC5/DualDelayStatus.c **** *******************************************************************************/
+  37:.\Generated_Source\PSoC5/DualDelayStatus.c **** uint8 DualDelayStatus_Read(void) 
+  38:.\Generated_Source\PSoC5/DualDelayStatus.c **** { 
+  27              		.loc 1 38 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              		@ link register save eliminated.
+  39:.\Generated_Source\PSoC5/DualDelayStatus.c ****     return DualDelayStatus_Status;
+  32              		.loc 1 39 0
+  33 0000 014B     		ldr	r3, .L2
+  34 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+  40:.\Generated_Source\PSoC5/DualDelayStatus.c **** }
+  35              		.loc 1 40 0
+  36 0004 7047     		bx	lr
+  37              	.L3:
+  38 0006 00BF     		.align	2
+  39              	.L2:
+  40 0008 61640040 		.word	1073767521
+  41              		.cfi_endproc
+  42              	.LFE0:
+  43              		.size	DualDelayStatus_Read, .-DualDelayStatus_Read
+  44              		.section	.text.DualDelayStatus_InterruptEnable,"ax",%progbits
+  45              		.align	2
+  46              		.global	DualDelayStatus_InterruptEnable
+  47              		.thumb
+  48              		.thumb_func
+  49              		.type	DualDelayStatus_InterruptEnable, %function
+  50              	DualDelayStatus_InterruptEnable:
+  51              	.LFB1:
+  41:.\Generated_Source\PSoC5/DualDelayStatus.c **** 
+  42:.\Generated_Source\PSoC5/DualDelayStatus.c **** 
+  43:.\Generated_Source\PSoC5/DualDelayStatus.c **** /*******************************************************************************
+  44:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Function Name: DualDelayStatus_InterruptEnable
+  45:.\Generated_Source\PSoC5/DualDelayStatus.c **** ********************************************************************************
+  46:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+  47:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Summary:
+  48:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  Enables the Status Register interrupt.
+  49:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+  50:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Parameters:
+  51:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  None.
+  52:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+  53:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Return:
+  54:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  None.
+  55:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+  56:.\Generated_Source\PSoC5/DualDelayStatus.c **** *******************************************************************************/
+  57:.\Generated_Source\PSoC5/DualDelayStatus.c **** void DualDelayStatus_InterruptEnable(void) 
+  58:.\Generated_Source\PSoC5/DualDelayStatus.c **** {
+  52              		.loc 1 58 0
+  53              		.cfi_startproc
+  54              		@ args = 0, pretend = 0, frame = 0
+  55              		@ frame_needed = 0, uses_anonymous_args = 0
+  56 0000 08B5     		push	{r3, lr}
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccr37aYB.s 			page 3
+
+
+  57              		.cfi_def_cfa_offset 8
+  58              		.cfi_offset 3, -8
+  59              		.cfi_offset 14, -4
+  59:.\Generated_Source\PSoC5/DualDelayStatus.c ****     uint8 interruptState;
+  60:.\Generated_Source\PSoC5/DualDelayStatus.c ****     interruptState = CyEnterCriticalSection();
+  60              		.loc 1 60 0
+  61 0002 FFF7FEFF 		bl	CyEnterCriticalSection
+  62              	.LVL0:
+  61:.\Generated_Source\PSoC5/DualDelayStatus.c ****     DualDelayStatus_Status_Aux_Ctrl |= DualDelayStatus_STATUS_INTR_ENBL;
+  63              		.loc 1 61 0
+  64 0006 044A     		ldr	r2, .L6
+  65 0008 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+  66 000a 43F01003 		orr	r3, r3, #16
+  67 000e 1370     		strb	r3, [r2]
+  62:.\Generated_Source\PSoC5/DualDelayStatus.c ****     CyExitCriticalSection(interruptState);
+  68              		.loc 1 62 0
+  69 0010 FFF7FEFF 		bl	CyExitCriticalSection
+  70              	.LVL1:
+  71 0014 08BD     		pop	{r3, pc}
+  72              	.L7:
+  73 0016 00BF     		.align	2
+  74              	.L6:
+  75 0018 91640040 		.word	1073767569
+  76              		.cfi_endproc
+  77              	.LFE1:
+  78              		.size	DualDelayStatus_InterruptEnable, .-DualDelayStatus_InterruptEnable
+  79              		.section	.text.DualDelayStatus_InterruptDisable,"ax",%progbits
+  80              		.align	2
+  81              		.global	DualDelayStatus_InterruptDisable
+  82              		.thumb
+  83              		.thumb_func
+  84              		.type	DualDelayStatus_InterruptDisable, %function
+  85              	DualDelayStatus_InterruptDisable:
+  86              	.LFB2:
+  63:.\Generated_Source\PSoC5/DualDelayStatus.c **** }
+  64:.\Generated_Source\PSoC5/DualDelayStatus.c **** 
+  65:.\Generated_Source\PSoC5/DualDelayStatus.c **** 
+  66:.\Generated_Source\PSoC5/DualDelayStatus.c **** /*******************************************************************************
+  67:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Function Name: DualDelayStatus_InterruptDisable
+  68:.\Generated_Source\PSoC5/DualDelayStatus.c **** ********************************************************************************
+  69:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+  70:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Summary:
+  71:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  Disables the Status Register interrupt.
+  72:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+  73:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Parameters:
+  74:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  None.
+  75:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+  76:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Return:
+  77:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  None.
+  78:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+  79:.\Generated_Source\PSoC5/DualDelayStatus.c **** *******************************************************************************/
+  80:.\Generated_Source\PSoC5/DualDelayStatus.c **** void DualDelayStatus_InterruptDisable(void) 
+  81:.\Generated_Source\PSoC5/DualDelayStatus.c **** {
+  87              		.loc 1 81 0
+  88              		.cfi_startproc
+  89              		@ args = 0, pretend = 0, frame = 0
+  90              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccr37aYB.s 			page 4
+
+
+  91 0000 08B5     		push	{r3, lr}
+  92              		.cfi_def_cfa_offset 8
+  93              		.cfi_offset 3, -8
+  94              		.cfi_offset 14, -4
+  82:.\Generated_Source\PSoC5/DualDelayStatus.c ****     uint8 interruptState;
+  83:.\Generated_Source\PSoC5/DualDelayStatus.c ****     interruptState = CyEnterCriticalSection();
+  95              		.loc 1 83 0
+  96 0002 FFF7FEFF 		bl	CyEnterCriticalSection
+  97              	.LVL2:
+  84:.\Generated_Source\PSoC5/DualDelayStatus.c ****     DualDelayStatus_Status_Aux_Ctrl &= (uint8)(~DualDelayStatus_STATUS_INTR_ENBL);
+  98              		.loc 1 84 0
+  99 0006 044A     		ldr	r2, .L10
+ 100 0008 1378     		ldrb	r3, [r2]	@ zero_extendqisi2
+ 101 000a 03F0EF03 		and	r3, r3, #239
+ 102 000e 1370     		strb	r3, [r2]
+  85:.\Generated_Source\PSoC5/DualDelayStatus.c ****     CyExitCriticalSection(interruptState);
+ 103              		.loc 1 85 0
+ 104 0010 FFF7FEFF 		bl	CyExitCriticalSection
+ 105              	.LVL3:
+ 106 0014 08BD     		pop	{r3, pc}
+ 107              	.L11:
+ 108 0016 00BF     		.align	2
+ 109              	.L10:
+ 110 0018 91640040 		.word	1073767569
+ 111              		.cfi_endproc
+ 112              	.LFE2:
+ 113              		.size	DualDelayStatus_InterruptDisable, .-DualDelayStatus_InterruptDisable
+ 114              		.section	.text.DualDelayStatus_WriteMask,"ax",%progbits
+ 115              		.align	2
+ 116              		.global	DualDelayStatus_WriteMask
+ 117              		.thumb
+ 118              		.thumb_func
+ 119              		.type	DualDelayStatus_WriteMask, %function
+ 120              	DualDelayStatus_WriteMask:
+ 121              	.LFB3:
+  86:.\Generated_Source\PSoC5/DualDelayStatus.c **** }
+  87:.\Generated_Source\PSoC5/DualDelayStatus.c **** 
+  88:.\Generated_Source\PSoC5/DualDelayStatus.c **** 
+  89:.\Generated_Source\PSoC5/DualDelayStatus.c **** /*******************************************************************************
+  90:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Function Name: DualDelayStatus_WriteMask
+  91:.\Generated_Source\PSoC5/DualDelayStatus.c **** ********************************************************************************
+  92:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+  93:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Summary:
+  94:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  Writes the current mask value assigned to the Status Register.
+  95:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+  96:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Parameters:
+  97:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  mask:  Value to write into the mask register.
+  98:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+  99:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Return:
+ 100:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  None.
+ 101:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+ 102:.\Generated_Source\PSoC5/DualDelayStatus.c **** *******************************************************************************/
+ 103:.\Generated_Source\PSoC5/DualDelayStatus.c **** void DualDelayStatus_WriteMask(uint8 mask) 
+ 104:.\Generated_Source\PSoC5/DualDelayStatus.c **** {
+ 122              		.loc 1 104 0
+ 123              		.cfi_startproc
+ 124              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccr37aYB.s 			page 5
+
+
+ 125              		@ frame_needed = 0, uses_anonymous_args = 0
+ 126              		@ link register save eliminated.
+ 127              	.LVL4:
+ 105:.\Generated_Source\PSoC5/DualDelayStatus.c ****     #if(DualDelayStatus_INPUTS < 8u)
+ 106:.\Generated_Source\PSoC5/DualDelayStatus.c ****     	mask &= ((uint8)(1u << DualDelayStatus_INPUTS) - 1u);
+ 128              		.loc 1 106 0
+ 129 0000 00F00300 		and	r0, r0, #3
+ 130              	.LVL5:
+ 107:.\Generated_Source\PSoC5/DualDelayStatus.c **** 	#endif /* End DualDelayStatus_INPUTS < 8u */
+ 108:.\Generated_Source\PSoC5/DualDelayStatus.c ****     DualDelayStatus_Status_Mask = mask;
+ 131              		.loc 1 108 0
+ 132 0004 014B     		ldr	r3, .L13
+ 133 0006 1870     		strb	r0, [r3]
+ 134 0008 7047     		bx	lr
+ 135              	.L14:
+ 136 000a 00BF     		.align	2
+ 137              	.L13:
+ 138 000c 81640040 		.word	1073767553
+ 139              		.cfi_endproc
+ 140              	.LFE3:
+ 141              		.size	DualDelayStatus_WriteMask, .-DualDelayStatus_WriteMask
+ 142              		.section	.text.DualDelayStatus_ReadMask,"ax",%progbits
+ 143              		.align	2
+ 144              		.global	DualDelayStatus_ReadMask
+ 145              		.thumb
+ 146              		.thumb_func
+ 147              		.type	DualDelayStatus_ReadMask, %function
+ 148              	DualDelayStatus_ReadMask:
+ 149              	.LFB4:
+ 109:.\Generated_Source\PSoC5/DualDelayStatus.c **** }
+ 110:.\Generated_Source\PSoC5/DualDelayStatus.c **** 
+ 111:.\Generated_Source\PSoC5/DualDelayStatus.c **** 
+ 112:.\Generated_Source\PSoC5/DualDelayStatus.c **** /*******************************************************************************
+ 113:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Function Name: DualDelayStatus_ReadMask
+ 114:.\Generated_Source\PSoC5/DualDelayStatus.c **** ********************************************************************************
+ 115:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+ 116:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Summary:
+ 117:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  Reads the current interrupt mask assigned to the Status Register.
+ 118:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+ 119:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Parameters:
+ 120:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  None.
+ 121:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+ 122:.\Generated_Source\PSoC5/DualDelayStatus.c **** * Return:
+ 123:.\Generated_Source\PSoC5/DualDelayStatus.c **** *  The value of the interrupt mask of the Status Register.
+ 124:.\Generated_Source\PSoC5/DualDelayStatus.c **** *
+ 125:.\Generated_Source\PSoC5/DualDelayStatus.c **** *******************************************************************************/
+ 126:.\Generated_Source\PSoC5/DualDelayStatus.c **** uint8 DualDelayStatus_ReadMask(void) 
+ 127:.\Generated_Source\PSoC5/DualDelayStatus.c **** {
+ 150              		.loc 1 127 0
+ 151              		.cfi_startproc
+ 152              		@ args = 0, pretend = 0, frame = 0
+ 153              		@ frame_needed = 0, uses_anonymous_args = 0
+ 154              		@ link register save eliminated.
+ 128:.\Generated_Source\PSoC5/DualDelayStatus.c ****     return DualDelayStatus_Status_Mask;
+ 155              		.loc 1 128 0
+ 156 0000 014B     		ldr	r3, .L16
+ 157 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccr37aYB.s 			page 6
+
+
+ 129:.\Generated_Source\PSoC5/DualDelayStatus.c **** }
+ 158              		.loc 1 129 0
+ 159 0004 7047     		bx	lr
+ 160              	.L17:
+ 161 0006 00BF     		.align	2
+ 162              	.L16:
+ 163 0008 81640040 		.word	1073767553
+ 164              		.cfi_endproc
+ 165              	.LFE4:
+ 166              		.size	DualDelayStatus_ReadMask, .-DualDelayStatus_ReadMask
+ 167              		.text
+ 168              	.Letext0:
+ 169              		.file 2 ".\\Generated_Source\\PSoC5\\cytypes.h"
+ 170              		.file 3 ".\\Generated_Source\\PSoC5\\CyLib.h"
+ 171              		.section	.debug_info,"",%progbits
+ 172              	.Ldebug_info0:
+ 173 0000 75010000 		.4byte	0x175
+ 174 0004 0400     		.2byte	0x4
+ 175 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 176 000a 04       		.byte	0x4
+ 177 000b 01       		.uleb128 0x1
+ 178 000c 45010000 		.4byte	.LASF21
+ 179 0010 01       		.byte	0x1
+ 180 0011 47000000 		.4byte	.LASF22
+ 181 0015 C2000000 		.4byte	.LASF23
+ 182 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 183 001d 00000000 		.4byte	0
+ 184 0021 00000000 		.4byte	.Ldebug_line0
+ 185 0025 02       		.uleb128 0x2
+ 186 0026 01       		.byte	0x1
+ 187 0027 06       		.byte	0x6
+ 188 0028 0E020000 		.4byte	.LASF0
+ 189 002c 02       		.uleb128 0x2
+ 190 002d 01       		.byte	0x1
+ 191 002e 08       		.byte	0x8
+ 192 002f D8010000 		.4byte	.LASF1
+ 193 0033 02       		.uleb128 0x2
+ 194 0034 02       		.byte	0x2
+ 195 0035 05       		.byte	0x5
+ 196 0036 50020000 		.4byte	.LASF2
+ 197 003a 02       		.uleb128 0x2
+ 198 003b 02       		.byte	0x2
+ 199 003c 07       		.byte	0x7
+ 200 003d FB010000 		.4byte	.LASF3
+ 201 0041 02       		.uleb128 0x2
+ 202 0042 04       		.byte	0x4
+ 203 0043 05       		.byte	0x5
+ 204 0044 EB010000 		.4byte	.LASF4
+ 205 0048 02       		.uleb128 0x2
+ 206 0049 04       		.byte	0x4
+ 207 004a 07       		.byte	0x7
+ 208 004b 78000000 		.4byte	.LASF5
+ 209 004f 02       		.uleb128 0x2
+ 210 0050 08       		.byte	0x8
+ 211 0051 05       		.byte	0x5
+ 212 0052 00000000 		.4byte	.LASF6
+ 213 0056 02       		.uleb128 0x2
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccr37aYB.s 			page 7
+
+
+ 214 0057 08       		.byte	0x8
+ 215 0058 07       		.byte	0x7
+ 216 0059 8A000000 		.4byte	.LASF7
+ 217 005d 03       		.uleb128 0x3
+ 218 005e 04       		.byte	0x4
+ 219 005f 05       		.byte	0x5
+ 220 0060 696E7400 		.ascii	"int\000"
+ 221 0064 02       		.uleb128 0x2
+ 222 0065 04       		.byte	0x4
+ 223 0066 07       		.byte	0x7
+ 224 0067 0E000000 		.4byte	.LASF8
+ 225 006b 04       		.uleb128 0x4
+ 226 006c 72000000 		.4byte	.LASF12
+ 227 0070 02       		.byte	0x2
+ 228 0071 C2       		.byte	0xc2
+ 229 0072 2C000000 		.4byte	0x2c
+ 230 0076 02       		.uleb128 0x2
+ 231 0077 04       		.byte	0x4
+ 232 0078 04       		.byte	0x4
+ 233 0079 4A020000 		.4byte	.LASF9
+ 234 007d 02       		.uleb128 0x2
+ 235 007e 08       		.byte	0x8
+ 236 007f 04       		.byte	0x4
+ 237 0080 F4010000 		.4byte	.LASF10
+ 238 0084 02       		.uleb128 0x2
+ 239 0085 01       		.byte	0x1
+ 240 0086 08       		.byte	0x8
+ 241 0087 E6010000 		.4byte	.LASF11
+ 242 008b 05       		.uleb128 0x5
+ 243 008c 5A020000 		.4byte	.LASF13
+ 244 0090 02       		.byte	0x2
+ 245 0091 6C01     		.2byte	0x16c
+ 246 0093 97000000 		.4byte	0x97
+ 247 0097 06       		.uleb128 0x6
+ 248 0098 6B000000 		.4byte	0x6b
+ 249 009c 02       		.uleb128 0x2
+ 250 009d 04       		.byte	0x4
+ 251 009e 07       		.byte	0x7
+ 252 009f 98020000 		.4byte	.LASF14
+ 253 00a3 07       		.uleb128 0x7
+ 254 00a4 1B000000 		.4byte	.LASF19
+ 255 00a8 01       		.byte	0x1
+ 256 00a9 25       		.byte	0x25
+ 257 00aa 6B000000 		.4byte	0x6b
+ 258 00ae 00000000 		.4byte	.LFB0
+ 259 00b2 0C000000 		.4byte	.LFE0-.LFB0
+ 260 00b6 01       		.uleb128 0x1
+ 261 00b7 9C       		.byte	0x9c
+ 262 00b8 08       		.uleb128 0x8
+ 263 00b9 5F020000 		.4byte	.LASF15
+ 264 00bd 01       		.byte	0x1
+ 265 00be 39       		.byte	0x39
+ 266 00bf 00000000 		.4byte	.LFB1
+ 267 00c3 1C000000 		.4byte	.LFE1-.LFB1
+ 268 00c7 01       		.uleb128 0x1
+ 269 00c8 9C       		.byte	0x9c
+ 270 00c9 EF000000 		.4byte	0xef
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccr37aYB.s 			page 8
+
+
+ 271 00cd 09       		.uleb128 0x9
+ 272 00ce A1020000 		.4byte	.LASF17
+ 273 00d2 01       		.byte	0x1
+ 274 00d3 3B       		.byte	0x3b
+ 275 00d4 6B000000 		.4byte	0x6b
+ 276 00d8 00000000 		.4byte	.LLST0
+ 277 00dc 0A       		.uleb128 0xa
+ 278 00dd 06000000 		.4byte	.LVL0
+ 279 00e1 60010000 		.4byte	0x160
+ 280 00e5 0A       		.uleb128 0xa
+ 281 00e6 14000000 		.4byte	.LVL1
+ 282 00ea 6B010000 		.4byte	0x16b
+ 283 00ee 00       		.byte	0
+ 284 00ef 08       		.uleb128 0x8
+ 285 00f0 A1000000 		.4byte	.LASF16
+ 286 00f4 01       		.byte	0x1
+ 287 00f5 50       		.byte	0x50
+ 288 00f6 00000000 		.4byte	.LFB2
+ 289 00fa 1C000000 		.4byte	.LFE2-.LFB2
+ 290 00fe 01       		.uleb128 0x1
+ 291 00ff 9C       		.byte	0x9c
+ 292 0100 26010000 		.4byte	0x126
+ 293 0104 09       		.uleb128 0x9
+ 294 0105 A1020000 		.4byte	.LASF17
+ 295 0109 01       		.byte	0x1
+ 296 010a 52       		.byte	0x52
+ 297 010b 6B000000 		.4byte	0x6b
+ 298 010f 13000000 		.4byte	.LLST1
+ 299 0113 0A       		.uleb128 0xa
+ 300 0114 06000000 		.4byte	.LVL2
+ 301 0118 60010000 		.4byte	0x160
+ 302 011c 0A       		.uleb128 0xa
+ 303 011d 14000000 		.4byte	.LVL3
+ 304 0121 6B010000 		.4byte	0x16b
+ 305 0125 00       		.byte	0
+ 306 0126 08       		.uleb128 0x8
+ 307 0127 1A020000 		.4byte	.LASF18
+ 308 012b 01       		.byte	0x1
+ 309 012c 67       		.byte	0x67
+ 310 012d 00000000 		.4byte	.LFB3
+ 311 0131 10000000 		.4byte	.LFE3-.LFB3
+ 312 0135 01       		.uleb128 0x1
+ 313 0136 9C       		.byte	0x9c
+ 314 0137 4B010000 		.4byte	0x14b
+ 315 013b 0B       		.uleb128 0xb
+ 316 013c D3010000 		.4byte	.LASF24
+ 317 0140 01       		.byte	0x1
+ 318 0141 67       		.byte	0x67
+ 319 0142 6B000000 		.4byte	0x6b
+ 320 0146 26000000 		.4byte	.LLST2
+ 321 014a 00       		.byte	0
+ 322 014b 07       		.uleb128 0x7
+ 323 014c 7F020000 		.4byte	.LASF20
+ 324 0150 01       		.byte	0x1
+ 325 0151 7E       		.byte	0x7e
+ 326 0152 6B000000 		.4byte	0x6b
+ 327 0156 00000000 		.4byte	.LFB4
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccr37aYB.s 			page 9
+
+
+ 328 015a 0C000000 		.4byte	.LFE4-.LFB4
+ 329 015e 01       		.uleb128 0x1
+ 330 015f 9C       		.byte	0x9c
+ 331 0160 0C       		.uleb128 0xc
+ 332 0161 30000000 		.4byte	.LASF25
+ 333 0165 03       		.byte	0x3
+ 334 0166 7E       		.byte	0x7e
+ 335 0167 6B000000 		.4byte	0x6b
+ 336 016b 0D       		.uleb128 0xd
+ 337 016c 34020000 		.4byte	.LASF26
+ 338 0170 03       		.byte	0x3
+ 339 0171 7F       		.byte	0x7f
+ 340 0172 0E       		.uleb128 0xe
+ 341 0173 6B000000 		.4byte	0x6b
+ 342 0177 00       		.byte	0
+ 343 0178 00       		.byte	0
+ 344              		.section	.debug_abbrev,"",%progbits
+ 345              	.Ldebug_abbrev0:
+ 346 0000 01       		.uleb128 0x1
+ 347 0001 11       		.uleb128 0x11
+ 348 0002 01       		.byte	0x1
+ 349 0003 25       		.uleb128 0x25
+ 350 0004 0E       		.uleb128 0xe
+ 351 0005 13       		.uleb128 0x13
+ 352 0006 0B       		.uleb128 0xb
+ 353 0007 03       		.uleb128 0x3
+ 354 0008 0E       		.uleb128 0xe
+ 355 0009 1B       		.uleb128 0x1b
+ 356 000a 0E       		.uleb128 0xe
+ 357 000b 55       		.uleb128 0x55
+ 358 000c 17       		.uleb128 0x17
+ 359 000d 11       		.uleb128 0x11
+ 360 000e 01       		.uleb128 0x1
+ 361 000f 10       		.uleb128 0x10
+ 362 0010 17       		.uleb128 0x17
+ 363 0011 00       		.byte	0
+ 364 0012 00       		.byte	0
+ 365 0013 02       		.uleb128 0x2
+ 366 0014 24       		.uleb128 0x24
+ 367 0015 00       		.byte	0
+ 368 0016 0B       		.uleb128 0xb
+ 369 0017 0B       		.uleb128 0xb
+ 370 0018 3E       		.uleb128 0x3e
+ 371 0019 0B       		.uleb128 0xb
+ 372 001a 03       		.uleb128 0x3
+ 373 001b 0E       		.uleb128 0xe
+ 374 001c 00       		.byte	0
+ 375 001d 00       		.byte	0
+ 376 001e 03       		.uleb128 0x3
+ 377 001f 24       		.uleb128 0x24
+ 378 0020 00       		.byte	0
+ 379 0021 0B       		.uleb128 0xb
+ 380 0022 0B       		.uleb128 0xb
+ 381 0023 3E       		.uleb128 0x3e
+ 382 0024 0B       		.uleb128 0xb
+ 383 0025 03       		.uleb128 0x3
+ 384 0026 08       		.uleb128 0x8
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccr37aYB.s 			page 10
+
+
+ 385 0027 00       		.byte	0
+ 386 0028 00       		.byte	0
+ 387 0029 04       		.uleb128 0x4
+ 388 002a 16       		.uleb128 0x16
+ 389 002b 00       		.byte	0
+ 390 002c 03       		.uleb128 0x3
+ 391 002d 0E       		.uleb128 0xe
+ 392 002e 3A       		.uleb128 0x3a
+ 393 002f 0B       		.uleb128 0xb
+ 394 0030 3B       		.uleb128 0x3b
+ 395 0031 0B       		.uleb128 0xb
+ 396 0032 49       		.uleb128 0x49
+ 397 0033 13       		.uleb128 0x13
+ 398 0034 00       		.byte	0
+ 399 0035 00       		.byte	0
+ 400 0036 05       		.uleb128 0x5
+ 401 0037 16       		.uleb128 0x16
+ 402 0038 00       		.byte	0
+ 403 0039 03       		.uleb128 0x3
+ 404 003a 0E       		.uleb128 0xe
+ 405 003b 3A       		.uleb128 0x3a
+ 406 003c 0B       		.uleb128 0xb
+ 407 003d 3B       		.uleb128 0x3b
+ 408 003e 05       		.uleb128 0x5
+ 409 003f 49       		.uleb128 0x49
+ 410 0040 13       		.uleb128 0x13
+ 411 0041 00       		.byte	0
+ 412 0042 00       		.byte	0
+ 413 0043 06       		.uleb128 0x6
+ 414 0044 35       		.uleb128 0x35
+ 415 0045 00       		.byte	0
+ 416 0046 49       		.uleb128 0x49
+ 417 0047 13       		.uleb128 0x13
+ 418 0048 00       		.byte	0
+ 419 0049 00       		.byte	0
+ 420 004a 07       		.uleb128 0x7
+ 421 004b 2E       		.uleb128 0x2e
+ 422 004c 00       		.byte	0
+ 423 004d 3F       		.uleb128 0x3f
+ 424 004e 19       		.uleb128 0x19
+ 425 004f 03       		.uleb128 0x3
+ 426 0050 0E       		.uleb128 0xe
+ 427 0051 3A       		.uleb128 0x3a
+ 428 0052 0B       		.uleb128 0xb
+ 429 0053 3B       		.uleb128 0x3b
+ 430 0054 0B       		.uleb128 0xb
+ 431 0055 27       		.uleb128 0x27
+ 432 0056 19       		.uleb128 0x19
+ 433 0057 49       		.uleb128 0x49
+ 434 0058 13       		.uleb128 0x13
+ 435 0059 11       		.uleb128 0x11
+ 436 005a 01       		.uleb128 0x1
+ 437 005b 12       		.uleb128 0x12
+ 438 005c 06       		.uleb128 0x6
+ 439 005d 40       		.uleb128 0x40
+ 440 005e 18       		.uleb128 0x18
+ 441 005f 9742     		.uleb128 0x2117
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccr37aYB.s 			page 11
+
+
+ 442 0061 19       		.uleb128 0x19
+ 443 0062 00       		.byte	0
+ 444 0063 00       		.byte	0
+ 445 0064 08       		.uleb128 0x8
+ 446 0065 2E       		.uleb128 0x2e
+ 447 0066 01       		.byte	0x1
+ 448 0067 3F       		.uleb128 0x3f
+ 449 0068 19       		.uleb128 0x19
+ 450 0069 03       		.uleb128 0x3
+ 451 006a 0E       		.uleb128 0xe
+ 452 006b 3A       		.uleb128 0x3a
+ 453 006c 0B       		.uleb128 0xb
+ 454 006d 3B       		.uleb128 0x3b
+ 455 006e 0B       		.uleb128 0xb
+ 456 006f 27       		.uleb128 0x27
+ 457 0070 19       		.uleb128 0x19
+ 458 0071 11       		.uleb128 0x11
+ 459 0072 01       		.uleb128 0x1
+ 460 0073 12       		.uleb128 0x12
+ 461 0074 06       		.uleb128 0x6
+ 462 0075 40       		.uleb128 0x40
+ 463 0076 18       		.uleb128 0x18
+ 464 0077 9742     		.uleb128 0x2117
+ 465 0079 19       		.uleb128 0x19
+ 466 007a 01       		.uleb128 0x1
+ 467 007b 13       		.uleb128 0x13
+ 468 007c 00       		.byte	0
+ 469 007d 00       		.byte	0
+ 470 007e 09       		.uleb128 0x9
+ 471 007f 34       		.uleb128 0x34
+ 472 0080 00       		.byte	0
+ 473 0081 03       		.uleb128 0x3
+ 474 0082 0E       		.uleb128 0xe
+ 475 0083 3A       		.uleb128 0x3a
+ 476 0084 0B       		.uleb128 0xb
+ 477 0085 3B       		.uleb128 0x3b
+ 478 0086 0B       		.uleb128 0xb
+ 479 0087 49       		.uleb128 0x49
+ 480 0088 13       		.uleb128 0x13
+ 481 0089 02       		.uleb128 0x2
+ 482 008a 17       		.uleb128 0x17
+ 483 008b 00       		.byte	0
+ 484 008c 00       		.byte	0
+ 485 008d 0A       		.uleb128 0xa
+ 486 008e 898201   		.uleb128 0x4109
+ 487 0091 00       		.byte	0
+ 488 0092 11       		.uleb128 0x11
+ 489 0093 01       		.uleb128 0x1
+ 490 0094 31       		.uleb128 0x31
+ 491 0095 13       		.uleb128 0x13
+ 492 0096 00       		.byte	0
+ 493 0097 00       		.byte	0
+ 494 0098 0B       		.uleb128 0xb
+ 495 0099 05       		.uleb128 0x5
+ 496 009a 00       		.byte	0
+ 497 009b 03       		.uleb128 0x3
+ 498 009c 0E       		.uleb128 0xe
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccr37aYB.s 			page 12
+
+
+ 499 009d 3A       		.uleb128 0x3a
+ 500 009e 0B       		.uleb128 0xb
+ 501 009f 3B       		.uleb128 0x3b
+ 502 00a0 0B       		.uleb128 0xb
+ 503 00a1 49       		.uleb128 0x49
+ 504 00a2 13       		.uleb128 0x13
+ 505 00a3 02       		.uleb128 0x2
+ 506 00a4 17       		.uleb128 0x17
+ 507 00a5 00       		.byte	0
+ 508 00a6 00       		.byte	0
+ 509 00a7 0C       		.uleb128 0xc
+ 510 00a8 2E       		.uleb128 0x2e
+ 511 00a9 00       		.byte	0
+ 512 00aa 3F       		.uleb128 0x3f
+ 513 00ab 19       		.uleb128 0x19
+ 514 00ac 03       		.uleb128 0x3
+ 515 00ad 0E       		.uleb128 0xe
+ 516 00ae 3A       		.uleb128 0x3a
+ 517 00af 0B       		.uleb128 0xb
+ 518 00b0 3B       		.uleb128 0x3b
+ 519 00b1 0B       		.uleb128 0xb
+ 520 00b2 27       		.uleb128 0x27
+ 521 00b3 19       		.uleb128 0x19
+ 522 00b4 49       		.uleb128 0x49
+ 523 00b5 13       		.uleb128 0x13
+ 524 00b6 3C       		.uleb128 0x3c
+ 525 00b7 19       		.uleb128 0x19
+ 526 00b8 00       		.byte	0
+ 527 00b9 00       		.byte	0
+ 528 00ba 0D       		.uleb128 0xd
+ 529 00bb 2E       		.uleb128 0x2e
+ 530 00bc 01       		.byte	0x1
+ 531 00bd 3F       		.uleb128 0x3f
+ 532 00be 19       		.uleb128 0x19
+ 533 00bf 03       		.uleb128 0x3
+ 534 00c0 0E       		.uleb128 0xe
+ 535 00c1 3A       		.uleb128 0x3a
+ 536 00c2 0B       		.uleb128 0xb
+ 537 00c3 3B       		.uleb128 0x3b
+ 538 00c4 0B       		.uleb128 0xb
+ 539 00c5 27       		.uleb128 0x27
+ 540 00c6 19       		.uleb128 0x19
+ 541 00c7 3C       		.uleb128 0x3c
+ 542 00c8 19       		.uleb128 0x19
+ 543 00c9 00       		.byte	0
+ 544 00ca 00       		.byte	0
+ 545 00cb 0E       		.uleb128 0xe
+ 546 00cc 05       		.uleb128 0x5
+ 547 00cd 00       		.byte	0
+ 548 00ce 49       		.uleb128 0x49
+ 549 00cf 13       		.uleb128 0x13
+ 550 00d0 00       		.byte	0
+ 551 00d1 00       		.byte	0
+ 552 00d2 00       		.byte	0
+ 553              		.section	.debug_loc,"",%progbits
+ 554              	.Ldebug_loc0:
+ 555              	.LLST0:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccr37aYB.s 			page 13
+
+
+ 556 0000 06000000 		.4byte	.LVL0
+ 557 0004 13000000 		.4byte	.LVL1-1
+ 558 0008 0100     		.2byte	0x1
+ 559 000a 50       		.byte	0x50
+ 560 000b 00000000 		.4byte	0
+ 561 000f 00000000 		.4byte	0
+ 562              	.LLST1:
+ 563 0013 06000000 		.4byte	.LVL2
+ 564 0017 13000000 		.4byte	.LVL3-1
+ 565 001b 0100     		.2byte	0x1
+ 566 001d 50       		.byte	0x50
+ 567 001e 00000000 		.4byte	0
+ 568 0022 00000000 		.4byte	0
+ 569              	.LLST2:
+ 570 0026 00000000 		.4byte	.LVL4
+ 571 002a 04000000 		.4byte	.LVL5
+ 572 002e 0100     		.2byte	0x1
+ 573 0030 50       		.byte	0x50
+ 574 0031 04000000 		.4byte	.LVL5
+ 575 0035 10000000 		.4byte	.LFE3
+ 576 0039 0100     		.2byte	0x1
+ 577 003b 50       		.byte	0x50
+ 578 003c 00000000 		.4byte	0
+ 579 0040 00000000 		.4byte	0
+ 580              		.section	.debug_aranges,"",%progbits
+ 581 0000 3C000000 		.4byte	0x3c
+ 582 0004 0200     		.2byte	0x2
+ 583 0006 00000000 		.4byte	.Ldebug_info0
+ 584 000a 04       		.byte	0x4
+ 585 000b 00       		.byte	0
+ 586 000c 0000     		.2byte	0
+ 587 000e 0000     		.2byte	0
+ 588 0010 00000000 		.4byte	.LFB0
+ 589 0014 0C000000 		.4byte	.LFE0-.LFB0
+ 590 0018 00000000 		.4byte	.LFB1
+ 591 001c 1C000000 		.4byte	.LFE1-.LFB1
+ 592 0020 00000000 		.4byte	.LFB2
+ 593 0024 1C000000 		.4byte	.LFE2-.LFB2
+ 594 0028 00000000 		.4byte	.LFB3
+ 595 002c 10000000 		.4byte	.LFE3-.LFB3
+ 596 0030 00000000 		.4byte	.LFB4
+ 597 0034 0C000000 		.4byte	.LFE4-.LFB4
+ 598 0038 00000000 		.4byte	0
+ 599 003c 00000000 		.4byte	0
+ 600              		.section	.debug_ranges,"",%progbits
+ 601              	.Ldebug_ranges0:
+ 602 0000 00000000 		.4byte	.LFB0
+ 603 0004 0C000000 		.4byte	.LFE0
+ 604 0008 00000000 		.4byte	.LFB1
+ 605 000c 1C000000 		.4byte	.LFE1
+ 606 0010 00000000 		.4byte	.LFB2
+ 607 0014 1C000000 		.4byte	.LFE2
+ 608 0018 00000000 		.4byte	.LFB3
+ 609 001c 10000000 		.4byte	.LFE3
+ 610 0020 00000000 		.4byte	.LFB4
+ 611 0024 0C000000 		.4byte	.LFE4
+ 612 0028 00000000 		.4byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccr37aYB.s 			page 14
+
+
+ 613 002c 00000000 		.4byte	0
+ 614              		.section	.debug_line,"",%progbits
+ 615              	.Ldebug_line0:
+ 616 0000 B9000000 		.section	.debug_str,"MS",%progbits,1
+ 616      02005900 
+ 616      00000201 
+ 616      FB0E0D00 
+ 616      01010101 
+ 617              	.LASF6:
+ 618 0000 6C6F6E67 		.ascii	"long long int\000"
+ 618      206C6F6E 
+ 618      6720696E 
+ 618      7400
+ 619              	.LASF8:
+ 620 000e 756E7369 		.ascii	"unsigned int\000"
+ 620      676E6564 
+ 620      20696E74 
+ 620      00
+ 621              	.LASF19:
+ 622 001b 4475616C 		.ascii	"DualDelayStatus_Read\000"
+ 622      44656C61 
+ 622      79537461 
+ 622      7475735F 
+ 622      52656164 
+ 623              	.LASF25:
+ 624 0030 4379456E 		.ascii	"CyEnterCriticalSection\000"
+ 624      74657243 
+ 624      72697469 
+ 624      63616C53 
+ 624      65637469 
+ 625              	.LASF22:
+ 626 0047 2E5C4765 		.ascii	".\\Generated_Source\\PSoC5\\DualDelayStatus.c\000"
+ 626      6E657261 
+ 626      7465645F 
+ 626      536F7572 
+ 626      63655C50 
+ 627              	.LASF12:
+ 628 0072 75696E74 		.ascii	"uint8\000"
+ 628      3800
+ 629              	.LASF5:
+ 630 0078 6C6F6E67 		.ascii	"long unsigned int\000"
+ 630      20756E73 
+ 630      69676E65 
+ 630      6420696E 
+ 630      7400
+ 631              	.LASF7:
+ 632 008a 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 632      206C6F6E 
+ 632      6720756E 
+ 632      7369676E 
+ 632      65642069 
+ 633              	.LASF16:
+ 634 00a1 4475616C 		.ascii	"DualDelayStatus_InterruptDisable\000"
+ 634      44656C61 
+ 634      79537461 
+ 634      7475735F 
+ 634      496E7465 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccr37aYB.s 			page 15
+
+
+ 635              	.LASF23:
+ 636 00c2 5C5C4441 		.ascii	"\\\\DATA\\Folder Redirection\\faithc\\Desktop\\FAIT"
+ 636      54415C46 
+ 636      6F6C6465 
+ 636      72205265 
+ 636      64697265 
+ 637 00ef 48532052 		.ascii	"HS RELEASED FIRMWARE\\SirenProject200W_RevF\\SirenP"
+ 637      454C4541 
+ 637      53454420 
+ 637      4649524D 
+ 637      57415245 
+ 638 0120 726F6A65 		.ascii	"roject200W_RevD\\ReleaseVersion.cydsn\000"
+ 638      63743230 
+ 638      30575F52 
+ 638      6576445C 
+ 638      52656C65 
+ 639              	.LASF21:
+ 640 0145 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 640      4320342E 
+ 640      392E3320 
+ 640      32303135 
+ 640      30333033 
+ 641 0178 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m3 -mthumb -g -O"
+ 641      20726576 
+ 641      6973696F 
+ 641      6E203232 
+ 641      31323230 
+ 642 01ab 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 642      66756E63 
+ 642      74696F6E 
+ 642      2D736563 
+ 642      74696F6E 
+ 643              	.LASF24:
+ 644 01d3 6D61736B 		.ascii	"mask\000"
+ 644      00
+ 645              	.LASF1:
+ 646 01d8 756E7369 		.ascii	"unsigned char\000"
+ 646      676E6564 
+ 646      20636861 
+ 646      7200
+ 647              	.LASF11:
+ 648 01e6 63686172 		.ascii	"char\000"
+ 648      00
+ 649              	.LASF4:
+ 650 01eb 6C6F6E67 		.ascii	"long int\000"
+ 650      20696E74 
+ 650      00
+ 651              	.LASF10:
+ 652 01f4 646F7562 		.ascii	"double\000"
+ 652      6C6500
+ 653              	.LASF3:
+ 654 01fb 73686F72 		.ascii	"short unsigned int\000"
+ 654      7420756E 
+ 654      7369676E 
+ 654      65642069 
+ 654      6E7400
+ 655              	.LASF0:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccr37aYB.s 			page 16
+
+
+ 656 020e 7369676E 		.ascii	"signed char\000"
+ 656      65642063 
+ 656      68617200 
+ 657              	.LASF18:
+ 658 021a 4475616C 		.ascii	"DualDelayStatus_WriteMask\000"
+ 658      44656C61 
+ 658      79537461 
+ 658      7475735F 
+ 658      57726974 
+ 659              	.LASF26:
+ 660 0234 43794578 		.ascii	"CyExitCriticalSection\000"
+ 660      69744372 
+ 660      69746963 
+ 660      616C5365 
+ 660      6374696F 
+ 661              	.LASF9:
+ 662 024a 666C6F61 		.ascii	"float\000"
+ 662      7400
+ 663              	.LASF2:
+ 664 0250 73686F72 		.ascii	"short int\000"
+ 664      7420696E 
+ 664      7400
+ 665              	.LASF13:
+ 666 025a 72656738 		.ascii	"reg8\000"
+ 666      00
+ 667              	.LASF15:
+ 668 025f 4475616C 		.ascii	"DualDelayStatus_InterruptEnable\000"
+ 668      44656C61 
+ 668      79537461 
+ 668      7475735F 
+ 668      496E7465 
+ 669              	.LASF20:
+ 670 027f 4475616C 		.ascii	"DualDelayStatus_ReadMask\000"
+ 670      44656C61 
+ 670      79537461 
+ 670      7475735F 
+ 670      52656164 
+ 671              	.LASF14:
+ 672 0298 73697A65 		.ascii	"sizetype\000"
+ 672      74797065 
+ 672      00
+ 673              	.LASF17:
+ 674 02a1 696E7465 		.ascii	"interruptState\000"
+ 674      72727570 
+ 674      74537461 
+ 674      746500
+ 675              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

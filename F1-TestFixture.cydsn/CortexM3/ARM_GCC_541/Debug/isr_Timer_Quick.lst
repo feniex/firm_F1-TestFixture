@@ -1,0 +1,2026 @@
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"isr_Timer_Quick.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.isr_Timer_Quick_Start,"ax",%progbits
+  20              		.align	2
+  21              		.global	isr_Timer_Quick_Start
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	isr_Timer_Quick_Start, %function
+  25              	isr_Timer_Quick_Start:
+  26              	.LFB63:
+  27              		.file 1 "Generated_Source\\PSoC5\\isr_Timer_Quick.c"
+   1:Generated_Source\PSoC5/isr_Timer_Quick.c **** /*******************************************************************************
+   2:Generated_Source\PSoC5/isr_Timer_Quick.c **** * File Name: isr_Timer_Quick.c  
+   3:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Version 1.70
+   4:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+   5:Generated_Source\PSoC5/isr_Timer_Quick.c **** *  Description:
+   6:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   API for controlling the state of an interrupt.
+   7:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+   8:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+   9:Generated_Source\PSoC5/isr_Timer_Quick.c **** *  Note:
+  10:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+  11:Generated_Source\PSoC5/isr_Timer_Quick.c **** ********************************************************************************
+  12:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  13:Generated_Source\PSoC5/isr_Timer_Quick.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  14:Generated_Source\PSoC5/isr_Timer_Quick.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  15:Generated_Source\PSoC5/isr_Timer_Quick.c **** * the software package with which this file was provided.
+  16:Generated_Source\PSoC5/isr_Timer_Quick.c **** *******************************************************************************/
+  17:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+  18:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+  19:Generated_Source\PSoC5/isr_Timer_Quick.c **** #include <cydevice_trm.h>
+  20:Generated_Source\PSoC5/isr_Timer_Quick.c **** #include <CyLib.h>
+  21:Generated_Source\PSoC5/isr_Timer_Quick.c **** #include <isr_Timer_Quick.h>
+  22:Generated_Source\PSoC5/isr_Timer_Quick.c **** #include "cyapicallbacks.h"
+  23:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+  24:Generated_Source\PSoC5/isr_Timer_Quick.c **** #if !defined(isr_Timer_Quick__REMOVED) /* Check for removal by optimization */
+  25:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+  26:Generated_Source\PSoC5/isr_Timer_Quick.c **** /*******************************************************************************
+  27:Generated_Source\PSoC5/isr_Timer_Quick.c **** *  Place your includes, defines and code here 
+  28:Generated_Source\PSoC5/isr_Timer_Quick.c **** ********************************************************************************/
+  29:Generated_Source\PSoC5/isr_Timer_Quick.c **** /* `#START isr_Timer_Quick_intc` */
+  30:Generated_Source\PSoC5/isr_Timer_Quick.c ****     
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 2
+
+
+  31:Generated_Source\PSoC5/isr_Timer_Quick.c ****     #include "RelayTest.h"
+  32:Generated_Source\PSoC5/isr_Timer_Quick.c ****     #include "UART_230400_Functions.h"
+  33:Generated_Source\PSoC5/isr_Timer_Quick.c ****     #include "UART_460800_Functions.h"
+  34:Generated_Source\PSoC5/isr_Timer_Quick.c ****     #define TIMEOUT     100
+  35:Generated_Source\PSoC5/isr_Timer_Quick.c ****     
+  36:Generated_Source\PSoC5/isr_Timer_Quick.c **** //     #include "Custom.h"
+  37:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    static uint8 Timer_Quick_INT_Flag;
+  38:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    
+  39:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    
+  40:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    uint8 Timer_Quick_INT_GetFlag(void)
+  41:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    {
+  42:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    
+  43:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    return(Timer_Quick_INT_Flag);    
+  44:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    }
+  45:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    
+  46:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    
+  47:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    void Timer_Quick_INT_ClearFlag(void)
+  48:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    {
+  49:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    
+  50:Generated_Source\PSoC5/isr_Timer_Quick.c **** //        Timer_Quick_INT_Flag = 0;
+  51:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    
+  52:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    return;    
+  53:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    }
+  54:Generated_Source\PSoC5/isr_Timer_Quick.c ****     
+  55:Generated_Source\PSoC5/isr_Timer_Quick.c ****     //static uint8 timercount = 0;
+  56:Generated_Source\PSoC5/isr_Timer_Quick.c ****     
+  57:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    void StartTimeout(void)
+  58:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    {
+  59:Generated_Source\PSoC5/isr_Timer_Quick.c **** //        timercount = 0;     
+  60:Generated_Source\PSoC5/isr_Timer_Quick.c **** //        return;         
+  61:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    }
+  62:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    
+  63:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    
+  64:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    void StopTimeout(void)
+  65:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    {
+  66:Generated_Source\PSoC5/isr_Timer_Quick.c **** ////        timercount = 0;     
+  67:Generated_Source\PSoC5/isr_Timer_Quick.c **** //        return;         
+  68:Generated_Source\PSoC5/isr_Timer_Quick.c **** //    }
+  69:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+  70:Generated_Source\PSoC5/isr_Timer_Quick.c **** /* `#END` */
+  71:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+  72:Generated_Source\PSoC5/isr_Timer_Quick.c **** #ifndef CYINT_IRQ_BASE
+  73:Generated_Source\PSoC5/isr_Timer_Quick.c **** #define CYINT_IRQ_BASE      16
+  74:Generated_Source\PSoC5/isr_Timer_Quick.c **** #endif /* CYINT_IRQ_BASE */
+  75:Generated_Source\PSoC5/isr_Timer_Quick.c **** #ifndef CYINT_VECT_TABLE
+  76:Generated_Source\PSoC5/isr_Timer_Quick.c **** #define CYINT_VECT_TABLE    ((cyisraddress **) CYREG_NVIC_VECT_OFFSET)
+  77:Generated_Source\PSoC5/isr_Timer_Quick.c **** #endif /* CYINT_VECT_TABLE */
+  78:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+  79:Generated_Source\PSoC5/isr_Timer_Quick.c **** /* Declared in startup, used to set unused interrupts to. */
+  80:Generated_Source\PSoC5/isr_Timer_Quick.c **** CY_ISR_PROTO(IntDefaultHandler);
+  81:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+  82:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+  83:Generated_Source\PSoC5/isr_Timer_Quick.c **** /*******************************************************************************
+  84:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Function Name: isr_Timer_Quick_Start
+  85:Generated_Source\PSoC5/isr_Timer_Quick.c **** ********************************************************************************
+  86:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+  87:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Summary:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 3
+
+
+  88:Generated_Source\PSoC5/isr_Timer_Quick.c **** *  Set up the interrupt and enable it. This function disables the interrupt, 
+  89:Generated_Source\PSoC5/isr_Timer_Quick.c **** *  sets the default interrupt vector, sets the priority from the value in the
+  90:Generated_Source\PSoC5/isr_Timer_Quick.c **** *  Design Wide Resources Interrupt Editor, then enables the interrupt to the 
+  91:Generated_Source\PSoC5/isr_Timer_Quick.c **** *  interrupt controller.
+  92:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+  93:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Parameters:  
+  94:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+  95:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+  96:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Return:
+  97:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+  98:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+  99:Generated_Source\PSoC5/isr_Timer_Quick.c **** *******************************************************************************/
+ 100:Generated_Source\PSoC5/isr_Timer_Quick.c **** void isr_Timer_Quick_Start(void)
+ 101:Generated_Source\PSoC5/isr_Timer_Quick.c **** {
+  28              		.loc 1 101 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 1, uses_anonymous_args = 0
+  32 0000 80B5     		push	{r7, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 7, -8
+  35              		.cfi_offset 14, -4
+  36 0002 00AF     		add	r7, sp, #0
+  37              		.cfi_def_cfa_register 7
+ 102:Generated_Source\PSoC5/isr_Timer_Quick.c ****     /* For all we know the interrupt is active. */
+ 103:Generated_Source\PSoC5/isr_Timer_Quick.c ****     isr_Timer_Quick_Disable();
+  38              		.loc 1 103 0
+  39 0004 FFF7FEFF 		bl	isr_Timer_Quick_Disable
+ 104:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 105:Generated_Source\PSoC5/isr_Timer_Quick.c ****     /* Set the ISR to point to the isr_Timer_Quick Interrupt. */
+ 106:Generated_Source\PSoC5/isr_Timer_Quick.c ****     isr_Timer_Quick_SetVector(&isr_Timer_Quick_Interrupt);
+  40              		.loc 1 106 0
+  41 0008 0448     		ldr	r0, .L2
+  42 000a FFF7FEFF 		bl	isr_Timer_Quick_SetVector
+ 107:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 108:Generated_Source\PSoC5/isr_Timer_Quick.c ****     /* Set the priority. */
+ 109:Generated_Source\PSoC5/isr_Timer_Quick.c ****     isr_Timer_Quick_SetPriority((uint8)isr_Timer_Quick_INTC_PRIOR_NUMBER);
+  43              		.loc 1 109 0
+  44 000e 0420     		movs	r0, #4
+  45 0010 FFF7FEFF 		bl	isr_Timer_Quick_SetPriority
+ 110:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 111:Generated_Source\PSoC5/isr_Timer_Quick.c ****     /* Enable it. */
+ 112:Generated_Source\PSoC5/isr_Timer_Quick.c ****     isr_Timer_Quick_Enable();
+  46              		.loc 1 112 0
+  47 0014 FFF7FEFF 		bl	isr_Timer_Quick_Enable
+ 113:Generated_Source\PSoC5/isr_Timer_Quick.c **** }
+  48              		.loc 1 113 0
+  49 0018 00BF     		nop
+  50 001a 80BD     		pop	{r7, pc}
+  51              	.L3:
+  52              		.align	2
+  53              	.L2:
+  54 001c 00000000 		.word	isr_Timer_Quick_Interrupt
+  55              		.cfi_endproc
+  56              	.LFE63:
+  57              		.size	isr_Timer_Quick_Start, .-isr_Timer_Quick_Start
+  58              		.section	.text.isr_Timer_Quick_StartEx,"ax",%progbits
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 4
+
+
+  59              		.align	2
+  60              		.global	isr_Timer_Quick_StartEx
+  61              		.thumb
+  62              		.thumb_func
+  63              		.type	isr_Timer_Quick_StartEx, %function
+  64              	isr_Timer_Quick_StartEx:
+  65              	.LFB64:
+ 114:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 115:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 116:Generated_Source\PSoC5/isr_Timer_Quick.c **** /*******************************************************************************
+ 117:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Function Name: isr_Timer_Quick_StartEx
+ 118:Generated_Source\PSoC5/isr_Timer_Quick.c **** ********************************************************************************
+ 119:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 120:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Summary:
+ 121:Generated_Source\PSoC5/isr_Timer_Quick.c **** *  Sets up the interrupt and enables it. This function disables the interrupt,
+ 122:Generated_Source\PSoC5/isr_Timer_Quick.c **** *  sets the interrupt vector based on the address passed in, sets the priority 
+ 123:Generated_Source\PSoC5/isr_Timer_Quick.c **** *  from the value in the Design Wide Resources Interrupt Editor, then enables 
+ 124:Generated_Source\PSoC5/isr_Timer_Quick.c **** *  the interrupt to the interrupt controller.
+ 125:Generated_Source\PSoC5/isr_Timer_Quick.c **** *  
+ 126:Generated_Source\PSoC5/isr_Timer_Quick.c **** *  When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
+ 127:Generated_Source\PSoC5/isr_Timer_Quick.c **** *  used to provide consistent definition across compilers:
+ 128:Generated_Source\PSoC5/isr_Timer_Quick.c **** *  
+ 129:Generated_Source\PSoC5/isr_Timer_Quick.c **** *  Function definition example:
+ 130:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   CY_ISR(MyISR)
+ 131:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   {
+ 132:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   }
+ 133:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Function prototype example:
+ 134:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   CY_ISR_PROTO(MyISR);
+ 135:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 136:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Parameters:  
+ 137:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   address: Address of the ISR to set in the interrupt vector table.
+ 138:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 139:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Return:
+ 140:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 141:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 142:Generated_Source\PSoC5/isr_Timer_Quick.c **** *******************************************************************************/
+ 143:Generated_Source\PSoC5/isr_Timer_Quick.c **** void isr_Timer_Quick_StartEx(cyisraddress address)
+ 144:Generated_Source\PSoC5/isr_Timer_Quick.c **** {
+  66              		.loc 1 144 0
+  67              		.cfi_startproc
+  68              		@ args = 0, pretend = 0, frame = 8
+  69              		@ frame_needed = 1, uses_anonymous_args = 0
+  70 0000 80B5     		push	{r7, lr}
+  71              		.cfi_def_cfa_offset 8
+  72              		.cfi_offset 7, -8
+  73              		.cfi_offset 14, -4
+  74 0002 82B0     		sub	sp, sp, #8
+  75              		.cfi_def_cfa_offset 16
+  76 0004 00AF     		add	r7, sp, #0
+  77              		.cfi_def_cfa_register 7
+  78 0006 7860     		str	r0, [r7, #4]
+ 145:Generated_Source\PSoC5/isr_Timer_Quick.c ****     /* For all we know the interrupt is active. */
+ 146:Generated_Source\PSoC5/isr_Timer_Quick.c ****     isr_Timer_Quick_Disable();
+  79              		.loc 1 146 0
+  80 0008 FFF7FEFF 		bl	isr_Timer_Quick_Disable
+ 147:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 148:Generated_Source\PSoC5/isr_Timer_Quick.c ****     /* Set the ISR to point to the isr_Timer_Quick Interrupt. */
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 5
+
+
+ 149:Generated_Source\PSoC5/isr_Timer_Quick.c ****     isr_Timer_Quick_SetVector(address);
+  81              		.loc 1 149 0
+  82 000c 7868     		ldr	r0, [r7, #4]
+  83 000e FFF7FEFF 		bl	isr_Timer_Quick_SetVector
+ 150:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 151:Generated_Source\PSoC5/isr_Timer_Quick.c ****     /* Set the priority. */
+ 152:Generated_Source\PSoC5/isr_Timer_Quick.c ****     isr_Timer_Quick_SetPriority((uint8)isr_Timer_Quick_INTC_PRIOR_NUMBER);
+  84              		.loc 1 152 0
+  85 0012 0420     		movs	r0, #4
+  86 0014 FFF7FEFF 		bl	isr_Timer_Quick_SetPriority
+ 153:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 154:Generated_Source\PSoC5/isr_Timer_Quick.c ****     /* Enable it. */
+ 155:Generated_Source\PSoC5/isr_Timer_Quick.c ****     isr_Timer_Quick_Enable();
+  87              		.loc 1 155 0
+  88 0018 FFF7FEFF 		bl	isr_Timer_Quick_Enable
+ 156:Generated_Source\PSoC5/isr_Timer_Quick.c **** }
+  89              		.loc 1 156 0
+  90 001c 00BF     		nop
+  91 001e 0837     		adds	r7, r7, #8
+  92              		.cfi_def_cfa_offset 8
+  93 0020 BD46     		mov	sp, r7
+  94              		.cfi_def_cfa_register 13
+  95              		@ sp needed
+  96 0022 80BD     		pop	{r7, pc}
+  97              		.cfi_endproc
+  98              	.LFE64:
+  99              		.size	isr_Timer_Quick_StartEx, .-isr_Timer_Quick_StartEx
+ 100              		.section	.text.isr_Timer_Quick_Stop,"ax",%progbits
+ 101              		.align	2
+ 102              		.global	isr_Timer_Quick_Stop
+ 103              		.thumb
+ 104              		.thumb_func
+ 105              		.type	isr_Timer_Quick_Stop, %function
+ 106              	isr_Timer_Quick_Stop:
+ 107              	.LFB65:
+ 157:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 158:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 159:Generated_Source\PSoC5/isr_Timer_Quick.c **** /*******************************************************************************
+ 160:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Function Name: isr_Timer_Quick_Stop
+ 161:Generated_Source\PSoC5/isr_Timer_Quick.c **** ********************************************************************************
+ 162:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 163:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Summary:
+ 164:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Disables and removes the interrupt.
+ 165:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 166:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Parameters:  
+ 167:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 168:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 169:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Return:
+ 170:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 171:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 172:Generated_Source\PSoC5/isr_Timer_Quick.c **** *******************************************************************************/
+ 173:Generated_Source\PSoC5/isr_Timer_Quick.c **** void isr_Timer_Quick_Stop(void)
+ 174:Generated_Source\PSoC5/isr_Timer_Quick.c **** {
+ 108              		.loc 1 174 0
+ 109              		.cfi_startproc
+ 110              		@ args = 0, pretend = 0, frame = 0
+ 111              		@ frame_needed = 1, uses_anonymous_args = 0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 6
+
+
+ 112 0000 80B5     		push	{r7, lr}
+ 113              		.cfi_def_cfa_offset 8
+ 114              		.cfi_offset 7, -8
+ 115              		.cfi_offset 14, -4
+ 116 0002 00AF     		add	r7, sp, #0
+ 117              		.cfi_def_cfa_register 7
+ 175:Generated_Source\PSoC5/isr_Timer_Quick.c ****     /* Disable this interrupt. */
+ 176:Generated_Source\PSoC5/isr_Timer_Quick.c ****     isr_Timer_Quick_Disable();
+ 118              		.loc 1 176 0
+ 119 0004 FFF7FEFF 		bl	isr_Timer_Quick_Disable
+ 177:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 178:Generated_Source\PSoC5/isr_Timer_Quick.c ****     /* Set the ISR to point to the passive one. */
+ 179:Generated_Source\PSoC5/isr_Timer_Quick.c ****     isr_Timer_Quick_SetVector(&IntDefaultHandler);
+ 120              		.loc 1 179 0
+ 121 0008 0248     		ldr	r0, .L6
+ 122 000a FFF7FEFF 		bl	isr_Timer_Quick_SetVector
+ 180:Generated_Source\PSoC5/isr_Timer_Quick.c **** }
+ 123              		.loc 1 180 0
+ 124 000e 00BF     		nop
+ 125 0010 80BD     		pop	{r7, pc}
+ 126              	.L7:
+ 127 0012 00BF     		.align	2
+ 128              	.L6:
+ 129 0014 00000000 		.word	IntDefaultHandler
+ 130              		.cfi_endproc
+ 131              	.LFE65:
+ 132              		.size	isr_Timer_Quick_Stop, .-isr_Timer_Quick_Stop
+ 133              		.section	.text.isr_Timer_Quick_Interrupt,"ax",%progbits
+ 134              		.align	2
+ 135              		.global	isr_Timer_Quick_Interrupt
+ 136              		.thumb
+ 137              		.thumb_func
+ 138              		.type	isr_Timer_Quick_Interrupt, %function
+ 139              	isr_Timer_Quick_Interrupt:
+ 140              	.LFB66:
+ 181:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 182:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 183:Generated_Source\PSoC5/isr_Timer_Quick.c **** /*******************************************************************************
+ 184:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Function Name: isr_Timer_Quick_Interrupt
+ 185:Generated_Source\PSoC5/isr_Timer_Quick.c **** ********************************************************************************
+ 186:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 187:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Summary:
+ 188:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   The default Interrupt Service Routine for isr_Timer_Quick.
+ 189:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 190:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Add custom code between the coments to keep the next version of this file
+ 191:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   from over writting your code.
+ 192:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 193:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Parameters:  
+ 194:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 195:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Return:
+ 196:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 197:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 198:Generated_Source\PSoC5/isr_Timer_Quick.c **** *******************************************************************************/
+ 199:Generated_Source\PSoC5/isr_Timer_Quick.c **** CY_ISR(isr_Timer_Quick_Interrupt)
+ 200:Generated_Source\PSoC5/isr_Timer_Quick.c **** {
+ 141              		.loc 1 200 0
+ 142              		.cfi_startproc
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 7
+
+
+ 143              		@ args = 0, pretend = 0, frame = 0
+ 144              		@ frame_needed = 1, uses_anonymous_args = 0
+ 145 0000 80B5     		push	{r7, lr}
+ 146              		.cfi_def_cfa_offset 8
+ 147              		.cfi_offset 7, -8
+ 148              		.cfi_offset 14, -4
+ 149 0002 00AF     		add	r7, sp, #0
+ 150              		.cfi_def_cfa_register 7
+ 201:Generated_Source\PSoC5/isr_Timer_Quick.c ****     #ifdef isr_Timer_Quick_INTERRUPT_INTERRUPT_CALLBACK
+ 202:Generated_Source\PSoC5/isr_Timer_Quick.c ****         isr_Timer_Quick_Interrupt_InterruptCallback();
+ 203:Generated_Source\PSoC5/isr_Timer_Quick.c ****     #endif /* isr_Timer_Quick_INTERRUPT_INTERRUPT_CALLBACK */ 
+ 204:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 205:Generated_Source\PSoC5/isr_Timer_Quick.c ****     /*  Place your Interrupt code here. */
+ 206:Generated_Source\PSoC5/isr_Timer_Quick.c ****     /* `#START isr_Timer_Quick_Interrupt` */
+ 207:Generated_Source\PSoC5/isr_Timer_Quick.c ****     
+ 208:Generated_Source\PSoC5/isr_Timer_Quick.c ****    
+ 209:Generated_Source\PSoC5/isr_Timer_Quick.c ****     
+ 210:Generated_Source\PSoC5/isr_Timer_Quick.c ****     sendPacketToRelay_Quad();   // 460800 - TX
+ 151              		.loc 1 210 0
+ 152 0004 FFF7FEFF 		bl	sendPacketToRelay_Quad
+ 211:Generated_Source\PSoC5/isr_Timer_Quick.c ****     
+ 212:Generated_Source\PSoC5/isr_Timer_Quick.c ****     sendPacketToRelaySiren();   // 230400 - TX
+ 153              		.loc 1 212 0
+ 154 0008 FFF7FEFF 		bl	sendPacketToRelaySiren
+ 213:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 214:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 215:Generated_Source\PSoC5/isr_Timer_Quick.c ****     /* `#END` */
+ 216:Generated_Source\PSoC5/isr_Timer_Quick.c **** }
+ 155              		.loc 1 216 0
+ 156 000c 00BF     		nop
+ 157 000e 80BD     		pop	{r7, pc}
+ 158              		.cfi_endproc
+ 159              	.LFE66:
+ 160              		.size	isr_Timer_Quick_Interrupt, .-isr_Timer_Quick_Interrupt
+ 161              		.section	.text.isr_Timer_Quick_SetVector,"ax",%progbits
+ 162              		.align	2
+ 163              		.global	isr_Timer_Quick_SetVector
+ 164              		.thumb
+ 165              		.thumb_func
+ 166              		.type	isr_Timer_Quick_SetVector, %function
+ 167              	isr_Timer_Quick_SetVector:
+ 168              	.LFB67:
+ 217:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 218:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 219:Generated_Source\PSoC5/isr_Timer_Quick.c **** /*******************************************************************************
+ 220:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Function Name: isr_Timer_Quick_SetVector
+ 221:Generated_Source\PSoC5/isr_Timer_Quick.c **** ********************************************************************************
+ 222:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 223:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Summary:
+ 224:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Change the ISR vector for the Interrupt. Note calling isr_Timer_Quick_Start
+ 225:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   will override any effect this method would have had. To set the vector 
+ 226:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   before the component has been started use isr_Timer_Quick_StartEx instead.
+ 227:Generated_Source\PSoC5/isr_Timer_Quick.c **** * 
+ 228:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
+ 229:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   used to provide consistent definition across compilers:
+ 230:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 231:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Function definition example:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 8
+
+
+ 232:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   CY_ISR(MyISR)
+ 233:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   {
+ 234:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   }
+ 235:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 236:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Function prototype example:
+ 237:Generated_Source\PSoC5/isr_Timer_Quick.c **** *     CY_ISR_PROTO(MyISR);
+ 238:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 239:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Parameters:
+ 240:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   address: Address of the ISR to set in the interrupt vector table.
+ 241:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 242:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Return:
+ 243:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 244:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 245:Generated_Source\PSoC5/isr_Timer_Quick.c **** *******************************************************************************/
+ 246:Generated_Source\PSoC5/isr_Timer_Quick.c **** void isr_Timer_Quick_SetVector(cyisraddress address)
+ 247:Generated_Source\PSoC5/isr_Timer_Quick.c **** {
+ 169              		.loc 1 247 0
+ 170              		.cfi_startproc
+ 171              		@ args = 0, pretend = 0, frame = 16
+ 172              		@ frame_needed = 1, uses_anonymous_args = 0
+ 173              		@ link register save eliminated.
+ 174 0000 80B4     		push	{r7}
+ 175              		.cfi_def_cfa_offset 4
+ 176              		.cfi_offset 7, -4
+ 177 0002 85B0     		sub	sp, sp, #20
+ 178              		.cfi_def_cfa_offset 24
+ 179 0004 00AF     		add	r7, sp, #0
+ 180              		.cfi_def_cfa_register 7
+ 181 0006 7860     		str	r0, [r7, #4]
+ 248:Generated_Source\PSoC5/isr_Timer_Quick.c ****     cyisraddress * ramVectorTable;
+ 249:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 250:Generated_Source\PSoC5/isr_Timer_Quick.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
+ 182              		.loc 1 250 0
+ 183 0008 054B     		ldr	r3, .L10
+ 184 000a 1B68     		ldr	r3, [r3]
+ 185 000c FB60     		str	r3, [r7, #12]
+ 251:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 252:Generated_Source\PSoC5/isr_Timer_Quick.c ****     ramVectorTable[CYINT_IRQ_BASE + (uint32)isr_Timer_Quick__INTC_NUMBER] = address;
+ 186              		.loc 1 252 0
+ 187 000e FB68     		ldr	r3, [r7, #12]
+ 188 0010 4833     		adds	r3, r3, #72
+ 189 0012 7A68     		ldr	r2, [r7, #4]
+ 190 0014 1A60     		str	r2, [r3]
+ 253:Generated_Source\PSoC5/isr_Timer_Quick.c **** }
+ 191              		.loc 1 253 0
+ 192 0016 00BF     		nop
+ 193 0018 1437     		adds	r7, r7, #20
+ 194              		.cfi_def_cfa_offset 4
+ 195 001a BD46     		mov	sp, r7
+ 196              		.cfi_def_cfa_register 13
+ 197              		@ sp needed
+ 198 001c 80BC     		pop	{r7}
+ 199              		.cfi_restore 7
+ 200              		.cfi_def_cfa_offset 0
+ 201 001e 7047     		bx	lr
+ 202              	.L11:
+ 203              		.align	2
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 9
+
+
+ 204              	.L10:
+ 205 0020 08ED00E0 		.word	-536810232
+ 206              		.cfi_endproc
+ 207              	.LFE67:
+ 208              		.size	isr_Timer_Quick_SetVector, .-isr_Timer_Quick_SetVector
+ 209              		.section	.text.isr_Timer_Quick_GetVector,"ax",%progbits
+ 210              		.align	2
+ 211              		.global	isr_Timer_Quick_GetVector
+ 212              		.thumb
+ 213              		.thumb_func
+ 214              		.type	isr_Timer_Quick_GetVector, %function
+ 215              	isr_Timer_Quick_GetVector:
+ 216              	.LFB68:
+ 254:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 255:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 256:Generated_Source\PSoC5/isr_Timer_Quick.c **** /*******************************************************************************
+ 257:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Function Name: isr_Timer_Quick_GetVector
+ 258:Generated_Source\PSoC5/isr_Timer_Quick.c **** ********************************************************************************
+ 259:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 260:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Summary:
+ 261:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Gets the "address" of the current ISR vector for the Interrupt.
+ 262:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 263:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Parameters:
+ 264:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 265:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 266:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Return:
+ 267:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Address of the ISR in the interrupt vector table.
+ 268:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 269:Generated_Source\PSoC5/isr_Timer_Quick.c **** *******************************************************************************/
+ 270:Generated_Source\PSoC5/isr_Timer_Quick.c **** cyisraddress isr_Timer_Quick_GetVector(void)
+ 271:Generated_Source\PSoC5/isr_Timer_Quick.c **** {
+ 217              		.loc 1 271 0
+ 218              		.cfi_startproc
+ 219              		@ args = 0, pretend = 0, frame = 8
+ 220              		@ frame_needed = 1, uses_anonymous_args = 0
+ 221              		@ link register save eliminated.
+ 222 0000 80B4     		push	{r7}
+ 223              		.cfi_def_cfa_offset 4
+ 224              		.cfi_offset 7, -4
+ 225 0002 83B0     		sub	sp, sp, #12
+ 226              		.cfi_def_cfa_offset 16
+ 227 0004 00AF     		add	r7, sp, #0
+ 228              		.cfi_def_cfa_register 7
+ 272:Generated_Source\PSoC5/isr_Timer_Quick.c ****     cyisraddress * ramVectorTable;
+ 273:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 274:Generated_Source\PSoC5/isr_Timer_Quick.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
+ 229              		.loc 1 274 0
+ 230 0006 054B     		ldr	r3, .L14
+ 231 0008 1B68     		ldr	r3, [r3]
+ 232 000a 7B60     		str	r3, [r7, #4]
+ 275:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 276:Generated_Source\PSoC5/isr_Timer_Quick.c ****     return ramVectorTable[CYINT_IRQ_BASE + (uint32)isr_Timer_Quick__INTC_NUMBER];
+ 233              		.loc 1 276 0
+ 234 000c 7B68     		ldr	r3, [r7, #4]
+ 235 000e 9B6C     		ldr	r3, [r3, #72]
+ 277:Generated_Source\PSoC5/isr_Timer_Quick.c **** }
+ 236              		.loc 1 277 0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 10
+
+
+ 237 0010 1846     		mov	r0, r3
+ 238 0012 0C37     		adds	r7, r7, #12
+ 239              		.cfi_def_cfa_offset 4
+ 240 0014 BD46     		mov	sp, r7
+ 241              		.cfi_def_cfa_register 13
+ 242              		@ sp needed
+ 243 0016 80BC     		pop	{r7}
+ 244              		.cfi_restore 7
+ 245              		.cfi_def_cfa_offset 0
+ 246 0018 7047     		bx	lr
+ 247              	.L15:
+ 248 001a 00BF     		.align	2
+ 249              	.L14:
+ 250 001c 08ED00E0 		.word	-536810232
+ 251              		.cfi_endproc
+ 252              	.LFE68:
+ 253              		.size	isr_Timer_Quick_GetVector, .-isr_Timer_Quick_GetVector
+ 254              		.section	.text.isr_Timer_Quick_SetPriority,"ax",%progbits
+ 255              		.align	2
+ 256              		.global	isr_Timer_Quick_SetPriority
+ 257              		.thumb
+ 258              		.thumb_func
+ 259              		.type	isr_Timer_Quick_SetPriority, %function
+ 260              	isr_Timer_Quick_SetPriority:
+ 261              	.LFB69:
+ 278:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 279:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 280:Generated_Source\PSoC5/isr_Timer_Quick.c **** /*******************************************************************************
+ 281:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Function Name: isr_Timer_Quick_SetPriority
+ 282:Generated_Source\PSoC5/isr_Timer_Quick.c **** ********************************************************************************
+ 283:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 284:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Summary:
+ 285:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Sets the Priority of the Interrupt. 
+ 286:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 287:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Note calling isr_Timer_Quick_Start or isr_Timer_Quick_StartEx will 
+ 288:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   override any effect this API would have had. This API should only be called
+ 289:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   after isr_Timer_Quick_Start or isr_Timer_Quick_StartEx has been called. 
+ 290:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   To set the initial priority for the component, use the Design-Wide Resources
+ 291:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Interrupt Editor.
+ 292:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 293:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Note This API has no effect on Non-maskable interrupt NMI).
+ 294:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 295:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Parameters:
+ 296:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   priority: Priority of the interrupt, 0 being the highest priority
+ 297:Generated_Source\PSoC5/isr_Timer_Quick.c **** *             PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
+ 298:Generated_Source\PSoC5/isr_Timer_Quick.c **** *             PSoC 4: Priority is from 0 to 3.
+ 299:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 300:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Return:
+ 301:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 302:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 303:Generated_Source\PSoC5/isr_Timer_Quick.c **** *******************************************************************************/
+ 304:Generated_Source\PSoC5/isr_Timer_Quick.c **** void isr_Timer_Quick_SetPriority(uint8 priority)
+ 305:Generated_Source\PSoC5/isr_Timer_Quick.c **** {
+ 262              		.loc 1 305 0
+ 263              		.cfi_startproc
+ 264              		@ args = 0, pretend = 0, frame = 8
+ 265              		@ frame_needed = 1, uses_anonymous_args = 0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 11
+
+
+ 266              		@ link register save eliminated.
+ 267 0000 80B4     		push	{r7}
+ 268              		.cfi_def_cfa_offset 4
+ 269              		.cfi_offset 7, -4
+ 270 0002 83B0     		sub	sp, sp, #12
+ 271              		.cfi_def_cfa_offset 16
+ 272 0004 00AF     		add	r7, sp, #0
+ 273              		.cfi_def_cfa_register 7
+ 274 0006 0346     		mov	r3, r0
+ 275 0008 FB71     		strb	r3, [r7, #7]
+ 306:Generated_Source\PSoC5/isr_Timer_Quick.c ****     *isr_Timer_Quick_INTC_PRIOR = priority << 5;
+ 276              		.loc 1 306 0
+ 277 000a 054A     		ldr	r2, .L17
+ 278 000c FB79     		ldrb	r3, [r7, #7]
+ 279 000e 5B01     		lsls	r3, r3, #5
+ 280 0010 DBB2     		uxtb	r3, r3
+ 281 0012 1370     		strb	r3, [r2]
+ 307:Generated_Source\PSoC5/isr_Timer_Quick.c **** }
+ 282              		.loc 1 307 0
+ 283 0014 00BF     		nop
+ 284 0016 0C37     		adds	r7, r7, #12
+ 285              		.cfi_def_cfa_offset 4
+ 286 0018 BD46     		mov	sp, r7
+ 287              		.cfi_def_cfa_register 13
+ 288              		@ sp needed
+ 289 001a 80BC     		pop	{r7}
+ 290              		.cfi_restore 7
+ 291              		.cfi_def_cfa_offset 0
+ 292 001c 7047     		bx	lr
+ 293              	.L18:
+ 294 001e 00BF     		.align	2
+ 295              	.L17:
+ 296 0020 02E400E0 		.word	-536812542
+ 297              		.cfi_endproc
+ 298              	.LFE69:
+ 299              		.size	isr_Timer_Quick_SetPriority, .-isr_Timer_Quick_SetPriority
+ 300              		.section	.text.isr_Timer_Quick_GetPriority,"ax",%progbits
+ 301              		.align	2
+ 302              		.global	isr_Timer_Quick_GetPriority
+ 303              		.thumb
+ 304              		.thumb_func
+ 305              		.type	isr_Timer_Quick_GetPriority, %function
+ 306              	isr_Timer_Quick_GetPriority:
+ 307              	.LFB70:
+ 308:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 309:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 310:Generated_Source\PSoC5/isr_Timer_Quick.c **** /*******************************************************************************
+ 311:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Function Name: isr_Timer_Quick_GetPriority
+ 312:Generated_Source\PSoC5/isr_Timer_Quick.c **** ********************************************************************************
+ 313:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 314:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Summary:
+ 315:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Gets the Priority of the Interrupt.
+ 316:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 317:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Parameters:
+ 318:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 319:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 320:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Return:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 12
+
+
+ 321:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Priority of the interrupt, 0 being the highest priority
+ 322:Generated_Source\PSoC5/isr_Timer_Quick.c **** *    PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
+ 323:Generated_Source\PSoC5/isr_Timer_Quick.c **** *    PSoC 4: Priority is from 0 to 3.
+ 324:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 325:Generated_Source\PSoC5/isr_Timer_Quick.c **** *******************************************************************************/
+ 326:Generated_Source\PSoC5/isr_Timer_Quick.c **** uint8 isr_Timer_Quick_GetPriority(void)
+ 327:Generated_Source\PSoC5/isr_Timer_Quick.c **** {
+ 308              		.loc 1 327 0
+ 309              		.cfi_startproc
+ 310              		@ args = 0, pretend = 0, frame = 8
+ 311              		@ frame_needed = 1, uses_anonymous_args = 0
+ 312              		@ link register save eliminated.
+ 313 0000 80B4     		push	{r7}
+ 314              		.cfi_def_cfa_offset 4
+ 315              		.cfi_offset 7, -4
+ 316 0002 83B0     		sub	sp, sp, #12
+ 317              		.cfi_def_cfa_offset 16
+ 318 0004 00AF     		add	r7, sp, #0
+ 319              		.cfi_def_cfa_register 7
+ 328:Generated_Source\PSoC5/isr_Timer_Quick.c ****     uint8 priority;
+ 329:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 330:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 331:Generated_Source\PSoC5/isr_Timer_Quick.c ****     priority = *isr_Timer_Quick_INTC_PRIOR >> 5;
+ 320              		.loc 1 331 0
+ 321 0006 054B     		ldr	r3, .L21
+ 322 0008 1B78     		ldrb	r3, [r3]
+ 323 000a DBB2     		uxtb	r3, r3
+ 324 000c 5B09     		lsrs	r3, r3, #5
+ 325 000e FB71     		strb	r3, [r7, #7]
+ 332:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 333:Generated_Source\PSoC5/isr_Timer_Quick.c ****     return priority;
+ 326              		.loc 1 333 0
+ 327 0010 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 334:Generated_Source\PSoC5/isr_Timer_Quick.c **** }
+ 328              		.loc 1 334 0
+ 329 0012 1846     		mov	r0, r3
+ 330 0014 0C37     		adds	r7, r7, #12
+ 331              		.cfi_def_cfa_offset 4
+ 332 0016 BD46     		mov	sp, r7
+ 333              		.cfi_def_cfa_register 13
+ 334              		@ sp needed
+ 335 0018 80BC     		pop	{r7}
+ 336              		.cfi_restore 7
+ 337              		.cfi_def_cfa_offset 0
+ 338 001a 7047     		bx	lr
+ 339              	.L22:
+ 340              		.align	2
+ 341              	.L21:
+ 342 001c 02E400E0 		.word	-536812542
+ 343              		.cfi_endproc
+ 344              	.LFE70:
+ 345              		.size	isr_Timer_Quick_GetPriority, .-isr_Timer_Quick_GetPriority
+ 346              		.section	.text.isr_Timer_Quick_Enable,"ax",%progbits
+ 347              		.align	2
+ 348              		.global	isr_Timer_Quick_Enable
+ 349              		.thumb
+ 350              		.thumb_func
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 13
+
+
+ 351              		.type	isr_Timer_Quick_Enable, %function
+ 352              	isr_Timer_Quick_Enable:
+ 353              	.LFB71:
+ 335:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 336:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 337:Generated_Source\PSoC5/isr_Timer_Quick.c **** /*******************************************************************************
+ 338:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Function Name: isr_Timer_Quick_Enable
+ 339:Generated_Source\PSoC5/isr_Timer_Quick.c **** ********************************************************************************
+ 340:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 341:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Summary:
+ 342:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Enables the interrupt to the interrupt controller. Do not call this function
+ 343:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   unless ISR_Start() has been called or the functionality of the ISR_Start() 
+ 344:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   function, which sets the vector and the priority, has been called.
+ 345:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 346:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Parameters:
+ 347:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 348:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 349:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Return:
+ 350:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 351:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 352:Generated_Source\PSoC5/isr_Timer_Quick.c **** *******************************************************************************/
+ 353:Generated_Source\PSoC5/isr_Timer_Quick.c **** void isr_Timer_Quick_Enable(void)
+ 354:Generated_Source\PSoC5/isr_Timer_Quick.c **** {
+ 354              		.loc 1 354 0
+ 355              		.cfi_startproc
+ 356              		@ args = 0, pretend = 0, frame = 0
+ 357              		@ frame_needed = 1, uses_anonymous_args = 0
+ 358              		@ link register save eliminated.
+ 359 0000 80B4     		push	{r7}
+ 360              		.cfi_def_cfa_offset 4
+ 361              		.cfi_offset 7, -4
+ 362 0002 00AF     		add	r7, sp, #0
+ 363              		.cfi_def_cfa_register 7
+ 355:Generated_Source\PSoC5/isr_Timer_Quick.c ****     /* Enable the general interrupt. */
+ 356:Generated_Source\PSoC5/isr_Timer_Quick.c ****     *isr_Timer_Quick_INTC_SET_EN = isr_Timer_Quick__INTC_MASK;
+ 364              		.loc 1 356 0
+ 365 0004 034B     		ldr	r3, .L24
+ 366 0006 0422     		movs	r2, #4
+ 367 0008 1A60     		str	r2, [r3]
+ 357:Generated_Source\PSoC5/isr_Timer_Quick.c **** }
+ 368              		.loc 1 357 0
+ 369 000a 00BF     		nop
+ 370 000c BD46     		mov	sp, r7
+ 371              		.cfi_def_cfa_register 13
+ 372              		@ sp needed
+ 373 000e 80BC     		pop	{r7}
+ 374              		.cfi_restore 7
+ 375              		.cfi_def_cfa_offset 0
+ 376 0010 7047     		bx	lr
+ 377              	.L25:
+ 378 0012 00BF     		.align	2
+ 379              	.L24:
+ 380 0014 00E100E0 		.word	-536813312
+ 381              		.cfi_endproc
+ 382              	.LFE71:
+ 383              		.size	isr_Timer_Quick_Enable, .-isr_Timer_Quick_Enable
+ 384              		.section	.text.isr_Timer_Quick_GetState,"ax",%progbits
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 14
+
+
+ 385              		.align	2
+ 386              		.global	isr_Timer_Quick_GetState
+ 387              		.thumb
+ 388              		.thumb_func
+ 389              		.type	isr_Timer_Quick_GetState, %function
+ 390              	isr_Timer_Quick_GetState:
+ 391              	.LFB72:
+ 358:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 359:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 360:Generated_Source\PSoC5/isr_Timer_Quick.c **** /*******************************************************************************
+ 361:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Function Name: isr_Timer_Quick_GetState
+ 362:Generated_Source\PSoC5/isr_Timer_Quick.c **** ********************************************************************************
+ 363:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 364:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Summary:
+ 365:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Gets the state (enabled, disabled) of the Interrupt.
+ 366:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 367:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Parameters:
+ 368:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 369:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 370:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Return:
+ 371:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   1 if enabled, 0 if disabled.
+ 372:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 373:Generated_Source\PSoC5/isr_Timer_Quick.c **** *******************************************************************************/
+ 374:Generated_Source\PSoC5/isr_Timer_Quick.c **** uint8 isr_Timer_Quick_GetState(void)
+ 375:Generated_Source\PSoC5/isr_Timer_Quick.c **** {
+ 392              		.loc 1 375 0
+ 393              		.cfi_startproc
+ 394              		@ args = 0, pretend = 0, frame = 0
+ 395              		@ frame_needed = 1, uses_anonymous_args = 0
+ 396              		@ link register save eliminated.
+ 397 0000 80B4     		push	{r7}
+ 398              		.cfi_def_cfa_offset 4
+ 399              		.cfi_offset 7, -4
+ 400 0002 00AF     		add	r7, sp, #0
+ 401              		.cfi_def_cfa_register 7
+ 376:Generated_Source\PSoC5/isr_Timer_Quick.c ****     /* Get the state of the general interrupt. */
+ 377:Generated_Source\PSoC5/isr_Timer_Quick.c ****     return ((*isr_Timer_Quick_INTC_SET_EN & (uint32)isr_Timer_Quick__INTC_MASK) != 0u) ? 1u:0u;
+ 402              		.loc 1 377 0
+ 403 0004 064B     		ldr	r3, .L30
+ 404 0006 1B68     		ldr	r3, [r3]
+ 405 0008 03F00403 		and	r3, r3, #4
+ 406 000c 002B     		cmp	r3, #0
+ 407 000e 01D0     		beq	.L27
+ 408              		.loc 1 377 0 is_stmt 0 discriminator 1
+ 409 0010 0123     		movs	r3, #1
+ 410 0012 00E0     		b	.L28
+ 411              	.L27:
+ 412              		.loc 1 377 0 discriminator 2
+ 413 0014 0023     		movs	r3, #0
+ 414              	.L28:
+ 378:Generated_Source\PSoC5/isr_Timer_Quick.c **** }
+ 415              		.loc 1 378 0 is_stmt 1 discriminator 4
+ 416 0016 1846     		mov	r0, r3
+ 417 0018 BD46     		mov	sp, r7
+ 418              		.cfi_def_cfa_register 13
+ 419              		@ sp needed
+ 420 001a 80BC     		pop	{r7}
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 15
+
+
+ 421              		.cfi_restore 7
+ 422              		.cfi_def_cfa_offset 0
+ 423 001c 7047     		bx	lr
+ 424              	.L31:
+ 425 001e 00BF     		.align	2
+ 426              	.L30:
+ 427 0020 00E100E0 		.word	-536813312
+ 428              		.cfi_endproc
+ 429              	.LFE72:
+ 430              		.size	isr_Timer_Quick_GetState, .-isr_Timer_Quick_GetState
+ 431              		.section	.text.isr_Timer_Quick_Disable,"ax",%progbits
+ 432              		.align	2
+ 433              		.global	isr_Timer_Quick_Disable
+ 434              		.thumb
+ 435              		.thumb_func
+ 436              		.type	isr_Timer_Quick_Disable, %function
+ 437              	isr_Timer_Quick_Disable:
+ 438              	.LFB73:
+ 379:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 380:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 381:Generated_Source\PSoC5/isr_Timer_Quick.c **** /*******************************************************************************
+ 382:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Function Name: isr_Timer_Quick_Disable
+ 383:Generated_Source\PSoC5/isr_Timer_Quick.c **** ********************************************************************************
+ 384:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 385:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Summary:
+ 386:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Disables the Interrupt in the interrupt controller.
+ 387:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 388:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Parameters:
+ 389:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 390:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 391:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Return:
+ 392:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 393:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 394:Generated_Source\PSoC5/isr_Timer_Quick.c **** *******************************************************************************/
+ 395:Generated_Source\PSoC5/isr_Timer_Quick.c **** void isr_Timer_Quick_Disable(void)
+ 396:Generated_Source\PSoC5/isr_Timer_Quick.c **** {
+ 439              		.loc 1 396 0
+ 440              		.cfi_startproc
+ 441              		@ args = 0, pretend = 0, frame = 0
+ 442              		@ frame_needed = 1, uses_anonymous_args = 0
+ 443              		@ link register save eliminated.
+ 444 0000 80B4     		push	{r7}
+ 445              		.cfi_def_cfa_offset 4
+ 446              		.cfi_offset 7, -4
+ 447 0002 00AF     		add	r7, sp, #0
+ 448              		.cfi_def_cfa_register 7
+ 397:Generated_Source\PSoC5/isr_Timer_Quick.c ****     /* Disable the general interrupt. */
+ 398:Generated_Source\PSoC5/isr_Timer_Quick.c ****     *isr_Timer_Quick_INTC_CLR_EN = isr_Timer_Quick__INTC_MASK;
+ 449              		.loc 1 398 0
+ 450 0004 034B     		ldr	r3, .L33
+ 451 0006 0422     		movs	r2, #4
+ 452 0008 1A60     		str	r2, [r3]
+ 399:Generated_Source\PSoC5/isr_Timer_Quick.c **** }
+ 453              		.loc 1 399 0
+ 454 000a 00BF     		nop
+ 455 000c BD46     		mov	sp, r7
+ 456              		.cfi_def_cfa_register 13
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 16
+
+
+ 457              		@ sp needed
+ 458 000e 80BC     		pop	{r7}
+ 459              		.cfi_restore 7
+ 460              		.cfi_def_cfa_offset 0
+ 461 0010 7047     		bx	lr
+ 462              	.L34:
+ 463 0012 00BF     		.align	2
+ 464              	.L33:
+ 465 0014 80E100E0 		.word	-536813184
+ 466              		.cfi_endproc
+ 467              	.LFE73:
+ 468              		.size	isr_Timer_Quick_Disable, .-isr_Timer_Quick_Disable
+ 469              		.section	.text.isr_Timer_Quick_SetPending,"ax",%progbits
+ 470              		.align	2
+ 471              		.global	isr_Timer_Quick_SetPending
+ 472              		.thumb
+ 473              		.thumb_func
+ 474              		.type	isr_Timer_Quick_SetPending, %function
+ 475              	isr_Timer_Quick_SetPending:
+ 476              	.LFB74:
+ 400:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 401:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 402:Generated_Source\PSoC5/isr_Timer_Quick.c **** /*******************************************************************************
+ 403:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Function Name: isr_Timer_Quick_SetPending
+ 404:Generated_Source\PSoC5/isr_Timer_Quick.c **** ********************************************************************************
+ 405:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 406:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Summary:
+ 407:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Causes the Interrupt to enter the pending state, a software method of
+ 408:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   generating the interrupt.
+ 409:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 410:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Parameters:
+ 411:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 412:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 413:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Return:
+ 414:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 415:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 416:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Side Effects:
+ 417:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   If interrupts are enabled and the interrupt is set up properly, the ISR is
+ 418:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   entered (depending on the priority of this interrupt and other pending 
+ 419:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   interrupts).
+ 420:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 421:Generated_Source\PSoC5/isr_Timer_Quick.c **** *******************************************************************************/
+ 422:Generated_Source\PSoC5/isr_Timer_Quick.c **** void isr_Timer_Quick_SetPending(void)
+ 423:Generated_Source\PSoC5/isr_Timer_Quick.c **** {
+ 477              		.loc 1 423 0
+ 478              		.cfi_startproc
+ 479              		@ args = 0, pretend = 0, frame = 0
+ 480              		@ frame_needed = 1, uses_anonymous_args = 0
+ 481              		@ link register save eliminated.
+ 482 0000 80B4     		push	{r7}
+ 483              		.cfi_def_cfa_offset 4
+ 484              		.cfi_offset 7, -4
+ 485 0002 00AF     		add	r7, sp, #0
+ 486              		.cfi_def_cfa_register 7
+ 424:Generated_Source\PSoC5/isr_Timer_Quick.c ****     *isr_Timer_Quick_INTC_SET_PD = isr_Timer_Quick__INTC_MASK;
+ 487              		.loc 1 424 0
+ 488 0004 034B     		ldr	r3, .L36
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 17
+
+
+ 489 0006 0422     		movs	r2, #4
+ 490 0008 1A60     		str	r2, [r3]
+ 425:Generated_Source\PSoC5/isr_Timer_Quick.c **** }
+ 491              		.loc 1 425 0
+ 492 000a 00BF     		nop
+ 493 000c BD46     		mov	sp, r7
+ 494              		.cfi_def_cfa_register 13
+ 495              		@ sp needed
+ 496 000e 80BC     		pop	{r7}
+ 497              		.cfi_restore 7
+ 498              		.cfi_def_cfa_offset 0
+ 499 0010 7047     		bx	lr
+ 500              	.L37:
+ 501 0012 00BF     		.align	2
+ 502              	.L36:
+ 503 0014 00E200E0 		.word	-536813056
+ 504              		.cfi_endproc
+ 505              	.LFE74:
+ 506              		.size	isr_Timer_Quick_SetPending, .-isr_Timer_Quick_SetPending
+ 507              		.section	.text.isr_Timer_Quick_ClearPending,"ax",%progbits
+ 508              		.align	2
+ 509              		.global	isr_Timer_Quick_ClearPending
+ 510              		.thumb
+ 511              		.thumb_func
+ 512              		.type	isr_Timer_Quick_ClearPending, %function
+ 513              	isr_Timer_Quick_ClearPending:
+ 514              	.LFB75:
+ 426:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 427:Generated_Source\PSoC5/isr_Timer_Quick.c **** 
+ 428:Generated_Source\PSoC5/isr_Timer_Quick.c **** /*******************************************************************************
+ 429:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Function Name: isr_Timer_Quick_ClearPending
+ 430:Generated_Source\PSoC5/isr_Timer_Quick.c **** ********************************************************************************
+ 431:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 432:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Summary:
+ 433:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Clears a pending interrupt in the interrupt controller.
+ 434:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 435:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   Note Some interrupt sources are clear-on-read and require the block 
+ 436:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   interrupt/status register to be read/cleared with the appropriate block API 
+ 437:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   (GPIO, UART, and so on). Otherwise the ISR will continue to remain in 
+ 438:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   pending state even though the interrupt itself is cleared using this API.
+ 439:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 440:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Parameters:
+ 441:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 442:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 443:Generated_Source\PSoC5/isr_Timer_Quick.c **** * Return:
+ 444:Generated_Source\PSoC5/isr_Timer_Quick.c **** *   None
+ 445:Generated_Source\PSoC5/isr_Timer_Quick.c **** *
+ 446:Generated_Source\PSoC5/isr_Timer_Quick.c **** *******************************************************************************/
+ 447:Generated_Source\PSoC5/isr_Timer_Quick.c **** void isr_Timer_Quick_ClearPending(void)
+ 448:Generated_Source\PSoC5/isr_Timer_Quick.c **** {
+ 515              		.loc 1 448 0
+ 516              		.cfi_startproc
+ 517              		@ args = 0, pretend = 0, frame = 0
+ 518              		@ frame_needed = 1, uses_anonymous_args = 0
+ 519              		@ link register save eliminated.
+ 520 0000 80B4     		push	{r7}
+ 521              		.cfi_def_cfa_offset 4
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 18
+
+
+ 522              		.cfi_offset 7, -4
+ 523 0002 00AF     		add	r7, sp, #0
+ 524              		.cfi_def_cfa_register 7
+ 449:Generated_Source\PSoC5/isr_Timer_Quick.c ****     *isr_Timer_Quick_INTC_CLR_PD = isr_Timer_Quick__INTC_MASK;
+ 525              		.loc 1 449 0
+ 526 0004 034B     		ldr	r3, .L39
+ 527 0006 0422     		movs	r2, #4
+ 528 0008 1A60     		str	r2, [r3]
+ 450:Generated_Source\PSoC5/isr_Timer_Quick.c **** }
+ 529              		.loc 1 450 0
+ 530 000a 00BF     		nop
+ 531 000c BD46     		mov	sp, r7
+ 532              		.cfi_def_cfa_register 13
+ 533              		@ sp needed
+ 534 000e 80BC     		pop	{r7}
+ 535              		.cfi_restore 7
+ 536              		.cfi_def_cfa_offset 0
+ 537 0010 7047     		bx	lr
+ 538              	.L40:
+ 539 0012 00BF     		.align	2
+ 540              	.L39:
+ 541 0014 80E200E0 		.word	-536812928
+ 542              		.cfi_endproc
+ 543              	.LFE75:
+ 544              		.size	isr_Timer_Quick_ClearPending, .-isr_Timer_Quick_ClearPending
+ 545              		.text
+ 546              	.Letext0:
+ 547              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 548              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 549              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 550              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 551              		.section	.debug_info,"",%progbits
+ 552              	.Ldebug_info0:
+ 553 0000 66020000 		.4byte	0x266
+ 554 0004 0400     		.2byte	0x4
+ 555 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 556 000a 04       		.byte	0x4
+ 557 000b 01       		.uleb128 0x1
+ 558 000c 06000000 		.4byte	.LASF36
+ 559 0010 0C       		.byte	0xc
+ 560 0011 F4010000 		.4byte	.LASF37
+ 561 0015 94000000 		.4byte	.LASF38
+ 562 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 563 001d 00000000 		.4byte	0
+ 564 0021 00000000 		.4byte	.Ldebug_line0
+ 565 0025 02       		.uleb128 0x2
+ 566 0026 04       		.byte	0x4
+ 567 0027 05       		.byte	0x5
+ 568 0028 696E7400 		.ascii	"int\000"
+ 569 002c 03       		.uleb128 0x3
+ 570 002d 04       		.byte	0x4
+ 571 002e 07       		.byte	0x7
+ 572 002f 2F020000 		.4byte	.LASF0
+ 573 0033 03       		.uleb128 0x3
+ 574 0034 08       		.byte	0x8
+ 575 0035 05       		.byte	0x5
+ 576 0036 A4020000 		.4byte	.LASF1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 19
+
+
+ 577 003a 03       		.uleb128 0x3
+ 578 003b 08       		.byte	0x8
+ 579 003c 04       		.byte	0x4
+ 580 003d 38030000 		.4byte	.LASF2
+ 581 0041 03       		.uleb128 0x3
+ 582 0042 01       		.byte	0x1
+ 583 0043 06       		.byte	0x6
+ 584 0044 44030000 		.4byte	.LASF3
+ 585 0048 03       		.uleb128 0x3
+ 586 0049 01       		.byte	0x1
+ 587 004a 08       		.byte	0x8
+ 588 004b 60010000 		.4byte	.LASF4
+ 589 004f 03       		.uleb128 0x3
+ 590 0050 02       		.byte	0x2
+ 591 0051 05       		.byte	0x5
+ 592 0052 DA010000 		.4byte	.LASF5
+ 593 0056 03       		.uleb128 0x3
+ 594 0057 02       		.byte	0x2
+ 595 0058 07       		.byte	0x7
+ 596 0059 E6000000 		.4byte	.LASF6
+ 597 005d 04       		.uleb128 0x4
+ 598 005e DC000000 		.4byte	.LASF12
+ 599 0062 02       		.byte	0x2
+ 600 0063 3F       		.byte	0x3f
+ 601 0064 68000000 		.4byte	0x68
+ 602 0068 03       		.uleb128 0x3
+ 603 0069 04       		.byte	0x4
+ 604 006a 05       		.byte	0x5
+ 605 006b 1A030000 		.4byte	.LASF7
+ 606 006f 03       		.uleb128 0x3
+ 607 0070 04       		.byte	0x4
+ 608 0071 07       		.byte	0x7
+ 609 0072 1D020000 		.4byte	.LASF8
+ 610 0076 03       		.uleb128 0x3
+ 611 0077 08       		.byte	0x8
+ 612 0078 07       		.byte	0x7
+ 613 0079 54020000 		.4byte	.LASF9
+ 614 007d 03       		.uleb128 0x3
+ 615 007e 04       		.byte	0x4
+ 616 007f 07       		.byte	0x7
+ 617 0080 9B020000 		.4byte	.LASF10
+ 618 0084 03       		.uleb128 0x3
+ 619 0085 01       		.byte	0x1
+ 620 0086 08       		.byte	0x8
+ 621 0087 B2020000 		.4byte	.LASF11
+ 622 008b 05       		.uleb128 0x5
+ 623 008c 04       		.byte	0x4
+ 624 008d 91000000 		.4byte	0x91
+ 625 0091 06       		.uleb128 0x6
+ 626 0092 04       		.uleb128 0x4
+ 627 0093 93020000 		.4byte	.LASF13
+ 628 0097 03       		.byte	0x3
+ 629 0098 2C       		.byte	0x2c
+ 630 0099 5D000000 		.4byte	0x5d
+ 631 009d 07       		.uleb128 0x7
+ 632 009e E9020000 		.4byte	.LASF14
+ 633 00a2 04       		.byte	0x4
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 20
+
+
+ 634 00a3 E401     		.2byte	0x1e4
+ 635 00a5 48000000 		.4byte	0x48
+ 636 00a9 07       		.uleb128 0x7
+ 637 00aa ED010000 		.4byte	.LASF15
+ 638 00ae 04       		.byte	0x4
+ 639 00af E601     		.2byte	0x1e6
+ 640 00b1 6F000000 		.4byte	0x6f
+ 641 00b5 03       		.uleb128 0x3
+ 642 00b6 04       		.byte	0x4
+ 643 00b7 04       		.byte	0x4
+ 644 00b8 5A010000 		.4byte	.LASF16
+ 645 00bc 03       		.uleb128 0x3
+ 646 00bd 08       		.byte	0x8
+ 647 00be 04       		.byte	0x4
+ 648 00bf 50030000 		.4byte	.LASF17
+ 649 00c3 07       		.uleb128 0x7
+ 650 00c4 6E010000 		.4byte	.LASF18
+ 651 00c8 04       		.byte	0x4
+ 652 00c9 8E02     		.2byte	0x28e
+ 653 00cb CF000000 		.4byte	0xcf
+ 654 00cf 08       		.uleb128 0x8
+ 655 00d0 9D000000 		.4byte	0x9d
+ 656 00d4 07       		.uleb128 0x7
+ 657 00d5 00000000 		.4byte	.LASF19
+ 658 00d9 04       		.byte	0x4
+ 659 00da 9002     		.2byte	0x290
+ 660 00dc E0000000 		.4byte	0xe0
+ 661 00e0 08       		.uleb128 0x8
+ 662 00e1 A9000000 		.4byte	0xa9
+ 663 00e5 07       		.uleb128 0x7
+ 664 00e6 86020000 		.4byte	.LASF20
+ 665 00ea 04       		.byte	0x4
+ 666 00eb A002     		.2byte	0x2a0
+ 667 00ed 8B000000 		.4byte	0x8b
+ 668 00f1 09       		.uleb128 0x9
+ 669 00f2 13010000 		.4byte	.LASF21
+ 670 00f6 01       		.byte	0x1
+ 671 00f7 64       		.byte	0x64
+ 672 00f8 00000000 		.4byte	.LFB63
+ 673 00fc 20000000 		.4byte	.LFE63-.LFB63
+ 674 0100 01       		.uleb128 0x1
+ 675 0101 9C       		.byte	0x9c
+ 676 0102 0A       		.uleb128 0xa
+ 677 0103 3C020000 		.4byte	.LASF24
+ 678 0107 01       		.byte	0x1
+ 679 0108 8F       		.byte	0x8f
+ 680 0109 00000000 		.4byte	.LFB64
+ 681 010d 24000000 		.4byte	.LFE64-.LFB64
+ 682 0111 01       		.uleb128 0x1
+ 683 0112 9C       		.byte	0x9c
+ 684 0113 26010000 		.4byte	0x126
+ 685 0117 0B       		.uleb128 0xb
+ 686 0118 73010000 		.4byte	.LASF26
+ 687 011c 01       		.byte	0x1
+ 688 011d 8F       		.byte	0x8f
+ 689 011e E5000000 		.4byte	0xe5
+ 690 0122 02       		.uleb128 0x2
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 21
+
+
+ 691 0123 91       		.byte	0x91
+ 692 0124 74       		.sleb128 -12
+ 693 0125 00       		.byte	0
+ 694 0126 09       		.uleb128 0x9
+ 695 0127 23030000 		.4byte	.LASF22
+ 696 012b 01       		.byte	0x1
+ 697 012c AD       		.byte	0xad
+ 698 012d 00000000 		.4byte	.LFB65
+ 699 0131 18000000 		.4byte	.LFE65-.LFB65
+ 700 0135 01       		.uleb128 0x1
+ 701 0136 9C       		.byte	0x9c
+ 702 0137 09       		.uleb128 0x9
+ 703 0138 29010000 		.4byte	.LASF23
+ 704 013c 01       		.byte	0x1
+ 705 013d C7       		.byte	0xc7
+ 706 013e 00000000 		.4byte	.LFB66
+ 707 0142 10000000 		.4byte	.LFE66-.LFB66
+ 708 0146 01       		.uleb128 0x1
+ 709 0147 9C       		.byte	0x9c
+ 710 0148 0C       		.uleb128 0xc
+ 711 0149 CF020000 		.4byte	.LASF25
+ 712 014d 01       		.byte	0x1
+ 713 014e F6       		.byte	0xf6
+ 714 014f 00000000 		.4byte	.LFB67
+ 715 0153 24000000 		.4byte	.LFE67-.LFB67
+ 716 0157 01       		.uleb128 0x1
+ 717 0158 9C       		.byte	0x9c
+ 718 0159 7A010000 		.4byte	0x17a
+ 719 015d 0B       		.uleb128 0xb
+ 720 015e 73010000 		.4byte	.LASF26
+ 721 0162 01       		.byte	0x1
+ 722 0163 F6       		.byte	0xf6
+ 723 0164 E5000000 		.4byte	0xe5
+ 724 0168 02       		.uleb128 0x2
+ 725 0169 91       		.byte	0x91
+ 726 016a 6C       		.sleb128 -20
+ 727 016b 0D       		.uleb128 0xd
+ 728 016c EF020000 		.4byte	.LASF27
+ 729 0170 01       		.byte	0x1
+ 730 0171 F8       		.byte	0xf8
+ 731 0172 7A010000 		.4byte	0x17a
+ 732 0176 02       		.uleb128 0x2
+ 733 0177 91       		.byte	0x91
+ 734 0178 74       		.sleb128 -12
+ 735 0179 00       		.byte	0
+ 736 017a 05       		.uleb128 0x5
+ 737 017b 04       		.byte	0x4
+ 738 017c E5000000 		.4byte	0xe5
+ 739 0180 0E       		.uleb128 0xe
+ 740 0181 F9000000 		.4byte	.LASF30
+ 741 0185 01       		.byte	0x1
+ 742 0186 0E01     		.2byte	0x10e
+ 743 0188 E5000000 		.4byte	0xe5
+ 744 018c 00000000 		.4byte	.LFB68
+ 745 0190 20000000 		.4byte	.LFE68-.LFB68
+ 746 0194 01       		.uleb128 0x1
+ 747 0195 9C       		.byte	0x9c
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 22
+
+
+ 748 0196 AA010000 		.4byte	0x1aa
+ 749 019a 0F       		.uleb128 0xf
+ 750 019b EF020000 		.4byte	.LASF27
+ 751 019f 01       		.byte	0x1
+ 752 01a0 1001     		.2byte	0x110
+ 753 01a2 7A010000 		.4byte	0x17a
+ 754 01a6 02       		.uleb128 0x2
+ 755 01a7 91       		.byte	0x91
+ 756 01a8 74       		.sleb128 -12
+ 757 01a9 00       		.byte	0
+ 758 01aa 10       		.uleb128 0x10
+ 759 01ab FE020000 		.4byte	.LASF28
+ 760 01af 01       		.byte	0x1
+ 761 01b0 3001     		.2byte	0x130
+ 762 01b2 00000000 		.4byte	.LFB69
+ 763 01b6 24000000 		.4byte	.LFE69-.LFB69
+ 764 01ba 01       		.uleb128 0x1
+ 765 01bb 9C       		.byte	0x9c
+ 766 01bc D0010000 		.4byte	0x1d0
+ 767 01c0 11       		.uleb128 0x11
+ 768 01c1 E4010000 		.4byte	.LASF29
+ 769 01c5 01       		.byte	0x1
+ 770 01c6 3001     		.2byte	0x130
+ 771 01c8 9D000000 		.4byte	0x9d
+ 772 01cc 02       		.uleb128 0x2
+ 773 01cd 91       		.byte	0x91
+ 774 01ce 77       		.sleb128 -9
+ 775 01cf 00       		.byte	0
+ 776 01d0 0E       		.uleb128 0xe
+ 777 01d1 BE010000 		.4byte	.LASF31
+ 778 01d5 01       		.byte	0x1
+ 779 01d6 4601     		.2byte	0x146
+ 780 01d8 9D000000 		.4byte	0x9d
+ 781 01dc 00000000 		.4byte	.LFB70
+ 782 01e0 20000000 		.4byte	.LFE70-.LFB70
+ 783 01e4 01       		.uleb128 0x1
+ 784 01e5 9C       		.byte	0x9c
+ 785 01e6 FA010000 		.4byte	0x1fa
+ 786 01ea 0F       		.uleb128 0xf
+ 787 01eb E4010000 		.4byte	.LASF29
+ 788 01ef 01       		.byte	0x1
+ 789 01f0 4801     		.2byte	0x148
+ 790 01f2 9D000000 		.4byte	0x9d
+ 791 01f6 02       		.uleb128 0x2
+ 792 01f7 91       		.byte	0x91
+ 793 01f8 77       		.sleb128 -9
+ 794 01f9 00       		.byte	0
+ 795 01fa 12       		.uleb128 0x12
+ 796 01fb 43010000 		.4byte	.LASF32
+ 797 01ff 01       		.byte	0x1
+ 798 0200 6101     		.2byte	0x161
+ 799 0202 00000000 		.4byte	.LFB71
+ 800 0206 18000000 		.4byte	.LFE71-.LFB71
+ 801 020a 01       		.uleb128 0x1
+ 802 020b 9C       		.byte	0x9c
+ 803 020c 13       		.uleb128 0x13
+ 804 020d 7B010000 		.4byte	.LASF39
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 23
+
+
+ 805 0211 01       		.byte	0x1
+ 806 0212 7601     		.2byte	0x176
+ 807 0214 9D000000 		.4byte	0x9d
+ 808 0218 00000000 		.4byte	.LFB72
+ 809 021c 24000000 		.4byte	.LFE72-.LFB72
+ 810 0220 01       		.uleb128 0x1
+ 811 0221 9C       		.byte	0x9c
+ 812 0222 12       		.uleb128 0x12
+ 813 0223 B7020000 		.4byte	.LASF33
+ 814 0227 01       		.byte	0x1
+ 815 0228 8B01     		.2byte	0x18b
+ 816 022a 00000000 		.4byte	.LFB73
+ 817 022e 18000000 		.4byte	.LFE73-.LFB73
+ 818 0232 01       		.uleb128 0x1
+ 819 0233 9C       		.byte	0x9c
+ 820 0234 12       		.uleb128 0x12
+ 821 0235 6B020000 		.4byte	.LASF34
+ 822 0239 01       		.byte	0x1
+ 823 023a A601     		.2byte	0x1a6
+ 824 023c 00000000 		.4byte	.LFB74
+ 825 0240 18000000 		.4byte	.LFE74-.LFB74
+ 826 0244 01       		.uleb128 0x1
+ 827 0245 9C       		.byte	0x9c
+ 828 0246 12       		.uleb128 0x12
+ 829 0247 94010000 		.4byte	.LASF35
+ 830 024b 01       		.byte	0x1
+ 831 024c BF01     		.2byte	0x1bf
+ 832 024e 00000000 		.4byte	.LFB75
+ 833 0252 18000000 		.4byte	.LFE75-.LFB75
+ 834 0256 01       		.uleb128 0x1
+ 835 0257 9C       		.byte	0x9c
+ 836 0258 14       		.uleb128 0x14
+ 837 0259 B1010000 		.4byte	.LASF40
+ 838 025d 05       		.byte	0x5
+ 839 025e 1207     		.2byte	0x712
+ 840 0260 64020000 		.4byte	0x264
+ 841 0264 08       		.uleb128 0x8
+ 842 0265 92000000 		.4byte	0x92
+ 843 0269 00       		.byte	0
+ 844              		.section	.debug_abbrev,"",%progbits
+ 845              	.Ldebug_abbrev0:
+ 846 0000 01       		.uleb128 0x1
+ 847 0001 11       		.uleb128 0x11
+ 848 0002 01       		.byte	0x1
+ 849 0003 25       		.uleb128 0x25
+ 850 0004 0E       		.uleb128 0xe
+ 851 0005 13       		.uleb128 0x13
+ 852 0006 0B       		.uleb128 0xb
+ 853 0007 03       		.uleb128 0x3
+ 854 0008 0E       		.uleb128 0xe
+ 855 0009 1B       		.uleb128 0x1b
+ 856 000a 0E       		.uleb128 0xe
+ 857 000b 55       		.uleb128 0x55
+ 858 000c 17       		.uleb128 0x17
+ 859 000d 11       		.uleb128 0x11
+ 860 000e 01       		.uleb128 0x1
+ 861 000f 10       		.uleb128 0x10
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 24
+
+
+ 862 0010 17       		.uleb128 0x17
+ 863 0011 00       		.byte	0
+ 864 0012 00       		.byte	0
+ 865 0013 02       		.uleb128 0x2
+ 866 0014 24       		.uleb128 0x24
+ 867 0015 00       		.byte	0
+ 868 0016 0B       		.uleb128 0xb
+ 869 0017 0B       		.uleb128 0xb
+ 870 0018 3E       		.uleb128 0x3e
+ 871 0019 0B       		.uleb128 0xb
+ 872 001a 03       		.uleb128 0x3
+ 873 001b 08       		.uleb128 0x8
+ 874 001c 00       		.byte	0
+ 875 001d 00       		.byte	0
+ 876 001e 03       		.uleb128 0x3
+ 877 001f 24       		.uleb128 0x24
+ 878 0020 00       		.byte	0
+ 879 0021 0B       		.uleb128 0xb
+ 880 0022 0B       		.uleb128 0xb
+ 881 0023 3E       		.uleb128 0x3e
+ 882 0024 0B       		.uleb128 0xb
+ 883 0025 03       		.uleb128 0x3
+ 884 0026 0E       		.uleb128 0xe
+ 885 0027 00       		.byte	0
+ 886 0028 00       		.byte	0
+ 887 0029 04       		.uleb128 0x4
+ 888 002a 16       		.uleb128 0x16
+ 889 002b 00       		.byte	0
+ 890 002c 03       		.uleb128 0x3
+ 891 002d 0E       		.uleb128 0xe
+ 892 002e 3A       		.uleb128 0x3a
+ 893 002f 0B       		.uleb128 0xb
+ 894 0030 3B       		.uleb128 0x3b
+ 895 0031 0B       		.uleb128 0xb
+ 896 0032 49       		.uleb128 0x49
+ 897 0033 13       		.uleb128 0x13
+ 898 0034 00       		.byte	0
+ 899 0035 00       		.byte	0
+ 900 0036 05       		.uleb128 0x5
+ 901 0037 0F       		.uleb128 0xf
+ 902 0038 00       		.byte	0
+ 903 0039 0B       		.uleb128 0xb
+ 904 003a 0B       		.uleb128 0xb
+ 905 003b 49       		.uleb128 0x49
+ 906 003c 13       		.uleb128 0x13
+ 907 003d 00       		.byte	0
+ 908 003e 00       		.byte	0
+ 909 003f 06       		.uleb128 0x6
+ 910 0040 15       		.uleb128 0x15
+ 911 0041 00       		.byte	0
+ 912 0042 27       		.uleb128 0x27
+ 913 0043 19       		.uleb128 0x19
+ 914 0044 00       		.byte	0
+ 915 0045 00       		.byte	0
+ 916 0046 07       		.uleb128 0x7
+ 917 0047 16       		.uleb128 0x16
+ 918 0048 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 25
+
+
+ 919 0049 03       		.uleb128 0x3
+ 920 004a 0E       		.uleb128 0xe
+ 921 004b 3A       		.uleb128 0x3a
+ 922 004c 0B       		.uleb128 0xb
+ 923 004d 3B       		.uleb128 0x3b
+ 924 004e 05       		.uleb128 0x5
+ 925 004f 49       		.uleb128 0x49
+ 926 0050 13       		.uleb128 0x13
+ 927 0051 00       		.byte	0
+ 928 0052 00       		.byte	0
+ 929 0053 08       		.uleb128 0x8
+ 930 0054 35       		.uleb128 0x35
+ 931 0055 00       		.byte	0
+ 932 0056 49       		.uleb128 0x49
+ 933 0057 13       		.uleb128 0x13
+ 934 0058 00       		.byte	0
+ 935 0059 00       		.byte	0
+ 936 005a 09       		.uleb128 0x9
+ 937 005b 2E       		.uleb128 0x2e
+ 938 005c 00       		.byte	0
+ 939 005d 3F       		.uleb128 0x3f
+ 940 005e 19       		.uleb128 0x19
+ 941 005f 03       		.uleb128 0x3
+ 942 0060 0E       		.uleb128 0xe
+ 943 0061 3A       		.uleb128 0x3a
+ 944 0062 0B       		.uleb128 0xb
+ 945 0063 3B       		.uleb128 0x3b
+ 946 0064 0B       		.uleb128 0xb
+ 947 0065 27       		.uleb128 0x27
+ 948 0066 19       		.uleb128 0x19
+ 949 0067 11       		.uleb128 0x11
+ 950 0068 01       		.uleb128 0x1
+ 951 0069 12       		.uleb128 0x12
+ 952 006a 06       		.uleb128 0x6
+ 953 006b 40       		.uleb128 0x40
+ 954 006c 18       		.uleb128 0x18
+ 955 006d 9642     		.uleb128 0x2116
+ 956 006f 19       		.uleb128 0x19
+ 957 0070 00       		.byte	0
+ 958 0071 00       		.byte	0
+ 959 0072 0A       		.uleb128 0xa
+ 960 0073 2E       		.uleb128 0x2e
+ 961 0074 01       		.byte	0x1
+ 962 0075 3F       		.uleb128 0x3f
+ 963 0076 19       		.uleb128 0x19
+ 964 0077 03       		.uleb128 0x3
+ 965 0078 0E       		.uleb128 0xe
+ 966 0079 3A       		.uleb128 0x3a
+ 967 007a 0B       		.uleb128 0xb
+ 968 007b 3B       		.uleb128 0x3b
+ 969 007c 0B       		.uleb128 0xb
+ 970 007d 27       		.uleb128 0x27
+ 971 007e 19       		.uleb128 0x19
+ 972 007f 11       		.uleb128 0x11
+ 973 0080 01       		.uleb128 0x1
+ 974 0081 12       		.uleb128 0x12
+ 975 0082 06       		.uleb128 0x6
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 26
+
+
+ 976 0083 40       		.uleb128 0x40
+ 977 0084 18       		.uleb128 0x18
+ 978 0085 9642     		.uleb128 0x2116
+ 979 0087 19       		.uleb128 0x19
+ 980 0088 01       		.uleb128 0x1
+ 981 0089 13       		.uleb128 0x13
+ 982 008a 00       		.byte	0
+ 983 008b 00       		.byte	0
+ 984 008c 0B       		.uleb128 0xb
+ 985 008d 05       		.uleb128 0x5
+ 986 008e 00       		.byte	0
+ 987 008f 03       		.uleb128 0x3
+ 988 0090 0E       		.uleb128 0xe
+ 989 0091 3A       		.uleb128 0x3a
+ 990 0092 0B       		.uleb128 0xb
+ 991 0093 3B       		.uleb128 0x3b
+ 992 0094 0B       		.uleb128 0xb
+ 993 0095 49       		.uleb128 0x49
+ 994 0096 13       		.uleb128 0x13
+ 995 0097 02       		.uleb128 0x2
+ 996 0098 18       		.uleb128 0x18
+ 997 0099 00       		.byte	0
+ 998 009a 00       		.byte	0
+ 999 009b 0C       		.uleb128 0xc
+ 1000 009c 2E       		.uleb128 0x2e
+ 1001 009d 01       		.byte	0x1
+ 1002 009e 3F       		.uleb128 0x3f
+ 1003 009f 19       		.uleb128 0x19
+ 1004 00a0 03       		.uleb128 0x3
+ 1005 00a1 0E       		.uleb128 0xe
+ 1006 00a2 3A       		.uleb128 0x3a
+ 1007 00a3 0B       		.uleb128 0xb
+ 1008 00a4 3B       		.uleb128 0x3b
+ 1009 00a5 0B       		.uleb128 0xb
+ 1010 00a6 27       		.uleb128 0x27
+ 1011 00a7 19       		.uleb128 0x19
+ 1012 00a8 11       		.uleb128 0x11
+ 1013 00a9 01       		.uleb128 0x1
+ 1014 00aa 12       		.uleb128 0x12
+ 1015 00ab 06       		.uleb128 0x6
+ 1016 00ac 40       		.uleb128 0x40
+ 1017 00ad 18       		.uleb128 0x18
+ 1018 00ae 9742     		.uleb128 0x2117
+ 1019 00b0 19       		.uleb128 0x19
+ 1020 00b1 01       		.uleb128 0x1
+ 1021 00b2 13       		.uleb128 0x13
+ 1022 00b3 00       		.byte	0
+ 1023 00b4 00       		.byte	0
+ 1024 00b5 0D       		.uleb128 0xd
+ 1025 00b6 34       		.uleb128 0x34
+ 1026 00b7 00       		.byte	0
+ 1027 00b8 03       		.uleb128 0x3
+ 1028 00b9 0E       		.uleb128 0xe
+ 1029 00ba 3A       		.uleb128 0x3a
+ 1030 00bb 0B       		.uleb128 0xb
+ 1031 00bc 3B       		.uleb128 0x3b
+ 1032 00bd 0B       		.uleb128 0xb
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 27
+
+
+ 1033 00be 49       		.uleb128 0x49
+ 1034 00bf 13       		.uleb128 0x13
+ 1035 00c0 02       		.uleb128 0x2
+ 1036 00c1 18       		.uleb128 0x18
+ 1037 00c2 00       		.byte	0
+ 1038 00c3 00       		.byte	0
+ 1039 00c4 0E       		.uleb128 0xe
+ 1040 00c5 2E       		.uleb128 0x2e
+ 1041 00c6 01       		.byte	0x1
+ 1042 00c7 3F       		.uleb128 0x3f
+ 1043 00c8 19       		.uleb128 0x19
+ 1044 00c9 03       		.uleb128 0x3
+ 1045 00ca 0E       		.uleb128 0xe
+ 1046 00cb 3A       		.uleb128 0x3a
+ 1047 00cc 0B       		.uleb128 0xb
+ 1048 00cd 3B       		.uleb128 0x3b
+ 1049 00ce 05       		.uleb128 0x5
+ 1050 00cf 27       		.uleb128 0x27
+ 1051 00d0 19       		.uleb128 0x19
+ 1052 00d1 49       		.uleb128 0x49
+ 1053 00d2 13       		.uleb128 0x13
+ 1054 00d3 11       		.uleb128 0x11
+ 1055 00d4 01       		.uleb128 0x1
+ 1056 00d5 12       		.uleb128 0x12
+ 1057 00d6 06       		.uleb128 0x6
+ 1058 00d7 40       		.uleb128 0x40
+ 1059 00d8 18       		.uleb128 0x18
+ 1060 00d9 9742     		.uleb128 0x2117
+ 1061 00db 19       		.uleb128 0x19
+ 1062 00dc 01       		.uleb128 0x1
+ 1063 00dd 13       		.uleb128 0x13
+ 1064 00de 00       		.byte	0
+ 1065 00df 00       		.byte	0
+ 1066 00e0 0F       		.uleb128 0xf
+ 1067 00e1 34       		.uleb128 0x34
+ 1068 00e2 00       		.byte	0
+ 1069 00e3 03       		.uleb128 0x3
+ 1070 00e4 0E       		.uleb128 0xe
+ 1071 00e5 3A       		.uleb128 0x3a
+ 1072 00e6 0B       		.uleb128 0xb
+ 1073 00e7 3B       		.uleb128 0x3b
+ 1074 00e8 05       		.uleb128 0x5
+ 1075 00e9 49       		.uleb128 0x49
+ 1076 00ea 13       		.uleb128 0x13
+ 1077 00eb 02       		.uleb128 0x2
+ 1078 00ec 18       		.uleb128 0x18
+ 1079 00ed 00       		.byte	0
+ 1080 00ee 00       		.byte	0
+ 1081 00ef 10       		.uleb128 0x10
+ 1082 00f0 2E       		.uleb128 0x2e
+ 1083 00f1 01       		.byte	0x1
+ 1084 00f2 3F       		.uleb128 0x3f
+ 1085 00f3 19       		.uleb128 0x19
+ 1086 00f4 03       		.uleb128 0x3
+ 1087 00f5 0E       		.uleb128 0xe
+ 1088 00f6 3A       		.uleb128 0x3a
+ 1089 00f7 0B       		.uleb128 0xb
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 28
+
+
+ 1090 00f8 3B       		.uleb128 0x3b
+ 1091 00f9 05       		.uleb128 0x5
+ 1092 00fa 27       		.uleb128 0x27
+ 1093 00fb 19       		.uleb128 0x19
+ 1094 00fc 11       		.uleb128 0x11
+ 1095 00fd 01       		.uleb128 0x1
+ 1096 00fe 12       		.uleb128 0x12
+ 1097 00ff 06       		.uleb128 0x6
+ 1098 0100 40       		.uleb128 0x40
+ 1099 0101 18       		.uleb128 0x18
+ 1100 0102 9742     		.uleb128 0x2117
+ 1101 0104 19       		.uleb128 0x19
+ 1102 0105 01       		.uleb128 0x1
+ 1103 0106 13       		.uleb128 0x13
+ 1104 0107 00       		.byte	0
+ 1105 0108 00       		.byte	0
+ 1106 0109 11       		.uleb128 0x11
+ 1107 010a 05       		.uleb128 0x5
+ 1108 010b 00       		.byte	0
+ 1109 010c 03       		.uleb128 0x3
+ 1110 010d 0E       		.uleb128 0xe
+ 1111 010e 3A       		.uleb128 0x3a
+ 1112 010f 0B       		.uleb128 0xb
+ 1113 0110 3B       		.uleb128 0x3b
+ 1114 0111 05       		.uleb128 0x5
+ 1115 0112 49       		.uleb128 0x49
+ 1116 0113 13       		.uleb128 0x13
+ 1117 0114 02       		.uleb128 0x2
+ 1118 0115 18       		.uleb128 0x18
+ 1119 0116 00       		.byte	0
+ 1120 0117 00       		.byte	0
+ 1121 0118 12       		.uleb128 0x12
+ 1122 0119 2E       		.uleb128 0x2e
+ 1123 011a 00       		.byte	0
+ 1124 011b 3F       		.uleb128 0x3f
+ 1125 011c 19       		.uleb128 0x19
+ 1126 011d 03       		.uleb128 0x3
+ 1127 011e 0E       		.uleb128 0xe
+ 1128 011f 3A       		.uleb128 0x3a
+ 1129 0120 0B       		.uleb128 0xb
+ 1130 0121 3B       		.uleb128 0x3b
+ 1131 0122 05       		.uleb128 0x5
+ 1132 0123 27       		.uleb128 0x27
+ 1133 0124 19       		.uleb128 0x19
+ 1134 0125 11       		.uleb128 0x11
+ 1135 0126 01       		.uleb128 0x1
+ 1136 0127 12       		.uleb128 0x12
+ 1137 0128 06       		.uleb128 0x6
+ 1138 0129 40       		.uleb128 0x40
+ 1139 012a 18       		.uleb128 0x18
+ 1140 012b 9742     		.uleb128 0x2117
+ 1141 012d 19       		.uleb128 0x19
+ 1142 012e 00       		.byte	0
+ 1143 012f 00       		.byte	0
+ 1144 0130 13       		.uleb128 0x13
+ 1145 0131 2E       		.uleb128 0x2e
+ 1146 0132 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 29
+
+
+ 1147 0133 3F       		.uleb128 0x3f
+ 1148 0134 19       		.uleb128 0x19
+ 1149 0135 03       		.uleb128 0x3
+ 1150 0136 0E       		.uleb128 0xe
+ 1151 0137 3A       		.uleb128 0x3a
+ 1152 0138 0B       		.uleb128 0xb
+ 1153 0139 3B       		.uleb128 0x3b
+ 1154 013a 05       		.uleb128 0x5
+ 1155 013b 27       		.uleb128 0x27
+ 1156 013c 19       		.uleb128 0x19
+ 1157 013d 49       		.uleb128 0x49
+ 1158 013e 13       		.uleb128 0x13
+ 1159 013f 11       		.uleb128 0x11
+ 1160 0140 01       		.uleb128 0x1
+ 1161 0141 12       		.uleb128 0x12
+ 1162 0142 06       		.uleb128 0x6
+ 1163 0143 40       		.uleb128 0x40
+ 1164 0144 18       		.uleb128 0x18
+ 1165 0145 9742     		.uleb128 0x2117
+ 1166 0147 19       		.uleb128 0x19
+ 1167 0148 00       		.byte	0
+ 1168 0149 00       		.byte	0
+ 1169 014a 14       		.uleb128 0x14
+ 1170 014b 34       		.uleb128 0x34
+ 1171 014c 00       		.byte	0
+ 1172 014d 03       		.uleb128 0x3
+ 1173 014e 0E       		.uleb128 0xe
+ 1174 014f 3A       		.uleb128 0x3a
+ 1175 0150 0B       		.uleb128 0xb
+ 1176 0151 3B       		.uleb128 0x3b
+ 1177 0152 05       		.uleb128 0x5
+ 1178 0153 49       		.uleb128 0x49
+ 1179 0154 13       		.uleb128 0x13
+ 1180 0155 3F       		.uleb128 0x3f
+ 1181 0156 19       		.uleb128 0x19
+ 1182 0157 3C       		.uleb128 0x3c
+ 1183 0158 19       		.uleb128 0x19
+ 1184 0159 00       		.byte	0
+ 1185 015a 00       		.byte	0
+ 1186 015b 00       		.byte	0
+ 1187              		.section	.debug_aranges,"",%progbits
+ 1188 0000 7C000000 		.4byte	0x7c
+ 1189 0004 0200     		.2byte	0x2
+ 1190 0006 00000000 		.4byte	.Ldebug_info0
+ 1191 000a 04       		.byte	0x4
+ 1192 000b 00       		.byte	0
+ 1193 000c 0000     		.2byte	0
+ 1194 000e 0000     		.2byte	0
+ 1195 0010 00000000 		.4byte	.LFB63
+ 1196 0014 20000000 		.4byte	.LFE63-.LFB63
+ 1197 0018 00000000 		.4byte	.LFB64
+ 1198 001c 24000000 		.4byte	.LFE64-.LFB64
+ 1199 0020 00000000 		.4byte	.LFB65
+ 1200 0024 18000000 		.4byte	.LFE65-.LFB65
+ 1201 0028 00000000 		.4byte	.LFB66
+ 1202 002c 10000000 		.4byte	.LFE66-.LFB66
+ 1203 0030 00000000 		.4byte	.LFB67
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 30
+
+
+ 1204 0034 24000000 		.4byte	.LFE67-.LFB67
+ 1205 0038 00000000 		.4byte	.LFB68
+ 1206 003c 20000000 		.4byte	.LFE68-.LFB68
+ 1207 0040 00000000 		.4byte	.LFB69
+ 1208 0044 24000000 		.4byte	.LFE69-.LFB69
+ 1209 0048 00000000 		.4byte	.LFB70
+ 1210 004c 20000000 		.4byte	.LFE70-.LFB70
+ 1211 0050 00000000 		.4byte	.LFB71
+ 1212 0054 18000000 		.4byte	.LFE71-.LFB71
+ 1213 0058 00000000 		.4byte	.LFB72
+ 1214 005c 24000000 		.4byte	.LFE72-.LFB72
+ 1215 0060 00000000 		.4byte	.LFB73
+ 1216 0064 18000000 		.4byte	.LFE73-.LFB73
+ 1217 0068 00000000 		.4byte	.LFB74
+ 1218 006c 18000000 		.4byte	.LFE74-.LFB74
+ 1219 0070 00000000 		.4byte	.LFB75
+ 1220 0074 18000000 		.4byte	.LFE75-.LFB75
+ 1221 0078 00000000 		.4byte	0
+ 1222 007c 00000000 		.4byte	0
+ 1223              		.section	.debug_ranges,"",%progbits
+ 1224              	.Ldebug_ranges0:
+ 1225 0000 00000000 		.4byte	.LFB63
+ 1226 0004 20000000 		.4byte	.LFE63
+ 1227 0008 00000000 		.4byte	.LFB64
+ 1228 000c 24000000 		.4byte	.LFE64
+ 1229 0010 00000000 		.4byte	.LFB65
+ 1230 0014 18000000 		.4byte	.LFE65
+ 1231 0018 00000000 		.4byte	.LFB66
+ 1232 001c 10000000 		.4byte	.LFE66
+ 1233 0020 00000000 		.4byte	.LFB67
+ 1234 0024 24000000 		.4byte	.LFE67
+ 1235 0028 00000000 		.4byte	.LFB68
+ 1236 002c 20000000 		.4byte	.LFE68
+ 1237 0030 00000000 		.4byte	.LFB69
+ 1238 0034 24000000 		.4byte	.LFE69
+ 1239 0038 00000000 		.4byte	.LFB70
+ 1240 003c 20000000 		.4byte	.LFE70
+ 1241 0040 00000000 		.4byte	.LFB71
+ 1242 0044 18000000 		.4byte	.LFE71
+ 1243 0048 00000000 		.4byte	.LFB72
+ 1244 004c 24000000 		.4byte	.LFE72
+ 1245 0050 00000000 		.4byte	.LFB73
+ 1246 0054 18000000 		.4byte	.LFE73
+ 1247 0058 00000000 		.4byte	.LFB74
+ 1248 005c 18000000 		.4byte	.LFE74
+ 1249 0060 00000000 		.4byte	.LFB75
+ 1250 0064 18000000 		.4byte	.LFE75
+ 1251 0068 00000000 		.4byte	0
+ 1252 006c 00000000 		.4byte	0
+ 1253              		.section	.debug_line,"",%progbits
+ 1254              	.Ldebug_line0:
+ 1255 0000 64020000 		.section	.debug_str,"MS",%progbits,1
+ 1255      02005701 
+ 1255      00000201 
+ 1255      FB0E0D00 
+ 1255      01010101 
+ 1256              	.LASF19:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 31
+
+
+ 1257 0000 72656733 		.ascii	"reg32\000"
+ 1257      3200
+ 1258              	.LASF36:
+ 1259 0006 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1259      43313120 
+ 1259      352E342E 
+ 1259      31203230 
+ 1259      31363036 
+ 1260 0039 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1260      20726576 
+ 1260      6973696F 
+ 1260      6E203233 
+ 1260      37373135 
+ 1261 006c 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1261      66756E63 
+ 1261      74696F6E 
+ 1261      2D736563 
+ 1261      74696F6E 
+ 1262              	.LASF38:
+ 1263 0094 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\F1-TestFixture _Sand"
+ 1263      73657273 
+ 1263      5C6D6172 
+ 1263      74686E69 
+ 1263      636B5C44 
+ 1264 00c3 626F785C 		.ascii	"box\\F1-TestFixture.cydsn\000"
+ 1264      46312D54 
+ 1264      65737446 
+ 1264      69787475 
+ 1264      72652E63 
+ 1265              	.LASF12:
+ 1266 00dc 5F5F696E 		.ascii	"__int32_t\000"
+ 1266      7433325F 
+ 1266      7400
+ 1267              	.LASF6:
+ 1268 00e6 73686F72 		.ascii	"short unsigned int\000"
+ 1268      7420756E 
+ 1268      7369676E 
+ 1268      65642069 
+ 1268      6E7400
+ 1269              	.LASF30:
+ 1270 00f9 6973725F 		.ascii	"isr_Timer_Quick_GetVector\000"
+ 1270      54696D65 
+ 1270      725F5175 
+ 1270      69636B5F 
+ 1270      47657456 
+ 1271              	.LASF21:
+ 1272 0113 6973725F 		.ascii	"isr_Timer_Quick_Start\000"
+ 1272      54696D65 
+ 1272      725F5175 
+ 1272      69636B5F 
+ 1272      53746172 
+ 1273              	.LASF23:
+ 1274 0129 6973725F 		.ascii	"isr_Timer_Quick_Interrupt\000"
+ 1274      54696D65 
+ 1274      725F5175 
+ 1274      69636B5F 
+ 1274      496E7465 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 32
+
+
+ 1275              	.LASF32:
+ 1276 0143 6973725F 		.ascii	"isr_Timer_Quick_Enable\000"
+ 1276      54696D65 
+ 1276      725F5175 
+ 1276      69636B5F 
+ 1276      456E6162 
+ 1277              	.LASF16:
+ 1278 015a 666C6F61 		.ascii	"float\000"
+ 1278      7400
+ 1279              	.LASF4:
+ 1280 0160 756E7369 		.ascii	"unsigned char\000"
+ 1280      676E6564 
+ 1280      20636861 
+ 1280      7200
+ 1281              	.LASF18:
+ 1282 016e 72656738 		.ascii	"reg8\000"
+ 1282      00
+ 1283              	.LASF26:
+ 1284 0173 61646472 		.ascii	"address\000"
+ 1284      65737300 
+ 1285              	.LASF39:
+ 1286 017b 6973725F 		.ascii	"isr_Timer_Quick_GetState\000"
+ 1286      54696D65 
+ 1286      725F5175 
+ 1286      69636B5F 
+ 1286      47657453 
+ 1287              	.LASF35:
+ 1288 0194 6973725F 		.ascii	"isr_Timer_Quick_ClearPending\000"
+ 1288      54696D65 
+ 1288      725F5175 
+ 1288      69636B5F 
+ 1288      436C6561 
+ 1289              	.LASF40:
+ 1290 01b1 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1290      52784275 
+ 1290      66666572 
+ 1290      00
+ 1291              	.LASF31:
+ 1292 01be 6973725F 		.ascii	"isr_Timer_Quick_GetPriority\000"
+ 1292      54696D65 
+ 1292      725F5175 
+ 1292      69636B5F 
+ 1292      47657450 
+ 1293              	.LASF5:
+ 1294 01da 73686F72 		.ascii	"short int\000"
+ 1294      7420696E 
+ 1294      7400
+ 1295              	.LASF29:
+ 1296 01e4 7072696F 		.ascii	"priority\000"
+ 1296      72697479 
+ 1296      00
+ 1297              	.LASF15:
+ 1298 01ed 75696E74 		.ascii	"uint32\000"
+ 1298      333200
+ 1299              	.LASF37:
+ 1300 01f4 47656E65 		.ascii	"Generated_Source\\PSoC5\\isr_Timer_Quick.c\000"
+ 1300      72617465 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 33
+
+
+ 1300      645F536F 
+ 1300      75726365 
+ 1300      5C50536F 
+ 1301              	.LASF8:
+ 1302 021d 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1302      20756E73 
+ 1302      69676E65 
+ 1302      6420696E 
+ 1302      7400
+ 1303              	.LASF0:
+ 1304 022f 756E7369 		.ascii	"unsigned int\000"
+ 1304      676E6564 
+ 1304      20696E74 
+ 1304      00
+ 1305              	.LASF24:
+ 1306 023c 6973725F 		.ascii	"isr_Timer_Quick_StartEx\000"
+ 1306      54696D65 
+ 1306      725F5175 
+ 1306      69636B5F 
+ 1306      53746172 
+ 1307              	.LASF9:
+ 1308 0254 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1308      206C6F6E 
+ 1308      6720756E 
+ 1308      7369676E 
+ 1308      65642069 
+ 1309              	.LASF34:
+ 1310 026b 6973725F 		.ascii	"isr_Timer_Quick_SetPending\000"
+ 1310      54696D65 
+ 1310      725F5175 
+ 1310      69636B5F 
+ 1310      53657450 
+ 1311              	.LASF20:
+ 1312 0286 63796973 		.ascii	"cyisraddress\000"
+ 1312      72616464 
+ 1312      72657373 
+ 1312      00
+ 1313              	.LASF13:
+ 1314 0293 696E7433 		.ascii	"int32_t\000"
+ 1314      325F7400 
+ 1315              	.LASF10:
+ 1316 029b 73697A65 		.ascii	"sizetype\000"
+ 1316      74797065 
+ 1316      00
+ 1317              	.LASF1:
+ 1318 02a4 6C6F6E67 		.ascii	"long long int\000"
+ 1318      206C6F6E 
+ 1318      6720696E 
+ 1318      7400
+ 1319              	.LASF11:
+ 1320 02b2 63686172 		.ascii	"char\000"
+ 1320      00
+ 1321              	.LASF33:
+ 1322 02b7 6973725F 		.ascii	"isr_Timer_Quick_Disable\000"
+ 1322      54696D65 
+ 1322      725F5175 
+ 1322      69636B5F 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc7sTcPZ.s 			page 34
+
+
+ 1322      44697361 
+ 1323              	.LASF25:
+ 1324 02cf 6973725F 		.ascii	"isr_Timer_Quick_SetVector\000"
+ 1324      54696D65 
+ 1324      725F5175 
+ 1324      69636B5F 
+ 1324      53657456 
+ 1325              	.LASF14:
+ 1326 02e9 75696E74 		.ascii	"uint8\000"
+ 1326      3800
+ 1327              	.LASF27:
+ 1328 02ef 72616D56 		.ascii	"ramVectorTable\000"
+ 1328      6563746F 
+ 1328      72546162 
+ 1328      6C6500
+ 1329              	.LASF28:
+ 1330 02fe 6973725F 		.ascii	"isr_Timer_Quick_SetPriority\000"
+ 1330      54696D65 
+ 1330      725F5175 
+ 1330      69636B5F 
+ 1330      53657450 
+ 1331              	.LASF7:
+ 1332 031a 6C6F6E67 		.ascii	"long int\000"
+ 1332      20696E74 
+ 1332      00
+ 1333              	.LASF22:
+ 1334 0323 6973725F 		.ascii	"isr_Timer_Quick_Stop\000"
+ 1334      54696D65 
+ 1334      725F5175 
+ 1334      69636B5F 
+ 1334      53746F70 
+ 1335              	.LASF2:
+ 1336 0338 6C6F6E67 		.ascii	"long double\000"
+ 1336      20646F75 
+ 1336      626C6500 
+ 1337              	.LASF3:
+ 1338 0344 7369676E 		.ascii	"signed char\000"
+ 1338      65642063 
+ 1338      68617200 
+ 1339              	.LASF17:
+ 1340 0350 646F7562 		.ascii	"double\000"
+ 1340      6C6500
+ 1341              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

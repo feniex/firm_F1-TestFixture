@@ -1,0 +1,1992 @@
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"HornRingISR.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.HornRingISR_Interrupt,"ax",%progbits
+  20              		.align	2
+  21              		.global	HornRingISR_Interrupt
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	HornRingISR_Interrupt, %function
+  25              	HornRingISR_Interrupt:
+  26              	.LFB66:
+  27              		.file 1 "Generated_Source\\PSoC5\\HornRingISR.c"
+   1:Generated_Source\PSoC5/HornRingISR.c **** /*******************************************************************************
+   2:Generated_Source\PSoC5/HornRingISR.c **** * File Name: HornRingISR.c  
+   3:Generated_Source\PSoC5/HornRingISR.c **** * Version 1.70
+   4:Generated_Source\PSoC5/HornRingISR.c **** *
+   5:Generated_Source\PSoC5/HornRingISR.c **** *  Description:
+   6:Generated_Source\PSoC5/HornRingISR.c **** *   API for controlling the state of an interrupt.
+   7:Generated_Source\PSoC5/HornRingISR.c **** *
+   8:Generated_Source\PSoC5/HornRingISR.c **** *
+   9:Generated_Source\PSoC5/HornRingISR.c **** *  Note:
+  10:Generated_Source\PSoC5/HornRingISR.c **** *
+  11:Generated_Source\PSoC5/HornRingISR.c **** ********************************************************************************
+  12:Generated_Source\PSoC5/HornRingISR.c **** * Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  13:Generated_Source\PSoC5/HornRingISR.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  14:Generated_Source\PSoC5/HornRingISR.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  15:Generated_Source\PSoC5/HornRingISR.c **** * the software package with which this file was provided.
+  16:Generated_Source\PSoC5/HornRingISR.c **** *******************************************************************************/
+  17:Generated_Source\PSoC5/HornRingISR.c **** 
+  18:Generated_Source\PSoC5/HornRingISR.c **** 
+  19:Generated_Source\PSoC5/HornRingISR.c **** #include <cydevice_trm.h>
+  20:Generated_Source\PSoC5/HornRingISR.c **** #include <CyLib.h>
+  21:Generated_Source\PSoC5/HornRingISR.c **** #include <HornRingISR.h>
+  22:Generated_Source\PSoC5/HornRingISR.c **** #include "cyapicallbacks.h"
+  23:Generated_Source\PSoC5/HornRingISR.c **** 
+  24:Generated_Source\PSoC5/HornRingISR.c **** #if !defined(HornRingISR__REMOVED) /* Check for removal by optimization */
+  25:Generated_Source\PSoC5/HornRingISR.c **** 
+  26:Generated_Source\PSoC5/HornRingISR.c **** /*******************************************************************************
+  27:Generated_Source\PSoC5/HornRingISR.c **** *  Place your includes, defines and code here 
+  28:Generated_Source\PSoC5/HornRingISR.c **** ********************************************************************************/
+  29:Generated_Source\PSoC5/HornRingISR.c **** /* `#START HornRingISR_intc` */
+  30:Generated_Source\PSoC5/HornRingISR.c **** #include "SirenState.h"
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 2
+
+
+  31:Generated_Source\PSoC5/HornRingISR.c **** /* `#END` */
+  32:Generated_Source\PSoC5/HornRingISR.c **** 
+  33:Generated_Source\PSoC5/HornRingISR.c **** #ifndef CYINT_IRQ_BASE
+  34:Generated_Source\PSoC5/HornRingISR.c **** #define CYINT_IRQ_BASE      16
+  35:Generated_Source\PSoC5/HornRingISR.c **** #endif /* CYINT_IRQ_BASE */
+  36:Generated_Source\PSoC5/HornRingISR.c **** #ifndef CYINT_VECT_TABLE
+  37:Generated_Source\PSoC5/HornRingISR.c **** #define CYINT_VECT_TABLE    ((cyisraddress **) CYREG_NVIC_VECT_OFFSET)
+  38:Generated_Source\PSoC5/HornRingISR.c **** #endif /* CYINT_VECT_TABLE */
+  39:Generated_Source\PSoC5/HornRingISR.c **** 
+  40:Generated_Source\PSoC5/HornRingISR.c **** /* Declared in startup, used to set unused interrupts to. */
+  41:Generated_Source\PSoC5/HornRingISR.c **** CY_ISR_PROTO(IntDefaultHandler);
+  42:Generated_Source\PSoC5/HornRingISR.c **** 
+  43:Generated_Source\PSoC5/HornRingISR.c **** 
+  44:Generated_Source\PSoC5/HornRingISR.c **** /*******************************************************************************
+  45:Generated_Source\PSoC5/HornRingISR.c **** * Function Name: HornRingISR_Start
+  46:Generated_Source\PSoC5/HornRingISR.c **** ********************************************************************************
+  47:Generated_Source\PSoC5/HornRingISR.c **** *
+  48:Generated_Source\PSoC5/HornRingISR.c **** * Summary:
+  49:Generated_Source\PSoC5/HornRingISR.c **** *  Set up the interrupt and enable it. This function disables the interrupt, 
+  50:Generated_Source\PSoC5/HornRingISR.c **** *  sets the default interrupt vector, sets the priority from the value in the
+  51:Generated_Source\PSoC5/HornRingISR.c **** *  Design Wide Resources Interrupt Editor, then enables the interrupt to the 
+  52:Generated_Source\PSoC5/HornRingISR.c **** *  interrupt controller.
+  53:Generated_Source\PSoC5/HornRingISR.c **** *
+  54:Generated_Source\PSoC5/HornRingISR.c **** * Parameters:  
+  55:Generated_Source\PSoC5/HornRingISR.c **** *   None
+  56:Generated_Source\PSoC5/HornRingISR.c **** *
+  57:Generated_Source\PSoC5/HornRingISR.c **** * Return:
+  58:Generated_Source\PSoC5/HornRingISR.c **** *   None
+  59:Generated_Source\PSoC5/HornRingISR.c **** *
+  60:Generated_Source\PSoC5/HornRingISR.c **** *******************************************************************************/
+  61:Generated_Source\PSoC5/HornRingISR.c **** void HornRingISR_Start(void)
+  62:Generated_Source\PSoC5/HornRingISR.c **** {
+  63:Generated_Source\PSoC5/HornRingISR.c ****     /* For all we know the interrupt is active. */
+  64:Generated_Source\PSoC5/HornRingISR.c ****     HornRingISR_Disable();
+  65:Generated_Source\PSoC5/HornRingISR.c **** 
+  66:Generated_Source\PSoC5/HornRingISR.c ****     /* Set the ISR to point to the HornRingISR Interrupt. */
+  67:Generated_Source\PSoC5/HornRingISR.c ****     HornRingISR_SetVector(&HornRingISR_Interrupt);
+  68:Generated_Source\PSoC5/HornRingISR.c **** 
+  69:Generated_Source\PSoC5/HornRingISR.c ****     /* Set the priority. */
+  70:Generated_Source\PSoC5/HornRingISR.c ****     HornRingISR_SetPriority((uint8)HornRingISR_INTC_PRIOR_NUMBER);
+  71:Generated_Source\PSoC5/HornRingISR.c **** 
+  72:Generated_Source\PSoC5/HornRingISR.c ****     /* Enable it. */
+  73:Generated_Source\PSoC5/HornRingISR.c ****     HornRingISR_Enable();
+  74:Generated_Source\PSoC5/HornRingISR.c **** }
+  75:Generated_Source\PSoC5/HornRingISR.c **** 
+  76:Generated_Source\PSoC5/HornRingISR.c **** 
+  77:Generated_Source\PSoC5/HornRingISR.c **** /*******************************************************************************
+  78:Generated_Source\PSoC5/HornRingISR.c **** * Function Name: HornRingISR_StartEx
+  79:Generated_Source\PSoC5/HornRingISR.c **** ********************************************************************************
+  80:Generated_Source\PSoC5/HornRingISR.c **** *
+  81:Generated_Source\PSoC5/HornRingISR.c **** * Summary:
+  82:Generated_Source\PSoC5/HornRingISR.c **** *  Sets up the interrupt and enables it. This function disables the interrupt,
+  83:Generated_Source\PSoC5/HornRingISR.c **** *  sets the interrupt vector based on the address passed in, sets the priority 
+  84:Generated_Source\PSoC5/HornRingISR.c **** *  from the value in the Design Wide Resources Interrupt Editor, then enables 
+  85:Generated_Source\PSoC5/HornRingISR.c **** *  the interrupt to the interrupt controller.
+  86:Generated_Source\PSoC5/HornRingISR.c **** *  
+  87:Generated_Source\PSoC5/HornRingISR.c **** *  When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 3
+
+
+  88:Generated_Source\PSoC5/HornRingISR.c **** *  used to provide consistent definition across compilers:
+  89:Generated_Source\PSoC5/HornRingISR.c **** *  
+  90:Generated_Source\PSoC5/HornRingISR.c **** *  Function definition example:
+  91:Generated_Source\PSoC5/HornRingISR.c **** *   CY_ISR(MyISR)
+  92:Generated_Source\PSoC5/HornRingISR.c **** *   {
+  93:Generated_Source\PSoC5/HornRingISR.c **** *   }
+  94:Generated_Source\PSoC5/HornRingISR.c **** *   Function prototype example:
+  95:Generated_Source\PSoC5/HornRingISR.c **** *   CY_ISR_PROTO(MyISR);
+  96:Generated_Source\PSoC5/HornRingISR.c **** *
+  97:Generated_Source\PSoC5/HornRingISR.c **** * Parameters:  
+  98:Generated_Source\PSoC5/HornRingISR.c **** *   address: Address of the ISR to set in the interrupt vector table.
+  99:Generated_Source\PSoC5/HornRingISR.c **** *
+ 100:Generated_Source\PSoC5/HornRingISR.c **** * Return:
+ 101:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 102:Generated_Source\PSoC5/HornRingISR.c **** *
+ 103:Generated_Source\PSoC5/HornRingISR.c **** *******************************************************************************/
+ 104:Generated_Source\PSoC5/HornRingISR.c **** void HornRingISR_StartEx(cyisraddress address)
+ 105:Generated_Source\PSoC5/HornRingISR.c **** {
+ 106:Generated_Source\PSoC5/HornRingISR.c ****     /* For all we know the interrupt is active. */
+ 107:Generated_Source\PSoC5/HornRingISR.c ****     HornRingISR_Disable();
+ 108:Generated_Source\PSoC5/HornRingISR.c **** 
+ 109:Generated_Source\PSoC5/HornRingISR.c ****     /* Set the ISR to point to the HornRingISR Interrupt. */
+ 110:Generated_Source\PSoC5/HornRingISR.c ****     HornRingISR_SetVector(address);
+ 111:Generated_Source\PSoC5/HornRingISR.c **** 
+ 112:Generated_Source\PSoC5/HornRingISR.c ****     /* Set the priority. */
+ 113:Generated_Source\PSoC5/HornRingISR.c ****     HornRingISR_SetPriority((uint8)HornRingISR_INTC_PRIOR_NUMBER);
+ 114:Generated_Source\PSoC5/HornRingISR.c **** 
+ 115:Generated_Source\PSoC5/HornRingISR.c ****     /* Enable it. */
+ 116:Generated_Source\PSoC5/HornRingISR.c ****     HornRingISR_Enable();
+ 117:Generated_Source\PSoC5/HornRingISR.c **** }
+ 118:Generated_Source\PSoC5/HornRingISR.c **** 
+ 119:Generated_Source\PSoC5/HornRingISR.c **** 
+ 120:Generated_Source\PSoC5/HornRingISR.c **** /*******************************************************************************
+ 121:Generated_Source\PSoC5/HornRingISR.c **** * Function Name: HornRingISR_Stop
+ 122:Generated_Source\PSoC5/HornRingISR.c **** ********************************************************************************
+ 123:Generated_Source\PSoC5/HornRingISR.c **** *
+ 124:Generated_Source\PSoC5/HornRingISR.c **** * Summary:
+ 125:Generated_Source\PSoC5/HornRingISR.c **** *   Disables and removes the interrupt.
+ 126:Generated_Source\PSoC5/HornRingISR.c **** *
+ 127:Generated_Source\PSoC5/HornRingISR.c **** * Parameters:  
+ 128:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 129:Generated_Source\PSoC5/HornRingISR.c **** *
+ 130:Generated_Source\PSoC5/HornRingISR.c **** * Return:
+ 131:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 132:Generated_Source\PSoC5/HornRingISR.c **** *
+ 133:Generated_Source\PSoC5/HornRingISR.c **** *******************************************************************************/
+ 134:Generated_Source\PSoC5/HornRingISR.c **** void HornRingISR_Stop(void)
+ 135:Generated_Source\PSoC5/HornRingISR.c **** {
+ 136:Generated_Source\PSoC5/HornRingISR.c ****     /* Disable this interrupt. */
+ 137:Generated_Source\PSoC5/HornRingISR.c ****     HornRingISR_Disable();
+ 138:Generated_Source\PSoC5/HornRingISR.c **** 
+ 139:Generated_Source\PSoC5/HornRingISR.c ****     /* Set the ISR to point to the passive one. */
+ 140:Generated_Source\PSoC5/HornRingISR.c ****     HornRingISR_SetVector(&IntDefaultHandler);
+ 141:Generated_Source\PSoC5/HornRingISR.c **** }
+ 142:Generated_Source\PSoC5/HornRingISR.c **** 
+ 143:Generated_Source\PSoC5/HornRingISR.c **** 
+ 144:Generated_Source\PSoC5/HornRingISR.c **** /*******************************************************************************
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 4
+
+
+ 145:Generated_Source\PSoC5/HornRingISR.c **** * Function Name: HornRingISR_Interrupt
+ 146:Generated_Source\PSoC5/HornRingISR.c **** ********************************************************************************
+ 147:Generated_Source\PSoC5/HornRingISR.c **** *
+ 148:Generated_Source\PSoC5/HornRingISR.c **** * Summary:
+ 149:Generated_Source\PSoC5/HornRingISR.c **** *   The default Interrupt Service Routine for HornRingISR.
+ 150:Generated_Source\PSoC5/HornRingISR.c **** *
+ 151:Generated_Source\PSoC5/HornRingISR.c **** *   Add custom code between the coments to keep the next version of this file
+ 152:Generated_Source\PSoC5/HornRingISR.c **** *   from over writting your code.
+ 153:Generated_Source\PSoC5/HornRingISR.c **** *
+ 154:Generated_Source\PSoC5/HornRingISR.c **** * Parameters:  
+ 155:Generated_Source\PSoC5/HornRingISR.c **** *
+ 156:Generated_Source\PSoC5/HornRingISR.c **** * Return:
+ 157:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 158:Generated_Source\PSoC5/HornRingISR.c **** *
+ 159:Generated_Source\PSoC5/HornRingISR.c **** *******************************************************************************/
+ 160:Generated_Source\PSoC5/HornRingISR.c **** CY_ISR(HornRingISR_Interrupt)
+ 161:Generated_Source\PSoC5/HornRingISR.c **** {
+  28              		.loc 1 161 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32 0000 08B5     		push	{r3, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 3, -8
+  35              		.cfi_offset 14, -4
+ 162:Generated_Source\PSoC5/HornRingISR.c ****     #ifdef HornRingISR_INTERRUPT_INTERRUPT_CALLBACK
+ 163:Generated_Source\PSoC5/HornRingISR.c ****         HornRingISR_Interrupt_InterruptCallback();
+ 164:Generated_Source\PSoC5/HornRingISR.c ****     #endif /* HornRingISR_INTERRUPT_INTERRUPT_CALLBACK */ 
+ 165:Generated_Source\PSoC5/HornRingISR.c **** 
+ 166:Generated_Source\PSoC5/HornRingISR.c ****     /*  Place your Interrupt code here. */
+ 167:Generated_Source\PSoC5/HornRingISR.c ****     /* `#START HornRingISR_Interrupt` */
+ 168:Generated_Source\PSoC5/HornRingISR.c ****     processHornRingRoutine();
+  36              		.loc 1 168 0
+  37 0002 FFF7FEFF 		bl	processHornRingRoutine
+  38              	.LVL0:
+  39 0006 08BD     		pop	{r3, pc}
+  40              		.cfi_endproc
+  41              	.LFE66:
+  42              		.size	HornRingISR_Interrupt, .-HornRingISR_Interrupt
+  43              		.section	.text.HornRingISR_SetVector,"ax",%progbits
+  44              		.align	2
+  45              		.global	HornRingISR_SetVector
+  46              		.thumb
+  47              		.thumb_func
+  48              		.type	HornRingISR_SetVector, %function
+  49              	HornRingISR_SetVector:
+  50              	.LFB67:
+ 169:Generated_Source\PSoC5/HornRingISR.c ****     /* `#END` */
+ 170:Generated_Source\PSoC5/HornRingISR.c **** }
+ 171:Generated_Source\PSoC5/HornRingISR.c **** 
+ 172:Generated_Source\PSoC5/HornRingISR.c **** 
+ 173:Generated_Source\PSoC5/HornRingISR.c **** /*******************************************************************************
+ 174:Generated_Source\PSoC5/HornRingISR.c **** * Function Name: HornRingISR_SetVector
+ 175:Generated_Source\PSoC5/HornRingISR.c **** ********************************************************************************
+ 176:Generated_Source\PSoC5/HornRingISR.c **** *
+ 177:Generated_Source\PSoC5/HornRingISR.c **** * Summary:
+ 178:Generated_Source\PSoC5/HornRingISR.c **** *   Change the ISR vector for the Interrupt. Note calling HornRingISR_Start
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 5
+
+
+ 179:Generated_Source\PSoC5/HornRingISR.c **** *   will override any effect this method would have had. To set the vector 
+ 180:Generated_Source\PSoC5/HornRingISR.c **** *   before the component has been started use HornRingISR_StartEx instead.
+ 181:Generated_Source\PSoC5/HornRingISR.c **** * 
+ 182:Generated_Source\PSoC5/HornRingISR.c **** *   When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
+ 183:Generated_Source\PSoC5/HornRingISR.c **** *   used to provide consistent definition across compilers:
+ 184:Generated_Source\PSoC5/HornRingISR.c **** *
+ 185:Generated_Source\PSoC5/HornRingISR.c **** *   Function definition example:
+ 186:Generated_Source\PSoC5/HornRingISR.c **** *   CY_ISR(MyISR)
+ 187:Generated_Source\PSoC5/HornRingISR.c **** *   {
+ 188:Generated_Source\PSoC5/HornRingISR.c **** *   }
+ 189:Generated_Source\PSoC5/HornRingISR.c **** *
+ 190:Generated_Source\PSoC5/HornRingISR.c **** *   Function prototype example:
+ 191:Generated_Source\PSoC5/HornRingISR.c **** *     CY_ISR_PROTO(MyISR);
+ 192:Generated_Source\PSoC5/HornRingISR.c **** *
+ 193:Generated_Source\PSoC5/HornRingISR.c **** * Parameters:
+ 194:Generated_Source\PSoC5/HornRingISR.c **** *   address: Address of the ISR to set in the interrupt vector table.
+ 195:Generated_Source\PSoC5/HornRingISR.c **** *
+ 196:Generated_Source\PSoC5/HornRingISR.c **** * Return:
+ 197:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 198:Generated_Source\PSoC5/HornRingISR.c **** *
+ 199:Generated_Source\PSoC5/HornRingISR.c **** *******************************************************************************/
+ 200:Generated_Source\PSoC5/HornRingISR.c **** void HornRingISR_SetVector(cyisraddress address)
+ 201:Generated_Source\PSoC5/HornRingISR.c **** {
+  51              		.loc 1 201 0
+  52              		.cfi_startproc
+  53              		@ args = 0, pretend = 0, frame = 0
+  54              		@ frame_needed = 0, uses_anonymous_args = 0
+  55              		@ link register save eliminated.
+  56              	.LVL1:
+ 202:Generated_Source\PSoC5/HornRingISR.c ****     cyisraddress * ramVectorTable;
+ 203:Generated_Source\PSoC5/HornRingISR.c **** 
+ 204:Generated_Source\PSoC5/HornRingISR.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
+  57              		.loc 1 204 0
+  58 0000 014B     		ldr	r3, .L4
+  59 0002 1B68     		ldr	r3, [r3]
+  60              	.LVL2:
+ 205:Generated_Source\PSoC5/HornRingISR.c **** 
+ 206:Generated_Source\PSoC5/HornRingISR.c ****     ramVectorTable[CYINT_IRQ_BASE + (uint32)HornRingISR__INTC_NUMBER] = address;
+  61              		.loc 1 206 0
+  62 0004 D864     		str	r0, [r3, #76]
+  63 0006 7047     		bx	lr
+  64              	.L5:
+  65              		.align	2
+  66              	.L4:
+  67 0008 08ED00E0 		.word	-536810232
+  68              		.cfi_endproc
+  69              	.LFE67:
+  70              		.size	HornRingISR_SetVector, .-HornRingISR_SetVector
+  71              		.section	.text.HornRingISR_GetVector,"ax",%progbits
+  72              		.align	2
+  73              		.global	HornRingISR_GetVector
+  74              		.thumb
+  75              		.thumb_func
+  76              		.type	HornRingISR_GetVector, %function
+  77              	HornRingISR_GetVector:
+  78              	.LFB68:
+ 207:Generated_Source\PSoC5/HornRingISR.c **** }
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 6
+
+
+ 208:Generated_Source\PSoC5/HornRingISR.c **** 
+ 209:Generated_Source\PSoC5/HornRingISR.c **** 
+ 210:Generated_Source\PSoC5/HornRingISR.c **** /*******************************************************************************
+ 211:Generated_Source\PSoC5/HornRingISR.c **** * Function Name: HornRingISR_GetVector
+ 212:Generated_Source\PSoC5/HornRingISR.c **** ********************************************************************************
+ 213:Generated_Source\PSoC5/HornRingISR.c **** *
+ 214:Generated_Source\PSoC5/HornRingISR.c **** * Summary:
+ 215:Generated_Source\PSoC5/HornRingISR.c **** *   Gets the "address" of the current ISR vector for the Interrupt.
+ 216:Generated_Source\PSoC5/HornRingISR.c **** *
+ 217:Generated_Source\PSoC5/HornRingISR.c **** * Parameters:
+ 218:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 219:Generated_Source\PSoC5/HornRingISR.c **** *
+ 220:Generated_Source\PSoC5/HornRingISR.c **** * Return:
+ 221:Generated_Source\PSoC5/HornRingISR.c **** *   Address of the ISR in the interrupt vector table.
+ 222:Generated_Source\PSoC5/HornRingISR.c **** *
+ 223:Generated_Source\PSoC5/HornRingISR.c **** *******************************************************************************/
+ 224:Generated_Source\PSoC5/HornRingISR.c **** cyisraddress HornRingISR_GetVector(void)
+ 225:Generated_Source\PSoC5/HornRingISR.c **** {
+  79              		.loc 1 225 0
+  80              		.cfi_startproc
+  81              		@ args = 0, pretend = 0, frame = 0
+  82              		@ frame_needed = 0, uses_anonymous_args = 0
+  83              		@ link register save eliminated.
+ 226:Generated_Source\PSoC5/HornRingISR.c ****     cyisraddress * ramVectorTable;
+ 227:Generated_Source\PSoC5/HornRingISR.c **** 
+ 228:Generated_Source\PSoC5/HornRingISR.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
+  84              		.loc 1 228 0
+  85 0000 014B     		ldr	r3, .L7
+  86 0002 1B68     		ldr	r3, [r3]
+  87              	.LVL3:
+ 229:Generated_Source\PSoC5/HornRingISR.c **** 
+ 230:Generated_Source\PSoC5/HornRingISR.c ****     return ramVectorTable[CYINT_IRQ_BASE + (uint32)HornRingISR__INTC_NUMBER];
+ 231:Generated_Source\PSoC5/HornRingISR.c **** }
+  88              		.loc 1 231 0
+  89 0004 D86C     		ldr	r0, [r3, #76]
+  90 0006 7047     		bx	lr
+  91              	.L8:
+  92              		.align	2
+  93              	.L7:
+  94 0008 08ED00E0 		.word	-536810232
+  95              		.cfi_endproc
+  96              	.LFE68:
+  97              		.size	HornRingISR_GetVector, .-HornRingISR_GetVector
+  98              		.section	.text.HornRingISR_SetPriority,"ax",%progbits
+  99              		.align	2
+ 100              		.global	HornRingISR_SetPriority
+ 101              		.thumb
+ 102              		.thumb_func
+ 103              		.type	HornRingISR_SetPriority, %function
+ 104              	HornRingISR_SetPriority:
+ 105              	.LFB69:
+ 232:Generated_Source\PSoC5/HornRingISR.c **** 
+ 233:Generated_Source\PSoC5/HornRingISR.c **** 
+ 234:Generated_Source\PSoC5/HornRingISR.c **** /*******************************************************************************
+ 235:Generated_Source\PSoC5/HornRingISR.c **** * Function Name: HornRingISR_SetPriority
+ 236:Generated_Source\PSoC5/HornRingISR.c **** ********************************************************************************
+ 237:Generated_Source\PSoC5/HornRingISR.c **** *
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 7
+
+
+ 238:Generated_Source\PSoC5/HornRingISR.c **** * Summary:
+ 239:Generated_Source\PSoC5/HornRingISR.c **** *   Sets the Priority of the Interrupt. 
+ 240:Generated_Source\PSoC5/HornRingISR.c **** *
+ 241:Generated_Source\PSoC5/HornRingISR.c **** *   Note calling HornRingISR_Start or HornRingISR_StartEx will 
+ 242:Generated_Source\PSoC5/HornRingISR.c **** *   override any effect this API would have had. This API should only be called
+ 243:Generated_Source\PSoC5/HornRingISR.c **** *   after HornRingISR_Start or HornRingISR_StartEx has been called. 
+ 244:Generated_Source\PSoC5/HornRingISR.c **** *   To set the initial priority for the component, use the Design-Wide Resources
+ 245:Generated_Source\PSoC5/HornRingISR.c **** *   Interrupt Editor.
+ 246:Generated_Source\PSoC5/HornRingISR.c **** *
+ 247:Generated_Source\PSoC5/HornRingISR.c **** *   Note This API has no effect on Non-maskable interrupt NMI).
+ 248:Generated_Source\PSoC5/HornRingISR.c **** *
+ 249:Generated_Source\PSoC5/HornRingISR.c **** * Parameters:
+ 250:Generated_Source\PSoC5/HornRingISR.c **** *   priority: Priority of the interrupt, 0 being the highest priority
+ 251:Generated_Source\PSoC5/HornRingISR.c **** *             PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
+ 252:Generated_Source\PSoC5/HornRingISR.c **** *             PSoC 4: Priority is from 0 to 3.
+ 253:Generated_Source\PSoC5/HornRingISR.c **** *
+ 254:Generated_Source\PSoC5/HornRingISR.c **** * Return:
+ 255:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 256:Generated_Source\PSoC5/HornRingISR.c **** *
+ 257:Generated_Source\PSoC5/HornRingISR.c **** *******************************************************************************/
+ 258:Generated_Source\PSoC5/HornRingISR.c **** void HornRingISR_SetPriority(uint8 priority)
+ 259:Generated_Source\PSoC5/HornRingISR.c **** {
+ 106              		.loc 1 259 0
+ 107              		.cfi_startproc
+ 108              		@ args = 0, pretend = 0, frame = 0
+ 109              		@ frame_needed = 0, uses_anonymous_args = 0
+ 110              		@ link register save eliminated.
+ 111              	.LVL4:
+ 260:Generated_Source\PSoC5/HornRingISR.c ****     *HornRingISR_INTC_PRIOR = priority << 5;
+ 112              		.loc 1 260 0
+ 113 0000 4001     		lsls	r0, r0, #5
+ 114              	.LVL5:
+ 115 0002 C0B2     		uxtb	r0, r0
+ 116 0004 014B     		ldr	r3, .L10
+ 117 0006 1870     		strb	r0, [r3]
+ 118 0008 7047     		bx	lr
+ 119              	.L11:
+ 120 000a 00BF     		.align	2
+ 121              	.L10:
+ 122 000c 03E400E0 		.word	-536812541
+ 123              		.cfi_endproc
+ 124              	.LFE69:
+ 125              		.size	HornRingISR_SetPriority, .-HornRingISR_SetPriority
+ 126              		.section	.text.HornRingISR_GetPriority,"ax",%progbits
+ 127              		.align	2
+ 128              		.global	HornRingISR_GetPriority
+ 129              		.thumb
+ 130              		.thumb_func
+ 131              		.type	HornRingISR_GetPriority, %function
+ 132              	HornRingISR_GetPriority:
+ 133              	.LFB70:
+ 261:Generated_Source\PSoC5/HornRingISR.c **** }
+ 262:Generated_Source\PSoC5/HornRingISR.c **** 
+ 263:Generated_Source\PSoC5/HornRingISR.c **** 
+ 264:Generated_Source\PSoC5/HornRingISR.c **** /*******************************************************************************
+ 265:Generated_Source\PSoC5/HornRingISR.c **** * Function Name: HornRingISR_GetPriority
+ 266:Generated_Source\PSoC5/HornRingISR.c **** ********************************************************************************
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 8
+
+
+ 267:Generated_Source\PSoC5/HornRingISR.c **** *
+ 268:Generated_Source\PSoC5/HornRingISR.c **** * Summary:
+ 269:Generated_Source\PSoC5/HornRingISR.c **** *   Gets the Priority of the Interrupt.
+ 270:Generated_Source\PSoC5/HornRingISR.c **** *
+ 271:Generated_Source\PSoC5/HornRingISR.c **** * Parameters:
+ 272:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 273:Generated_Source\PSoC5/HornRingISR.c **** *
+ 274:Generated_Source\PSoC5/HornRingISR.c **** * Return:
+ 275:Generated_Source\PSoC5/HornRingISR.c **** *   Priority of the interrupt, 0 being the highest priority
+ 276:Generated_Source\PSoC5/HornRingISR.c **** *    PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
+ 277:Generated_Source\PSoC5/HornRingISR.c **** *    PSoC 4: Priority is from 0 to 3.
+ 278:Generated_Source\PSoC5/HornRingISR.c **** *
+ 279:Generated_Source\PSoC5/HornRingISR.c **** *******************************************************************************/
+ 280:Generated_Source\PSoC5/HornRingISR.c **** uint8 HornRingISR_GetPriority(void)
+ 281:Generated_Source\PSoC5/HornRingISR.c **** {
+ 134              		.loc 1 281 0
+ 135              		.cfi_startproc
+ 136              		@ args = 0, pretend = 0, frame = 0
+ 137              		@ frame_needed = 0, uses_anonymous_args = 0
+ 138              		@ link register save eliminated.
+ 282:Generated_Source\PSoC5/HornRingISR.c ****     uint8 priority;
+ 283:Generated_Source\PSoC5/HornRingISR.c **** 
+ 284:Generated_Source\PSoC5/HornRingISR.c **** 
+ 285:Generated_Source\PSoC5/HornRingISR.c ****     priority = *HornRingISR_INTC_PRIOR >> 5;
+ 139              		.loc 1 285 0
+ 140 0000 014B     		ldr	r3, .L13
+ 141 0002 1878     		ldrb	r0, [r3]	@ zero_extendqisi2
+ 142              	.LVL6:
+ 286:Generated_Source\PSoC5/HornRingISR.c **** 
+ 287:Generated_Source\PSoC5/HornRingISR.c ****     return priority;
+ 288:Generated_Source\PSoC5/HornRingISR.c **** }
+ 143              		.loc 1 288 0
+ 144 0004 4009     		lsrs	r0, r0, #5
+ 145              	.LVL7:
+ 146 0006 7047     		bx	lr
+ 147              	.L14:
+ 148              		.align	2
+ 149              	.L13:
+ 150 0008 03E400E0 		.word	-536812541
+ 151              		.cfi_endproc
+ 152              	.LFE70:
+ 153              		.size	HornRingISR_GetPriority, .-HornRingISR_GetPriority
+ 154              		.section	.text.HornRingISR_Enable,"ax",%progbits
+ 155              		.align	2
+ 156              		.global	HornRingISR_Enable
+ 157              		.thumb
+ 158              		.thumb_func
+ 159              		.type	HornRingISR_Enable, %function
+ 160              	HornRingISR_Enable:
+ 161              	.LFB71:
+ 289:Generated_Source\PSoC5/HornRingISR.c **** 
+ 290:Generated_Source\PSoC5/HornRingISR.c **** 
+ 291:Generated_Source\PSoC5/HornRingISR.c **** /*******************************************************************************
+ 292:Generated_Source\PSoC5/HornRingISR.c **** * Function Name: HornRingISR_Enable
+ 293:Generated_Source\PSoC5/HornRingISR.c **** ********************************************************************************
+ 294:Generated_Source\PSoC5/HornRingISR.c **** *
+ 295:Generated_Source\PSoC5/HornRingISR.c **** * Summary:
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 9
+
+
+ 296:Generated_Source\PSoC5/HornRingISR.c **** *   Enables the interrupt to the interrupt controller. Do not call this function
+ 297:Generated_Source\PSoC5/HornRingISR.c **** *   unless ISR_Start() has been called or the functionality of the ISR_Start() 
+ 298:Generated_Source\PSoC5/HornRingISR.c **** *   function, which sets the vector and the priority, has been called.
+ 299:Generated_Source\PSoC5/HornRingISR.c **** *
+ 300:Generated_Source\PSoC5/HornRingISR.c **** * Parameters:
+ 301:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 302:Generated_Source\PSoC5/HornRingISR.c **** *
+ 303:Generated_Source\PSoC5/HornRingISR.c **** * Return:
+ 304:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 305:Generated_Source\PSoC5/HornRingISR.c **** *
+ 306:Generated_Source\PSoC5/HornRingISR.c **** *******************************************************************************/
+ 307:Generated_Source\PSoC5/HornRingISR.c **** void HornRingISR_Enable(void)
+ 308:Generated_Source\PSoC5/HornRingISR.c **** {
+ 162              		.loc 1 308 0
+ 163              		.cfi_startproc
+ 164              		@ args = 0, pretend = 0, frame = 0
+ 165              		@ frame_needed = 0, uses_anonymous_args = 0
+ 166              		@ link register save eliminated.
+ 309:Generated_Source\PSoC5/HornRingISR.c ****     /* Enable the general interrupt. */
+ 310:Generated_Source\PSoC5/HornRingISR.c ****     *HornRingISR_INTC_SET_EN = HornRingISR__INTC_MASK;
+ 167              		.loc 1 310 0
+ 168 0000 0822     		movs	r2, #8
+ 169 0002 014B     		ldr	r3, .L16
+ 170 0004 1A60     		str	r2, [r3]
+ 171 0006 7047     		bx	lr
+ 172              	.L17:
+ 173              		.align	2
+ 174              	.L16:
+ 175 0008 00E100E0 		.word	-536813312
+ 176              		.cfi_endproc
+ 177              	.LFE71:
+ 178              		.size	HornRingISR_Enable, .-HornRingISR_Enable
+ 179              		.section	.text.HornRingISR_GetState,"ax",%progbits
+ 180              		.align	2
+ 181              		.global	HornRingISR_GetState
+ 182              		.thumb
+ 183              		.thumb_func
+ 184              		.type	HornRingISR_GetState, %function
+ 185              	HornRingISR_GetState:
+ 186              	.LFB72:
+ 311:Generated_Source\PSoC5/HornRingISR.c **** }
+ 312:Generated_Source\PSoC5/HornRingISR.c **** 
+ 313:Generated_Source\PSoC5/HornRingISR.c **** 
+ 314:Generated_Source\PSoC5/HornRingISR.c **** /*******************************************************************************
+ 315:Generated_Source\PSoC5/HornRingISR.c **** * Function Name: HornRingISR_GetState
+ 316:Generated_Source\PSoC5/HornRingISR.c **** ********************************************************************************
+ 317:Generated_Source\PSoC5/HornRingISR.c **** *
+ 318:Generated_Source\PSoC5/HornRingISR.c **** * Summary:
+ 319:Generated_Source\PSoC5/HornRingISR.c **** *   Gets the state (enabled, disabled) of the Interrupt.
+ 320:Generated_Source\PSoC5/HornRingISR.c **** *
+ 321:Generated_Source\PSoC5/HornRingISR.c **** * Parameters:
+ 322:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 323:Generated_Source\PSoC5/HornRingISR.c **** *
+ 324:Generated_Source\PSoC5/HornRingISR.c **** * Return:
+ 325:Generated_Source\PSoC5/HornRingISR.c **** *   1 if enabled, 0 if disabled.
+ 326:Generated_Source\PSoC5/HornRingISR.c **** *
+ 327:Generated_Source\PSoC5/HornRingISR.c **** *******************************************************************************/
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 10
+
+
+ 328:Generated_Source\PSoC5/HornRingISR.c **** uint8 HornRingISR_GetState(void)
+ 329:Generated_Source\PSoC5/HornRingISR.c **** {
+ 187              		.loc 1 329 0
+ 188              		.cfi_startproc
+ 189              		@ args = 0, pretend = 0, frame = 0
+ 190              		@ frame_needed = 0, uses_anonymous_args = 0
+ 191              		@ link register save eliminated.
+ 330:Generated_Source\PSoC5/HornRingISR.c ****     /* Get the state of the general interrupt. */
+ 331:Generated_Source\PSoC5/HornRingISR.c ****     return ((*HornRingISR_INTC_SET_EN & (uint32)HornRingISR__INTC_MASK) != 0u) ? 1u:0u;
+ 192              		.loc 1 331 0
+ 193 0000 044B     		ldr	r3, .L21
+ 194 0002 1B68     		ldr	r3, [r3]
+ 195 0004 13F0080F 		tst	r3, #8
+ 196 0008 01D0     		beq	.L20
+ 197 000a 0120     		movs	r0, #1
+ 198 000c 7047     		bx	lr
+ 199              	.L20:
+ 200 000e 0020     		movs	r0, #0
+ 332:Generated_Source\PSoC5/HornRingISR.c **** }
+ 201              		.loc 1 332 0
+ 202 0010 7047     		bx	lr
+ 203              	.L22:
+ 204 0012 00BF     		.align	2
+ 205              	.L21:
+ 206 0014 00E100E0 		.word	-536813312
+ 207              		.cfi_endproc
+ 208              	.LFE72:
+ 209              		.size	HornRingISR_GetState, .-HornRingISR_GetState
+ 210              		.section	.text.HornRingISR_Disable,"ax",%progbits
+ 211              		.align	2
+ 212              		.global	HornRingISR_Disable
+ 213              		.thumb
+ 214              		.thumb_func
+ 215              		.type	HornRingISR_Disable, %function
+ 216              	HornRingISR_Disable:
+ 217              	.LFB73:
+ 333:Generated_Source\PSoC5/HornRingISR.c **** 
+ 334:Generated_Source\PSoC5/HornRingISR.c **** 
+ 335:Generated_Source\PSoC5/HornRingISR.c **** /*******************************************************************************
+ 336:Generated_Source\PSoC5/HornRingISR.c **** * Function Name: HornRingISR_Disable
+ 337:Generated_Source\PSoC5/HornRingISR.c **** ********************************************************************************
+ 338:Generated_Source\PSoC5/HornRingISR.c **** *
+ 339:Generated_Source\PSoC5/HornRingISR.c **** * Summary:
+ 340:Generated_Source\PSoC5/HornRingISR.c **** *   Disables the Interrupt in the interrupt controller.
+ 341:Generated_Source\PSoC5/HornRingISR.c **** *
+ 342:Generated_Source\PSoC5/HornRingISR.c **** * Parameters:
+ 343:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 344:Generated_Source\PSoC5/HornRingISR.c **** *
+ 345:Generated_Source\PSoC5/HornRingISR.c **** * Return:
+ 346:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 347:Generated_Source\PSoC5/HornRingISR.c **** *
+ 348:Generated_Source\PSoC5/HornRingISR.c **** *******************************************************************************/
+ 349:Generated_Source\PSoC5/HornRingISR.c **** void HornRingISR_Disable(void)
+ 350:Generated_Source\PSoC5/HornRingISR.c **** {
+ 218              		.loc 1 350 0
+ 219              		.cfi_startproc
+ 220              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 11
+
+
+ 221              		@ frame_needed = 0, uses_anonymous_args = 0
+ 222              		@ link register save eliminated.
+ 351:Generated_Source\PSoC5/HornRingISR.c ****     /* Disable the general interrupt. */
+ 352:Generated_Source\PSoC5/HornRingISR.c ****     *HornRingISR_INTC_CLR_EN = HornRingISR__INTC_MASK;
+ 223              		.loc 1 352 0
+ 224 0000 0822     		movs	r2, #8
+ 225 0002 014B     		ldr	r3, .L24
+ 226 0004 1A60     		str	r2, [r3]
+ 227 0006 7047     		bx	lr
+ 228              	.L25:
+ 229              		.align	2
+ 230              	.L24:
+ 231 0008 80E100E0 		.word	-536813184
+ 232              		.cfi_endproc
+ 233              	.LFE73:
+ 234              		.size	HornRingISR_Disable, .-HornRingISR_Disable
+ 235              		.section	.text.HornRingISR_Start,"ax",%progbits
+ 236              		.align	2
+ 237              		.global	HornRingISR_Start
+ 238              		.thumb
+ 239              		.thumb_func
+ 240              		.type	HornRingISR_Start, %function
+ 241              	HornRingISR_Start:
+ 242              	.LFB63:
+  62:Generated_Source\PSoC5/HornRingISR.c ****     /* For all we know the interrupt is active. */
+ 243              		.loc 1 62 0
+ 244              		.cfi_startproc
+ 245              		@ args = 0, pretend = 0, frame = 0
+ 246              		@ frame_needed = 0, uses_anonymous_args = 0
+ 247 0000 08B5     		push	{r3, lr}
+ 248              		.cfi_def_cfa_offset 8
+ 249              		.cfi_offset 3, -8
+ 250              		.cfi_offset 14, -4
+  64:Generated_Source\PSoC5/HornRingISR.c **** 
+ 251              		.loc 1 64 0
+ 252 0002 FFF7FEFF 		bl	HornRingISR_Disable
+ 253              	.LVL8:
+  67:Generated_Source\PSoC5/HornRingISR.c **** 
+ 254              		.loc 1 67 0
+ 255 0006 0448     		ldr	r0, .L28
+ 256 0008 FFF7FEFF 		bl	HornRingISR_SetVector
+ 257              	.LVL9:
+  70:Generated_Source\PSoC5/HornRingISR.c **** 
+ 258              		.loc 1 70 0
+ 259 000c 0420     		movs	r0, #4
+ 260 000e FFF7FEFF 		bl	HornRingISR_SetPriority
+ 261              	.LVL10:
+  73:Generated_Source\PSoC5/HornRingISR.c **** }
+ 262              		.loc 1 73 0
+ 263 0012 FFF7FEFF 		bl	HornRingISR_Enable
+ 264              	.LVL11:
+ 265 0016 08BD     		pop	{r3, pc}
+ 266              	.L29:
+ 267              		.align	2
+ 268              	.L28:
+ 269 0018 00000000 		.word	HornRingISR_Interrupt
+ 270              		.cfi_endproc
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 12
+
+
+ 271              	.LFE63:
+ 272              		.size	HornRingISR_Start, .-HornRingISR_Start
+ 273              		.section	.text.HornRingISR_StartEx,"ax",%progbits
+ 274              		.align	2
+ 275              		.global	HornRingISR_StartEx
+ 276              		.thumb
+ 277              		.thumb_func
+ 278              		.type	HornRingISR_StartEx, %function
+ 279              	HornRingISR_StartEx:
+ 280              	.LFB64:
+ 105:Generated_Source\PSoC5/HornRingISR.c ****     /* For all we know the interrupt is active. */
+ 281              		.loc 1 105 0
+ 282              		.cfi_startproc
+ 283              		@ args = 0, pretend = 0, frame = 0
+ 284              		@ frame_needed = 0, uses_anonymous_args = 0
+ 285              	.LVL12:
+ 286 0000 10B5     		push	{r4, lr}
+ 287              		.cfi_def_cfa_offset 8
+ 288              		.cfi_offset 4, -8
+ 289              		.cfi_offset 14, -4
+ 290 0002 0446     		mov	r4, r0
+ 107:Generated_Source\PSoC5/HornRingISR.c **** 
+ 291              		.loc 1 107 0
+ 292 0004 FFF7FEFF 		bl	HornRingISR_Disable
+ 293              	.LVL13:
+ 110:Generated_Source\PSoC5/HornRingISR.c **** 
+ 294              		.loc 1 110 0
+ 295 0008 2046     		mov	r0, r4
+ 296 000a FFF7FEFF 		bl	HornRingISR_SetVector
+ 297              	.LVL14:
+ 113:Generated_Source\PSoC5/HornRingISR.c **** 
+ 298              		.loc 1 113 0
+ 299 000e 0420     		movs	r0, #4
+ 300 0010 FFF7FEFF 		bl	HornRingISR_SetPriority
+ 301              	.LVL15:
+ 116:Generated_Source\PSoC5/HornRingISR.c **** }
+ 302              		.loc 1 116 0
+ 303 0014 FFF7FEFF 		bl	HornRingISR_Enable
+ 304              	.LVL16:
+ 305 0018 10BD     		pop	{r4, pc}
+ 306              		.cfi_endproc
+ 307              	.LFE64:
+ 308              		.size	HornRingISR_StartEx, .-HornRingISR_StartEx
+ 309 001a 00BF     		.section	.text.HornRingISR_Stop,"ax",%progbits
+ 310              		.align	2
+ 311              		.global	HornRingISR_Stop
+ 312              		.thumb
+ 313              		.thumb_func
+ 314              		.type	HornRingISR_Stop, %function
+ 315              	HornRingISR_Stop:
+ 316              	.LFB65:
+ 135:Generated_Source\PSoC5/HornRingISR.c ****     /* Disable this interrupt. */
+ 317              		.loc 1 135 0
+ 318              		.cfi_startproc
+ 319              		@ args = 0, pretend = 0, frame = 0
+ 320              		@ frame_needed = 0, uses_anonymous_args = 0
+ 321 0000 08B5     		push	{r3, lr}
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 13
+
+
+ 322              		.cfi_def_cfa_offset 8
+ 323              		.cfi_offset 3, -8
+ 324              		.cfi_offset 14, -4
+ 137:Generated_Source\PSoC5/HornRingISR.c **** 
+ 325              		.loc 1 137 0
+ 326 0002 FFF7FEFF 		bl	HornRingISR_Disable
+ 327              	.LVL17:
+ 140:Generated_Source\PSoC5/HornRingISR.c **** }
+ 328              		.loc 1 140 0
+ 329 0006 0248     		ldr	r0, .L34
+ 330 0008 FFF7FEFF 		bl	HornRingISR_SetVector
+ 331              	.LVL18:
+ 332 000c 08BD     		pop	{r3, pc}
+ 333              	.L35:
+ 334 000e 00BF     		.align	2
+ 335              	.L34:
+ 336 0010 00000000 		.word	IntDefaultHandler
+ 337              		.cfi_endproc
+ 338              	.LFE65:
+ 339              		.size	HornRingISR_Stop, .-HornRingISR_Stop
+ 340              		.section	.text.HornRingISR_SetPending,"ax",%progbits
+ 341              		.align	2
+ 342              		.global	HornRingISR_SetPending
+ 343              		.thumb
+ 344              		.thumb_func
+ 345              		.type	HornRingISR_SetPending, %function
+ 346              	HornRingISR_SetPending:
+ 347              	.LFB74:
+ 353:Generated_Source\PSoC5/HornRingISR.c **** }
+ 354:Generated_Source\PSoC5/HornRingISR.c **** 
+ 355:Generated_Source\PSoC5/HornRingISR.c **** 
+ 356:Generated_Source\PSoC5/HornRingISR.c **** /*******************************************************************************
+ 357:Generated_Source\PSoC5/HornRingISR.c **** * Function Name: HornRingISR_SetPending
+ 358:Generated_Source\PSoC5/HornRingISR.c **** ********************************************************************************
+ 359:Generated_Source\PSoC5/HornRingISR.c **** *
+ 360:Generated_Source\PSoC5/HornRingISR.c **** * Summary:
+ 361:Generated_Source\PSoC5/HornRingISR.c **** *   Causes the Interrupt to enter the pending state, a software method of
+ 362:Generated_Source\PSoC5/HornRingISR.c **** *   generating the interrupt.
+ 363:Generated_Source\PSoC5/HornRingISR.c **** *
+ 364:Generated_Source\PSoC5/HornRingISR.c **** * Parameters:
+ 365:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 366:Generated_Source\PSoC5/HornRingISR.c **** *
+ 367:Generated_Source\PSoC5/HornRingISR.c **** * Return:
+ 368:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 369:Generated_Source\PSoC5/HornRingISR.c **** *
+ 370:Generated_Source\PSoC5/HornRingISR.c **** * Side Effects:
+ 371:Generated_Source\PSoC5/HornRingISR.c **** *   If interrupts are enabled and the interrupt is set up properly, the ISR is
+ 372:Generated_Source\PSoC5/HornRingISR.c **** *   entered (depending on the priority of this interrupt and other pending 
+ 373:Generated_Source\PSoC5/HornRingISR.c **** *   interrupts).
+ 374:Generated_Source\PSoC5/HornRingISR.c **** *
+ 375:Generated_Source\PSoC5/HornRingISR.c **** *******************************************************************************/
+ 376:Generated_Source\PSoC5/HornRingISR.c **** void HornRingISR_SetPending(void)
+ 377:Generated_Source\PSoC5/HornRingISR.c **** {
+ 348              		.loc 1 377 0
+ 349              		.cfi_startproc
+ 350              		@ args = 0, pretend = 0, frame = 0
+ 351              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 14
+
+
+ 352              		@ link register save eliminated.
+ 378:Generated_Source\PSoC5/HornRingISR.c ****     *HornRingISR_INTC_SET_PD = HornRingISR__INTC_MASK;
+ 353              		.loc 1 378 0
+ 354 0000 0822     		movs	r2, #8
+ 355 0002 014B     		ldr	r3, .L37
+ 356 0004 1A60     		str	r2, [r3]
+ 357 0006 7047     		bx	lr
+ 358              	.L38:
+ 359              		.align	2
+ 360              	.L37:
+ 361 0008 00E200E0 		.word	-536813056
+ 362              		.cfi_endproc
+ 363              	.LFE74:
+ 364              		.size	HornRingISR_SetPending, .-HornRingISR_SetPending
+ 365              		.section	.text.HornRingISR_ClearPending,"ax",%progbits
+ 366              		.align	2
+ 367              		.global	HornRingISR_ClearPending
+ 368              		.thumb
+ 369              		.thumb_func
+ 370              		.type	HornRingISR_ClearPending, %function
+ 371              	HornRingISR_ClearPending:
+ 372              	.LFB75:
+ 379:Generated_Source\PSoC5/HornRingISR.c **** }
+ 380:Generated_Source\PSoC5/HornRingISR.c **** 
+ 381:Generated_Source\PSoC5/HornRingISR.c **** 
+ 382:Generated_Source\PSoC5/HornRingISR.c **** /*******************************************************************************
+ 383:Generated_Source\PSoC5/HornRingISR.c **** * Function Name: HornRingISR_ClearPending
+ 384:Generated_Source\PSoC5/HornRingISR.c **** ********************************************************************************
+ 385:Generated_Source\PSoC5/HornRingISR.c **** *
+ 386:Generated_Source\PSoC5/HornRingISR.c **** * Summary:
+ 387:Generated_Source\PSoC5/HornRingISR.c **** *   Clears a pending interrupt in the interrupt controller.
+ 388:Generated_Source\PSoC5/HornRingISR.c **** *
+ 389:Generated_Source\PSoC5/HornRingISR.c **** *   Note Some interrupt sources are clear-on-read and require the block 
+ 390:Generated_Source\PSoC5/HornRingISR.c **** *   interrupt/status register to be read/cleared with the appropriate block API 
+ 391:Generated_Source\PSoC5/HornRingISR.c **** *   (GPIO, UART, and so on). Otherwise the ISR will continue to remain in 
+ 392:Generated_Source\PSoC5/HornRingISR.c **** *   pending state even though the interrupt itself is cleared using this API.
+ 393:Generated_Source\PSoC5/HornRingISR.c **** *
+ 394:Generated_Source\PSoC5/HornRingISR.c **** * Parameters:
+ 395:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 396:Generated_Source\PSoC5/HornRingISR.c **** *
+ 397:Generated_Source\PSoC5/HornRingISR.c **** * Return:
+ 398:Generated_Source\PSoC5/HornRingISR.c **** *   None
+ 399:Generated_Source\PSoC5/HornRingISR.c **** *
+ 400:Generated_Source\PSoC5/HornRingISR.c **** *******************************************************************************/
+ 401:Generated_Source\PSoC5/HornRingISR.c **** void HornRingISR_ClearPending(void)
+ 402:Generated_Source\PSoC5/HornRingISR.c **** {
+ 373              		.loc 1 402 0
+ 374              		.cfi_startproc
+ 375              		@ args = 0, pretend = 0, frame = 0
+ 376              		@ frame_needed = 0, uses_anonymous_args = 0
+ 377              		@ link register save eliminated.
+ 403:Generated_Source\PSoC5/HornRingISR.c ****     *HornRingISR_INTC_CLR_PD = HornRingISR__INTC_MASK;
+ 378              		.loc 1 403 0
+ 379 0000 0822     		movs	r2, #8
+ 380 0002 014B     		ldr	r3, .L40
+ 381 0004 1A60     		str	r2, [r3]
+ 382 0006 7047     		bx	lr
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 15
+
+
+ 383              	.L41:
+ 384              		.align	2
+ 385              	.L40:
+ 386 0008 80E200E0 		.word	-536812928
+ 387              		.cfi_endproc
+ 388              	.LFE75:
+ 389              		.size	HornRingISR_ClearPending, .-HornRingISR_ClearPending
+ 390              		.text
+ 391              	.Letext0:
+ 392              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 393              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.2\\psoc creator\\import\\gnu\\arm\\5.4.
+ 394              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 395              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 396              		.file 6 "./SirenState.h"
+ 397              		.section	.debug_info,"",%progbits
+ 398              	.Ldebug_info0:
+ 399 0000 0C030000 		.4byte	0x30c
+ 400 0004 0400     		.2byte	0x4
+ 401 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 402 000a 04       		.byte	0x4
+ 403 000b 01       		.uleb128 0x1
+ 404 000c 82000000 		.4byte	.LASF36
+ 405 0010 0C       		.byte	0xc
+ 406 0011 79020000 		.4byte	.LASF37
+ 407 0015 C6020000 		.4byte	.LASF38
+ 408 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 409 001d 00000000 		.4byte	0
+ 410 0021 00000000 		.4byte	.Ldebug_line0
+ 411 0025 02       		.uleb128 0x2
+ 412 0026 04       		.byte	0x4
+ 413 0027 05       		.byte	0x5
+ 414 0028 696E7400 		.ascii	"int\000"
+ 415 002c 03       		.uleb128 0x3
+ 416 002d 04       		.byte	0x4
+ 417 002e 07       		.byte	0x7
+ 418 002f A7010000 		.4byte	.LASF0
+ 419 0033 03       		.uleb128 0x3
+ 420 0034 08       		.byte	0x8
+ 421 0035 05       		.byte	0x5
+ 422 0036 38020000 		.4byte	.LASF1
+ 423 003a 03       		.uleb128 0x3
+ 424 003b 08       		.byte	0x8
+ 425 003c 04       		.byte	0x4
+ 426 003d A7020000 		.4byte	.LASF2
+ 427 0041 03       		.uleb128 0x3
+ 428 0042 01       		.byte	0x1
+ 429 0043 06       		.byte	0x6
+ 430 0044 B3020000 		.4byte	.LASF3
+ 431 0048 03       		.uleb128 0x3
+ 432 0049 01       		.byte	0x1
+ 433 004a 08       		.byte	0x8
+ 434 004b 74000000 		.4byte	.LASF4
+ 435 004f 03       		.uleb128 0x3
+ 436 0050 02       		.byte	0x2
+ 437 0051 05       		.byte	0x5
+ 438 0052 5A020000 		.4byte	.LASF5
+ 439 0056 03       		.uleb128 0x3
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 16
+
+
+ 440 0057 02       		.byte	0x2
+ 441 0058 07       		.byte	0x7
+ 442 0059 2B010000 		.4byte	.LASF6
+ 443 005d 04       		.uleb128 0x4
+ 444 005e 1F000000 		.4byte	.LASF12
+ 445 0062 02       		.byte	0x2
+ 446 0063 3F       		.byte	0x3f
+ 447 0064 68000000 		.4byte	0x68
+ 448 0068 03       		.uleb128 0x3
+ 449 0069 04       		.byte	0x4
+ 450 006a 05       		.byte	0x5
+ 451 006b 9E020000 		.4byte	.LASF7
+ 452 006f 03       		.uleb128 0x3
+ 453 0070 04       		.byte	0x4
+ 454 0071 07       		.byte	0x7
+ 455 0072 63010000 		.4byte	.LASF8
+ 456 0076 03       		.uleb128 0x3
+ 457 0077 08       		.byte	0x8
+ 458 0078 07       		.byte	0x7
+ 459 0079 D2010000 		.4byte	.LASF9
+ 460 007d 03       		.uleb128 0x3
+ 461 007e 04       		.byte	0x4
+ 462 007f 07       		.byte	0x7
+ 463 0080 2F020000 		.4byte	.LASF10
+ 464 0084 03       		.uleb128 0x3
+ 465 0085 01       		.byte	0x1
+ 466 0086 08       		.byte	0x8
+ 467 0087 46020000 		.4byte	.LASF11
+ 468 008b 05       		.uleb128 0x5
+ 469 008c 04       		.byte	0x4
+ 470 008d 91000000 		.4byte	0x91
+ 471 0091 06       		.uleb128 0x6
+ 472 0092 04       		.uleb128 0x4
+ 473 0093 1E020000 		.4byte	.LASF13
+ 474 0097 03       		.byte	0x3
+ 475 0098 2C       		.byte	0x2c
+ 476 0099 5D000000 		.4byte	0x5d
+ 477 009d 04       		.uleb128 0x4
+ 478 009e 6E000000 		.4byte	.LASF14
+ 479 00a2 04       		.byte	0x4
+ 480 00a3 C2       		.byte	0xc2
+ 481 00a4 48000000 		.4byte	0x48
+ 482 00a8 04       		.uleb128 0x4
+ 483 00a9 A0010000 		.4byte	.LASF15
+ 484 00ad 04       		.byte	0x4
+ 485 00ae C4       		.byte	0xc4
+ 486 00af 6F000000 		.4byte	0x6f
+ 487 00b3 03       		.uleb128 0x3
+ 488 00b4 04       		.byte	0x4
+ 489 00b5 04       		.byte	0x4
+ 490 00b6 68000000 		.4byte	.LASF16
+ 491 00ba 03       		.uleb128 0x3
+ 492 00bb 08       		.byte	0x8
+ 493 00bc 04       		.byte	0x4
+ 494 00bd BF020000 		.4byte	.LASF17
+ 495 00c1 07       		.uleb128 0x7
+ 496 00c2 10010000 		.4byte	.LASF18
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 17
+
+
+ 497 00c6 04       		.byte	0x4
+ 498 00c7 6C01     		.2byte	0x16c
+ 499 00c9 CD000000 		.4byte	0xcd
+ 500 00cd 08       		.uleb128 0x8
+ 501 00ce 9D000000 		.4byte	0x9d
+ 502 00d2 07       		.uleb128 0x7
+ 503 00d3 00000000 		.4byte	.LASF19
+ 504 00d7 04       		.byte	0x4
+ 505 00d8 6E01     		.2byte	0x16e
+ 506 00da DE000000 		.4byte	0xde
+ 507 00de 08       		.uleb128 0x8
+ 508 00df A8000000 		.4byte	0xa8
+ 509 00e3 07       		.uleb128 0x7
+ 510 00e4 00020000 		.4byte	.LASF20
+ 511 00e8 04       		.byte	0x4
+ 512 00e9 7E01     		.2byte	0x17e
+ 513 00eb 8B000000 		.4byte	0x8b
+ 514 00ef 09       		.uleb128 0x9
+ 515 00f0 15010000 		.4byte	.LASF21
+ 516 00f4 01       		.byte	0x1
+ 517 00f5 A0       		.byte	0xa0
+ 518 00f6 00000000 		.4byte	.LFB66
+ 519 00fa 08000000 		.4byte	.LFE66-.LFB66
+ 520 00fe 01       		.uleb128 0x1
+ 521 00ff 9C       		.byte	0x9c
+ 522 0100 0E010000 		.4byte	0x10e
+ 523 0104 0A       		.uleb128 0xa
+ 524 0105 06000000 		.4byte	.LVL0
+ 525 0109 04030000 		.4byte	0x304
+ 526 010d 00       		.byte	0
+ 527 010e 09       		.uleb128 0x9
+ 528 010f 5F030000 		.4byte	.LASF22
+ 529 0113 01       		.byte	0x1
+ 530 0114 C8       		.byte	0xc8
+ 531 0115 00000000 		.4byte	.LFB67
+ 532 0119 0C000000 		.4byte	.LFE67-.LFB67
+ 533 011d 01       		.uleb128 0x1
+ 534 011e 9C       		.byte	0x9c
+ 535 011f 3E010000 		.4byte	0x13e
+ 536 0123 0B       		.uleb128 0xb
+ 537 0124 CA010000 		.4byte	.LASF25
+ 538 0128 01       		.byte	0x1
+ 539 0129 C8       		.byte	0xc8
+ 540 012a E3000000 		.4byte	0xe3
+ 541 012e 01       		.uleb128 0x1
+ 542 012f 50       		.byte	0x50
+ 543 0130 0C       		.uleb128 0xc
+ 544 0131 4B020000 		.4byte	.LASF23
+ 545 0135 01       		.byte	0x1
+ 546 0136 CA       		.byte	0xca
+ 547 0137 3E010000 		.4byte	0x13e
+ 548 013b 01       		.uleb128 0x1
+ 549 013c 53       		.byte	0x53
+ 550 013d 00       		.byte	0
+ 551 013e 05       		.uleb128 0x5
+ 552 013f 04       		.byte	0x4
+ 553 0140 E3000000 		.4byte	0xe3
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 18
+
+
+ 554 0144 0D       		.uleb128 0xd
+ 555 0145 B4010000 		.4byte	.LASF27
+ 556 0149 01       		.byte	0x1
+ 557 014a E0       		.byte	0xe0
+ 558 014b E3000000 		.4byte	0xe3
+ 559 014f 00000000 		.4byte	.LFB68
+ 560 0153 0C000000 		.4byte	.LFE68-.LFB68
+ 561 0157 01       		.uleb128 0x1
+ 562 0158 9C       		.byte	0x9c
+ 563 0159 6B010000 		.4byte	0x16b
+ 564 015d 0C       		.uleb128 0xc
+ 565 015e 4B020000 		.4byte	.LASF23
+ 566 0162 01       		.byte	0x1
+ 567 0163 E2       		.byte	0xe2
+ 568 0164 3E010000 		.4byte	0x13e
+ 569 0168 01       		.uleb128 0x1
+ 570 0169 53       		.byte	0x53
+ 571 016a 00       		.byte	0
+ 572 016b 0E       		.uleb128 0xe
+ 573 016c 4B010000 		.4byte	.LASF24
+ 574 0170 01       		.byte	0x1
+ 575 0171 0201     		.2byte	0x102
+ 576 0173 00000000 		.4byte	.LFB69
+ 577 0177 10000000 		.4byte	.LFE69-.LFB69
+ 578 017b 01       		.uleb128 0x1
+ 579 017c 9C       		.byte	0x9c
+ 580 017d 92010000 		.4byte	0x192
+ 581 0181 0F       		.uleb128 0xf
+ 582 0182 26020000 		.4byte	.LASF26
+ 583 0186 01       		.byte	0x1
+ 584 0187 0201     		.2byte	0x102
+ 585 0189 9D000000 		.4byte	0x9d
+ 586 018d 00000000 		.4byte	.LLST0
+ 587 0191 00       		.byte	0
+ 588 0192 10       		.uleb128 0x10
+ 589 0193 29000000 		.4byte	.LASF28
+ 590 0197 01       		.byte	0x1
+ 591 0198 1801     		.2byte	0x118
+ 592 019a 9D000000 		.4byte	0x9d
+ 593 019e 00000000 		.4byte	.LFB70
+ 594 01a2 0C000000 		.4byte	.LFE70-.LFB70
+ 595 01a6 01       		.uleb128 0x1
+ 596 01a7 9C       		.byte	0x9c
+ 597 01a8 BD010000 		.4byte	0x1bd
+ 598 01ac 11       		.uleb128 0x11
+ 599 01ad 26020000 		.4byte	.LASF26
+ 600 01b1 01       		.byte	0x1
+ 601 01b2 1A01     		.2byte	0x11a
+ 602 01b4 9D000000 		.4byte	0x9d
+ 603 01b8 21000000 		.4byte	.LLST1
+ 604 01bc 00       		.byte	0
+ 605 01bd 12       		.uleb128 0x12
+ 606 01be 55000000 		.4byte	.LASF29
+ 607 01c2 01       		.byte	0x1
+ 608 01c3 3301     		.2byte	0x133
+ 609 01c5 00000000 		.4byte	.LFB71
+ 610 01c9 0C000000 		.4byte	.LFE71-.LFB71
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 19
+
+
+ 611 01cd 01       		.uleb128 0x1
+ 612 01ce 9C       		.byte	0x9c
+ 613 01cf 13       		.uleb128 0x13
+ 614 01d0 64020000 		.4byte	.LASF39
+ 615 01d4 01       		.byte	0x1
+ 616 01d5 4801     		.2byte	0x148
+ 617 01d7 9D000000 		.4byte	0x9d
+ 618 01db 00000000 		.4byte	.LFB72
+ 619 01df 18000000 		.4byte	.LFE72-.LFB72
+ 620 01e3 01       		.uleb128 0x1
+ 621 01e4 9C       		.byte	0x9c
+ 622 01e5 12       		.uleb128 0x12
+ 623 01e6 75010000 		.4byte	.LASF30
+ 624 01ea 01       		.byte	0x1
+ 625 01eb 5D01     		.2byte	0x15d
+ 626 01ed 00000000 		.4byte	.LFB73
+ 627 01f1 0C000000 		.4byte	.LFE73-.LFB73
+ 628 01f5 01       		.uleb128 0x1
+ 629 01f6 9C       		.byte	0x9c
+ 630 01f7 09       		.uleb128 0x9
+ 631 01f8 4D030000 		.4byte	.LASF31
+ 632 01fc 01       		.byte	0x1
+ 633 01fd 3D       		.byte	0x3d
+ 634 01fe 00000000 		.4byte	.LFB63
+ 635 0202 1C000000 		.4byte	.LFE63-.LFB63
+ 636 0206 01       		.uleb128 0x1
+ 637 0207 9C       		.byte	0x9c
+ 638 0208 49020000 		.4byte	0x249
+ 639 020c 0A       		.uleb128 0xa
+ 640 020d 06000000 		.4byte	.LVL8
+ 641 0211 E5010000 		.4byte	0x1e5
+ 642 0215 14       		.uleb128 0x14
+ 643 0216 0C000000 		.4byte	.LVL9
+ 644 021a 0E010000 		.4byte	0x10e
+ 645 021e 2C020000 		.4byte	0x22c
+ 646 0222 15       		.uleb128 0x15
+ 647 0223 01       		.uleb128 0x1
+ 648 0224 50       		.byte	0x50
+ 649 0225 05       		.uleb128 0x5
+ 650 0226 03       		.byte	0x3
+ 651 0227 00000000 		.4byte	HornRingISR_Interrupt
+ 652 022b 00       		.byte	0
+ 653 022c 14       		.uleb128 0x14
+ 654 022d 12000000 		.4byte	.LVL10
+ 655 0231 6B010000 		.4byte	0x16b
+ 656 0235 3F020000 		.4byte	0x23f
+ 657 0239 15       		.uleb128 0x15
+ 658 023a 01       		.uleb128 0x1
+ 659 023b 50       		.byte	0x50
+ 660 023c 01       		.uleb128 0x1
+ 661 023d 34       		.byte	0x34
+ 662 023e 00       		.byte	0
+ 663 023f 0A       		.uleb128 0xa
+ 664 0240 16000000 		.4byte	.LVL11
+ 665 0244 BD010000 		.4byte	0x1bd
+ 666 0248 00       		.byte	0
+ 667 0249 09       		.uleb128 0x9
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 20
+
+
+ 668 024a 41000000 		.4byte	.LASF32
+ 669 024e 01       		.byte	0x1
+ 670 024f 68       		.byte	0x68
+ 671 0250 00000000 		.4byte	.LFB64
+ 672 0254 1A000000 		.4byte	.LFE64-.LFB64
+ 673 0258 01       		.uleb128 0x1
+ 674 0259 9C       		.byte	0x9c
+ 675 025a A7020000 		.4byte	0x2a7
+ 676 025e 16       		.uleb128 0x16
+ 677 025f CA010000 		.4byte	.LASF25
+ 678 0263 01       		.byte	0x1
+ 679 0264 68       		.byte	0x68
+ 680 0265 E3000000 		.4byte	0xe3
+ 681 0269 38000000 		.4byte	.LLST2
+ 682 026d 0A       		.uleb128 0xa
+ 683 026e 08000000 		.4byte	.LVL13
+ 684 0272 E5010000 		.4byte	0x1e5
+ 685 0276 14       		.uleb128 0x14
+ 686 0277 0E000000 		.4byte	.LVL14
+ 687 027b 0E010000 		.4byte	0x10e
+ 688 027f 8A020000 		.4byte	0x28a
+ 689 0283 15       		.uleb128 0x15
+ 690 0284 01       		.uleb128 0x1
+ 691 0285 50       		.byte	0x50
+ 692 0286 02       		.uleb128 0x2
+ 693 0287 74       		.byte	0x74
+ 694 0288 00       		.sleb128 0
+ 695 0289 00       		.byte	0
+ 696 028a 14       		.uleb128 0x14
+ 697 028b 14000000 		.4byte	.LVL15
+ 698 028f 6B010000 		.4byte	0x16b
+ 699 0293 9D020000 		.4byte	0x29d
+ 700 0297 15       		.uleb128 0x15
+ 701 0298 01       		.uleb128 0x1
+ 702 0299 50       		.byte	0x50
+ 703 029a 01       		.uleb128 0x1
+ 704 029b 34       		.byte	0x34
+ 705 029c 00       		.byte	0
+ 706 029d 0A       		.uleb128 0xa
+ 707 029e 18000000 		.4byte	.LVL16
+ 708 02a2 BD010000 		.4byte	0x1bd
+ 709 02a6 00       		.byte	0
+ 710 02a7 09       		.uleb128 0x9
+ 711 02a8 0D020000 		.4byte	.LASF33
+ 712 02ac 01       		.byte	0x1
+ 713 02ad 86       		.byte	0x86
+ 714 02ae 00000000 		.4byte	.LFB65
+ 715 02b2 14000000 		.4byte	.LFE65-.LFB65
+ 716 02b6 01       		.uleb128 0x1
+ 717 02b7 9C       		.byte	0x9c
+ 718 02b8 CF020000 		.4byte	0x2cf
+ 719 02bc 0A       		.uleb128 0xa
+ 720 02bd 06000000 		.4byte	.LVL17
+ 721 02c1 E5010000 		.4byte	0x1e5
+ 722 02c5 0A       		.uleb128 0xa
+ 723 02c6 0C000000 		.4byte	.LVL18
+ 724 02ca 0E010000 		.4byte	0x10e
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 21
+
+
+ 725 02ce 00       		.byte	0
+ 726 02cf 12       		.uleb128 0x12
+ 727 02d0 E9010000 		.4byte	.LASF34
+ 728 02d4 01       		.byte	0x1
+ 729 02d5 7801     		.2byte	0x178
+ 730 02d7 00000000 		.4byte	.LFB74
+ 731 02db 0C000000 		.4byte	.LFE74-.LFB74
+ 732 02df 01       		.uleb128 0x1
+ 733 02e0 9C       		.byte	0x9c
+ 734 02e1 12       		.uleb128 0x12
+ 735 02e2 06000000 		.4byte	.LASF35
+ 736 02e6 01       		.byte	0x1
+ 737 02e7 9101     		.2byte	0x191
+ 738 02e9 00000000 		.4byte	.LFB75
+ 739 02ed 0C000000 		.4byte	.LFE75-.LFB75
+ 740 02f1 01       		.uleb128 0x1
+ 741 02f2 9C       		.byte	0x9c
+ 742 02f3 17       		.uleb128 0x17
+ 743 02f4 3E010000 		.4byte	.LASF40
+ 744 02f8 05       		.byte	0x5
+ 745 02f9 2A06     		.2byte	0x62a
+ 746 02fb FF020000 		.4byte	0x2ff
+ 747 02ff 08       		.uleb128 0x8
+ 748 0300 92000000 		.4byte	0x92
+ 749 0304 18       		.uleb128 0x18
+ 750 0305 89010000 		.4byte	.LASF41
+ 751 0309 89010000 		.4byte	.LASF41
+ 752 030d 06       		.byte	0x6
+ 753 030e 20       		.byte	0x20
+ 754 030f 00       		.byte	0
+ 755              		.section	.debug_abbrev,"",%progbits
+ 756              	.Ldebug_abbrev0:
+ 757 0000 01       		.uleb128 0x1
+ 758 0001 11       		.uleb128 0x11
+ 759 0002 01       		.byte	0x1
+ 760 0003 25       		.uleb128 0x25
+ 761 0004 0E       		.uleb128 0xe
+ 762 0005 13       		.uleb128 0x13
+ 763 0006 0B       		.uleb128 0xb
+ 764 0007 03       		.uleb128 0x3
+ 765 0008 0E       		.uleb128 0xe
+ 766 0009 1B       		.uleb128 0x1b
+ 767 000a 0E       		.uleb128 0xe
+ 768 000b 55       		.uleb128 0x55
+ 769 000c 17       		.uleb128 0x17
+ 770 000d 11       		.uleb128 0x11
+ 771 000e 01       		.uleb128 0x1
+ 772 000f 10       		.uleb128 0x10
+ 773 0010 17       		.uleb128 0x17
+ 774 0011 00       		.byte	0
+ 775 0012 00       		.byte	0
+ 776 0013 02       		.uleb128 0x2
+ 777 0014 24       		.uleb128 0x24
+ 778 0015 00       		.byte	0
+ 779 0016 0B       		.uleb128 0xb
+ 780 0017 0B       		.uleb128 0xb
+ 781 0018 3E       		.uleb128 0x3e
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 22
+
+
+ 782 0019 0B       		.uleb128 0xb
+ 783 001a 03       		.uleb128 0x3
+ 784 001b 08       		.uleb128 0x8
+ 785 001c 00       		.byte	0
+ 786 001d 00       		.byte	0
+ 787 001e 03       		.uleb128 0x3
+ 788 001f 24       		.uleb128 0x24
+ 789 0020 00       		.byte	0
+ 790 0021 0B       		.uleb128 0xb
+ 791 0022 0B       		.uleb128 0xb
+ 792 0023 3E       		.uleb128 0x3e
+ 793 0024 0B       		.uleb128 0xb
+ 794 0025 03       		.uleb128 0x3
+ 795 0026 0E       		.uleb128 0xe
+ 796 0027 00       		.byte	0
+ 797 0028 00       		.byte	0
+ 798 0029 04       		.uleb128 0x4
+ 799 002a 16       		.uleb128 0x16
+ 800 002b 00       		.byte	0
+ 801 002c 03       		.uleb128 0x3
+ 802 002d 0E       		.uleb128 0xe
+ 803 002e 3A       		.uleb128 0x3a
+ 804 002f 0B       		.uleb128 0xb
+ 805 0030 3B       		.uleb128 0x3b
+ 806 0031 0B       		.uleb128 0xb
+ 807 0032 49       		.uleb128 0x49
+ 808 0033 13       		.uleb128 0x13
+ 809 0034 00       		.byte	0
+ 810 0035 00       		.byte	0
+ 811 0036 05       		.uleb128 0x5
+ 812 0037 0F       		.uleb128 0xf
+ 813 0038 00       		.byte	0
+ 814 0039 0B       		.uleb128 0xb
+ 815 003a 0B       		.uleb128 0xb
+ 816 003b 49       		.uleb128 0x49
+ 817 003c 13       		.uleb128 0x13
+ 818 003d 00       		.byte	0
+ 819 003e 00       		.byte	0
+ 820 003f 06       		.uleb128 0x6
+ 821 0040 15       		.uleb128 0x15
+ 822 0041 00       		.byte	0
+ 823 0042 27       		.uleb128 0x27
+ 824 0043 19       		.uleb128 0x19
+ 825 0044 00       		.byte	0
+ 826 0045 00       		.byte	0
+ 827 0046 07       		.uleb128 0x7
+ 828 0047 16       		.uleb128 0x16
+ 829 0048 00       		.byte	0
+ 830 0049 03       		.uleb128 0x3
+ 831 004a 0E       		.uleb128 0xe
+ 832 004b 3A       		.uleb128 0x3a
+ 833 004c 0B       		.uleb128 0xb
+ 834 004d 3B       		.uleb128 0x3b
+ 835 004e 05       		.uleb128 0x5
+ 836 004f 49       		.uleb128 0x49
+ 837 0050 13       		.uleb128 0x13
+ 838 0051 00       		.byte	0
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 23
+
+
+ 839 0052 00       		.byte	0
+ 840 0053 08       		.uleb128 0x8
+ 841 0054 35       		.uleb128 0x35
+ 842 0055 00       		.byte	0
+ 843 0056 49       		.uleb128 0x49
+ 844 0057 13       		.uleb128 0x13
+ 845 0058 00       		.byte	0
+ 846 0059 00       		.byte	0
+ 847 005a 09       		.uleb128 0x9
+ 848 005b 2E       		.uleb128 0x2e
+ 849 005c 01       		.byte	0x1
+ 850 005d 3F       		.uleb128 0x3f
+ 851 005e 19       		.uleb128 0x19
+ 852 005f 03       		.uleb128 0x3
+ 853 0060 0E       		.uleb128 0xe
+ 854 0061 3A       		.uleb128 0x3a
+ 855 0062 0B       		.uleb128 0xb
+ 856 0063 3B       		.uleb128 0x3b
+ 857 0064 0B       		.uleb128 0xb
+ 858 0065 27       		.uleb128 0x27
+ 859 0066 19       		.uleb128 0x19
+ 860 0067 11       		.uleb128 0x11
+ 861 0068 01       		.uleb128 0x1
+ 862 0069 12       		.uleb128 0x12
+ 863 006a 06       		.uleb128 0x6
+ 864 006b 40       		.uleb128 0x40
+ 865 006c 18       		.uleb128 0x18
+ 866 006d 9742     		.uleb128 0x2117
+ 867 006f 19       		.uleb128 0x19
+ 868 0070 01       		.uleb128 0x1
+ 869 0071 13       		.uleb128 0x13
+ 870 0072 00       		.byte	0
+ 871 0073 00       		.byte	0
+ 872 0074 0A       		.uleb128 0xa
+ 873 0075 898201   		.uleb128 0x4109
+ 874 0078 00       		.byte	0
+ 875 0079 11       		.uleb128 0x11
+ 876 007a 01       		.uleb128 0x1
+ 877 007b 31       		.uleb128 0x31
+ 878 007c 13       		.uleb128 0x13
+ 879 007d 00       		.byte	0
+ 880 007e 00       		.byte	0
+ 881 007f 0B       		.uleb128 0xb
+ 882 0080 05       		.uleb128 0x5
+ 883 0081 00       		.byte	0
+ 884 0082 03       		.uleb128 0x3
+ 885 0083 0E       		.uleb128 0xe
+ 886 0084 3A       		.uleb128 0x3a
+ 887 0085 0B       		.uleb128 0xb
+ 888 0086 3B       		.uleb128 0x3b
+ 889 0087 0B       		.uleb128 0xb
+ 890 0088 49       		.uleb128 0x49
+ 891 0089 13       		.uleb128 0x13
+ 892 008a 02       		.uleb128 0x2
+ 893 008b 18       		.uleb128 0x18
+ 894 008c 00       		.byte	0
+ 895 008d 00       		.byte	0
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 24
+
+
+ 896 008e 0C       		.uleb128 0xc
+ 897 008f 34       		.uleb128 0x34
+ 898 0090 00       		.byte	0
+ 899 0091 03       		.uleb128 0x3
+ 900 0092 0E       		.uleb128 0xe
+ 901 0093 3A       		.uleb128 0x3a
+ 902 0094 0B       		.uleb128 0xb
+ 903 0095 3B       		.uleb128 0x3b
+ 904 0096 0B       		.uleb128 0xb
+ 905 0097 49       		.uleb128 0x49
+ 906 0098 13       		.uleb128 0x13
+ 907 0099 02       		.uleb128 0x2
+ 908 009a 18       		.uleb128 0x18
+ 909 009b 00       		.byte	0
+ 910 009c 00       		.byte	0
+ 911 009d 0D       		.uleb128 0xd
+ 912 009e 2E       		.uleb128 0x2e
+ 913 009f 01       		.byte	0x1
+ 914 00a0 3F       		.uleb128 0x3f
+ 915 00a1 19       		.uleb128 0x19
+ 916 00a2 03       		.uleb128 0x3
+ 917 00a3 0E       		.uleb128 0xe
+ 918 00a4 3A       		.uleb128 0x3a
+ 919 00a5 0B       		.uleb128 0xb
+ 920 00a6 3B       		.uleb128 0x3b
+ 921 00a7 0B       		.uleb128 0xb
+ 922 00a8 27       		.uleb128 0x27
+ 923 00a9 19       		.uleb128 0x19
+ 924 00aa 49       		.uleb128 0x49
+ 925 00ab 13       		.uleb128 0x13
+ 926 00ac 11       		.uleb128 0x11
+ 927 00ad 01       		.uleb128 0x1
+ 928 00ae 12       		.uleb128 0x12
+ 929 00af 06       		.uleb128 0x6
+ 930 00b0 40       		.uleb128 0x40
+ 931 00b1 18       		.uleb128 0x18
+ 932 00b2 9742     		.uleb128 0x2117
+ 933 00b4 19       		.uleb128 0x19
+ 934 00b5 01       		.uleb128 0x1
+ 935 00b6 13       		.uleb128 0x13
+ 936 00b7 00       		.byte	0
+ 937 00b8 00       		.byte	0
+ 938 00b9 0E       		.uleb128 0xe
+ 939 00ba 2E       		.uleb128 0x2e
+ 940 00bb 01       		.byte	0x1
+ 941 00bc 3F       		.uleb128 0x3f
+ 942 00bd 19       		.uleb128 0x19
+ 943 00be 03       		.uleb128 0x3
+ 944 00bf 0E       		.uleb128 0xe
+ 945 00c0 3A       		.uleb128 0x3a
+ 946 00c1 0B       		.uleb128 0xb
+ 947 00c2 3B       		.uleb128 0x3b
+ 948 00c3 05       		.uleb128 0x5
+ 949 00c4 27       		.uleb128 0x27
+ 950 00c5 19       		.uleb128 0x19
+ 951 00c6 11       		.uleb128 0x11
+ 952 00c7 01       		.uleb128 0x1
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 25
+
+
+ 953 00c8 12       		.uleb128 0x12
+ 954 00c9 06       		.uleb128 0x6
+ 955 00ca 40       		.uleb128 0x40
+ 956 00cb 18       		.uleb128 0x18
+ 957 00cc 9742     		.uleb128 0x2117
+ 958 00ce 19       		.uleb128 0x19
+ 959 00cf 01       		.uleb128 0x1
+ 960 00d0 13       		.uleb128 0x13
+ 961 00d1 00       		.byte	0
+ 962 00d2 00       		.byte	0
+ 963 00d3 0F       		.uleb128 0xf
+ 964 00d4 05       		.uleb128 0x5
+ 965 00d5 00       		.byte	0
+ 966 00d6 03       		.uleb128 0x3
+ 967 00d7 0E       		.uleb128 0xe
+ 968 00d8 3A       		.uleb128 0x3a
+ 969 00d9 0B       		.uleb128 0xb
+ 970 00da 3B       		.uleb128 0x3b
+ 971 00db 05       		.uleb128 0x5
+ 972 00dc 49       		.uleb128 0x49
+ 973 00dd 13       		.uleb128 0x13
+ 974 00de 02       		.uleb128 0x2
+ 975 00df 17       		.uleb128 0x17
+ 976 00e0 00       		.byte	0
+ 977 00e1 00       		.byte	0
+ 978 00e2 10       		.uleb128 0x10
+ 979 00e3 2E       		.uleb128 0x2e
+ 980 00e4 01       		.byte	0x1
+ 981 00e5 3F       		.uleb128 0x3f
+ 982 00e6 19       		.uleb128 0x19
+ 983 00e7 03       		.uleb128 0x3
+ 984 00e8 0E       		.uleb128 0xe
+ 985 00e9 3A       		.uleb128 0x3a
+ 986 00ea 0B       		.uleb128 0xb
+ 987 00eb 3B       		.uleb128 0x3b
+ 988 00ec 05       		.uleb128 0x5
+ 989 00ed 27       		.uleb128 0x27
+ 990 00ee 19       		.uleb128 0x19
+ 991 00ef 49       		.uleb128 0x49
+ 992 00f0 13       		.uleb128 0x13
+ 993 00f1 11       		.uleb128 0x11
+ 994 00f2 01       		.uleb128 0x1
+ 995 00f3 12       		.uleb128 0x12
+ 996 00f4 06       		.uleb128 0x6
+ 997 00f5 40       		.uleb128 0x40
+ 998 00f6 18       		.uleb128 0x18
+ 999 00f7 9742     		.uleb128 0x2117
+ 1000 00f9 19       		.uleb128 0x19
+ 1001 00fa 01       		.uleb128 0x1
+ 1002 00fb 13       		.uleb128 0x13
+ 1003 00fc 00       		.byte	0
+ 1004 00fd 00       		.byte	0
+ 1005 00fe 11       		.uleb128 0x11
+ 1006 00ff 34       		.uleb128 0x34
+ 1007 0100 00       		.byte	0
+ 1008 0101 03       		.uleb128 0x3
+ 1009 0102 0E       		.uleb128 0xe
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 26
+
+
+ 1010 0103 3A       		.uleb128 0x3a
+ 1011 0104 0B       		.uleb128 0xb
+ 1012 0105 3B       		.uleb128 0x3b
+ 1013 0106 05       		.uleb128 0x5
+ 1014 0107 49       		.uleb128 0x49
+ 1015 0108 13       		.uleb128 0x13
+ 1016 0109 02       		.uleb128 0x2
+ 1017 010a 17       		.uleb128 0x17
+ 1018 010b 00       		.byte	0
+ 1019 010c 00       		.byte	0
+ 1020 010d 12       		.uleb128 0x12
+ 1021 010e 2E       		.uleb128 0x2e
+ 1022 010f 00       		.byte	0
+ 1023 0110 3F       		.uleb128 0x3f
+ 1024 0111 19       		.uleb128 0x19
+ 1025 0112 03       		.uleb128 0x3
+ 1026 0113 0E       		.uleb128 0xe
+ 1027 0114 3A       		.uleb128 0x3a
+ 1028 0115 0B       		.uleb128 0xb
+ 1029 0116 3B       		.uleb128 0x3b
+ 1030 0117 05       		.uleb128 0x5
+ 1031 0118 27       		.uleb128 0x27
+ 1032 0119 19       		.uleb128 0x19
+ 1033 011a 11       		.uleb128 0x11
+ 1034 011b 01       		.uleb128 0x1
+ 1035 011c 12       		.uleb128 0x12
+ 1036 011d 06       		.uleb128 0x6
+ 1037 011e 40       		.uleb128 0x40
+ 1038 011f 18       		.uleb128 0x18
+ 1039 0120 9742     		.uleb128 0x2117
+ 1040 0122 19       		.uleb128 0x19
+ 1041 0123 00       		.byte	0
+ 1042 0124 00       		.byte	0
+ 1043 0125 13       		.uleb128 0x13
+ 1044 0126 2E       		.uleb128 0x2e
+ 1045 0127 00       		.byte	0
+ 1046 0128 3F       		.uleb128 0x3f
+ 1047 0129 19       		.uleb128 0x19
+ 1048 012a 03       		.uleb128 0x3
+ 1049 012b 0E       		.uleb128 0xe
+ 1050 012c 3A       		.uleb128 0x3a
+ 1051 012d 0B       		.uleb128 0xb
+ 1052 012e 3B       		.uleb128 0x3b
+ 1053 012f 05       		.uleb128 0x5
+ 1054 0130 27       		.uleb128 0x27
+ 1055 0131 19       		.uleb128 0x19
+ 1056 0132 49       		.uleb128 0x49
+ 1057 0133 13       		.uleb128 0x13
+ 1058 0134 11       		.uleb128 0x11
+ 1059 0135 01       		.uleb128 0x1
+ 1060 0136 12       		.uleb128 0x12
+ 1061 0137 06       		.uleb128 0x6
+ 1062 0138 40       		.uleb128 0x40
+ 1063 0139 18       		.uleb128 0x18
+ 1064 013a 9742     		.uleb128 0x2117
+ 1065 013c 19       		.uleb128 0x19
+ 1066 013d 00       		.byte	0
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 27
+
+
+ 1067 013e 00       		.byte	0
+ 1068 013f 14       		.uleb128 0x14
+ 1069 0140 898201   		.uleb128 0x4109
+ 1070 0143 01       		.byte	0x1
+ 1071 0144 11       		.uleb128 0x11
+ 1072 0145 01       		.uleb128 0x1
+ 1073 0146 31       		.uleb128 0x31
+ 1074 0147 13       		.uleb128 0x13
+ 1075 0148 01       		.uleb128 0x1
+ 1076 0149 13       		.uleb128 0x13
+ 1077 014a 00       		.byte	0
+ 1078 014b 00       		.byte	0
+ 1079 014c 15       		.uleb128 0x15
+ 1080 014d 8A8201   		.uleb128 0x410a
+ 1081 0150 00       		.byte	0
+ 1082 0151 02       		.uleb128 0x2
+ 1083 0152 18       		.uleb128 0x18
+ 1084 0153 9142     		.uleb128 0x2111
+ 1085 0155 18       		.uleb128 0x18
+ 1086 0156 00       		.byte	0
+ 1087 0157 00       		.byte	0
+ 1088 0158 16       		.uleb128 0x16
+ 1089 0159 05       		.uleb128 0x5
+ 1090 015a 00       		.byte	0
+ 1091 015b 03       		.uleb128 0x3
+ 1092 015c 0E       		.uleb128 0xe
+ 1093 015d 3A       		.uleb128 0x3a
+ 1094 015e 0B       		.uleb128 0xb
+ 1095 015f 3B       		.uleb128 0x3b
+ 1096 0160 0B       		.uleb128 0xb
+ 1097 0161 49       		.uleb128 0x49
+ 1098 0162 13       		.uleb128 0x13
+ 1099 0163 02       		.uleb128 0x2
+ 1100 0164 17       		.uleb128 0x17
+ 1101 0165 00       		.byte	0
+ 1102 0166 00       		.byte	0
+ 1103 0167 17       		.uleb128 0x17
+ 1104 0168 34       		.uleb128 0x34
+ 1105 0169 00       		.byte	0
+ 1106 016a 03       		.uleb128 0x3
+ 1107 016b 0E       		.uleb128 0xe
+ 1108 016c 3A       		.uleb128 0x3a
+ 1109 016d 0B       		.uleb128 0xb
+ 1110 016e 3B       		.uleb128 0x3b
+ 1111 016f 05       		.uleb128 0x5
+ 1112 0170 49       		.uleb128 0x49
+ 1113 0171 13       		.uleb128 0x13
+ 1114 0172 3F       		.uleb128 0x3f
+ 1115 0173 19       		.uleb128 0x19
+ 1116 0174 3C       		.uleb128 0x3c
+ 1117 0175 19       		.uleb128 0x19
+ 1118 0176 00       		.byte	0
+ 1119 0177 00       		.byte	0
+ 1120 0178 18       		.uleb128 0x18
+ 1121 0179 2E       		.uleb128 0x2e
+ 1122 017a 00       		.byte	0
+ 1123 017b 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 28
+
+
+ 1124 017c 19       		.uleb128 0x19
+ 1125 017d 3C       		.uleb128 0x3c
+ 1126 017e 19       		.uleb128 0x19
+ 1127 017f 6E       		.uleb128 0x6e
+ 1128 0180 0E       		.uleb128 0xe
+ 1129 0181 03       		.uleb128 0x3
+ 1130 0182 0E       		.uleb128 0xe
+ 1131 0183 3A       		.uleb128 0x3a
+ 1132 0184 0B       		.uleb128 0xb
+ 1133 0185 3B       		.uleb128 0x3b
+ 1134 0186 0B       		.uleb128 0xb
+ 1135 0187 00       		.byte	0
+ 1136 0188 00       		.byte	0
+ 1137 0189 00       		.byte	0
+ 1138              		.section	.debug_loc,"",%progbits
+ 1139              	.Ldebug_loc0:
+ 1140              	.LLST0:
+ 1141 0000 00000000 		.4byte	.LVL4
+ 1142 0004 02000000 		.4byte	.LVL5
+ 1143 0008 0100     		.2byte	0x1
+ 1144 000a 50       		.byte	0x50
+ 1145 000b 02000000 		.4byte	.LVL5
+ 1146 000f 10000000 		.4byte	.LFE69
+ 1147 0013 0400     		.2byte	0x4
+ 1148 0015 F3       		.byte	0xf3
+ 1149 0016 01       		.uleb128 0x1
+ 1150 0017 50       		.byte	0x50
+ 1151 0018 9F       		.byte	0x9f
+ 1152 0019 00000000 		.4byte	0
+ 1153 001d 00000000 		.4byte	0
+ 1154              	.LLST1:
+ 1155 0021 04000000 		.4byte	.LVL6
+ 1156 0025 06000000 		.4byte	.LVL7
+ 1157 0029 0500     		.2byte	0x5
+ 1158 002b 70       		.byte	0x70
+ 1159 002c 00       		.sleb128 0
+ 1160 002d 35       		.byte	0x35
+ 1161 002e 25       		.byte	0x25
+ 1162 002f 9F       		.byte	0x9f
+ 1163 0030 00000000 		.4byte	0
+ 1164 0034 00000000 		.4byte	0
+ 1165              	.LLST2:
+ 1166 0038 00000000 		.4byte	.LVL12
+ 1167 003c 07000000 		.4byte	.LVL13-1
+ 1168 0040 0100     		.2byte	0x1
+ 1169 0042 50       		.byte	0x50
+ 1170 0043 07000000 		.4byte	.LVL13-1
+ 1171 0047 1A000000 		.4byte	.LFE64
+ 1172 004b 0100     		.2byte	0x1
+ 1173 004d 54       		.byte	0x54
+ 1174 004e 00000000 		.4byte	0
+ 1175 0052 00000000 		.4byte	0
+ 1176              		.section	.debug_aranges,"",%progbits
+ 1177 0000 7C000000 		.4byte	0x7c
+ 1178 0004 0200     		.2byte	0x2
+ 1179 0006 00000000 		.4byte	.Ldebug_info0
+ 1180 000a 04       		.byte	0x4
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 29
+
+
+ 1181 000b 00       		.byte	0
+ 1182 000c 0000     		.2byte	0
+ 1183 000e 0000     		.2byte	0
+ 1184 0010 00000000 		.4byte	.LFB66
+ 1185 0014 08000000 		.4byte	.LFE66-.LFB66
+ 1186 0018 00000000 		.4byte	.LFB67
+ 1187 001c 0C000000 		.4byte	.LFE67-.LFB67
+ 1188 0020 00000000 		.4byte	.LFB68
+ 1189 0024 0C000000 		.4byte	.LFE68-.LFB68
+ 1190 0028 00000000 		.4byte	.LFB69
+ 1191 002c 10000000 		.4byte	.LFE69-.LFB69
+ 1192 0030 00000000 		.4byte	.LFB70
+ 1193 0034 0C000000 		.4byte	.LFE70-.LFB70
+ 1194 0038 00000000 		.4byte	.LFB71
+ 1195 003c 0C000000 		.4byte	.LFE71-.LFB71
+ 1196 0040 00000000 		.4byte	.LFB72
+ 1197 0044 18000000 		.4byte	.LFE72-.LFB72
+ 1198 0048 00000000 		.4byte	.LFB73
+ 1199 004c 0C000000 		.4byte	.LFE73-.LFB73
+ 1200 0050 00000000 		.4byte	.LFB63
+ 1201 0054 1C000000 		.4byte	.LFE63-.LFB63
+ 1202 0058 00000000 		.4byte	.LFB64
+ 1203 005c 1A000000 		.4byte	.LFE64-.LFB64
+ 1204 0060 00000000 		.4byte	.LFB65
+ 1205 0064 14000000 		.4byte	.LFE65-.LFB65
+ 1206 0068 00000000 		.4byte	.LFB74
+ 1207 006c 0C000000 		.4byte	.LFE74-.LFB74
+ 1208 0070 00000000 		.4byte	.LFB75
+ 1209 0074 0C000000 		.4byte	.LFE75-.LFB75
+ 1210 0078 00000000 		.4byte	0
+ 1211 007c 00000000 		.4byte	0
+ 1212              		.section	.debug_ranges,"",%progbits
+ 1213              	.Ldebug_ranges0:
+ 1214 0000 00000000 		.4byte	.LFB66
+ 1215 0004 08000000 		.4byte	.LFE66
+ 1216 0008 00000000 		.4byte	.LFB67
+ 1217 000c 0C000000 		.4byte	.LFE67
+ 1218 0010 00000000 		.4byte	.LFB68
+ 1219 0014 0C000000 		.4byte	.LFE68
+ 1220 0018 00000000 		.4byte	.LFB69
+ 1221 001c 10000000 		.4byte	.LFE69
+ 1222 0020 00000000 		.4byte	.LFB70
+ 1223 0024 0C000000 		.4byte	.LFE70
+ 1224 0028 00000000 		.4byte	.LFB71
+ 1225 002c 0C000000 		.4byte	.LFE71
+ 1226 0030 00000000 		.4byte	.LFB72
+ 1227 0034 18000000 		.4byte	.LFE72
+ 1228 0038 00000000 		.4byte	.LFB73
+ 1229 003c 0C000000 		.4byte	.LFE73
+ 1230 0040 00000000 		.4byte	.LFB63
+ 1231 0044 1C000000 		.4byte	.LFE63
+ 1232 0048 00000000 		.4byte	.LFB64
+ 1233 004c 1A000000 		.4byte	.LFE64
+ 1234 0050 00000000 		.4byte	.LFB65
+ 1235 0054 14000000 		.4byte	.LFE65
+ 1236 0058 00000000 		.4byte	.LFB74
+ 1237 005c 0C000000 		.4byte	.LFE74
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 30
+
+
+ 1238 0060 00000000 		.4byte	.LFB75
+ 1239 0064 0C000000 		.4byte	.LFE75
+ 1240 0068 00000000 		.4byte	0
+ 1241 006c 00000000 		.4byte	0
+ 1242              		.section	.debug_line,"",%progbits
+ 1243              	.Ldebug_line0:
+ 1244 0000 52020000 		.section	.debug_str,"MS",%progbits,1
+ 1244      02006501 
+ 1244      00000201 
+ 1244      FB0E0D00 
+ 1244      01010101 
+ 1245              	.LASF19:
+ 1246 0000 72656733 		.ascii	"reg32\000"
+ 1246      3200
+ 1247              	.LASF35:
+ 1248 0006 486F726E 		.ascii	"HornRingISR_ClearPending\000"
+ 1248      52696E67 
+ 1248      4953525F 
+ 1248      436C6561 
+ 1248      7250656E 
+ 1249              	.LASF12:
+ 1250 001f 5F5F696E 		.ascii	"__int32_t\000"
+ 1250      7433325F 
+ 1250      7400
+ 1251              	.LASF28:
+ 1252 0029 486F726E 		.ascii	"HornRingISR_GetPriority\000"
+ 1252      52696E67 
+ 1252      4953525F 
+ 1252      47657450 
+ 1252      72696F72 
+ 1253              	.LASF32:
+ 1254 0041 486F726E 		.ascii	"HornRingISR_StartEx\000"
+ 1254      52696E67 
+ 1254      4953525F 
+ 1254      53746172 
+ 1254      74457800 
+ 1255              	.LASF29:
+ 1256 0055 486F726E 		.ascii	"HornRingISR_Enable\000"
+ 1256      52696E67 
+ 1256      4953525F 
+ 1256      456E6162 
+ 1256      6C6500
+ 1257              	.LASF16:
+ 1258 0068 666C6F61 		.ascii	"float\000"
+ 1258      7400
+ 1259              	.LASF14:
+ 1260 006e 75696E74 		.ascii	"uint8\000"
+ 1260      3800
+ 1261              	.LASF4:
+ 1262 0074 756E7369 		.ascii	"unsigned char\000"
+ 1262      676E6564 
+ 1262      20636861 
+ 1262      7200
+ 1263              	.LASF36:
+ 1264 0082 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1264      43313120 
+ 1264      352E342E 
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 31
+
+
+ 1264      31203230 
+ 1264      31363036 
+ 1265 00b5 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1265      20726576 
+ 1265      6973696F 
+ 1265      6E203233 
+ 1265      37373135 
+ 1266 00e8 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1266      66756E63 
+ 1266      74696F6E 
+ 1266      2D736563 
+ 1266      74696F6E 
+ 1267              	.LASF18:
+ 1268 0110 72656738 		.ascii	"reg8\000"
+ 1268      00
+ 1269              	.LASF21:
+ 1270 0115 486F726E 		.ascii	"HornRingISR_Interrupt\000"
+ 1270      52696E67 
+ 1270      4953525F 
+ 1270      496E7465 
+ 1270      72727570 
+ 1271              	.LASF6:
+ 1272 012b 73686F72 		.ascii	"short unsigned int\000"
+ 1272      7420756E 
+ 1272      7369676E 
+ 1272      65642069 
+ 1272      6E7400
+ 1273              	.LASF40:
+ 1274 013e 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1274      52784275 
+ 1274      66666572 
+ 1274      00
+ 1275              	.LASF24:
+ 1276 014b 486F726E 		.ascii	"HornRingISR_SetPriority\000"
+ 1276      52696E67 
+ 1276      4953525F 
+ 1276      53657450 
+ 1276      72696F72 
+ 1277              	.LASF8:
+ 1278 0163 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1278      20756E73 
+ 1278      69676E65 
+ 1278      6420696E 
+ 1278      7400
+ 1279              	.LASF30:
+ 1280 0175 486F726E 		.ascii	"HornRingISR_Disable\000"
+ 1280      52696E67 
+ 1280      4953525F 
+ 1280      44697361 
+ 1280      626C6500 
+ 1281              	.LASF41:
+ 1282 0189 70726F63 		.ascii	"processHornRingRoutine\000"
+ 1282      65737348 
+ 1282      6F726E52 
+ 1282      696E6752 
+ 1282      6F757469 
+ 1283              	.LASF15:
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 32
+
+
+ 1284 01a0 75696E74 		.ascii	"uint32\000"
+ 1284      333200
+ 1285              	.LASF0:
+ 1286 01a7 756E7369 		.ascii	"unsigned int\000"
+ 1286      676E6564 
+ 1286      20696E74 
+ 1286      00
+ 1287              	.LASF27:
+ 1288 01b4 486F726E 		.ascii	"HornRingISR_GetVector\000"
+ 1288      52696E67 
+ 1288      4953525F 
+ 1288      47657456 
+ 1288      6563746F 
+ 1289              	.LASF25:
+ 1290 01ca 61646472 		.ascii	"address\000"
+ 1290      65737300 
+ 1291              	.LASF9:
+ 1292 01d2 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1292      206C6F6E 
+ 1292      6720756E 
+ 1292      7369676E 
+ 1292      65642069 
+ 1293              	.LASF34:
+ 1294 01e9 486F726E 		.ascii	"HornRingISR_SetPending\000"
+ 1294      52696E67 
+ 1294      4953525F 
+ 1294      53657450 
+ 1294      656E6469 
+ 1295              	.LASF20:
+ 1296 0200 63796973 		.ascii	"cyisraddress\000"
+ 1296      72616464 
+ 1296      72657373 
+ 1296      00
+ 1297              	.LASF33:
+ 1298 020d 486F726E 		.ascii	"HornRingISR_Stop\000"
+ 1298      52696E67 
+ 1298      4953525F 
+ 1298      53746F70 
+ 1298      00
+ 1299              	.LASF13:
+ 1300 021e 696E7433 		.ascii	"int32_t\000"
+ 1300      325F7400 
+ 1301              	.LASF26:
+ 1302 0226 7072696F 		.ascii	"priority\000"
+ 1302      72697479 
+ 1302      00
+ 1303              	.LASF10:
+ 1304 022f 73697A65 		.ascii	"sizetype\000"
+ 1304      74797065 
+ 1304      00
+ 1305              	.LASF1:
+ 1306 0238 6C6F6E67 		.ascii	"long long int\000"
+ 1306      206C6F6E 
+ 1306      6720696E 
+ 1306      7400
+ 1307              	.LASF11:
+ 1308 0246 63686172 		.ascii	"char\000"
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 33
+
+
+ 1308      00
+ 1309              	.LASF23:
+ 1310 024b 72616D56 		.ascii	"ramVectorTable\000"
+ 1310      6563746F 
+ 1310      72546162 
+ 1310      6C6500
+ 1311              	.LASF5:
+ 1312 025a 73686F72 		.ascii	"short int\000"
+ 1312      7420696E 
+ 1312      7400
+ 1313              	.LASF39:
+ 1314 0264 486F726E 		.ascii	"HornRingISR_GetState\000"
+ 1314      52696E67 
+ 1314      4953525F 
+ 1314      47657453 
+ 1314      74617465 
+ 1315              	.LASF37:
+ 1316 0279 47656E65 		.ascii	"Generated_Source\\PSoC5\\HornRingISR.c\000"
+ 1316      72617465 
+ 1316      645F536F 
+ 1316      75726365 
+ 1316      5C50536F 
+ 1317              	.LASF7:
+ 1318 029e 6C6F6E67 		.ascii	"long int\000"
+ 1318      20696E74 
+ 1318      00
+ 1319              	.LASF2:
+ 1320 02a7 6C6F6E67 		.ascii	"long double\000"
+ 1320      20646F75 
+ 1320      626C6500 
+ 1321              	.LASF3:
+ 1322 02b3 7369676E 		.ascii	"signed char\000"
+ 1322      65642063 
+ 1322      68617200 
+ 1323              	.LASF17:
+ 1324 02bf 646F7562 		.ascii	"double\000"
+ 1324      6C6500
+ 1325              	.LASF38:
+ 1326 02c6 433A5C55 		.ascii	"C:\\Users\\kylep\\Box Sync\\Box Sync\\Box Sync\\Fen"
+ 1326      73657273 
+ 1326      5C6B796C 
+ 1326      65705C42 
+ 1326      6F782053 
+ 1327 02f3 69657820 		.ascii	"iex Electrical Files\\WorkingFolder-Kyle\\F1-Firmwa"
+ 1327      456C6563 
+ 1327      74726963 
+ 1327      616C2046 
+ 1327      696C6573 
+ 1328 0324 72655C46 		.ascii	"re\\Firm-F1Siren200W\\ReleaseVersion.cydsn\000"
+ 1328      69726D2D 
+ 1328      46315369 
+ 1328      72656E32 
+ 1328      3030575C 
+ 1329              	.LASF31:
+ 1330 034d 486F726E 		.ascii	"HornRingISR_Start\000"
+ 1330      52696E67 
+ 1330      4953525F 
+ARM GAS  C:\Users\kylep\AppData\Local\Temp\ccIZdNnK.s 			page 34
+
+
+ 1330      53746172 
+ 1330      7400
+ 1331              	.LASF22:
+ 1332 035f 486F726E 		.ascii	"HornRingISR_SetVector\000"
+ 1332      52696E67 
+ 1332      4953525F 
+ 1332      53657456 
+ 1332      6563746F 
+ 1333              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

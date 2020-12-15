@@ -1,0 +1,3776 @@
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"USBUART_cdc.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.global	USBUART_lineCoding
+  19              		.data
+  20              		.align	2
+  21              		.type	USBUART_lineCoding, %object
+  22              		.size	USBUART_lineCoding, 7
+  23              	USBUART_lineCoding:
+  24 0000 00       		.byte	0
+  25 0001 C2       		.byte	-62
+  26 0002 01       		.byte	1
+  27 0003 00       		.byte	0
+  28 0004 00       		.byte	0
+  29 0005 00       		.byte	0
+  30 0006 08       		.byte	8
+  31              		.comm	USBUART_lineChanged,1,1
+  32              		.comm	USBUART_lineControlBitmap,2,2
+  33              		.comm	USBUART_cdc_data_in_ep,1,1
+  34              		.comm	USBUART_cdc_data_out_ep,1,1
+  35 0007 00       		.section	.text.USBUART_DispatchCDCClassRqst,"ax",%progbits
+  36              		.align	2
+  37              		.global	USBUART_DispatchCDCClassRqst
+  38              		.thumb
+  39              		.thumb_func
+  40              		.type	USBUART_DispatchCDCClassRqst, %function
+  41              	USBUART_DispatchCDCClassRqst:
+  42              	.LFB0:
+  43              		.file 1 ".\\Generated_Source\\PSoC5\\USBUART_cdc.c"
+   1:.\Generated_Source\PSoC5/USBUART_cdc.c **** /*******************************************************************************
+   2:.\Generated_Source\PSoC5/USBUART_cdc.c **** * File Name: USBUART_cdc.c
+   3:.\Generated_Source\PSoC5/USBUART_cdc.c **** * Version 2.80
+   4:.\Generated_Source\PSoC5/USBUART_cdc.c **** *
+   5:.\Generated_Source\PSoC5/USBUART_cdc.c **** * Description:
+   6:.\Generated_Source\PSoC5/USBUART_cdc.c **** *  USB CDC class request handler.
+   7:.\Generated_Source\PSoC5/USBUART_cdc.c **** *
+   8:.\Generated_Source\PSoC5/USBUART_cdc.c **** * Related Document:
+   9:.\Generated_Source\PSoC5/USBUART_cdc.c **** *  Universal Serial Bus Class Definitions for Communication Devices Version 1.1
+  10:.\Generated_Source\PSoC5/USBUART_cdc.c **** *
+  11:.\Generated_Source\PSoC5/USBUART_cdc.c **** ********************************************************************************
+  12:.\Generated_Source\PSoC5/USBUART_cdc.c **** * Copyright 2012-2014, Cypress Semiconductor Corporation.  All rights reserved.
+  13:.\Generated_Source\PSoC5/USBUART_cdc.c **** * You may use this file only in accordance with the license, terms, conditions,
+  14:.\Generated_Source\PSoC5/USBUART_cdc.c **** * disclaimers, and limitations in the end user license agreement accompanying
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 2
+
+
+  15:.\Generated_Source\PSoC5/USBUART_cdc.c **** * the software package with which this file was provided.
+  16:.\Generated_Source\PSoC5/USBUART_cdc.c **** *******************************************************************************/
+  17:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+  18:.\Generated_Source\PSoC5/USBUART_cdc.c **** #include "USBUART.h"
+  19:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+  20:.\Generated_Source\PSoC5/USBUART_cdc.c **** #if defined(USBUART_ENABLE_CDC_CLASS)
+  21:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+  22:.\Generated_Source\PSoC5/USBUART_cdc.c **** #include "USBUART_cdc.h"
+  23:.\Generated_Source\PSoC5/USBUART_cdc.c **** #include "USBUART_pvt.h"
+  24:.\Generated_Source\PSoC5/USBUART_cdc.c **** #include "cyapicallbacks.h"
+  25:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+  26:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+  27:.\Generated_Source\PSoC5/USBUART_cdc.c **** /***************************************
+  28:.\Generated_Source\PSoC5/USBUART_cdc.c **** *    CDC Variables
+  29:.\Generated_Source\PSoC5/USBUART_cdc.c **** ***************************************/
+  30:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+  31:.\Generated_Source\PSoC5/USBUART_cdc.c **** volatile uint8 USBUART_lineCoding[USBUART_LINE_CODING_SIZE] =
+  32:.\Generated_Source\PSoC5/USBUART_cdc.c **** {
+  33:.\Generated_Source\PSoC5/USBUART_cdc.c ****     0x00u, 0xC2u, 0x01u, 0x00u,     /* Data terminal rate 115200 */
+  34:.\Generated_Source\PSoC5/USBUART_cdc.c ****     0x00u,                          /* 1 Stop bit */
+  35:.\Generated_Source\PSoC5/USBUART_cdc.c ****     0x00u,                          /* None parity */
+  36:.\Generated_Source\PSoC5/USBUART_cdc.c ****     0x08u                           /* 8 data bits */
+  37:.\Generated_Source\PSoC5/USBUART_cdc.c **** };
+  38:.\Generated_Source\PSoC5/USBUART_cdc.c **** volatile uint8 USBUART_lineChanged;
+  39:.\Generated_Source\PSoC5/USBUART_cdc.c **** volatile uint16 USBUART_lineControlBitmap;
+  40:.\Generated_Source\PSoC5/USBUART_cdc.c **** volatile uint8 USBUART_cdc_data_in_ep;
+  41:.\Generated_Source\PSoC5/USBUART_cdc.c **** volatile uint8 USBUART_cdc_data_out_ep;
+  42:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+  43:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+  44:.\Generated_Source\PSoC5/USBUART_cdc.c **** /***************************************
+  45:.\Generated_Source\PSoC5/USBUART_cdc.c **** *     Static Function Prototypes
+  46:.\Generated_Source\PSoC5/USBUART_cdc.c **** ***************************************/
+  47:.\Generated_Source\PSoC5/USBUART_cdc.c **** #if (USBUART_ENABLE_CDC_CLASS_API != 0u)
+  48:.\Generated_Source\PSoC5/USBUART_cdc.c ****     static uint16 USBUART_StrLen(const char8 string[]) ;
+  49:.\Generated_Source\PSoC5/USBUART_cdc.c **** #endif /* (USBUART_ENABLE_CDC_CLASS_API != 0u) */
+  50:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+  51:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+  52:.\Generated_Source\PSoC5/USBUART_cdc.c **** /***************************************
+  53:.\Generated_Source\PSoC5/USBUART_cdc.c **** * Custom Declarations
+  54:.\Generated_Source\PSoC5/USBUART_cdc.c **** ***************************************/
+  55:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+  56:.\Generated_Source\PSoC5/USBUART_cdc.c **** /* `#START CDC_CUSTOM_DECLARATIONS` Place your declaration here */
+  57:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+  58:.\Generated_Source\PSoC5/USBUART_cdc.c **** /* `#END` */
+  59:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+  60:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+  61:.\Generated_Source\PSoC5/USBUART_cdc.c **** /*******************************************************************************
+  62:.\Generated_Source\PSoC5/USBUART_cdc.c **** * Function Name: USBUART_DispatchCDCClassRqst
+  63:.\Generated_Source\PSoC5/USBUART_cdc.c **** ********************************************************************************
+  64:.\Generated_Source\PSoC5/USBUART_cdc.c **** *
+  65:.\Generated_Source\PSoC5/USBUART_cdc.c **** * Summary:
+  66:.\Generated_Source\PSoC5/USBUART_cdc.c **** *  This routine dispatches CDC class requests.
+  67:.\Generated_Source\PSoC5/USBUART_cdc.c **** *
+  68:.\Generated_Source\PSoC5/USBUART_cdc.c **** * Parameters:
+  69:.\Generated_Source\PSoC5/USBUART_cdc.c **** *  None.
+  70:.\Generated_Source\PSoC5/USBUART_cdc.c **** *
+  71:.\Generated_Source\PSoC5/USBUART_cdc.c **** * Return:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 3
+
+
+  72:.\Generated_Source\PSoC5/USBUART_cdc.c **** *  requestHandled
+  73:.\Generated_Source\PSoC5/USBUART_cdc.c **** *
+  74:.\Generated_Source\PSoC5/USBUART_cdc.c **** * Global variables:
+  75:.\Generated_Source\PSoC5/USBUART_cdc.c **** *   USBUART_lineCoding: Contains the current line coding structure.
+  76:.\Generated_Source\PSoC5/USBUART_cdc.c **** *     It is set by the Host using SET_LINE_CODING request and returned to the
+  77:.\Generated_Source\PSoC5/USBUART_cdc.c **** *     user code by the USBFS_GetDTERate(), USBFS_GetCharFormat(),
+  78:.\Generated_Source\PSoC5/USBUART_cdc.c **** *     USBFS_GetParityType(), USBFS_GetDataBits() APIs.
+  79:.\Generated_Source\PSoC5/USBUART_cdc.c **** *   USBUART_lineControlBitmap: Contains the current control signal
+  80:.\Generated_Source\PSoC5/USBUART_cdc.c **** *     bitmap. It is set by the Host using SET_CONTROL_LINE request and returned
+  81:.\Generated_Source\PSoC5/USBUART_cdc.c **** *     to the user code by the USBFS_GetLineControl() API.
+  82:.\Generated_Source\PSoC5/USBUART_cdc.c **** *   USBUART_lineChanged: This variable is used as a flag for the
+  83:.\Generated_Source\PSoC5/USBUART_cdc.c **** *     USBFS_IsLineChanged() API, to be aware that Host has been sent request
+  84:.\Generated_Source\PSoC5/USBUART_cdc.c **** *     for changing Line Coding or Control Bitmap.
+  85:.\Generated_Source\PSoC5/USBUART_cdc.c **** *
+  86:.\Generated_Source\PSoC5/USBUART_cdc.c **** * Reentrant:
+  87:.\Generated_Source\PSoC5/USBUART_cdc.c **** *  No.
+  88:.\Generated_Source\PSoC5/USBUART_cdc.c **** *
+  89:.\Generated_Source\PSoC5/USBUART_cdc.c **** *******************************************************************************/
+  90:.\Generated_Source\PSoC5/USBUART_cdc.c **** uint8 USBUART_DispatchCDCClassRqst(void) 
+  91:.\Generated_Source\PSoC5/USBUART_cdc.c **** {
+  44              		.loc 1 91 0
+  45              		.cfi_startproc
+  46              		@ args = 0, pretend = 0, frame = 8
+  47              		@ frame_needed = 1, uses_anonymous_args = 0
+  48 0000 80B5     		push	{r7, lr}
+  49              		.cfi_def_cfa_offset 8
+  50              		.cfi_offset 7, -8
+  51              		.cfi_offset 14, -4
+  52 0002 82B0     		sub	sp, sp, #8
+  53              		.cfi_def_cfa_offset 16
+  54 0004 00AF     		add	r7, sp, #0
+  55              		.cfi_def_cfa_register 7
+  92:.\Generated_Source\PSoC5/USBUART_cdc.c ****     uint8 requestHandled = USBUART_FALSE;
+  56              		.loc 1 92 0
+  57 0006 0023     		movs	r3, #0
+  58 0008 FB71     		strb	r3, [r7, #7]
+  93:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+  94:.\Generated_Source\PSoC5/USBUART_cdc.c ****     if ((CY_GET_REG8(USBUART_bmRequestType) & USBUART_RQST_DIR_MASK) == USBUART_RQST_DIR_D2H)
+  59              		.loc 1 94 0
+  60 000a 294B     		ldr	r3, .L12
+  61 000c 1B78     		ldrb	r3, [r3]
+  62 000e DBB2     		uxtb	r3, r3
+  63 0010 DBB2     		uxtb	r3, r3
+  64 0012 5BB2     		sxtb	r3, r3
+  65 0014 002B     		cmp	r3, #0
+  66 0016 11DA     		bge	.L2
+  95:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {   /* Control Read */
+  96:.\Generated_Source\PSoC5/USBUART_cdc.c ****         switch (CY_GET_REG8(USBUART_bRequest))
+  67              		.loc 1 96 0
+  68 0018 264B     		ldr	r3, .L12+4
+  69 001a 1B78     		ldrb	r3, [r3]
+  70 001c DBB2     		uxtb	r3, r3
+  71 001e 212B     		cmp	r3, #33
+  72 0020 00D0     		beq	.L4
+  97:.\Generated_Source\PSoC5/USBUART_cdc.c ****         {
+  98:.\Generated_Source\PSoC5/USBUART_cdc.c ****             case USBUART_CDC_GET_LINE_CODING:
+  99:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 USBUART_currentTD.count = USBUART_LINE_CODING_SIZE;
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 4
+
+
+ 100:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 USBUART_currentTD.pData = USBUART_lineCoding;
+ 101:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 requestHandled  = USBUART_InitControlRead();
+ 102:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 break;
+ 103:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 104:.\Generated_Source\PSoC5/USBUART_cdc.c ****             /* `#START CDC_READ_REQUESTS` Place other request handler here */
+ 105:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 106:.\Generated_Source\PSoC5/USBUART_cdc.c ****             /* `#END` */
+ 107:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 108:.\Generated_Source\PSoC5/USBUART_cdc.c ****             #ifdef USBUART_DISPATCH_CDC_CLASS_CDC_READ_REQUESTS_CALLBACK
+ 109:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 USBUART_DispatchCDCClass_CDC_READ_REQUESTS_Callback();
+ 110:.\Generated_Source\PSoC5/USBUART_cdc.c ****             #endif /* USBUART_DISPATCH_CDC_CLASS_CDC_READ_REQUESTS_CALLBACK */
+ 111:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 112:.\Generated_Source\PSoC5/USBUART_cdc.c ****             default:    /* requestHandled is initialized as FALSE by default */
+ 113:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 break;
+  73              		.loc 1 113 0
+  74 0022 0AE0     		b	.L5
+  75              	.L4:
+  99:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 USBUART_currentTD.pData = USBUART_lineCoding;
+  76              		.loc 1 99 0
+  77 0024 244B     		ldr	r3, .L12+8
+  78 0026 0722     		movs	r2, #7
+  79 0028 1A80     		strh	r2, [r3]	@ movhi
+ 100:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 requestHandled  = USBUART_InitControlRead();
+  80              		.loc 1 100 0
+  81 002a 234B     		ldr	r3, .L12+8
+  82 002c 234A     		ldr	r2, .L12+12
+  83 002e 5A60     		str	r2, [r3, #4]
+ 101:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 break;
+  84              		.loc 1 101 0
+  85 0030 FFF7FEFF 		bl	USBUART_InitControlRead
+  86 0034 0346     		mov	r3, r0
+  87 0036 FB71     		strb	r3, [r7, #7]
+ 102:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+  88              		.loc 1 102 0
+  89 0038 00BF     		nop
+  90              	.L5:
+  91 003a 34E0     		b	.L6
+  92              	.L2:
+ 114:.\Generated_Source\PSoC5/USBUART_cdc.c ****         }
+ 115:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 116:.\Generated_Source\PSoC5/USBUART_cdc.c ****     else if ((CY_GET_REG8(USBUART_bmRequestType) & USBUART_RQST_DIR_MASK) == \
+  93              		.loc 1 116 0
+  94 003c 1C4B     		ldr	r3, .L12
+  95 003e 1B78     		ldrb	r3, [r3]
+  96 0040 DBB2     		uxtb	r3, r3
+  97 0042 DBB2     		uxtb	r3, r3
+  98 0044 5BB2     		sxtb	r3, r3
+  99 0046 002B     		cmp	r3, #0
+ 100 0048 2DDB     		blt	.L6
+ 117:.\Generated_Source\PSoC5/USBUART_cdc.c ****                                                                             USBUART_RQST_DIR_H2D)
+ 118:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {   /* Control Write */
+ 119:.\Generated_Source\PSoC5/USBUART_cdc.c ****         switch (CY_GET_REG8(USBUART_bRequest))
+ 101              		.loc 1 119 0
+ 102 004a 1A4B     		ldr	r3, .L12+4
+ 103 004c 1B78     		ldrb	r3, [r3]
+ 104 004e DBB2     		uxtb	r3, r3
+ 105 0050 202B     		cmp	r3, #32
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 5
+
+
+ 106 0052 02D0     		beq	.L8
+ 107 0054 222B     		cmp	r3, #34
+ 108 0056 13D0     		beq	.L9
+ 120:.\Generated_Source\PSoC5/USBUART_cdc.c ****         {
+ 121:.\Generated_Source\PSoC5/USBUART_cdc.c ****             case USBUART_CDC_SET_LINE_CODING:
+ 122:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 USBUART_currentTD.count = USBUART_LINE_CODING_SIZE;
+ 123:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 USBUART_currentTD.pData = USBUART_lineCoding;
+ 124:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 USBUART_lineChanged |= USBUART_LINE_CODING_CHANGED;
+ 125:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 requestHandled = USBUART_InitControlWrite();
+ 126:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 break;
+ 127:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 128:.\Generated_Source\PSoC5/USBUART_cdc.c ****             case USBUART_CDC_SET_CONTROL_LINE_STATE:
+ 129:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 USBUART_lineControlBitmap = CY_GET_REG8(USBUART_wValueLo);
+ 130:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 USBUART_lineChanged |= USBUART_LINE_CONTROL_CHANGED;
+ 131:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 requestHandled = USBUART_InitNoDataControlTransfer();
+ 132:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 break;
+ 133:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 134:.\Generated_Source\PSoC5/USBUART_cdc.c ****             /* `#START CDC_WRITE_REQUESTS` Place other request handler here */
+ 135:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 136:.\Generated_Source\PSoC5/USBUART_cdc.c ****             /* `#END` */
+ 137:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 138:.\Generated_Source\PSoC5/USBUART_cdc.c ****             #ifdef USBUART_DISPATCH_CDC_CLASS_CDC_WRITE_REQUESTS_CALLBACK
+ 139:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 USBUART_DispatchCDCClass_CDC_WRITE_REQUESTS_Callback();
+ 140:.\Generated_Source\PSoC5/USBUART_cdc.c ****             #endif /* USBUART_DISPATCH_CDC_CLASS_CDC_WRITE_REQUESTS_CALLBACK */
+ 141:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 142:.\Generated_Source\PSoC5/USBUART_cdc.c ****             default:    /* requestHandled is initialized as FALSE by default */
+ 143:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 break;
+ 109              		.loc 1 143 0
+ 110 0058 25E0     		b	.L10
+ 111              	.L8:
+ 122:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 USBUART_currentTD.pData = USBUART_lineCoding;
+ 112              		.loc 1 122 0
+ 113 005a 174B     		ldr	r3, .L12+8
+ 114 005c 0722     		movs	r2, #7
+ 115 005e 1A80     		strh	r2, [r3]	@ movhi
+ 123:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 USBUART_lineChanged |= USBUART_LINE_CODING_CHANGED;
+ 116              		.loc 1 123 0
+ 117 0060 154B     		ldr	r3, .L12+8
+ 118 0062 164A     		ldr	r2, .L12+12
+ 119 0064 5A60     		str	r2, [r3, #4]
+ 124:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 requestHandled = USBUART_InitControlWrite();
+ 120              		.loc 1 124 0
+ 121 0066 164B     		ldr	r3, .L12+16
+ 122 0068 1B78     		ldrb	r3, [r3]
+ 123 006a DBB2     		uxtb	r3, r3
+ 124 006c 43F00103 		orr	r3, r3, #1
+ 125 0070 DAB2     		uxtb	r2, r3
+ 126 0072 134B     		ldr	r3, .L12+16
+ 127 0074 1A70     		strb	r2, [r3]
+ 125:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 break;
+ 128              		.loc 1 125 0
+ 129 0076 FFF7FEFF 		bl	USBUART_InitControlWrite
+ 130 007a 0346     		mov	r3, r0
+ 131 007c FB71     		strb	r3, [r7, #7]
+ 126:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 132              		.loc 1 126 0
+ 133 007e 12E0     		b	.L10
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 6
+
+
+ 134              	.L9:
+ 129:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 USBUART_lineChanged |= USBUART_LINE_CONTROL_CHANGED;
+ 135              		.loc 1 129 0
+ 136 0080 104B     		ldr	r3, .L12+20
+ 137 0082 1B78     		ldrb	r3, [r3]
+ 138 0084 DBB2     		uxtb	r3, r3
+ 139 0086 9AB2     		uxth	r2, r3
+ 140 0088 0F4B     		ldr	r3, .L12+24
+ 141 008a 1A80     		strh	r2, [r3]	@ movhi
+ 130:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 requestHandled = USBUART_InitNoDataControlTransfer();
+ 142              		.loc 1 130 0
+ 143 008c 0C4B     		ldr	r3, .L12+16
+ 144 008e 1B78     		ldrb	r3, [r3]
+ 145 0090 DBB2     		uxtb	r3, r3
+ 146 0092 43F00203 		orr	r3, r3, #2
+ 147 0096 DAB2     		uxtb	r2, r3
+ 148 0098 094B     		ldr	r3, .L12+16
+ 149 009a 1A70     		strb	r2, [r3]
+ 131:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 break;
+ 150              		.loc 1 131 0
+ 151 009c FFF7FEFF 		bl	USBUART_InitNoDataControlTransfer
+ 152 00a0 0346     		mov	r3, r0
+ 153 00a2 FB71     		strb	r3, [r7, #7]
+ 132:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 154              		.loc 1 132 0
+ 155 00a4 00BF     		nop
+ 156              	.L10:
+ 157              	.L6:
+ 144:.\Generated_Source\PSoC5/USBUART_cdc.c ****         }
+ 145:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 146:.\Generated_Source\PSoC5/USBUART_cdc.c ****     else
+ 147:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {   /* requestHandled is initialized as FALSE by default */
+ 148:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 149:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 150:.\Generated_Source\PSoC5/USBUART_cdc.c ****     return(requestHandled);
+ 158              		.loc 1 150 0
+ 159 00a6 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 151:.\Generated_Source\PSoC5/USBUART_cdc.c **** }
+ 160              		.loc 1 151 0
+ 161 00a8 1846     		mov	r0, r3
+ 162 00aa 0837     		adds	r7, r7, #8
+ 163              		.cfi_def_cfa_offset 8
+ 164 00ac BD46     		mov	sp, r7
+ 165              		.cfi_def_cfa_register 13
+ 166              		@ sp needed
+ 167 00ae 80BD     		pop	{r7, pc}
+ 168              	.L13:
+ 169              		.align	2
+ 170              	.L12:
+ 171 00b0 00600040 		.word	1073766400
+ 172 00b4 01600040 		.word	1073766401
+ 173 00b8 00000000 		.word	USBUART_currentTD
+ 174 00bc 00000000 		.word	USBUART_lineCoding
+ 175 00c0 00000000 		.word	USBUART_lineChanged
+ 176 00c4 02600040 		.word	1073766402
+ 177 00c8 00000000 		.word	USBUART_lineControlBitmap
+ 178              		.cfi_endproc
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 7
+
+
+ 179              	.LFE0:
+ 180              		.size	USBUART_DispatchCDCClassRqst, .-USBUART_DispatchCDCClassRqst
+ 181              		.section	.text.USBUART_CDC_Init,"ax",%progbits
+ 182              		.align	2
+ 183              		.global	USBUART_CDC_Init
+ 184              		.thumb
+ 185              		.thumb_func
+ 186              		.type	USBUART_CDC_Init, %function
+ 187              	USBUART_CDC_Init:
+ 188              	.LFB1:
+ 152:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 153:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 154:.\Generated_Source\PSoC5/USBUART_cdc.c **** /***************************************
+ 155:.\Generated_Source\PSoC5/USBUART_cdc.c **** * Optional CDC APIs
+ 156:.\Generated_Source\PSoC5/USBUART_cdc.c **** ***************************************/
+ 157:.\Generated_Source\PSoC5/USBUART_cdc.c **** #if (USBUART_ENABLE_CDC_CLASS_API != 0u)
+ 158:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 159:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 160:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_CDC_Init
+ 161:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 162:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 163:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 164:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  This function initialize the CDC interface to be ready for the receive data
+ 165:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  from the PC.
+ 166:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 167:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 168:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 169:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 170:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 171:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 172:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 173:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 174:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *   USBUART_lineChanged: Initialized to zero.
+ 175:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *   USBUART_cdc_data_out_ep: Used as an OUT endpoint number.
+ 176:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 177:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Reentrant:
+ 178:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  No.
+ 179:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 180:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 181:.\Generated_Source\PSoC5/USBUART_cdc.c ****     void USBUART_CDC_Init(void) 
+ 182:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 189              		.loc 1 182 0
+ 190              		.cfi_startproc
+ 191              		@ args = 0, pretend = 0, frame = 0
+ 192              		@ frame_needed = 1, uses_anonymous_args = 0
+ 193 0000 80B5     		push	{r7, lr}
+ 194              		.cfi_def_cfa_offset 8
+ 195              		.cfi_offset 7, -8
+ 196              		.cfi_offset 14, -4
+ 197 0002 00AF     		add	r7, sp, #0
+ 198              		.cfi_def_cfa_register 7
+ 183:.\Generated_Source\PSoC5/USBUART_cdc.c ****         USBUART_lineChanged = 0u;
+ 199              		.loc 1 183 0
+ 200 0004 044B     		ldr	r3, .L15
+ 201 0006 0022     		movs	r2, #0
+ 202 0008 1A70     		strb	r2, [r3]
+ 184:.\Generated_Source\PSoC5/USBUART_cdc.c ****         USBUART_EnableOutEP(USBUART_cdc_data_out_ep);
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 8
+
+
+ 203              		.loc 1 184 0
+ 204 000a 044B     		ldr	r3, .L15+4
+ 205 000c 1B78     		ldrb	r3, [r3]
+ 206 000e DBB2     		uxtb	r3, r3
+ 207 0010 1846     		mov	r0, r3
+ 208 0012 FFF7FEFF 		bl	USBUART_EnableOutEP
+ 185:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 209              		.loc 1 185 0
+ 210 0016 80BD     		pop	{r7, pc}
+ 211              	.L16:
+ 212              		.align	2
+ 213              	.L15:
+ 214 0018 00000000 		.word	USBUART_lineChanged
+ 215 001c 00000000 		.word	USBUART_cdc_data_out_ep
+ 216              		.cfi_endproc
+ 217              	.LFE1:
+ 218              		.size	USBUART_CDC_Init, .-USBUART_CDC_Init
+ 219              		.section	.text.USBUART_PutData,"ax",%progbits
+ 220              		.align	2
+ 221              		.global	USBUART_PutData
+ 222              		.thumb
+ 223              		.thumb_func
+ 224              		.type	USBUART_PutData, %function
+ 225              	USBUART_PutData:
+ 226              	.LFB2:
+ 186:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 187:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 188:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 189:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_PutData
+ 190:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 191:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 192:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 193:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  This function sends a specified number of bytes from the location specified
+ 194:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  by a pointer to the PC. The USBUART_CDCIsReady() function should be
+ 195:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  called before sending new data, to be sure that the previous data has
+ 196:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  finished sending.
+ 197:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  If the last sent packet is less than maximum packet size the USB transfer
+ 198:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  of this short packet will identify the end of the segment. If the last sent
+ 199:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  packet is exactly maximum packet size, it shall be followed by a zero-length
+ 200:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  packet (which is a short packet) to assure the end of segment is properly
+ 201:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  identified. To send zero-length packet, use USBUART_PutData() API
+ 202:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  with length parameter set to zero.
+ 203:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 204:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 205:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  pData: pointer to the buffer containing data to be sent.
+ 206:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  length: Specifies the number of bytes to send from the pData
+ 207:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  buffer. Maximum length will be limited by the maximum packet
+ 208:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  size for the endpoint. Data will be lost if length is greater than Max
+ 209:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Packet Size.
+ 210:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 211:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 212:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 213:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 214:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 215:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *   USBUART_cdc_data_in_ep: CDC IN endpoint number used for sending
+ 216:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *     data.
+ 217:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 9
+
+
+ 218:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Reentrant:
+ 219:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  No.
+ 220:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 221:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 222:.\Generated_Source\PSoC5/USBUART_cdc.c ****     void USBUART_PutData(const uint8* pData, uint16 length) 
+ 223:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 227              		.loc 1 223 0
+ 228              		.cfi_startproc
+ 229              		@ args = 0, pretend = 0, frame = 8
+ 230              		@ frame_needed = 1, uses_anonymous_args = 0
+ 231 0000 80B5     		push	{r7, lr}
+ 232              		.cfi_def_cfa_offset 8
+ 233              		.cfi_offset 7, -8
+ 234              		.cfi_offset 14, -4
+ 235 0002 82B0     		sub	sp, sp, #8
+ 236              		.cfi_def_cfa_offset 16
+ 237 0004 00AF     		add	r7, sp, #0
+ 238              		.cfi_def_cfa_register 7
+ 239 0006 7860     		str	r0, [r7, #4]
+ 240 0008 0B46     		mov	r3, r1
+ 241 000a 7B80     		strh	r3, [r7, #2]	@ movhi
+ 224:.\Generated_Source\PSoC5/USBUART_cdc.c ****         /* Limits length to maximum packet size for the EP */
+ 225:.\Generated_Source\PSoC5/USBUART_cdc.c ****         if(length > USBUART_EP[USBUART_cdc_data_in_ep].bufferSize)
+ 242              		.loc 1 225 0
+ 243 000c 144B     		ldr	r3, .L19
+ 244 000e 1B78     		ldrb	r3, [r3]
+ 245 0010 DBB2     		uxtb	r3, r3
+ 246 0012 1946     		mov	r1, r3
+ 247 0014 134A     		ldr	r2, .L19+4
+ 248 0016 0B46     		mov	r3, r1
+ 249 0018 5B00     		lsls	r3, r3, #1
+ 250 001a 0B44     		add	r3, r3, r1
+ 251 001c 9B00     		lsls	r3, r3, #2
+ 252 001e 1344     		add	r3, r3, r2
+ 253 0020 0833     		adds	r3, r3, #8
+ 254 0022 1B88     		ldrh	r3, [r3]	@ movhi
+ 255 0024 9BB2     		uxth	r3, r3
+ 256 0026 7A88     		ldrh	r2, [r7, #2]
+ 257 0028 9A42     		cmp	r2, r3
+ 258 002a 0CD9     		bls	.L18
+ 226:.\Generated_Source\PSoC5/USBUART_cdc.c ****         {
+ 227:.\Generated_Source\PSoC5/USBUART_cdc.c ****             /* Caution: Data will be lost if length is greater than Max Packet Length */
+ 228:.\Generated_Source\PSoC5/USBUART_cdc.c ****             length = USBUART_EP[USBUART_cdc_data_in_ep].bufferSize;
+ 259              		.loc 1 228 0
+ 260 002c 0C4B     		ldr	r3, .L19
+ 261 002e 1B78     		ldrb	r3, [r3]
+ 262 0030 DBB2     		uxtb	r3, r3
+ 263 0032 1946     		mov	r1, r3
+ 264 0034 0B4A     		ldr	r2, .L19+4
+ 265 0036 0B46     		mov	r3, r1
+ 266 0038 5B00     		lsls	r3, r3, #1
+ 267 003a 0B44     		add	r3, r3, r1
+ 268 003c 9B00     		lsls	r3, r3, #2
+ 269 003e 1344     		add	r3, r3, r2
+ 270 0040 0833     		adds	r3, r3, #8
+ 271 0042 1B88     		ldrh	r3, [r3]	@ movhi
+ 272 0044 7B80     		strh	r3, [r7, #2]	@ movhi
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 10
+
+
+ 273              	.L18:
+ 229:.\Generated_Source\PSoC5/USBUART_cdc.c ****              /* Halt CPU in debug mode */
+ 230:.\Generated_Source\PSoC5/USBUART_cdc.c ****             CYASSERT(0u != 0u);
+ 231:.\Generated_Source\PSoC5/USBUART_cdc.c ****         }
+ 232:.\Generated_Source\PSoC5/USBUART_cdc.c ****         USBUART_LoadInEP(USBUART_cdc_data_in_ep, pData, length);
+ 274              		.loc 1 232 0
+ 275 0046 064B     		ldr	r3, .L19
+ 276 0048 1B78     		ldrb	r3, [r3]
+ 277 004a DAB2     		uxtb	r2, r3
+ 278 004c 7B88     		ldrh	r3, [r7, #2]
+ 279 004e 1046     		mov	r0, r2
+ 280 0050 7968     		ldr	r1, [r7, #4]
+ 281 0052 1A46     		mov	r2, r3
+ 282 0054 FFF7FEFF 		bl	USBUART_LoadInEP
+ 233:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 283              		.loc 1 233 0
+ 284 0058 0837     		adds	r7, r7, #8
+ 285              		.cfi_def_cfa_offset 8
+ 286 005a BD46     		mov	sp, r7
+ 287              		.cfi_def_cfa_register 13
+ 288              		@ sp needed
+ 289 005c 80BD     		pop	{r7, pc}
+ 290              	.L20:
+ 291 005e 00BF     		.align	2
+ 292              	.L19:
+ 293 0060 00000000 		.word	USBUART_cdc_data_in_ep
+ 294 0064 00000000 		.word	USBUART_EP
+ 295              		.cfi_endproc
+ 296              	.LFE2:
+ 297              		.size	USBUART_PutData, .-USBUART_PutData
+ 298              		.section	.text.USBUART_StrLen,"ax",%progbits
+ 299              		.align	2
+ 300              		.thumb
+ 301              		.thumb_func
+ 302              		.type	USBUART_StrLen, %function
+ 303              	USBUART_StrLen:
+ 304              	.LFB3:
+ 234:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 235:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 236:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 237:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_StrLen
+ 238:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 239:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 240:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 241:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Calculates length of a null terminated string.
+ 242:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 243:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 244:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  string: pointer to the string.
+ 245:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 246:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 247:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Length of the string
+ 248:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 249:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 250:.\Generated_Source\PSoC5/USBUART_cdc.c ****     static uint16 USBUART_StrLen(const char8 string[]) 
+ 251:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 305              		.loc 1 251 0
+ 306              		.cfi_startproc
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 11
+
+
+ 307              		@ args = 0, pretend = 0, frame = 16
+ 308              		@ frame_needed = 1, uses_anonymous_args = 0
+ 309              		@ link register save eliminated.
+ 310 0000 80B4     		push	{r7}
+ 311              		.cfi_def_cfa_offset 4
+ 312              		.cfi_offset 7, -4
+ 313 0002 85B0     		sub	sp, sp, #20
+ 314              		.cfi_def_cfa_offset 24
+ 315 0004 00AF     		add	r7, sp, #0
+ 316              		.cfi_def_cfa_register 7
+ 317 0006 7860     		str	r0, [r7, #4]
+ 252:.\Generated_Source\PSoC5/USBUART_cdc.c ****         uint16 len = 0u;
+ 318              		.loc 1 252 0
+ 319 0008 0023     		movs	r3, #0
+ 320 000a FB81     		strh	r3, [r7, #14]	@ movhi
+ 253:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 254:.\Generated_Source\PSoC5/USBUART_cdc.c ****         while (string[len] != (char8)0)
+ 321              		.loc 1 254 0
+ 322 000c 02E0     		b	.L22
+ 323              	.L23:
+ 255:.\Generated_Source\PSoC5/USBUART_cdc.c ****         {
+ 256:.\Generated_Source\PSoC5/USBUART_cdc.c ****             len++;
+ 324              		.loc 1 256 0
+ 325 000e FB89     		ldrh	r3, [r7, #14]
+ 326 0010 0133     		adds	r3, r3, #1
+ 327 0012 FB81     		strh	r3, [r7, #14]	@ movhi
+ 328              	.L22:
+ 254:.\Generated_Source\PSoC5/USBUART_cdc.c ****         {
+ 329              		.loc 1 254 0
+ 330 0014 FB89     		ldrh	r3, [r7, #14]
+ 331 0016 7A68     		ldr	r2, [r7, #4]
+ 332 0018 1344     		add	r3, r3, r2
+ 333 001a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 334 001c 002B     		cmp	r3, #0
+ 335 001e F6D1     		bne	.L23
+ 257:.\Generated_Source\PSoC5/USBUART_cdc.c ****         }
+ 258:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 259:.\Generated_Source\PSoC5/USBUART_cdc.c ****         return (len);
+ 336              		.loc 1 259 0
+ 337 0020 FB89     		ldrh	r3, [r7, #14]
+ 260:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 338              		.loc 1 260 0
+ 339 0022 1846     		mov	r0, r3
+ 340 0024 1437     		adds	r7, r7, #20
+ 341              		.cfi_def_cfa_offset 4
+ 342 0026 BD46     		mov	sp, r7
+ 343              		.cfi_def_cfa_register 13
+ 344              		@ sp needed
+ 345 0028 5DF8047B 		ldr	r7, [sp], #4
+ 346              		.cfi_restore 7
+ 347              		.cfi_def_cfa_offset 0
+ 348 002c 7047     		bx	lr
+ 349              		.cfi_endproc
+ 350              	.LFE3:
+ 351              		.size	USBUART_StrLen, .-USBUART_StrLen
+ 352 002e 00BF     		.section	.text.USBUART_PutString,"ax",%progbits
+ 353              		.align	2
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 12
+
+
+ 354              		.global	USBUART_PutString
+ 355              		.thumb
+ 356              		.thumb_func
+ 357              		.type	USBUART_PutString, %function
+ 358              	USBUART_PutString:
+ 359              	.LFB4:
+ 261:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 262:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 263:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 264:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_PutString
+ 265:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 266:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 267:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 268:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  This function sends a null terminated string to the PC. This function will
+ 269:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  block if there is not enough memory to place the whole string. It will block
+ 270:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  until the entire string has been written to the transmit buffer.
+ 271:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  The USBUART_CDCIsReady() function should be called before sending data with
+ 272:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  a new call to USBUART_PutString(), to be sure that the previous data
+ 273:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  has finished sending.
+ 274:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 275:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 276:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  string: pointer to the string to be sent to the PC.
+ 277:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 278:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 279:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 280:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 281:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 282:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *   USBUART_cdc_data_in_ep: CDC IN endpoint number used for sending
+ 283:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *     data.
+ 284:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 285:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Reentrant:
+ 286:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  No.
+ 287:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 288:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 289:.\Generated_Source\PSoC5/USBUART_cdc.c ****     void USBUART_PutString(const char8 string[]) 
+ 290:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 360              		.loc 1 290 0
+ 361              		.cfi_startproc
+ 362              		@ args = 0, pretend = 0, frame = 16
+ 363              		@ frame_needed = 1, uses_anonymous_args = 0
+ 364 0000 80B5     		push	{r7, lr}
+ 365              		.cfi_def_cfa_offset 8
+ 366              		.cfi_offset 7, -8
+ 367              		.cfi_offset 14, -4
+ 368 0002 84B0     		sub	sp, sp, #16
+ 369              		.cfi_def_cfa_offset 24
+ 370 0004 00AF     		add	r7, sp, #0
+ 371              		.cfi_def_cfa_register 7
+ 372 0006 7860     		str	r0, [r7, #4]
+ 291:.\Generated_Source\PSoC5/USBUART_cdc.c ****         uint16 strLength;
+ 292:.\Generated_Source\PSoC5/USBUART_cdc.c ****         uint16 sendLength;
+ 293:.\Generated_Source\PSoC5/USBUART_cdc.c ****         uint16 bufIndex = 0u;
+ 373              		.loc 1 293 0
+ 374 0008 0023     		movs	r3, #0
+ 375 000a BB81     		strh	r3, [r7, #12]	@ movhi
+ 294:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 295:.\Generated_Source\PSoC5/USBUART_cdc.c ****         /* Get length of the null terminated string */
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 13
+
+
+ 296:.\Generated_Source\PSoC5/USBUART_cdc.c ****         strLength = USBUART_StrLen(string);
+ 376              		.loc 1 296 0
+ 377 000c 7868     		ldr	r0, [r7, #4]
+ 378 000e FFF7FEFF 		bl	USBUART_StrLen
+ 379 0012 0346     		mov	r3, r0
+ 380 0014 FB81     		strh	r3, [r7, #14]	@ movhi
+ 381              	.L31:
+ 297:.\Generated_Source\PSoC5/USBUART_cdc.c ****         do
+ 298:.\Generated_Source\PSoC5/USBUART_cdc.c ****         {
+ 299:.\Generated_Source\PSoC5/USBUART_cdc.c ****             /* Limits length to maximum packet size for the EP */
+ 300:.\Generated_Source\PSoC5/USBUART_cdc.c ****             sendLength = (strLength > USBUART_EP[USBUART_cdc_data_in_ep].bufferSize) ?
+ 382              		.loc 1 300 0
+ 383 0016 334B     		ldr	r3, .L32
+ 384 0018 1B78     		ldrb	r3, [r3]
+ 385 001a DBB2     		uxtb	r3, r3
+ 386 001c 1946     		mov	r1, r3
+ 387 001e 324A     		ldr	r2, .L32+4
+ 388 0020 0B46     		mov	r3, r1
+ 389 0022 5B00     		lsls	r3, r3, #1
+ 390 0024 0B44     		add	r3, r3, r1
+ 391 0026 9B00     		lsls	r3, r3, #2
+ 392 0028 1344     		add	r3, r3, r2
+ 393 002a 0833     		adds	r3, r3, #8
+ 394 002c 1B88     		ldrh	r3, [r3]	@ movhi
+ 395 002e 9BB2     		uxth	r3, r3
+ 396 0030 FA89     		ldrh	r2, [r7, #14]
+ 397 0032 9A42     		cmp	r2, r3
+ 398 0034 0DD9     		bls	.L26
+ 301:.\Generated_Source\PSoC5/USBUART_cdc.c ****                           USBUART_EP[USBUART_cdc_data_in_ep].bufferSize : strLength;
+ 399              		.loc 1 301 0 discriminator 1
+ 400 0036 2B4B     		ldr	r3, .L32
+ 401 0038 1B78     		ldrb	r3, [r3]
+ 402 003a DBB2     		uxtb	r3, r3
+ 403 003c 1946     		mov	r1, r3
+ 300:.\Generated_Source\PSoC5/USBUART_cdc.c ****                           USBUART_EP[USBUART_cdc_data_in_ep].bufferSize : strLength;
+ 404              		.loc 1 300 0 discriminator 1
+ 405 003e 2A4A     		ldr	r2, .L32+4
+ 406 0040 0B46     		mov	r3, r1
+ 407 0042 5B00     		lsls	r3, r3, #1
+ 408 0044 0B44     		add	r3, r3, r1
+ 409 0046 9B00     		lsls	r3, r3, #2
+ 410 0048 1344     		add	r3, r3, r2
+ 411 004a 0833     		adds	r3, r3, #8
+ 412 004c 1B88     		ldrh	r3, [r3]	@ movhi
+ 413 004e 9BB2     		uxth	r3, r3
+ 414 0050 00E0     		b	.L27
+ 415              	.L26:
+ 300:.\Generated_Source\PSoC5/USBUART_cdc.c ****                           USBUART_EP[USBUART_cdc_data_in_ep].bufferSize : strLength;
+ 416              		.loc 1 300 0 is_stmt 0 discriminator 2
+ 417 0052 FB89     		ldrh	r3, [r7, #14]
+ 418              	.L27:
+ 300:.\Generated_Source\PSoC5/USBUART_cdc.c ****                           USBUART_EP[USBUART_cdc_data_in_ep].bufferSize : strLength;
+ 419              		.loc 1 300 0 discriminator 4
+ 420 0054 7B81     		strh	r3, [r7, #10]	@ movhi
+ 302:.\Generated_Source\PSoC5/USBUART_cdc.c ****              /* Enable IN transfer */
+ 303:.\Generated_Source\PSoC5/USBUART_cdc.c ****             USBUART_LoadInEP(USBUART_cdc_data_in_ep, (const uint8 *)&string[bufIndex], sendLength);
+ 421              		.loc 1 303 0 is_stmt 1 discriminator 4
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 14
+
+
+ 422 0056 234B     		ldr	r3, .L32
+ 423 0058 1B78     		ldrb	r3, [r3]
+ 424 005a D9B2     		uxtb	r1, r3
+ 425 005c BB89     		ldrh	r3, [r7, #12]
+ 426 005e 7A68     		ldr	r2, [r7, #4]
+ 427 0060 1A44     		add	r2, r2, r3
+ 428 0062 7B89     		ldrh	r3, [r7, #10]
+ 429 0064 0846     		mov	r0, r1
+ 430 0066 1146     		mov	r1, r2
+ 431 0068 1A46     		mov	r2, r3
+ 432 006a FFF7FEFF 		bl	USBUART_LoadInEP
+ 304:.\Generated_Source\PSoC5/USBUART_cdc.c ****             strLength -= sendLength;
+ 433              		.loc 1 304 0 discriminator 4
+ 434 006e FA89     		ldrh	r2, [r7, #14]	@ movhi
+ 435 0070 7B89     		ldrh	r3, [r7, #10]	@ movhi
+ 436 0072 D31A     		subs	r3, r2, r3
+ 437 0074 FB81     		strh	r3, [r7, #14]	@ movhi
+ 305:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 306:.\Generated_Source\PSoC5/USBUART_cdc.c ****             /* If more data are present to send or full packet was sent */
+ 307:.\Generated_Source\PSoC5/USBUART_cdc.c ****             if((strLength > 0u) || (sendLength == USBUART_EP[USBUART_cdc_data_in_ep].bufferSize))
+ 438              		.loc 1 307 0 discriminator 4
+ 439 0076 FB89     		ldrh	r3, [r7, #14]
+ 440 0078 002B     		cmp	r3, #0
+ 441 007a 0FD1     		bne	.L28
+ 442              		.loc 1 307 0 is_stmt 0 discriminator 1
+ 443 007c 194B     		ldr	r3, .L32
+ 444 007e 1B78     		ldrb	r3, [r3]
+ 445 0080 DBB2     		uxtb	r3, r3
+ 446 0082 1946     		mov	r1, r3
+ 447 0084 184A     		ldr	r2, .L32+4
+ 448 0086 0B46     		mov	r3, r1
+ 449 0088 5B00     		lsls	r3, r3, #1
+ 450 008a 0B44     		add	r3, r3, r1
+ 451 008c 9B00     		lsls	r3, r3, #2
+ 452 008e 1344     		add	r3, r3, r2
+ 453 0090 0833     		adds	r3, r3, #8
+ 454 0092 1B88     		ldrh	r3, [r3]	@ movhi
+ 455 0094 9BB2     		uxth	r3, r3
+ 456 0096 7A89     		ldrh	r2, [r7, #10]
+ 457 0098 9A42     		cmp	r2, r3
+ 458 009a 1DD1     		bne	.L29
+ 459              	.L28:
+ 308:.\Generated_Source\PSoC5/USBUART_cdc.c ****             {
+ 309:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 bufIndex += sendLength;
+ 460              		.loc 1 309 0 is_stmt 1
+ 461 009c BA89     		ldrh	r2, [r7, #12]	@ movhi
+ 462 009e 7B89     		ldrh	r3, [r7, #10]	@ movhi
+ 463 00a0 1344     		add	r3, r3, r2
+ 464 00a2 BB81     		strh	r3, [r7, #12]	@ movhi
+ 310:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 /* Wait for the Host to read it. */
+ 311:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 while(USBUART_EP[USBUART_cdc_data_in_ep].apiEpState ==
+ 465              		.loc 1 311 0
+ 466 00a4 00BF     		nop
+ 467              	.L30:
+ 468              		.loc 1 311 0 is_stmt 0 discriminator 1
+ 469 00a6 0F4B     		ldr	r3, .L32
+ 470 00a8 1B78     		ldrb	r3, [r3]
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 15
+
+
+ 471 00aa DBB2     		uxtb	r3, r3
+ 472 00ac 1946     		mov	r1, r3
+ 473 00ae 0E4A     		ldr	r2, .L32+4
+ 474 00b0 0B46     		mov	r3, r1
+ 475 00b2 5B00     		lsls	r3, r3, #1
+ 476 00b4 0B44     		add	r3, r3, r1
+ 477 00b6 9B00     		lsls	r3, r3, #2
+ 478 00b8 1344     		add	r3, r3, r2
+ 479 00ba 5B78     		ldrb	r3, [r3, #1]
+ 480 00bc DBB2     		uxtb	r3, r3
+ 481 00be 002B     		cmp	r3, #0
+ 482 00c0 F1D0     		beq	.L30
+ 312:.\Generated_Source\PSoC5/USBUART_cdc.c ****                                           USBUART_IN_BUFFER_FULL)
+ 313:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 {
+ 314:.\Generated_Source\PSoC5/USBUART_cdc.c ****                     ;
+ 315:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 }
+ 316:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 /* If the last sent packet is exactly maximum packet size,
+ 317:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 *  it shall be followed by a zero-length packet to assure the
+ 318:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 *  end of segment is properly identified by the terminal.
+ 319:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 */
+ 320:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 if(strLength == 0u)
+ 483              		.loc 1 320 0 is_stmt 1
+ 484 00c2 FB89     		ldrh	r3, [r7, #14]
+ 485 00c4 002B     		cmp	r3, #0
+ 486 00c6 07D1     		bne	.L29
+ 321:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 {
+ 322:.\Generated_Source\PSoC5/USBUART_cdc.c ****                     USBUART_LoadInEP(USBUART_cdc_data_in_ep, NULL, 0u);
+ 487              		.loc 1 322 0
+ 488 00c8 064B     		ldr	r3, .L32
+ 489 00ca 1B78     		ldrb	r3, [r3]
+ 490 00cc DBB2     		uxtb	r3, r3
+ 491 00ce 1846     		mov	r0, r3
+ 492 00d0 0021     		movs	r1, #0
+ 493 00d2 0022     		movs	r2, #0
+ 494 00d4 FFF7FEFF 		bl	USBUART_LoadInEP
+ 495              	.L29:
+ 323:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 }
+ 324:.\Generated_Source\PSoC5/USBUART_cdc.c ****             }
+ 325:.\Generated_Source\PSoC5/USBUART_cdc.c ****         }while(strLength > 0u);
+ 496              		.loc 1 325 0
+ 497 00d8 FB89     		ldrh	r3, [r7, #14]
+ 498 00da 002B     		cmp	r3, #0
+ 499 00dc 9BD1     		bne	.L31
+ 326:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 500              		.loc 1 326 0
+ 501 00de 1037     		adds	r7, r7, #16
+ 502              		.cfi_def_cfa_offset 8
+ 503 00e0 BD46     		mov	sp, r7
+ 504              		.cfi_def_cfa_register 13
+ 505              		@ sp needed
+ 506 00e2 80BD     		pop	{r7, pc}
+ 507              	.L33:
+ 508              		.align	2
+ 509              	.L32:
+ 510 00e4 00000000 		.word	USBUART_cdc_data_in_ep
+ 511 00e8 00000000 		.word	USBUART_EP
+ 512              		.cfi_endproc
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 16
+
+
+ 513              	.LFE4:
+ 514              		.size	USBUART_PutString, .-USBUART_PutString
+ 515              		.section	.text.USBUART_PutChar,"ax",%progbits
+ 516              		.align	2
+ 517              		.global	USBUART_PutChar
+ 518              		.thumb
+ 519              		.thumb_func
+ 520              		.type	USBUART_PutChar, %function
+ 521              	USBUART_PutChar:
+ 522              	.LFB5:
+ 327:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 328:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 329:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 330:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_PutChar
+ 331:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 332:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 333:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 334:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Writes a single character to the PC.
+ 335:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 336:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 337:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  txDataByte: Character to be sent to the PC.
+ 338:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 339:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 340:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 341:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 342:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 343:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *   USBUART_cdc_data_in_ep: CDC IN endpoint number used for sending
+ 344:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *     data.
+ 345:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 346:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Reentrant:
+ 347:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  No.
+ 348:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 349:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 350:.\Generated_Source\PSoC5/USBUART_cdc.c ****     void USBUART_PutChar(char8 txDataByte) 
+ 351:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 523              		.loc 1 351 0
+ 524              		.cfi_startproc
+ 525              		@ args = 0, pretend = 0, frame = 16
+ 526              		@ frame_needed = 1, uses_anonymous_args = 0
+ 527 0000 80B5     		push	{r7, lr}
+ 528              		.cfi_def_cfa_offset 8
+ 529              		.cfi_offset 7, -8
+ 530              		.cfi_offset 14, -4
+ 531 0002 84B0     		sub	sp, sp, #16
+ 532              		.cfi_def_cfa_offset 24
+ 533 0004 00AF     		add	r7, sp, #0
+ 534              		.cfi_def_cfa_register 7
+ 535 0006 0346     		mov	r3, r0
+ 536 0008 FB71     		strb	r3, [r7, #7]
+ 352:.\Generated_Source\PSoC5/USBUART_cdc.c ****         uint8 dataByte;
+ 353:.\Generated_Source\PSoC5/USBUART_cdc.c ****         dataByte = (uint8)txDataByte;
+ 537              		.loc 1 353 0
+ 538 000a FB79     		ldrb	r3, [r7, #7]
+ 539 000c FB73     		strb	r3, [r7, #15]
+ 354:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 355:.\Generated_Source\PSoC5/USBUART_cdc.c ****         USBUART_LoadInEP(USBUART_cdc_data_in_ep, &dataByte, 1u);
+ 540              		.loc 1 355 0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 17
+
+
+ 541 000e 064B     		ldr	r3, .L35
+ 542 0010 1B78     		ldrb	r3, [r3]
+ 543 0012 DAB2     		uxtb	r2, r3
+ 544 0014 07F10F03 		add	r3, r7, #15
+ 545 0018 1046     		mov	r0, r2
+ 546 001a 1946     		mov	r1, r3
+ 547 001c 0122     		movs	r2, #1
+ 548 001e FFF7FEFF 		bl	USBUART_LoadInEP
+ 356:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 549              		.loc 1 356 0
+ 550 0022 1037     		adds	r7, r7, #16
+ 551              		.cfi_def_cfa_offset 8
+ 552 0024 BD46     		mov	sp, r7
+ 553              		.cfi_def_cfa_register 13
+ 554              		@ sp needed
+ 555 0026 80BD     		pop	{r7, pc}
+ 556              	.L36:
+ 557              		.align	2
+ 558              	.L35:
+ 559 0028 00000000 		.word	USBUART_cdc_data_in_ep
+ 560              		.cfi_endproc
+ 561              	.LFE5:
+ 562              		.size	USBUART_PutChar, .-USBUART_PutChar
+ 563              		.section	.rodata
+ 564              		.align	2
+ 565              	.LC0:
+ 566 0000 0D       		.byte	13
+ 567 0001 0A       		.byte	10
+ 568 0002 0000     		.section	.text.USBUART_PutCRLF,"ax",%progbits
+ 569              		.align	2
+ 570              		.global	USBUART_PutCRLF
+ 571              		.thumb
+ 572              		.thumb_func
+ 573              		.type	USBUART_PutCRLF, %function
+ 574              	USBUART_PutCRLF:
+ 575              	.LFB6:
+ 357:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 358:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 359:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 360:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_PutCRLF
+ 361:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 362:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 363:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 364:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Sends a carriage return (0x0D) and line feed (0x0A) to the PC
+ 365:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 366:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 367:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 368:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 369:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 370:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 371:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 372:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 373:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *   USBUART_cdc_data_in_ep: CDC IN endpoint number used for sending
+ 374:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *     data.
+ 375:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 376:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Reentrant:
+ 377:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  No.
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 18
+
+
+ 378:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 379:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 380:.\Generated_Source\PSoC5/USBUART_cdc.c ****     void USBUART_PutCRLF(void) 
+ 381:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 576              		.loc 1 381 0
+ 577              		.cfi_startproc
+ 578              		@ args = 0, pretend = 0, frame = 8
+ 579              		@ frame_needed = 1, uses_anonymous_args = 0
+ 580 0000 80B5     		push	{r7, lr}
+ 581              		.cfi_def_cfa_offset 8
+ 582              		.cfi_offset 7, -8
+ 583              		.cfi_offset 14, -4
+ 584 0002 82B0     		sub	sp, sp, #8
+ 585              		.cfi_def_cfa_offset 16
+ 586 0004 00AF     		add	r7, sp, #0
+ 587              		.cfi_def_cfa_register 7
+ 382:.\Generated_Source\PSoC5/USBUART_cdc.c ****         const uint8 CYCODE txData[] = {0x0Du, 0x0Au};
+ 588              		.loc 1 382 0
+ 589 0006 084A     		ldr	r2, .L38
+ 590 0008 3B1D     		adds	r3, r7, #4
+ 591 000a 1288     		ldrh	r2, [r2]	@ unaligned
+ 592 000c 1A80     		strh	r2, [r3]	@ unaligned
+ 383:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 384:.\Generated_Source\PSoC5/USBUART_cdc.c ****         USBUART_LoadInEP(USBUART_cdc_data_in_ep, (const uint8 *)txData, 2u);
+ 593              		.loc 1 384 0
+ 594 000e 074B     		ldr	r3, .L38+4
+ 595 0010 1B78     		ldrb	r3, [r3]
+ 596 0012 DAB2     		uxtb	r2, r3
+ 597 0014 3B1D     		adds	r3, r7, #4
+ 598 0016 1046     		mov	r0, r2
+ 599 0018 1946     		mov	r1, r3
+ 600 001a 0222     		movs	r2, #2
+ 601 001c FFF7FEFF 		bl	USBUART_LoadInEP
+ 385:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 602              		.loc 1 385 0
+ 603 0020 0837     		adds	r7, r7, #8
+ 604              		.cfi_def_cfa_offset 8
+ 605 0022 BD46     		mov	sp, r7
+ 606              		.cfi_def_cfa_register 13
+ 607              		@ sp needed
+ 608 0024 80BD     		pop	{r7, pc}
+ 609              	.L39:
+ 610 0026 00BF     		.align	2
+ 611              	.L38:
+ 612 0028 00000000 		.word	.LC0
+ 613 002c 00000000 		.word	USBUART_cdc_data_in_ep
+ 614              		.cfi_endproc
+ 615              	.LFE6:
+ 616              		.size	USBUART_PutCRLF, .-USBUART_PutCRLF
+ 617              		.section	.text.USBUART_GetCount,"ax",%progbits
+ 618              		.align	2
+ 619              		.global	USBUART_GetCount
+ 620              		.thumb
+ 621              		.thumb_func
+ 622              		.type	USBUART_GetCount, %function
+ 623              	USBUART_GetCount:
+ 624              	.LFB7:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 19
+
+
+ 386:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 387:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 388:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 389:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_GetCount
+ 390:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 391:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 392:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 393:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  This function returns the number of bytes that were received from the PC.
+ 394:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  The returned length value should be passed to USBUART_GetData() as
+ 395:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  a parameter to read all received data. If all of the received data is not
+ 396:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  read at one time by the USBUART_GetData() API, the unread data will
+ 397:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  be lost.
+ 398:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 399:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 400:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 401:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 402:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 403:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Returns the number of received bytes. The maximum amount of received data at
+ 404:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  a time is limited by the maximum packet size for the endpoint.
+ 405:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 406:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 407:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *   USBUART_cdc_data_out_ep: CDC OUT endpoint number used.
+ 408:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 409:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 410:.\Generated_Source\PSoC5/USBUART_cdc.c ****     uint16 USBUART_GetCount(void) 
+ 411:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 625              		.loc 1 411 0
+ 626              		.cfi_startproc
+ 627              		@ args = 0, pretend = 0, frame = 8
+ 628              		@ frame_needed = 1, uses_anonymous_args = 0
+ 629 0000 80B5     		push	{r7, lr}
+ 630              		.cfi_def_cfa_offset 8
+ 631              		.cfi_offset 7, -8
+ 632              		.cfi_offset 14, -4
+ 633 0002 82B0     		sub	sp, sp, #8
+ 634              		.cfi_def_cfa_offset 16
+ 635 0004 00AF     		add	r7, sp, #0
+ 636              		.cfi_def_cfa_register 7
+ 412:.\Generated_Source\PSoC5/USBUART_cdc.c ****         uint16 bytesCount;
+ 413:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 414:.\Generated_Source\PSoC5/USBUART_cdc.c ****         if (USBUART_EP[USBUART_cdc_data_out_ep].apiEpState == USBUART_OUT_BUFFER_FULL)
+ 637              		.loc 1 414 0
+ 638 0006 0F4B     		ldr	r3, .L44
+ 639 0008 1B78     		ldrb	r3, [r3]
+ 640 000a DBB2     		uxtb	r3, r3
+ 641 000c 1946     		mov	r1, r3
+ 642 000e 0E4A     		ldr	r2, .L44+4
+ 643 0010 0B46     		mov	r3, r1
+ 644 0012 5B00     		lsls	r3, r3, #1
+ 645 0014 0B44     		add	r3, r3, r1
+ 646 0016 9B00     		lsls	r3, r3, #2
+ 647 0018 1344     		add	r3, r3, r2
+ 648 001a 5B78     		ldrb	r3, [r3, #1]
+ 649 001c DBB2     		uxtb	r3, r3
+ 650 001e 012B     		cmp	r3, #1
+ 651 0020 08D1     		bne	.L41
+ 415:.\Generated_Source\PSoC5/USBUART_cdc.c ****         {
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 20
+
+
+ 416:.\Generated_Source\PSoC5/USBUART_cdc.c ****             bytesCount = USBUART_GetEPCount(USBUART_cdc_data_out_ep);
+ 652              		.loc 1 416 0
+ 653 0022 084B     		ldr	r3, .L44
+ 654 0024 1B78     		ldrb	r3, [r3]
+ 655 0026 DBB2     		uxtb	r3, r3
+ 656 0028 1846     		mov	r0, r3
+ 657 002a FFF7FEFF 		bl	USBUART_GetEPCount
+ 658 002e 0346     		mov	r3, r0
+ 659 0030 FB80     		strh	r3, [r7, #6]	@ movhi
+ 660 0032 01E0     		b	.L42
+ 661              	.L41:
+ 417:.\Generated_Source\PSoC5/USBUART_cdc.c ****         }
+ 418:.\Generated_Source\PSoC5/USBUART_cdc.c ****         else
+ 419:.\Generated_Source\PSoC5/USBUART_cdc.c ****         {
+ 420:.\Generated_Source\PSoC5/USBUART_cdc.c ****             bytesCount = 0u;
+ 662              		.loc 1 420 0
+ 663 0034 0023     		movs	r3, #0
+ 664 0036 FB80     		strh	r3, [r7, #6]	@ movhi
+ 665              	.L42:
+ 421:.\Generated_Source\PSoC5/USBUART_cdc.c ****         }
+ 422:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 423:.\Generated_Source\PSoC5/USBUART_cdc.c ****         return(bytesCount);
+ 666              		.loc 1 423 0
+ 667 0038 FB88     		ldrh	r3, [r7, #6]
+ 424:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 668              		.loc 1 424 0
+ 669 003a 1846     		mov	r0, r3
+ 670 003c 0837     		adds	r7, r7, #8
+ 671              		.cfi_def_cfa_offset 8
+ 672 003e BD46     		mov	sp, r7
+ 673              		.cfi_def_cfa_register 13
+ 674              		@ sp needed
+ 675 0040 80BD     		pop	{r7, pc}
+ 676              	.L45:
+ 677 0042 00BF     		.align	2
+ 678              	.L44:
+ 679 0044 00000000 		.word	USBUART_cdc_data_out_ep
+ 680 0048 00000000 		.word	USBUART_EP
+ 681              		.cfi_endproc
+ 682              	.LFE7:
+ 683              		.size	USBUART_GetCount, .-USBUART_GetCount
+ 684              		.section	.text.USBUART_DataIsReady,"ax",%progbits
+ 685              		.align	2
+ 686              		.global	USBUART_DataIsReady
+ 687              		.thumb
+ 688              		.thumb_func
+ 689              		.type	USBUART_DataIsReady, %function
+ 690              	USBUART_DataIsReady:
+ 691              	.LFB8:
+ 425:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 426:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 427:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 428:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_DataIsReady
+ 429:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 430:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 431:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 432:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Returns a nonzero value if the component received data or received
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 21
+
+
+ 433:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  zero-length packet. The USBUART_GetAll() or
+ 434:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  USBUART_GetData() API should be called to read data from the buffer
+ 435:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  and re-init OUT endpoint even when zero-length packet received.
+ 436:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 437:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 438:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 439:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 440:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 441:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  If the OUT packet received this function returns a nonzero value.
+ 442:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Otherwise zero is returned.
+ 443:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 444:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 445:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *   USBUART_cdc_data_out_ep: CDC OUT endpoint number used.
+ 446:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 447:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 448:.\Generated_Source\PSoC5/USBUART_cdc.c ****     uint8 USBUART_DataIsReady(void) 
+ 449:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 692              		.loc 1 449 0
+ 693              		.cfi_startproc
+ 694              		@ args = 0, pretend = 0, frame = 0
+ 695              		@ frame_needed = 1, uses_anonymous_args = 0
+ 696              		@ link register save eliminated.
+ 697 0000 80B4     		push	{r7}
+ 698              		.cfi_def_cfa_offset 4
+ 699              		.cfi_offset 7, -4
+ 700 0002 00AF     		add	r7, sp, #0
+ 701              		.cfi_def_cfa_register 7
+ 450:.\Generated_Source\PSoC5/USBUART_cdc.c ****         return(USBUART_EP[USBUART_cdc_data_out_ep].apiEpState);
+ 702              		.loc 1 450 0
+ 703 0004 084B     		ldr	r3, .L48
+ 704 0006 1B78     		ldrb	r3, [r3]
+ 705 0008 DBB2     		uxtb	r3, r3
+ 706 000a 1946     		mov	r1, r3
+ 707 000c 074A     		ldr	r2, .L48+4
+ 708 000e 0B46     		mov	r3, r1
+ 709 0010 5B00     		lsls	r3, r3, #1
+ 710 0012 0B44     		add	r3, r3, r1
+ 711 0014 9B00     		lsls	r3, r3, #2
+ 712 0016 1344     		add	r3, r3, r2
+ 713 0018 5B78     		ldrb	r3, [r3, #1]
+ 714 001a DBB2     		uxtb	r3, r3
+ 451:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 715              		.loc 1 451 0
+ 716 001c 1846     		mov	r0, r3
+ 717 001e BD46     		mov	sp, r7
+ 718              		.cfi_def_cfa_register 13
+ 719              		@ sp needed
+ 720 0020 5DF8047B 		ldr	r7, [sp], #4
+ 721              		.cfi_restore 7
+ 722              		.cfi_def_cfa_offset 0
+ 723 0024 7047     		bx	lr
+ 724              	.L49:
+ 725 0026 00BF     		.align	2
+ 726              	.L48:
+ 727 0028 00000000 		.word	USBUART_cdc_data_out_ep
+ 728 002c 00000000 		.word	USBUART_EP
+ 729              		.cfi_endproc
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 22
+
+
+ 730              	.LFE8:
+ 731              		.size	USBUART_DataIsReady, .-USBUART_DataIsReady
+ 732              		.section	.text.USBUART_CDCIsReady,"ax",%progbits
+ 733              		.align	2
+ 734              		.global	USBUART_CDCIsReady
+ 735              		.thumb
+ 736              		.thumb_func
+ 737              		.type	USBUART_CDCIsReady, %function
+ 738              	USBUART_CDCIsReady:
+ 739              	.LFB9:
+ 452:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 453:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 454:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 455:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_CDCIsReady
+ 456:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 457:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 458:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 459:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  This function returns a nonzero value if the component is ready to send more
+ 460:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  data to the PC; otherwise, it returns zero. The function should be called
+ 461:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  before sending new data when using any of the following APIs:
+ 462:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  USBUART_PutData(),USBUART_PutString(),
+ 463:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  USBUART_PutChar or USBUART_PutCRLF(),
+ 464:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  to be sure that the previous data has finished sending.
+ 465:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 466:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 467:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 468:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 469:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 470:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  If the buffer can accept new data, this function returns a nonzero value.
+ 471:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Otherwise, it returns zero.
+ 472:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 473:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 474:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *   USBUART_cdc_data_in_ep: CDC IN endpoint number used.
+ 475:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 476:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 477:.\Generated_Source\PSoC5/USBUART_cdc.c ****     uint8 USBUART_CDCIsReady(void) 
+ 478:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 740              		.loc 1 478 0
+ 741              		.cfi_startproc
+ 742              		@ args = 0, pretend = 0, frame = 0
+ 743              		@ frame_needed = 1, uses_anonymous_args = 0
+ 744              		@ link register save eliminated.
+ 745 0000 80B4     		push	{r7}
+ 746              		.cfi_def_cfa_offset 4
+ 747              		.cfi_offset 7, -4
+ 748 0002 00AF     		add	r7, sp, #0
+ 749              		.cfi_def_cfa_register 7
+ 479:.\Generated_Source\PSoC5/USBUART_cdc.c ****         return(USBUART_EP[USBUART_cdc_data_in_ep].apiEpState);
+ 750              		.loc 1 479 0
+ 751 0004 084B     		ldr	r3, .L52
+ 752 0006 1B78     		ldrb	r3, [r3]
+ 753 0008 DBB2     		uxtb	r3, r3
+ 754 000a 1946     		mov	r1, r3
+ 755 000c 074A     		ldr	r2, .L52+4
+ 756 000e 0B46     		mov	r3, r1
+ 757 0010 5B00     		lsls	r3, r3, #1
+ 758 0012 0B44     		add	r3, r3, r1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 23
+
+
+ 759 0014 9B00     		lsls	r3, r3, #2
+ 760 0016 1344     		add	r3, r3, r2
+ 761 0018 5B78     		ldrb	r3, [r3, #1]
+ 762 001a DBB2     		uxtb	r3, r3
+ 480:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 763              		.loc 1 480 0
+ 764 001c 1846     		mov	r0, r3
+ 765 001e BD46     		mov	sp, r7
+ 766              		.cfi_def_cfa_register 13
+ 767              		@ sp needed
+ 768 0020 5DF8047B 		ldr	r7, [sp], #4
+ 769              		.cfi_restore 7
+ 770              		.cfi_def_cfa_offset 0
+ 771 0024 7047     		bx	lr
+ 772              	.L53:
+ 773 0026 00BF     		.align	2
+ 774              	.L52:
+ 775 0028 00000000 		.word	USBUART_cdc_data_in_ep
+ 776 002c 00000000 		.word	USBUART_EP
+ 777              		.cfi_endproc
+ 778              	.LFE9:
+ 779              		.size	USBUART_CDCIsReady, .-USBUART_CDCIsReady
+ 780              		.section	.text.USBUART_GetData,"ax",%progbits
+ 781              		.align	2
+ 782              		.global	USBUART_GetData
+ 783              		.thumb
+ 784              		.thumb_func
+ 785              		.type	USBUART_GetData, %function
+ 786              	USBUART_GetData:
+ 787              	.LFB10:
+ 481:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 482:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 483:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 484:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_GetData
+ 485:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 486:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 487:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 488:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  This function gets a specified number of bytes from the input buffer and
+ 489:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  places them in a data array specified by the passed pointer.
+ 490:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  The USBUART_DataIsReady() API should be called first, to be sure
+ 491:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  that data is received from the host. If all received data will not be read at
+ 492:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  once, the unread data will be lost. The USBUART_GetData() API should
+ 493:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  be called to get the number of bytes that were received.
+ 494:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 495:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 496:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  pData: Pointer to the data array where data will be placed.
+ 497:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Length: Number of bytes to read into the data array from the RX buffer.
+ 498:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *          Maximum length is limited by the the number of received bytes.
+ 499:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 500:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 501:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Number of bytes received.
+ 502:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 503:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 504:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *   USBUART_cdc_data_out_ep: CDC OUT endpoint number used.
+ 505:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 506:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Reentrant:
+ 507:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  No.
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 24
+
+
+ 508:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 509:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 510:.\Generated_Source\PSoC5/USBUART_cdc.c ****     uint16 USBUART_GetData(uint8* pData, uint16 length) 
+ 511:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 788              		.loc 1 511 0
+ 789              		.cfi_startproc
+ 790              		@ args = 0, pretend = 0, frame = 8
+ 791              		@ frame_needed = 1, uses_anonymous_args = 0
+ 792 0000 80B5     		push	{r7, lr}
+ 793              		.cfi_def_cfa_offset 8
+ 794              		.cfi_offset 7, -8
+ 795              		.cfi_offset 14, -4
+ 796 0002 82B0     		sub	sp, sp, #8
+ 797              		.cfi_def_cfa_offset 16
+ 798 0004 00AF     		add	r7, sp, #0
+ 799              		.cfi_def_cfa_register 7
+ 800 0006 7860     		str	r0, [r7, #4]
+ 801 0008 0B46     		mov	r3, r1
+ 802 000a 7B80     		strh	r3, [r7, #2]	@ movhi
+ 512:.\Generated_Source\PSoC5/USBUART_cdc.c ****         return(USBUART_ReadOutEP(USBUART_cdc_data_out_ep, pData, length));
+ 803              		.loc 1 512 0
+ 804 000c 064B     		ldr	r3, .L56
+ 805 000e 1B78     		ldrb	r3, [r3]
+ 806 0010 DAB2     		uxtb	r2, r3
+ 807 0012 7B88     		ldrh	r3, [r7, #2]
+ 808 0014 1046     		mov	r0, r2
+ 809 0016 7968     		ldr	r1, [r7, #4]
+ 810 0018 1A46     		mov	r2, r3
+ 811 001a FFF7FEFF 		bl	USBUART_ReadOutEP
+ 812 001e 0346     		mov	r3, r0
+ 513:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 813              		.loc 1 513 0
+ 814 0020 1846     		mov	r0, r3
+ 815 0022 0837     		adds	r7, r7, #8
+ 816              		.cfi_def_cfa_offset 8
+ 817 0024 BD46     		mov	sp, r7
+ 818              		.cfi_def_cfa_register 13
+ 819              		@ sp needed
+ 820 0026 80BD     		pop	{r7, pc}
+ 821              	.L57:
+ 822              		.align	2
+ 823              	.L56:
+ 824 0028 00000000 		.word	USBUART_cdc_data_out_ep
+ 825              		.cfi_endproc
+ 826              	.LFE10:
+ 827              		.size	USBUART_GetData, .-USBUART_GetData
+ 828              		.section	.text.USBUART_GetAll,"ax",%progbits
+ 829              		.align	2
+ 830              		.global	USBUART_GetAll
+ 831              		.thumb
+ 832              		.thumb_func
+ 833              		.type	USBUART_GetAll, %function
+ 834              	USBUART_GetAll:
+ 835              	.LFB11:
+ 514:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 515:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 516:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 25
+
+
+ 517:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_GetAll
+ 518:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 519:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 520:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 521:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Gets all bytes of received data from the input buffer and places it into a
+ 522:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  specified data array. USBUART_DataIsReady() API should be called
+ 523:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  before, to be sure that data is received from the Host.
+ 524:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 525:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 526:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  pData: Pointer to the data array where data will be placed.
+ 527:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 528:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 529:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Number of bytes received.
+ 530:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 531:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 532:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *   USBUART_cdc_data_out_ep: CDC OUT endpoint number used.
+ 533:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *   USBUART_EP[].bufferSize: EP max packet size is used as a length
+ 534:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *     to read all data from the EP buffer.
+ 535:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 536:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Reentrant:
+ 537:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  No.
+ 538:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 539:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 540:.\Generated_Source\PSoC5/USBUART_cdc.c ****     uint16 USBUART_GetAll(uint8* pData) 
+ 541:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 836              		.loc 1 541 0
+ 837              		.cfi_startproc
+ 838              		@ args = 0, pretend = 0, frame = 8
+ 839              		@ frame_needed = 1, uses_anonymous_args = 0
+ 840 0000 80B5     		push	{r7, lr}
+ 841              		.cfi_def_cfa_offset 8
+ 842              		.cfi_offset 7, -8
+ 843              		.cfi_offset 14, -4
+ 844 0002 82B0     		sub	sp, sp, #8
+ 845              		.cfi_def_cfa_offset 16
+ 846 0004 00AF     		add	r7, sp, #0
+ 847              		.cfi_def_cfa_register 7
+ 848 0006 7860     		str	r0, [r7, #4]
+ 542:.\Generated_Source\PSoC5/USBUART_cdc.c ****         return (USBUART_ReadOutEP(USBUART_cdc_data_out_ep, pData,
+ 849              		.loc 1 542 0
+ 850 0008 0C4B     		ldr	r3, .L60
+ 851 000a 1B78     		ldrb	r3, [r3]
+ 852 000c D8B2     		uxtb	r0, r3
+ 853 000e 0B4B     		ldr	r3, .L60
+ 854 0010 1B78     		ldrb	r3, [r3]
+ 855 0012 DBB2     		uxtb	r3, r3
+ 856 0014 1946     		mov	r1, r3
+ 857 0016 0A4A     		ldr	r2, .L60+4
+ 858 0018 0B46     		mov	r3, r1
+ 859 001a 5B00     		lsls	r3, r3, #1
+ 860 001c 0B44     		add	r3, r3, r1
+ 861 001e 9B00     		lsls	r3, r3, #2
+ 862 0020 1344     		add	r3, r3, r2
+ 863 0022 0833     		adds	r3, r3, #8
+ 864 0024 1B88     		ldrh	r3, [r3]	@ movhi
+ 865 0026 9BB2     		uxth	r3, r3
+ 866 0028 7968     		ldr	r1, [r7, #4]
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 26
+
+
+ 867 002a 1A46     		mov	r2, r3
+ 868 002c FFF7FEFF 		bl	USBUART_ReadOutEP
+ 869 0030 0346     		mov	r3, r0
+ 543:.\Generated_Source\PSoC5/USBUART_cdc.c ****                                            USBUART_EP[USBUART_cdc_data_out_ep].bufferSize));
+ 544:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 870              		.loc 1 544 0
+ 871 0032 1846     		mov	r0, r3
+ 872 0034 0837     		adds	r7, r7, #8
+ 873              		.cfi_def_cfa_offset 8
+ 874 0036 BD46     		mov	sp, r7
+ 875              		.cfi_def_cfa_register 13
+ 876              		@ sp needed
+ 877 0038 80BD     		pop	{r7, pc}
+ 878              	.L61:
+ 879 003a 00BF     		.align	2
+ 880              	.L60:
+ 881 003c 00000000 		.word	USBUART_cdc_data_out_ep
+ 882 0040 00000000 		.word	USBUART_EP
+ 883              		.cfi_endproc
+ 884              	.LFE11:
+ 885              		.size	USBUART_GetAll, .-USBUART_GetAll
+ 886              		.section	.text.USBUART_GetChar,"ax",%progbits
+ 887              		.align	2
+ 888              		.global	USBUART_GetChar
+ 889              		.thumb
+ 890              		.thumb_func
+ 891              		.type	USBUART_GetChar, %function
+ 892              	USBUART_GetChar:
+ 893              	.LFB12:
+ 545:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 546:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 547:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 548:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_GetChar
+ 549:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 550:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 551:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 552:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  This function reads one byte of received data from the buffer. If more than
+ 553:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  one byte has been received from the host, the rest of the data will be lost.
+ 554:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 555:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 556:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 557:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 558:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 559:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Received one character.
+ 560:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 561:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 562:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *   USBUART_cdc_data_out_ep: CDC OUT endpoint number used.
+ 563:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 564:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Reentrant:
+ 565:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  No.
+ 566:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 567:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 568:.\Generated_Source\PSoC5/USBUART_cdc.c ****     uint8 USBUART_GetChar(void) 
+ 569:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 894              		.loc 1 569 0
+ 895              		.cfi_startproc
+ 896              		@ args = 0, pretend = 0, frame = 8
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 27
+
+
+ 897              		@ frame_needed = 1, uses_anonymous_args = 0
+ 898 0000 80B5     		push	{r7, lr}
+ 899              		.cfi_def_cfa_offset 8
+ 900              		.cfi_offset 7, -8
+ 901              		.cfi_offset 14, -4
+ 902 0002 82B0     		sub	sp, sp, #8
+ 903              		.cfi_def_cfa_offset 16
+ 904 0004 00AF     		add	r7, sp, #0
+ 905              		.cfi_def_cfa_register 7
+ 570:.\Generated_Source\PSoC5/USBUART_cdc.c ****          uint8 rxData;
+ 571:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 572:.\Generated_Source\PSoC5/USBUART_cdc.c ****         (void) USBUART_ReadOutEP(USBUART_cdc_data_out_ep, &rxData, 1u);
+ 906              		.loc 1 572 0
+ 907 0006 074B     		ldr	r3, .L64
+ 908 0008 1B78     		ldrb	r3, [r3]
+ 909 000a DAB2     		uxtb	r2, r3
+ 910 000c FB1D     		adds	r3, r7, #7
+ 911 000e 1046     		mov	r0, r2
+ 912 0010 1946     		mov	r1, r3
+ 913 0012 0122     		movs	r2, #1
+ 914 0014 FFF7FEFF 		bl	USBUART_ReadOutEP
+ 573:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 574:.\Generated_Source\PSoC5/USBUART_cdc.c ****         return(rxData);
+ 915              		.loc 1 574 0
+ 916 0018 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 575:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 917              		.loc 1 575 0
+ 918 001a 1846     		mov	r0, r3
+ 919 001c 0837     		adds	r7, r7, #8
+ 920              		.cfi_def_cfa_offset 8
+ 921 001e BD46     		mov	sp, r7
+ 922              		.cfi_def_cfa_register 13
+ 923              		@ sp needed
+ 924 0020 80BD     		pop	{r7, pc}
+ 925              	.L65:
+ 926 0022 00BF     		.align	2
+ 927              	.L64:
+ 928 0024 00000000 		.word	USBUART_cdc_data_out_ep
+ 929              		.cfi_endproc
+ 930              	.LFE12:
+ 931              		.size	USBUART_GetChar, .-USBUART_GetChar
+ 932              		.section	.text.USBUART_IsLineChanged,"ax",%progbits
+ 933              		.align	2
+ 934              		.global	USBUART_IsLineChanged
+ 935              		.thumb
+ 936              		.thumb_func
+ 937              		.type	USBUART_IsLineChanged, %function
+ 938              	USBUART_IsLineChanged:
+ 939              	.LFB13:
+ 576:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 577:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 578:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_IsLineChanged
+ 579:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 580:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 581:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 582:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  This function returns clear on read status of the line. It returns not zero
+ 583:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  value when the host sends updated coding or control information to the
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 28
+
+
+ 584:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  device. The USBUART_GetDTERate(), USBUART_GetCharFormat()
+ 585:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  or USBUART_GetParityType() or USBUART_GetDataBits() API
+ 586:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  should be called to read data coding information.
+ 587:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  The USBUART_GetLineControl() API should be called to read line
+ 588:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  control information.
+ 589:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 590:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 591:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 592:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 593:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 594:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  If SET_LINE_CODING or CDC_SET_CONTROL_LINE_STATE requests are received, it
+ 595:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  returns a nonzero value. Otherwise, it returns zero.
+ 596:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 597:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 598:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  USBUART_transferState: it is checked to be sure then OUT data
+ 599:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *    phase has been complete, and data written to the lineCoding or Control
+ 600:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *    Bitmap buffer.
+ 601:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  USBUART_lineChanged: used as a flag to be aware that Host has been
+ 602:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *    sent request for changing Line Coding or Control Bitmap.
+ 603:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 604:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 605:.\Generated_Source\PSoC5/USBUART_cdc.c ****     uint8 USBUART_IsLineChanged(void) 
+ 606:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 940              		.loc 1 606 0
+ 941              		.cfi_startproc
+ 942              		@ args = 0, pretend = 0, frame = 8
+ 943              		@ frame_needed = 1, uses_anonymous_args = 0
+ 944              		@ link register save eliminated.
+ 945 0000 80B4     		push	{r7}
+ 946              		.cfi_def_cfa_offset 4
+ 947              		.cfi_offset 7, -4
+ 948 0002 83B0     		sub	sp, sp, #12
+ 949              		.cfi_def_cfa_offset 16
+ 950 0004 00AF     		add	r7, sp, #0
+ 951              		.cfi_def_cfa_register 7
+ 607:.\Generated_Source\PSoC5/USBUART_cdc.c ****         uint8 state = 0u;
+ 952              		.loc 1 607 0
+ 953 0006 0023     		movs	r3, #0
+ 954 0008 FB71     		strb	r3, [r7, #7]
+ 608:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 609:.\Generated_Source\PSoC5/USBUART_cdc.c ****         /* transferState is checked to be sure then OUT data phase has been complete */
+ 610:.\Generated_Source\PSoC5/USBUART_cdc.c ****         if(USBUART_transferState == USBUART_TRANS_STATE_IDLE)
+ 955              		.loc 1 610 0
+ 956 000a 0B4B     		ldr	r3, .L69
+ 957 000c 1B78     		ldrb	r3, [r3]
+ 958 000e DBB2     		uxtb	r3, r3
+ 959 0010 002B     		cmp	r3, #0
+ 960 0012 0AD1     		bne	.L67
+ 611:.\Generated_Source\PSoC5/USBUART_cdc.c ****         {
+ 612:.\Generated_Source\PSoC5/USBUART_cdc.c ****             if(USBUART_lineChanged != 0u)
+ 961              		.loc 1 612 0
+ 962 0014 094B     		ldr	r3, .L69+4
+ 963 0016 1B78     		ldrb	r3, [r3]
+ 964 0018 DBB2     		uxtb	r3, r3
+ 965 001a 002B     		cmp	r3, #0
+ 966 001c 05D0     		beq	.L67
+ 613:.\Generated_Source\PSoC5/USBUART_cdc.c ****             {
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 29
+
+
+ 614:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 state = USBUART_lineChanged;
+ 967              		.loc 1 614 0
+ 968 001e 074B     		ldr	r3, .L69+4
+ 969 0020 1B78     		ldrb	r3, [r3]
+ 970 0022 FB71     		strb	r3, [r7, #7]
+ 615:.\Generated_Source\PSoC5/USBUART_cdc.c ****                 USBUART_lineChanged = 0u;
+ 971              		.loc 1 615 0
+ 972 0024 054B     		ldr	r3, .L69+4
+ 973 0026 0022     		movs	r2, #0
+ 974 0028 1A70     		strb	r2, [r3]
+ 975              	.L67:
+ 616:.\Generated_Source\PSoC5/USBUART_cdc.c ****             }
+ 617:.\Generated_Source\PSoC5/USBUART_cdc.c ****         }
+ 618:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 619:.\Generated_Source\PSoC5/USBUART_cdc.c ****         return(state);
+ 976              		.loc 1 619 0
+ 977 002a FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 620:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 978              		.loc 1 620 0
+ 979 002c 1846     		mov	r0, r3
+ 980 002e 0C37     		adds	r7, r7, #12
+ 981              		.cfi_def_cfa_offset 4
+ 982 0030 BD46     		mov	sp, r7
+ 983              		.cfi_def_cfa_register 13
+ 984              		@ sp needed
+ 985 0032 5DF8047B 		ldr	r7, [sp], #4
+ 986              		.cfi_restore 7
+ 987              		.cfi_def_cfa_offset 0
+ 988 0036 7047     		bx	lr
+ 989              	.L70:
+ 990              		.align	2
+ 991              	.L69:
+ 992 0038 00000000 		.word	USBUART_transferState
+ 993 003c 00000000 		.word	USBUART_lineChanged
+ 994              		.cfi_endproc
+ 995              	.LFE13:
+ 996              		.size	USBUART_IsLineChanged, .-USBUART_IsLineChanged
+ 997              		.section	.text.USBUART_GetDTERate,"ax",%progbits
+ 998              		.align	2
+ 999              		.global	USBUART_GetDTERate
+ 1000              		.thumb
+ 1001              		.thumb_func
+ 1002              		.type	USBUART_GetDTERate, %function
+ 1003              	USBUART_GetDTERate:
+ 1004              	.LFB14:
+ 621:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 622:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 623:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 624:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_GetDTERate
+ 625:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 626:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 627:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 628:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Returns the data terminal rate set for this port in bits per second.
+ 629:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 630:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 631:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 632:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 30
+
+
+ 633:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 634:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Returns a uint32 value of the data rate in bits per second.
+ 635:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 636:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 637:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  USBUART_lineCoding: First four bytes converted to uint32
+ 638:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *    depend on compiler, and returned as a data rate.
+ 639:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 640:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 641:.\Generated_Source\PSoC5/USBUART_cdc.c ****     uint32 USBUART_GetDTERate(void) 
+ 642:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 1005              		.loc 1 642 0
+ 1006              		.cfi_startproc
+ 1007              		@ args = 0, pretend = 0, frame = 8
+ 1008              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1009              		@ link register save eliminated.
+ 1010 0000 80B4     		push	{r7}
+ 1011              		.cfi_def_cfa_offset 4
+ 1012              		.cfi_offset 7, -4
+ 1013 0002 83B0     		sub	sp, sp, #12
+ 1014              		.cfi_def_cfa_offset 16
+ 1015 0004 00AF     		add	r7, sp, #0
+ 1016              		.cfi_def_cfa_register 7
+ 643:.\Generated_Source\PSoC5/USBUART_cdc.c ****         uint32 rate;
+ 644:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 645:.\Generated_Source\PSoC5/USBUART_cdc.c ****         rate = USBUART_lineCoding[USBUART_LINE_CODING_RATE + 3u];
+ 1017              		.loc 1 645 0
+ 1018 0006 104B     		ldr	r3, .L73
+ 1019 0008 DB78     		ldrb	r3, [r3, #3]
+ 1020 000a DBB2     		uxtb	r3, r3
+ 1021 000c 7B60     		str	r3, [r7, #4]
+ 646:.\Generated_Source\PSoC5/USBUART_cdc.c ****         rate = (rate << 8u) | USBUART_lineCoding[USBUART_LINE_CODING_RATE + 2u];
+ 1022              		.loc 1 646 0
+ 1023 000e 7B68     		ldr	r3, [r7, #4]
+ 1024 0010 1B02     		lsls	r3, r3, #8
+ 1025 0012 0D4A     		ldr	r2, .L73
+ 1026 0014 9278     		ldrb	r2, [r2, #2]
+ 1027 0016 D2B2     		uxtb	r2, r2
+ 1028 0018 1343     		orrs	r3, r3, r2
+ 1029 001a 7B60     		str	r3, [r7, #4]
+ 647:.\Generated_Source\PSoC5/USBUART_cdc.c ****         rate = (rate << 8u) | USBUART_lineCoding[USBUART_LINE_CODING_RATE + 1u];
+ 1030              		.loc 1 647 0
+ 1031 001c 7B68     		ldr	r3, [r7, #4]
+ 1032 001e 1B02     		lsls	r3, r3, #8
+ 1033 0020 094A     		ldr	r2, .L73
+ 1034 0022 5278     		ldrb	r2, [r2, #1]
+ 1035 0024 D2B2     		uxtb	r2, r2
+ 1036 0026 1343     		orrs	r3, r3, r2
+ 1037 0028 7B60     		str	r3, [r7, #4]
+ 648:.\Generated_Source\PSoC5/USBUART_cdc.c ****         rate = (rate << 8u) | USBUART_lineCoding[USBUART_LINE_CODING_RATE];
+ 1038              		.loc 1 648 0
+ 1039 002a 7B68     		ldr	r3, [r7, #4]
+ 1040 002c 1B02     		lsls	r3, r3, #8
+ 1041 002e 064A     		ldr	r2, .L73
+ 1042 0030 1278     		ldrb	r2, [r2]
+ 1043 0032 D2B2     		uxtb	r2, r2
+ 1044 0034 1343     		orrs	r3, r3, r2
+ 1045 0036 7B60     		str	r3, [r7, #4]
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 31
+
+
+ 649:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 650:.\Generated_Source\PSoC5/USBUART_cdc.c ****         return(rate);
+ 1046              		.loc 1 650 0
+ 1047 0038 7B68     		ldr	r3, [r7, #4]
+ 651:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 1048              		.loc 1 651 0
+ 1049 003a 1846     		mov	r0, r3
+ 1050 003c 0C37     		adds	r7, r7, #12
+ 1051              		.cfi_def_cfa_offset 4
+ 1052 003e BD46     		mov	sp, r7
+ 1053              		.cfi_def_cfa_register 13
+ 1054              		@ sp needed
+ 1055 0040 5DF8047B 		ldr	r7, [sp], #4
+ 1056              		.cfi_restore 7
+ 1057              		.cfi_def_cfa_offset 0
+ 1058 0044 7047     		bx	lr
+ 1059              	.L74:
+ 1060 0046 00BF     		.align	2
+ 1061              	.L73:
+ 1062 0048 00000000 		.word	USBUART_lineCoding
+ 1063              		.cfi_endproc
+ 1064              	.LFE14:
+ 1065              		.size	USBUART_GetDTERate, .-USBUART_GetDTERate
+ 1066              		.section	.text.USBUART_GetCharFormat,"ax",%progbits
+ 1067              		.align	2
+ 1068              		.global	USBUART_GetCharFormat
+ 1069              		.thumb
+ 1070              		.thumb_func
+ 1071              		.type	USBUART_GetCharFormat, %function
+ 1072              	USBUART_GetCharFormat:
+ 1073              	.LFB15:
+ 652:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 653:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 654:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 655:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_GetCharFormat
+ 656:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 657:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 658:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 659:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Returns the number of stop bits.
+ 660:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 661:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 662:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 663:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 664:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 665:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Returns the number of stop bits.
+ 666:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 667:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 668:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  USBUART_lineCoding: used to get a parameter.
+ 669:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 670:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 671:.\Generated_Source\PSoC5/USBUART_cdc.c ****     uint8 USBUART_GetCharFormat(void) 
+ 672:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 1074              		.loc 1 672 0
+ 1075              		.cfi_startproc
+ 1076              		@ args = 0, pretend = 0, frame = 0
+ 1077              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1078              		@ link register save eliminated.
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 32
+
+
+ 1079 0000 80B4     		push	{r7}
+ 1080              		.cfi_def_cfa_offset 4
+ 1081              		.cfi_offset 7, -4
+ 1082 0002 00AF     		add	r7, sp, #0
+ 1083              		.cfi_def_cfa_register 7
+ 673:.\Generated_Source\PSoC5/USBUART_cdc.c ****         return(USBUART_lineCoding[USBUART_LINE_CODING_STOP_BITS]);
+ 1084              		.loc 1 673 0
+ 1085 0004 034B     		ldr	r3, .L77
+ 1086 0006 1B79     		ldrb	r3, [r3, #4]
+ 1087 0008 DBB2     		uxtb	r3, r3
+ 674:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 1088              		.loc 1 674 0
+ 1089 000a 1846     		mov	r0, r3
+ 1090 000c BD46     		mov	sp, r7
+ 1091              		.cfi_def_cfa_register 13
+ 1092              		@ sp needed
+ 1093 000e 5DF8047B 		ldr	r7, [sp], #4
+ 1094              		.cfi_restore 7
+ 1095              		.cfi_def_cfa_offset 0
+ 1096 0012 7047     		bx	lr
+ 1097              	.L78:
+ 1098              		.align	2
+ 1099              	.L77:
+ 1100 0014 00000000 		.word	USBUART_lineCoding
+ 1101              		.cfi_endproc
+ 1102              	.LFE15:
+ 1103              		.size	USBUART_GetCharFormat, .-USBUART_GetCharFormat
+ 1104              		.section	.text.USBUART_GetParityType,"ax",%progbits
+ 1105              		.align	2
+ 1106              		.global	USBUART_GetParityType
+ 1107              		.thumb
+ 1108              		.thumb_func
+ 1109              		.type	USBUART_GetParityType, %function
+ 1110              	USBUART_GetParityType:
+ 1111              	.LFB16:
+ 675:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 676:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 677:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 678:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_GetParityType
+ 679:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 680:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 681:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 682:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Returns the parity type for the CDC port.
+ 683:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 684:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 685:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 686:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 687:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 688:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Returns the parity type.
+ 689:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 690:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 691:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  USBUART_lineCoding: used to get a parameter.
+ 692:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 693:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 694:.\Generated_Source\PSoC5/USBUART_cdc.c ****     uint8 USBUART_GetParityType(void) 
+ 695:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 1112              		.loc 1 695 0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 33
+
+
+ 1113              		.cfi_startproc
+ 1114              		@ args = 0, pretend = 0, frame = 0
+ 1115              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1116              		@ link register save eliminated.
+ 1117 0000 80B4     		push	{r7}
+ 1118              		.cfi_def_cfa_offset 4
+ 1119              		.cfi_offset 7, -4
+ 1120 0002 00AF     		add	r7, sp, #0
+ 1121              		.cfi_def_cfa_register 7
+ 696:.\Generated_Source\PSoC5/USBUART_cdc.c ****         return(USBUART_lineCoding[USBUART_LINE_CODING_PARITY]);
+ 1122              		.loc 1 696 0
+ 1123 0004 034B     		ldr	r3, .L81
+ 1124 0006 5B79     		ldrb	r3, [r3, #5]
+ 1125 0008 DBB2     		uxtb	r3, r3
+ 697:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 1126              		.loc 1 697 0
+ 1127 000a 1846     		mov	r0, r3
+ 1128 000c BD46     		mov	sp, r7
+ 1129              		.cfi_def_cfa_register 13
+ 1130              		@ sp needed
+ 1131 000e 5DF8047B 		ldr	r7, [sp], #4
+ 1132              		.cfi_restore 7
+ 1133              		.cfi_def_cfa_offset 0
+ 1134 0012 7047     		bx	lr
+ 1135              	.L82:
+ 1136              		.align	2
+ 1137              	.L81:
+ 1138 0014 00000000 		.word	USBUART_lineCoding
+ 1139              		.cfi_endproc
+ 1140              	.LFE16:
+ 1141              		.size	USBUART_GetParityType, .-USBUART_GetParityType
+ 1142              		.section	.text.USBUART_GetDataBits,"ax",%progbits
+ 1143              		.align	2
+ 1144              		.global	USBUART_GetDataBits
+ 1145              		.thumb
+ 1146              		.thumb_func
+ 1147              		.type	USBUART_GetDataBits, %function
+ 1148              	USBUART_GetDataBits:
+ 1149              	.LFB17:
+ 698:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 699:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 700:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 701:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_GetDataBits
+ 702:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 703:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 704:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 705:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Returns the number of data bits for the CDC port.
+ 706:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 707:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 708:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 709:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 710:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ 711:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Returns the number of data bits.
+ 712:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  The number of data bits can be 5, 6, 7, 8 or 16.
+ 713:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 714:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 715:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  USBUART_lineCoding: used to get a parameter.
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 34
+
+
+ 716:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 717:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 718:.\Generated_Source\PSoC5/USBUART_cdc.c ****     uint8 USBUART_GetDataBits(void) 
+ 719:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 1150              		.loc 1 719 0
+ 1151              		.cfi_startproc
+ 1152              		@ args = 0, pretend = 0, frame = 0
+ 1153              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1154              		@ link register save eliminated.
+ 1155 0000 80B4     		push	{r7}
+ 1156              		.cfi_def_cfa_offset 4
+ 1157              		.cfi_offset 7, -4
+ 1158 0002 00AF     		add	r7, sp, #0
+ 1159              		.cfi_def_cfa_register 7
+ 720:.\Generated_Source\PSoC5/USBUART_cdc.c ****         return(USBUART_lineCoding[USBUART_LINE_CODING_DATA_BITS]);
+ 1160              		.loc 1 720 0
+ 1161 0004 034B     		ldr	r3, .L85
+ 1162 0006 9B79     		ldrb	r3, [r3, #6]
+ 1163 0008 DBB2     		uxtb	r3, r3
+ 721:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 1164              		.loc 1 721 0
+ 1165 000a 1846     		mov	r0, r3
+ 1166 000c BD46     		mov	sp, r7
+ 1167              		.cfi_def_cfa_register 13
+ 1168              		@ sp needed
+ 1169 000e 5DF8047B 		ldr	r7, [sp], #4
+ 1170              		.cfi_restore 7
+ 1171              		.cfi_def_cfa_offset 0
+ 1172 0012 7047     		bx	lr
+ 1173              	.L86:
+ 1174              		.align	2
+ 1175              	.L85:
+ 1176 0014 00000000 		.word	USBUART_lineCoding
+ 1177              		.cfi_endproc
+ 1178              	.LFE17:
+ 1179              		.size	USBUART_GetDataBits, .-USBUART_GetDataBits
+ 1180              		.section	.text.USBUART_GetLineControl,"ax",%progbits
+ 1181              		.align	2
+ 1182              		.global	USBUART_GetLineControl
+ 1183              		.thumb
+ 1184              		.thumb_func
+ 1185              		.type	USBUART_GetLineControl, %function
+ 1186              	USBUART_GetLineControl:
+ 1187              	.LFB18:
+ 722:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 723:.\Generated_Source\PSoC5/USBUART_cdc.c **** 
+ 724:.\Generated_Source\PSoC5/USBUART_cdc.c ****     /*******************************************************************************
+ 725:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Function Name: USBUART_GetLineControl
+ 726:.\Generated_Source\PSoC5/USBUART_cdc.c ****     ********************************************************************************
+ 727:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 728:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Summary:
+ 729:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Returns Line control bitmap.
+ 730:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 731:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Parameters:
+ 732:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  None.
+ 733:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 734:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Return:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 35
+
+
+ 735:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  Returns Line control bitmap.
+ 736:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 737:.\Generated_Source\PSoC5/USBUART_cdc.c ****     * Global variables:
+ 738:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *  USBUART_lineControlBitmap: used to get a parameter.
+ 739:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *
+ 740:.\Generated_Source\PSoC5/USBUART_cdc.c ****     *******************************************************************************/
+ 741:.\Generated_Source\PSoC5/USBUART_cdc.c ****     uint16 USBUART_GetLineControl(void) 
+ 742:.\Generated_Source\PSoC5/USBUART_cdc.c ****     {
+ 1188              		.loc 1 742 0
+ 1189              		.cfi_startproc
+ 1190              		@ args = 0, pretend = 0, frame = 0
+ 1191              		@ frame_needed = 1, uses_anonymous_args = 0
+ 1192              		@ link register save eliminated.
+ 1193 0000 80B4     		push	{r7}
+ 1194              		.cfi_def_cfa_offset 4
+ 1195              		.cfi_offset 7, -4
+ 1196 0002 00AF     		add	r7, sp, #0
+ 1197              		.cfi_def_cfa_register 7
+ 743:.\Generated_Source\PSoC5/USBUART_cdc.c ****         return(USBUART_lineControlBitmap);
+ 1198              		.loc 1 743 0
+ 1199 0004 034B     		ldr	r3, .L89
+ 1200 0006 1B88     		ldrh	r3, [r3]	@ movhi
+ 1201 0008 9BB2     		uxth	r3, r3
+ 744:.\Generated_Source\PSoC5/USBUART_cdc.c ****     }
+ 1202              		.loc 1 744 0
+ 1203 000a 1846     		mov	r0, r3
+ 1204 000c BD46     		mov	sp, r7
+ 1205              		.cfi_def_cfa_register 13
+ 1206              		@ sp needed
+ 1207 000e 5DF8047B 		ldr	r7, [sp], #4
+ 1208              		.cfi_restore 7
+ 1209              		.cfi_def_cfa_offset 0
+ 1210 0012 7047     		bx	lr
+ 1211              	.L90:
+ 1212              		.align	2
+ 1213              	.L89:
+ 1214 0014 00000000 		.word	USBUART_lineControlBitmap
+ 1215              		.cfi_endproc
+ 1216              	.LFE18:
+ 1217              		.size	USBUART_GetLineControl, .-USBUART_GetLineControl
+ 1218              		.text
+ 1219              	.Letext0:
+ 1220              		.file 2 ".\\Generated_Source\\PSoC5\\cytypes.h"
+ 1221              		.file 3 ".\\Generated_Source\\PSoC5\\USBUART.h"
+ 1222              		.file 4 ".\\Generated_Source\\PSoC5\\USBUART_pvt.h"
+ 1223              		.section	.debug_info,"",%progbits
+ 1224              	.Ldebug_info0:
+ 1225 0000 6B050000 		.4byte	0x56b
+ 1226 0004 0400     		.2byte	0x4
+ 1227 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 1228 000a 04       		.byte	0x4
+ 1229 000b 01       		.uleb128 0x1
+ 1230 000c 75020000 		.4byte	.LASF72
+ 1231 0010 01       		.byte	0x1
+ 1232 0011 10010000 		.4byte	.LASF73
+ 1233 0015 F4030000 		.4byte	.LASF74
+ 1234 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 36
+
+
+ 1235 001d 00000000 		.4byte	0
+ 1236 0021 00000000 		.4byte	.Ldebug_line0
+ 1237 0025 02       		.uleb128 0x2
+ 1238 0026 01       		.byte	0x1
+ 1239 0027 06       		.byte	0x6
+ 1240 0028 9C000000 		.4byte	.LASF0
+ 1241 002c 02       		.uleb128 0x2
+ 1242 002d 01       		.byte	0x1
+ 1243 002e 08       		.byte	0x8
+ 1244 002f 4F030000 		.4byte	.LASF1
+ 1245 0033 02       		.uleb128 0x2
+ 1246 0034 02       		.byte	0x2
+ 1247 0035 05       		.byte	0x5
+ 1248 0036 5D030000 		.4byte	.LASF2
+ 1249 003a 02       		.uleb128 0x2
+ 1250 003b 02       		.byte	0x2
+ 1251 003c 07       		.byte	0x7
+ 1252 003d F0010000 		.4byte	.LASF3
+ 1253 0041 02       		.uleb128 0x2
+ 1254 0042 04       		.byte	0x4
+ 1255 0043 05       		.byte	0x5
+ 1256 0044 D1000000 		.4byte	.LASF4
+ 1257 0048 02       		.uleb128 0x2
+ 1258 0049 04       		.byte	0x4
+ 1259 004a 07       		.byte	0x7
+ 1260 004b C8010000 		.4byte	.LASF5
+ 1261 004f 02       		.uleb128 0x2
+ 1262 0050 08       		.byte	0x8
+ 1263 0051 05       		.byte	0x5
+ 1264 0052 8E000000 		.4byte	.LASF6
+ 1265 0056 02       		.uleb128 0x2
+ 1266 0057 08       		.byte	0x8
+ 1267 0058 07       		.byte	0x7
+ 1268 0059 4B000000 		.4byte	.LASF7
+ 1269 005d 03       		.uleb128 0x3
+ 1270 005e 04       		.byte	0x4
+ 1271 005f 05       		.byte	0x5
+ 1272 0060 696E7400 		.ascii	"int\000"
+ 1273 0064 02       		.uleb128 0x2
+ 1274 0065 04       		.byte	0x4
+ 1275 0066 07       		.byte	0x7
+ 1276 0067 A7010000 		.4byte	.LASF8
+ 1277 006b 04       		.uleb128 0x4
+ 1278 006c FA000000 		.4byte	.LASF9
+ 1279 0070 02       		.byte	0x2
+ 1280 0071 C2       		.byte	0xc2
+ 1281 0072 2C000000 		.4byte	0x2c
+ 1282 0076 04       		.uleb128 0x4
+ 1283 0077 13000000 		.4byte	.LASF10
+ 1284 007b 02       		.byte	0x2
+ 1285 007c C3       		.byte	0xc3
+ 1286 007d 3A000000 		.4byte	0x3a
+ 1287 0081 04       		.uleb128 0x4
+ 1288 0082 66010000 		.4byte	.LASF11
+ 1289 0086 02       		.byte	0x2
+ 1290 0087 C4       		.byte	0xc4
+ 1291 0088 48000000 		.4byte	0x48
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 37
+
+
+ 1292 008c 02       		.uleb128 0x2
+ 1293 008d 04       		.byte	0x4
+ 1294 008e 04       		.byte	0x4
+ 1295 008f 29030000 		.4byte	.LASF12
+ 1296 0093 02       		.uleb128 0x2
+ 1297 0094 08       		.byte	0x8
+ 1298 0095 04       		.byte	0x4
+ 1299 0096 09010000 		.4byte	.LASF13
+ 1300 009a 04       		.uleb128 0x4
+ 1301 009b EE030000 		.4byte	.LASF14
+ 1302 009f 02       		.byte	0x2
+ 1303 00a0 D3       		.byte	0xd3
+ 1304 00a1 A5000000 		.4byte	0xa5
+ 1305 00a5 02       		.uleb128 0x2
+ 1306 00a6 01       		.byte	0x1
+ 1307 00a7 08       		.byte	0x8
+ 1308 00a8 AD030000 		.4byte	.LASF15
+ 1309 00ac 05       		.uleb128 0x5
+ 1310 00ad 4A030000 		.4byte	.LASF16
+ 1311 00b1 02       		.byte	0x2
+ 1312 00b2 6C01     		.2byte	0x16c
+ 1313 00b4 B8000000 		.4byte	0xb8
+ 1314 00b8 06       		.uleb128 0x6
+ 1315 00b9 6B000000 		.4byte	0x6b
+ 1316 00bd 06       		.uleb128 0x6
+ 1317 00be 76000000 		.4byte	0x76
+ 1318 00c2 02       		.uleb128 0x2
+ 1319 00c3 04       		.byte	0x4
+ 1320 00c4 07       		.byte	0x7
+ 1321 00c5 54020000 		.4byte	.LASF17
+ 1322 00c9 07       		.uleb128 0x7
+ 1323 00ca 0C       		.byte	0xc
+ 1324 00cb 03       		.byte	0x3
+ 1325 00cc 7A       		.byte	0x7a
+ 1326 00cd 3E010000 		.4byte	0x13e
+ 1327 00d1 08       		.uleb128 0x8
+ 1328 00d2 5D020000 		.4byte	.LASF18
+ 1329 00d6 03       		.byte	0x3
+ 1330 00d7 7C       		.byte	0x7c
+ 1331 00d8 6B000000 		.4byte	0x6b
+ 1332 00dc 00       		.byte	0
+ 1333 00dd 08       		.uleb128 0x8
+ 1334 00de 3F030000 		.4byte	.LASF19
+ 1335 00e2 03       		.byte	0x3
+ 1336 00e3 7D       		.byte	0x7d
+ 1337 00e4 6B000000 		.4byte	0x6b
+ 1338 00e8 01       		.byte	0x1
+ 1339 00e9 08       		.uleb128 0x8
+ 1340 00ea 4A020000 		.4byte	.LASF20
+ 1341 00ee 03       		.byte	0x3
+ 1342 00ef 7E       		.byte	0x7e
+ 1343 00f0 6B000000 		.4byte	0x6b
+ 1344 00f4 02       		.byte	0x2
+ 1345 00f5 08       		.uleb128 0x8
+ 1346 00f6 00010000 		.4byte	.LASF21
+ 1347 00fa 03       		.byte	0x3
+ 1348 00fb 7F       		.byte	0x7f
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 38
+
+
+ 1349 00fc 6B000000 		.4byte	0x6b
+ 1350 0100 03       		.byte	0x3
+ 1351 0101 08       		.uleb128 0x8
+ 1352 0102 62000000 		.4byte	.LASF22
+ 1353 0106 03       		.byte	0x3
+ 1354 0107 80       		.byte	0x80
+ 1355 0108 6B000000 		.4byte	0x6b
+ 1356 010c 04       		.byte	0x4
+ 1357 010d 08       		.uleb128 0x8
+ 1358 010e 8A010000 		.4byte	.LASF23
+ 1359 0112 03       		.byte	0x3
+ 1360 0113 81       		.byte	0x81
+ 1361 0114 6B000000 		.4byte	0x6b
+ 1362 0118 05       		.byte	0x5
+ 1363 0119 08       		.uleb128 0x8
+ 1364 011a E3030000 		.4byte	.LASF24
+ 1365 011e 03       		.byte	0x3
+ 1366 011f 82       		.byte	0x82
+ 1367 0120 76000000 		.4byte	0x76
+ 1368 0124 06       		.byte	0x6
+ 1369 0125 08       		.uleb128 0x8
+ 1370 0126 B2030000 		.4byte	.LASF25
+ 1371 012a 03       		.byte	0x3
+ 1372 012b 83       		.byte	0x83
+ 1373 012c 76000000 		.4byte	0x76
+ 1374 0130 08       		.byte	0x8
+ 1375 0131 08       		.uleb128 0x8
+ 1376 0132 2D020000 		.4byte	.LASF26
+ 1377 0136 03       		.byte	0x3
+ 1378 0137 84       		.byte	0x84
+ 1379 0138 6B000000 		.4byte	0x6b
+ 1380 013c 0A       		.byte	0xa
+ 1381 013d 00       		.byte	0
+ 1382 013e 04       		.uleb128 0x4
+ 1383 013f CC030000 		.4byte	.LASF27
+ 1384 0143 03       		.byte	0x3
+ 1385 0144 85       		.byte	0x85
+ 1386 0145 C9000000 		.4byte	0xc9
+ 1387 0149 07       		.uleb128 0x7
+ 1388 014a 04       		.byte	0x4
+ 1389 014b 03       		.byte	0x3
+ 1390 014c 91       		.byte	0x91
+ 1391 014d 6A010000 		.4byte	0x16a
+ 1392 0151 08       		.uleb128 0x8
+ 1393 0152 96040000 		.4byte	.LASF28
+ 1394 0156 03       		.byte	0x3
+ 1395 0157 93       		.byte	0x93
+ 1396 0158 6B000000 		.4byte	0x6b
+ 1397 015c 00       		.byte	0
+ 1398 015d 08       		.uleb128 0x8
+ 1399 015e A6030000 		.4byte	.LASF29
+ 1400 0162 03       		.byte	0x3
+ 1401 0163 94       		.byte	0x94
+ 1402 0164 76000000 		.4byte	0x76
+ 1403 0168 02       		.byte	0x2
+ 1404 0169 00       		.byte	0
+ 1405 016a 04       		.uleb128 0x4
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 39
+
+
+ 1406 016b 72000000 		.4byte	.LASF30
+ 1407 016f 03       		.byte	0x3
+ 1408 0170 95       		.byte	0x95
+ 1409 0171 49010000 		.4byte	0x149
+ 1410 0175 07       		.uleb128 0x7
+ 1411 0176 0C       		.byte	0xc
+ 1412 0177 03       		.byte	0x3
+ 1413 0178 97       		.byte	0x97
+ 1414 0179 A2010000 		.4byte	0x1a2
+ 1415 017d 08       		.uleb128 0x8
+ 1416 017e 0D000000 		.4byte	.LASF31
+ 1417 0182 03       		.byte	0x3
+ 1418 0183 99       		.byte	0x99
+ 1419 0184 76000000 		.4byte	0x76
+ 1420 0188 00       		.byte	0
+ 1421 0189 08       		.uleb128 0x8
+ 1422 018a 84010000 		.4byte	.LASF32
+ 1423 018e 03       		.byte	0x3
+ 1424 018f 9A       		.byte	0x9a
+ 1425 0190 A2010000 		.4byte	0x1a2
+ 1426 0194 04       		.byte	0x4
+ 1427 0195 08       		.uleb128 0x8
+ 1428 0196 00000000 		.4byte	.LASF33
+ 1429 019a 03       		.byte	0x3
+ 1430 019b 9B       		.byte	0x9b
+ 1431 019c A8010000 		.4byte	0x1a8
+ 1432 01a0 08       		.byte	0x8
+ 1433 01a1 00       		.byte	0
+ 1434 01a2 09       		.uleb128 0x9
+ 1435 01a3 04       		.byte	0x4
+ 1436 01a4 B8000000 		.4byte	0xb8
+ 1437 01a8 09       		.uleb128 0x9
+ 1438 01a9 04       		.byte	0x4
+ 1439 01aa 6A010000 		.4byte	0x16a
+ 1440 01ae 04       		.uleb128 0x4
+ 1441 01af 67030000 		.4byte	.LASF34
+ 1442 01b3 03       		.byte	0x3
+ 1443 01b4 9C       		.byte	0x9c
+ 1444 01b5 75010000 		.4byte	0x175
+ 1445 01b9 0A       		.uleb128 0xa
+ 1446 01ba 9D040000 		.4byte	.LASF47
+ 1447 01be 01       		.byte	0x1
+ 1448 01bf 5A       		.byte	0x5a
+ 1449 01c0 6B000000 		.4byte	0x6b
+ 1450 01c4 00000000 		.4byte	.LFB0
+ 1451 01c8 CC000000 		.4byte	.LFE0-.LFB0
+ 1452 01cc 01       		.uleb128 0x1
+ 1453 01cd 9C       		.byte	0x9c
+ 1454 01ce E1010000 		.4byte	0x1e1
+ 1455 01d2 0B       		.uleb128 0xb
+ 1456 01d3 BD030000 		.4byte	.LASF36
+ 1457 01d7 01       		.byte	0x1
+ 1458 01d8 5C       		.byte	0x5c
+ 1459 01d9 6B000000 		.4byte	0x6b
+ 1460 01dd 02       		.uleb128 0x2
+ 1461 01de 91       		.byte	0x91
+ 1462 01df 77       		.sleb128 -9
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 40
+
+
+ 1463 01e0 00       		.byte	0
+ 1464 01e1 0C       		.uleb128 0xc
+ 1465 01e2 95030000 		.4byte	.LASF75
+ 1466 01e6 01       		.byte	0x1
+ 1467 01e7 B5       		.byte	0xb5
+ 1468 01e8 00000000 		.4byte	.LFB1
+ 1469 01ec 20000000 		.4byte	.LFE1-.LFB1
+ 1470 01f0 01       		.uleb128 0x1
+ 1471 01f1 9C       		.byte	0x9c
+ 1472 01f2 0D       		.uleb128 0xd
+ 1473 01f3 EA000000 		.4byte	.LASF37
+ 1474 01f7 01       		.byte	0x1
+ 1475 01f8 DE       		.byte	0xde
+ 1476 01f9 00000000 		.4byte	.LFB2
+ 1477 01fd 68000000 		.4byte	.LFE2-.LFB2
+ 1478 0201 01       		.uleb128 0x1
+ 1479 0202 9C       		.byte	0x9c
+ 1480 0203 24020000 		.4byte	0x224
+ 1481 0207 0E       		.uleb128 0xe
+ 1482 0208 84010000 		.4byte	.LASF32
+ 1483 020c 01       		.byte	0x1
+ 1484 020d DE       		.byte	0xde
+ 1485 020e 24020000 		.4byte	0x224
+ 1486 0212 02       		.uleb128 0x2
+ 1487 0213 91       		.byte	0x91
+ 1488 0214 74       		.sleb128 -12
+ 1489 0215 0E       		.uleb128 0xe
+ 1490 0216 A6030000 		.4byte	.LASF29
+ 1491 021a 01       		.byte	0x1
+ 1492 021b DE       		.byte	0xde
+ 1493 021c 76000000 		.4byte	0x76
+ 1494 0220 02       		.uleb128 0x2
+ 1495 0221 91       		.byte	0x91
+ 1496 0222 72       		.sleb128 -14
+ 1497 0223 00       		.byte	0
+ 1498 0224 09       		.uleb128 0x9
+ 1499 0225 04       		.byte	0x4
+ 1500 0226 2A020000 		.4byte	0x22a
+ 1501 022a 0F       		.uleb128 0xf
+ 1502 022b 6B000000 		.4byte	0x6b
+ 1503 022f 10       		.uleb128 0x10
+ 1504 0230 87040000 		.4byte	.LASF76
+ 1505 0234 01       		.byte	0x1
+ 1506 0235 FA       		.byte	0xfa
+ 1507 0236 76000000 		.4byte	0x76
+ 1508 023a 00000000 		.4byte	.LFB3
+ 1509 023e 2E000000 		.4byte	.LFE3-.LFB3
+ 1510 0242 01       		.uleb128 0x1
+ 1511 0243 9C       		.byte	0x9c
+ 1512 0244 65020000 		.4byte	0x265
+ 1513 0248 0E       		.uleb128 0xe
+ 1514 0249 2E000000 		.4byte	.LASF35
+ 1515 024d 01       		.byte	0x1
+ 1516 024e FA       		.byte	0xfa
+ 1517 024f 65020000 		.4byte	0x265
+ 1518 0253 02       		.uleb128 0x2
+ 1519 0254 91       		.byte	0x91
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 41
+
+
+ 1520 0255 6C       		.sleb128 -20
+ 1521 0256 11       		.uleb128 0x11
+ 1522 0257 6C656E00 		.ascii	"len\000"
+ 1523 025b 01       		.byte	0x1
+ 1524 025c FC       		.byte	0xfc
+ 1525 025d 76000000 		.4byte	0x76
+ 1526 0261 02       		.uleb128 0x2
+ 1527 0262 91       		.byte	0x91
+ 1528 0263 76       		.sleb128 -10
+ 1529 0264 00       		.byte	0
+ 1530 0265 09       		.uleb128 0x9
+ 1531 0266 04       		.byte	0x4
+ 1532 0267 6B020000 		.4byte	0x26b
+ 1533 026b 0F       		.uleb128 0xf
+ 1534 026c 9A000000 		.4byte	0x9a
+ 1535 0270 12       		.uleb128 0x12
+ 1536 0271 17030000 		.4byte	.LASF38
+ 1537 0275 01       		.byte	0x1
+ 1538 0276 2101     		.2byte	0x121
+ 1539 0278 00000000 		.4byte	.LFB4
+ 1540 027c EC000000 		.4byte	.LFE4-.LFB4
+ 1541 0280 01       		.uleb128 0x1
+ 1542 0281 9C       		.byte	0x9c
+ 1543 0282 C3020000 		.4byte	0x2c3
+ 1544 0286 13       		.uleb128 0x13
+ 1545 0287 2E000000 		.4byte	.LASF35
+ 1546 028b 01       		.byte	0x1
+ 1547 028c 2101     		.2byte	0x121
+ 1548 028e 65020000 		.4byte	0x265
+ 1549 0292 02       		.uleb128 0x2
+ 1550 0293 91       		.byte	0x91
+ 1551 0294 6C       		.sleb128 -20
+ 1552 0295 14       		.uleb128 0x14
+ 1553 0296 8B030000 		.4byte	.LASF39
+ 1554 029a 01       		.byte	0x1
+ 1555 029b 2301     		.2byte	0x123
+ 1556 029d 76000000 		.4byte	0x76
+ 1557 02a1 02       		.uleb128 0x2
+ 1558 02a2 91       		.byte	0x91
+ 1559 02a3 76       		.sleb128 -10
+ 1560 02a4 14       		.uleb128 0x14
+ 1561 02a5 11050000 		.4byte	.LASF40
+ 1562 02a9 01       		.byte	0x1
+ 1563 02aa 2401     		.2byte	0x124
+ 1564 02ac 76000000 		.4byte	0x76
+ 1565 02b0 02       		.uleb128 0x2
+ 1566 02b1 91       		.byte	0x91
+ 1567 02b2 72       		.sleb128 -14
+ 1568 02b3 14       		.uleb128 0x14
+ 1569 02b4 03020000 		.4byte	.LASF41
+ 1570 02b8 01       		.byte	0x1
+ 1571 02b9 2501     		.2byte	0x125
+ 1572 02bb 76000000 		.4byte	0x76
+ 1573 02bf 02       		.uleb128 0x2
+ 1574 02c0 91       		.byte	0x91
+ 1575 02c1 74       		.sleb128 -12
+ 1576 02c2 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 42
+
+
+ 1577 02c3 12       		.uleb128 0x12
+ 1578 02c4 2F030000 		.4byte	.LASF42
+ 1579 02c8 01       		.byte	0x1
+ 1580 02c9 5E01     		.2byte	0x15e
+ 1581 02cb 00000000 		.4byte	.LFB5
+ 1582 02cf 2C000000 		.4byte	.LFE5-.LFB5
+ 1583 02d3 01       		.uleb128 0x1
+ 1584 02d4 9C       		.byte	0x9c
+ 1585 02d5 F8020000 		.4byte	0x2f8
+ 1586 02d9 13       		.uleb128 0x13
+ 1587 02da 1A000000 		.4byte	.LASF43
+ 1588 02de 01       		.byte	0x1
+ 1589 02df 5E01     		.2byte	0x15e
+ 1590 02e1 9A000000 		.4byte	0x9a
+ 1591 02e5 02       		.uleb128 0x2
+ 1592 02e6 91       		.byte	0x91
+ 1593 02e7 6F       		.sleb128 -17
+ 1594 02e8 14       		.uleb128 0x14
+ 1595 02e9 25000000 		.4byte	.LASF44
+ 1596 02ed 01       		.byte	0x1
+ 1597 02ee 6001     		.2byte	0x160
+ 1598 02f0 6B000000 		.4byte	0x6b
+ 1599 02f4 02       		.uleb128 0x2
+ 1600 02f5 91       		.byte	0x91
+ 1601 02f6 77       		.sleb128 -9
+ 1602 02f7 00       		.byte	0
+ 1603 02f8 12       		.uleb128 0x12
+ 1604 02f9 74030000 		.4byte	.LASF45
+ 1605 02fd 01       		.byte	0x1
+ 1606 02fe 7C01     		.2byte	0x17c
+ 1607 0300 00000000 		.4byte	.LFB6
+ 1608 0304 30000000 		.4byte	.LFE6-.LFB6
+ 1609 0308 01       		.uleb128 0x1
+ 1610 0309 9C       		.byte	0x9c
+ 1611 030a 1E030000 		.4byte	0x31e
+ 1612 030e 14       		.uleb128 0x14
+ 1613 030f 1C050000 		.4byte	.LASF46
+ 1614 0313 01       		.byte	0x1
+ 1615 0314 7E01     		.2byte	0x17e
+ 1616 0316 2E030000 		.4byte	0x32e
+ 1617 031a 02       		.uleb128 0x2
+ 1618 031b 91       		.byte	0x91
+ 1619 031c 74       		.sleb128 -12
+ 1620 031d 00       		.byte	0
+ 1621 031e 15       		.uleb128 0x15
+ 1622 031f 6B000000 		.4byte	0x6b
+ 1623 0323 2E030000 		.4byte	0x32e
+ 1624 0327 16       		.uleb128 0x16
+ 1625 0328 C2000000 		.4byte	0xc2
+ 1626 032c 01       		.byte	0x1
+ 1627 032d 00       		.byte	0
+ 1628 032e 0F       		.uleb128 0xf
+ 1629 032f 1E030000 		.4byte	0x31e
+ 1630 0333 17       		.uleb128 0x17
+ 1631 0334 64020000 		.4byte	.LASF48
+ 1632 0338 01       		.byte	0x1
+ 1633 0339 9A01     		.2byte	0x19a
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 43
+
+
+ 1634 033b 76000000 		.4byte	0x76
+ 1635 033f 00000000 		.4byte	.LFB7
+ 1636 0343 4C000000 		.4byte	.LFE7-.LFB7
+ 1637 0347 01       		.uleb128 0x1
+ 1638 0348 9C       		.byte	0x9c
+ 1639 0349 5D030000 		.4byte	0x35d
+ 1640 034d 14       		.uleb128 0x14
+ 1641 034e AD000000 		.4byte	.LASF49
+ 1642 0352 01       		.byte	0x1
+ 1643 0353 9C01     		.2byte	0x19c
+ 1644 0355 76000000 		.4byte	0x76
+ 1645 0359 02       		.uleb128 0x2
+ 1646 035a 91       		.byte	0x91
+ 1647 035b 76       		.sleb128 -10
+ 1648 035c 00       		.byte	0
+ 1649 035d 18       		.uleb128 0x18
+ 1650 035e B4010000 		.4byte	.LASF50
+ 1651 0362 01       		.byte	0x1
+ 1652 0363 C001     		.2byte	0x1c0
+ 1653 0365 6B000000 		.4byte	0x6b
+ 1654 0369 00000000 		.4byte	.LFB8
+ 1655 036d 30000000 		.4byte	.LFE8-.LFB8
+ 1656 0371 01       		.uleb128 0x1
+ 1657 0372 9C       		.byte	0x9c
+ 1658 0373 18       		.uleb128 0x18
+ 1659 0374 B8000000 		.4byte	.LASF51
+ 1660 0378 01       		.byte	0x1
+ 1661 0379 DD01     		.2byte	0x1dd
+ 1662 037b 6B000000 		.4byte	0x6b
+ 1663 037f 00000000 		.4byte	.LFB9
+ 1664 0383 30000000 		.4byte	.LFE9-.LFB9
+ 1665 0387 01       		.uleb128 0x1
+ 1666 0388 9C       		.byte	0x9c
+ 1667 0389 17       		.uleb128 0x17
+ 1668 038a 77040000 		.4byte	.LASF52
+ 1669 038e 01       		.byte	0x1
+ 1670 038f FE01     		.2byte	0x1fe
+ 1671 0391 76000000 		.4byte	0x76
+ 1672 0395 00000000 		.4byte	.LFB10
+ 1673 0399 2C000000 		.4byte	.LFE10-.LFB10
+ 1674 039d 01       		.uleb128 0x1
+ 1675 039e 9C       		.byte	0x9c
+ 1676 039f C2030000 		.4byte	0x3c2
+ 1677 03a3 13       		.uleb128 0x13
+ 1678 03a4 84010000 		.4byte	.LASF32
+ 1679 03a8 01       		.byte	0x1
+ 1680 03a9 FE01     		.2byte	0x1fe
+ 1681 03ab C2030000 		.4byte	0x3c2
+ 1682 03af 02       		.uleb128 0x2
+ 1683 03b0 91       		.byte	0x91
+ 1684 03b1 74       		.sleb128 -12
+ 1685 03b2 13       		.uleb128 0x13
+ 1686 03b3 A6030000 		.4byte	.LASF29
+ 1687 03b7 01       		.byte	0x1
+ 1688 03b8 FE01     		.2byte	0x1fe
+ 1689 03ba 76000000 		.4byte	0x76
+ 1690 03be 02       		.uleb128 0x2
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 44
+
+
+ 1691 03bf 91       		.byte	0x91
+ 1692 03c0 72       		.sleb128 -14
+ 1693 03c1 00       		.byte	0
+ 1694 03c2 09       		.uleb128 0x9
+ 1695 03c3 04       		.byte	0x4
+ 1696 03c4 6B000000 		.4byte	0x6b
+ 1697 03c8 17       		.uleb128 0x17
+ 1698 03c9 0C020000 		.4byte	.LASF53
+ 1699 03cd 01       		.byte	0x1
+ 1700 03ce 1C02     		.2byte	0x21c
+ 1701 03d0 76000000 		.4byte	0x76
+ 1702 03d4 00000000 		.4byte	.LFB11
+ 1703 03d8 44000000 		.4byte	.LFE11-.LFB11
+ 1704 03dc 01       		.uleb128 0x1
+ 1705 03dd 9C       		.byte	0x9c
+ 1706 03de F2030000 		.4byte	0x3f2
+ 1707 03e2 13       		.uleb128 0x13
+ 1708 03e3 84010000 		.4byte	.LASF32
+ 1709 03e7 01       		.byte	0x1
+ 1710 03e8 1C02     		.2byte	0x21c
+ 1711 03ea C2030000 		.4byte	0x3c2
+ 1712 03ee 02       		.uleb128 0x2
+ 1713 03ef 91       		.byte	0x91
+ 1714 03f0 74       		.sleb128 -12
+ 1715 03f1 00       		.byte	0
+ 1716 03f2 17       		.uleb128 0x17
+ 1717 03f3 DA000000 		.4byte	.LASF54
+ 1718 03f7 01       		.byte	0x1
+ 1719 03f8 3802     		.2byte	0x238
+ 1720 03fa 6B000000 		.4byte	0x6b
+ 1721 03fe 00000000 		.4byte	.LFB12
+ 1722 0402 28000000 		.4byte	.LFE12-.LFB12
+ 1723 0406 01       		.uleb128 0x1
+ 1724 0407 9C       		.byte	0x9c
+ 1725 0408 1C040000 		.4byte	0x41c
+ 1726 040c 14       		.uleb128 0x14
+ 1727 040d 84030000 		.4byte	.LASF55
+ 1728 0411 01       		.byte	0x1
+ 1729 0412 3A02     		.2byte	0x23a
+ 1730 0414 6B000000 		.4byte	0x6b
+ 1731 0418 02       		.uleb128 0x2
+ 1732 0419 91       		.byte	0x91
+ 1733 041a 77       		.sleb128 -9
+ 1734 041b 00       		.byte	0
+ 1735 041c 19       		.uleb128 0x19
+ 1736 041d 91010000 		.4byte	.LASF56
+ 1737 0421 01       		.byte	0x1
+ 1738 0422 5D02     		.2byte	0x25d
+ 1739 0424 6B000000 		.4byte	0x6b
+ 1740 0428 00000000 		.4byte	.LFB13
+ 1741 042c 40000000 		.4byte	.LFE13-.LFB13
+ 1742 0430 01       		.uleb128 0x1
+ 1743 0431 9C       		.byte	0x9c
+ 1744 0432 46040000 		.4byte	0x446
+ 1745 0436 14       		.uleb128 0x14
+ 1746 0437 CB000000 		.4byte	.LASF57
+ 1747 043b 01       		.byte	0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 45
+
+
+ 1748 043c 5F02     		.2byte	0x25f
+ 1749 043e 6B000000 		.4byte	0x6b
+ 1750 0442 02       		.uleb128 0x2
+ 1751 0443 91       		.byte	0x91
+ 1752 0444 77       		.sleb128 -9
+ 1753 0445 00       		.byte	0
+ 1754 0446 19       		.uleb128 0x19
+ 1755 0447 BA040000 		.4byte	.LASF58
+ 1756 044b 01       		.byte	0x1
+ 1757 044c 8102     		.2byte	0x281
+ 1758 044e 81000000 		.4byte	0x81
+ 1759 0452 00000000 		.4byte	.LFB14
+ 1760 0456 4C000000 		.4byte	.LFE14-.LFB14
+ 1761 045a 01       		.uleb128 0x1
+ 1762 045b 9C       		.byte	0x9c
+ 1763 045c 70040000 		.4byte	0x470
+ 1764 0460 14       		.uleb128 0x14
+ 1765 0461 A8000000 		.4byte	.LASF59
+ 1766 0465 01       		.byte	0x1
+ 1767 0466 8302     		.2byte	0x283
+ 1768 0468 81000000 		.4byte	0x81
+ 1769 046c 02       		.uleb128 0x2
+ 1770 046d 91       		.byte	0x91
+ 1771 046e 74       		.sleb128 -12
+ 1772 046f 00       		.byte	0
+ 1773 0470 18       		.uleb128 0x18
+ 1774 0471 35000000 		.4byte	.LASF60
+ 1775 0475 01       		.byte	0x1
+ 1776 0476 9F02     		.2byte	0x29f
+ 1777 0478 6B000000 		.4byte	0x6b
+ 1778 047c 00000000 		.4byte	.LFB15
+ 1779 0480 18000000 		.4byte	.LFE15-.LFB15
+ 1780 0484 01       		.uleb128 0x1
+ 1781 0485 9C       		.byte	0x9c
+ 1782 0486 18       		.uleb128 0x18
+ 1783 0487 DA010000 		.4byte	.LASF61
+ 1784 048b 01       		.byte	0x1
+ 1785 048c B602     		.2byte	0x2b6
+ 1786 048e 6B000000 		.4byte	0x6b
+ 1787 0492 00000000 		.4byte	.LFB16
+ 1788 0496 18000000 		.4byte	.LFE16-.LFB16
+ 1789 049a 01       		.uleb128 0x1
+ 1790 049b 9C       		.byte	0x9c
+ 1791 049c 18       		.uleb128 0x18
+ 1792 049d 03030000 		.4byte	.LASF62
+ 1793 04a1 01       		.byte	0x1
+ 1794 04a2 CE02     		.2byte	0x2ce
+ 1795 04a4 6B000000 		.4byte	0x6b
+ 1796 04a8 00000000 		.4byte	.LFB17
+ 1797 04ac 18000000 		.4byte	.LFE17-.LFB17
+ 1798 04b0 01       		.uleb128 0x1
+ 1799 04b1 9C       		.byte	0x9c
+ 1800 04b2 18       		.uleb128 0x18
+ 1801 04b3 37010000 		.4byte	.LASF63
+ 1802 04b7 01       		.byte	0x1
+ 1803 04b8 E502     		.2byte	0x2e5
+ 1804 04ba 76000000 		.4byte	0x76
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 46
+
+
+ 1805 04be 00000000 		.4byte	.LFB18
+ 1806 04c2 18000000 		.4byte	.LFE18-.LFB18
+ 1807 04c6 01       		.uleb128 0x1
+ 1808 04c7 9C       		.byte	0x9c
+ 1809 04c8 1A       		.uleb128 0x1a
+ 1810 04c9 FB040000 		.4byte	.LASF64
+ 1811 04cd 03       		.byte	0x3
+ 1812 04ce 4D02     		.2byte	0x24d
+ 1813 04d0 B8000000 		.4byte	0xb8
+ 1814 04d4 15       		.uleb128 0x15
+ 1815 04d5 6B000000 		.4byte	0x6b
+ 1816 04d9 E4040000 		.4byte	0x4e4
+ 1817 04dd 16       		.uleb128 0x16
+ 1818 04de C2000000 		.4byte	0xc2
+ 1819 04e2 06       		.byte	0x6
+ 1820 04e3 00       		.byte	0
+ 1821 04e4 1B       		.uleb128 0x1b
+ 1822 04e5 37020000 		.4byte	.LASF65
+ 1823 04e9 01       		.byte	0x1
+ 1824 04ea 1F       		.byte	0x1f
+ 1825 04eb F5040000 		.4byte	0x4f5
+ 1826 04ef 05       		.uleb128 0x5
+ 1827 04f0 03       		.byte	0x3
+ 1828 04f1 00000000 		.4byte	USBUART_lineCoding
+ 1829 04f5 06       		.uleb128 0x6
+ 1830 04f6 D4040000 		.4byte	0x4d4
+ 1831 04fa 1B       		.uleb128 0x1b
+ 1832 04fb CD040000 		.4byte	.LASF66
+ 1833 04ff 01       		.byte	0x1
+ 1834 0500 26       		.byte	0x26
+ 1835 0501 B8000000 		.4byte	0xb8
+ 1836 0505 05       		.uleb128 0x5
+ 1837 0506 03       		.byte	0x3
+ 1838 0507 00000000 		.4byte	USBUART_lineChanged
+ 1839 050b 1B       		.uleb128 0x1b
+ 1840 050c E1040000 		.4byte	.LASF67
+ 1841 0510 01       		.byte	0x1
+ 1842 0511 27       		.byte	0x27
+ 1843 0512 BD000000 		.4byte	0xbd
+ 1844 0516 05       		.uleb128 0x5
+ 1845 0517 03       		.byte	0x3
+ 1846 0518 00000000 		.4byte	USBUART_lineControlBitmap
+ 1847 051c 1B       		.uleb128 0x1b
+ 1848 051d 6D010000 		.4byte	.LASF68
+ 1849 0521 01       		.byte	0x1
+ 1850 0522 28       		.byte	0x28
+ 1851 0523 B8000000 		.4byte	0xb8
+ 1852 0527 05       		.uleb128 0x5
+ 1853 0528 03       		.byte	0x3
+ 1854 0529 00000000 		.4byte	USBUART_cdc_data_in_ep
+ 1855 052d 1B       		.uleb128 0x1b
+ 1856 052e 4E010000 		.4byte	.LASF69
+ 1857 0532 01       		.byte	0x1
+ 1858 0533 29       		.byte	0x29
+ 1859 0534 B8000000 		.4byte	0xb8
+ 1860 0538 05       		.uleb128 0x5
+ 1861 0539 03       		.byte	0x3
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 47
+
+
+ 1862 053a 00000000 		.4byte	USBUART_cdc_data_out_ep
+ 1863 053e 15       		.uleb128 0x15
+ 1864 053f 3E010000 		.4byte	0x13e
+ 1865 0543 4E050000 		.4byte	0x54e
+ 1866 0547 16       		.uleb128 0x16
+ 1867 0548 C2000000 		.4byte	0xc2
+ 1868 054c 08       		.byte	0x8
+ 1869 054d 00       		.byte	0
+ 1870 054e 1C       		.uleb128 0x1c
+ 1871 054f 67000000 		.4byte	.LASF70
+ 1872 0553 04       		.byte	0x4
+ 1873 0554 34       		.byte	0x34
+ 1874 0555 59050000 		.4byte	0x559
+ 1875 0559 06       		.uleb128 0x6
+ 1876 055a 3E050000 		.4byte	0x53e
+ 1877 055e 1C       		.uleb128 0x1c
+ 1878 055f 1B020000 		.4byte	.LASF71
+ 1879 0563 04       		.byte	0x4
+ 1880 0564 35       		.byte	0x35
+ 1881 0565 69050000 		.4byte	0x569
+ 1882 0569 06       		.uleb128 0x6
+ 1883 056a AE010000 		.4byte	0x1ae
+ 1884 056e 00       		.byte	0
+ 1885              		.section	.debug_abbrev,"",%progbits
+ 1886              	.Ldebug_abbrev0:
+ 1887 0000 01       		.uleb128 0x1
+ 1888 0001 11       		.uleb128 0x11
+ 1889 0002 01       		.byte	0x1
+ 1890 0003 25       		.uleb128 0x25
+ 1891 0004 0E       		.uleb128 0xe
+ 1892 0005 13       		.uleb128 0x13
+ 1893 0006 0B       		.uleb128 0xb
+ 1894 0007 03       		.uleb128 0x3
+ 1895 0008 0E       		.uleb128 0xe
+ 1896 0009 1B       		.uleb128 0x1b
+ 1897 000a 0E       		.uleb128 0xe
+ 1898 000b 55       		.uleb128 0x55
+ 1899 000c 17       		.uleb128 0x17
+ 1900 000d 11       		.uleb128 0x11
+ 1901 000e 01       		.uleb128 0x1
+ 1902 000f 10       		.uleb128 0x10
+ 1903 0010 17       		.uleb128 0x17
+ 1904 0011 00       		.byte	0
+ 1905 0012 00       		.byte	0
+ 1906 0013 02       		.uleb128 0x2
+ 1907 0014 24       		.uleb128 0x24
+ 1908 0015 00       		.byte	0
+ 1909 0016 0B       		.uleb128 0xb
+ 1910 0017 0B       		.uleb128 0xb
+ 1911 0018 3E       		.uleb128 0x3e
+ 1912 0019 0B       		.uleb128 0xb
+ 1913 001a 03       		.uleb128 0x3
+ 1914 001b 0E       		.uleb128 0xe
+ 1915 001c 00       		.byte	0
+ 1916 001d 00       		.byte	0
+ 1917 001e 03       		.uleb128 0x3
+ 1918 001f 24       		.uleb128 0x24
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 48
+
+
+ 1919 0020 00       		.byte	0
+ 1920 0021 0B       		.uleb128 0xb
+ 1921 0022 0B       		.uleb128 0xb
+ 1922 0023 3E       		.uleb128 0x3e
+ 1923 0024 0B       		.uleb128 0xb
+ 1924 0025 03       		.uleb128 0x3
+ 1925 0026 08       		.uleb128 0x8
+ 1926 0027 00       		.byte	0
+ 1927 0028 00       		.byte	0
+ 1928 0029 04       		.uleb128 0x4
+ 1929 002a 16       		.uleb128 0x16
+ 1930 002b 00       		.byte	0
+ 1931 002c 03       		.uleb128 0x3
+ 1932 002d 0E       		.uleb128 0xe
+ 1933 002e 3A       		.uleb128 0x3a
+ 1934 002f 0B       		.uleb128 0xb
+ 1935 0030 3B       		.uleb128 0x3b
+ 1936 0031 0B       		.uleb128 0xb
+ 1937 0032 49       		.uleb128 0x49
+ 1938 0033 13       		.uleb128 0x13
+ 1939 0034 00       		.byte	0
+ 1940 0035 00       		.byte	0
+ 1941 0036 05       		.uleb128 0x5
+ 1942 0037 16       		.uleb128 0x16
+ 1943 0038 00       		.byte	0
+ 1944 0039 03       		.uleb128 0x3
+ 1945 003a 0E       		.uleb128 0xe
+ 1946 003b 3A       		.uleb128 0x3a
+ 1947 003c 0B       		.uleb128 0xb
+ 1948 003d 3B       		.uleb128 0x3b
+ 1949 003e 05       		.uleb128 0x5
+ 1950 003f 49       		.uleb128 0x49
+ 1951 0040 13       		.uleb128 0x13
+ 1952 0041 00       		.byte	0
+ 1953 0042 00       		.byte	0
+ 1954 0043 06       		.uleb128 0x6
+ 1955 0044 35       		.uleb128 0x35
+ 1956 0045 00       		.byte	0
+ 1957 0046 49       		.uleb128 0x49
+ 1958 0047 13       		.uleb128 0x13
+ 1959 0048 00       		.byte	0
+ 1960 0049 00       		.byte	0
+ 1961 004a 07       		.uleb128 0x7
+ 1962 004b 13       		.uleb128 0x13
+ 1963 004c 01       		.byte	0x1
+ 1964 004d 0B       		.uleb128 0xb
+ 1965 004e 0B       		.uleb128 0xb
+ 1966 004f 3A       		.uleb128 0x3a
+ 1967 0050 0B       		.uleb128 0xb
+ 1968 0051 3B       		.uleb128 0x3b
+ 1969 0052 0B       		.uleb128 0xb
+ 1970 0053 01       		.uleb128 0x1
+ 1971 0054 13       		.uleb128 0x13
+ 1972 0055 00       		.byte	0
+ 1973 0056 00       		.byte	0
+ 1974 0057 08       		.uleb128 0x8
+ 1975 0058 0D       		.uleb128 0xd
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 49
+
+
+ 1976 0059 00       		.byte	0
+ 1977 005a 03       		.uleb128 0x3
+ 1978 005b 0E       		.uleb128 0xe
+ 1979 005c 3A       		.uleb128 0x3a
+ 1980 005d 0B       		.uleb128 0xb
+ 1981 005e 3B       		.uleb128 0x3b
+ 1982 005f 0B       		.uleb128 0xb
+ 1983 0060 49       		.uleb128 0x49
+ 1984 0061 13       		.uleb128 0x13
+ 1985 0062 38       		.uleb128 0x38
+ 1986 0063 0B       		.uleb128 0xb
+ 1987 0064 00       		.byte	0
+ 1988 0065 00       		.byte	0
+ 1989 0066 09       		.uleb128 0x9
+ 1990 0067 0F       		.uleb128 0xf
+ 1991 0068 00       		.byte	0
+ 1992 0069 0B       		.uleb128 0xb
+ 1993 006a 0B       		.uleb128 0xb
+ 1994 006b 49       		.uleb128 0x49
+ 1995 006c 13       		.uleb128 0x13
+ 1996 006d 00       		.byte	0
+ 1997 006e 00       		.byte	0
+ 1998 006f 0A       		.uleb128 0xa
+ 1999 0070 2E       		.uleb128 0x2e
+ 2000 0071 01       		.byte	0x1
+ 2001 0072 3F       		.uleb128 0x3f
+ 2002 0073 19       		.uleb128 0x19
+ 2003 0074 03       		.uleb128 0x3
+ 2004 0075 0E       		.uleb128 0xe
+ 2005 0076 3A       		.uleb128 0x3a
+ 2006 0077 0B       		.uleb128 0xb
+ 2007 0078 3B       		.uleb128 0x3b
+ 2008 0079 0B       		.uleb128 0xb
+ 2009 007a 27       		.uleb128 0x27
+ 2010 007b 19       		.uleb128 0x19
+ 2011 007c 49       		.uleb128 0x49
+ 2012 007d 13       		.uleb128 0x13
+ 2013 007e 11       		.uleb128 0x11
+ 2014 007f 01       		.uleb128 0x1
+ 2015 0080 12       		.uleb128 0x12
+ 2016 0081 06       		.uleb128 0x6
+ 2017 0082 40       		.uleb128 0x40
+ 2018 0083 18       		.uleb128 0x18
+ 2019 0084 9642     		.uleb128 0x2116
+ 2020 0086 19       		.uleb128 0x19
+ 2021 0087 01       		.uleb128 0x1
+ 2022 0088 13       		.uleb128 0x13
+ 2023 0089 00       		.byte	0
+ 2024 008a 00       		.byte	0
+ 2025 008b 0B       		.uleb128 0xb
+ 2026 008c 34       		.uleb128 0x34
+ 2027 008d 00       		.byte	0
+ 2028 008e 03       		.uleb128 0x3
+ 2029 008f 0E       		.uleb128 0xe
+ 2030 0090 3A       		.uleb128 0x3a
+ 2031 0091 0B       		.uleb128 0xb
+ 2032 0092 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 50
+
+
+ 2033 0093 0B       		.uleb128 0xb
+ 2034 0094 49       		.uleb128 0x49
+ 2035 0095 13       		.uleb128 0x13
+ 2036 0096 02       		.uleb128 0x2
+ 2037 0097 18       		.uleb128 0x18
+ 2038 0098 00       		.byte	0
+ 2039 0099 00       		.byte	0
+ 2040 009a 0C       		.uleb128 0xc
+ 2041 009b 2E       		.uleb128 0x2e
+ 2042 009c 00       		.byte	0
+ 2043 009d 3F       		.uleb128 0x3f
+ 2044 009e 19       		.uleb128 0x19
+ 2045 009f 03       		.uleb128 0x3
+ 2046 00a0 0E       		.uleb128 0xe
+ 2047 00a1 3A       		.uleb128 0x3a
+ 2048 00a2 0B       		.uleb128 0xb
+ 2049 00a3 3B       		.uleb128 0x3b
+ 2050 00a4 0B       		.uleb128 0xb
+ 2051 00a5 27       		.uleb128 0x27
+ 2052 00a6 19       		.uleb128 0x19
+ 2053 00a7 11       		.uleb128 0x11
+ 2054 00a8 01       		.uleb128 0x1
+ 2055 00a9 12       		.uleb128 0x12
+ 2056 00aa 06       		.uleb128 0x6
+ 2057 00ab 40       		.uleb128 0x40
+ 2058 00ac 18       		.uleb128 0x18
+ 2059 00ad 9642     		.uleb128 0x2116
+ 2060 00af 19       		.uleb128 0x19
+ 2061 00b0 00       		.byte	0
+ 2062 00b1 00       		.byte	0
+ 2063 00b2 0D       		.uleb128 0xd
+ 2064 00b3 2E       		.uleb128 0x2e
+ 2065 00b4 01       		.byte	0x1
+ 2066 00b5 3F       		.uleb128 0x3f
+ 2067 00b6 19       		.uleb128 0x19
+ 2068 00b7 03       		.uleb128 0x3
+ 2069 00b8 0E       		.uleb128 0xe
+ 2070 00b9 3A       		.uleb128 0x3a
+ 2071 00ba 0B       		.uleb128 0xb
+ 2072 00bb 3B       		.uleb128 0x3b
+ 2073 00bc 0B       		.uleb128 0xb
+ 2074 00bd 27       		.uleb128 0x27
+ 2075 00be 19       		.uleb128 0x19
+ 2076 00bf 11       		.uleb128 0x11
+ 2077 00c0 01       		.uleb128 0x1
+ 2078 00c1 12       		.uleb128 0x12
+ 2079 00c2 06       		.uleb128 0x6
+ 2080 00c3 40       		.uleb128 0x40
+ 2081 00c4 18       		.uleb128 0x18
+ 2082 00c5 9642     		.uleb128 0x2116
+ 2083 00c7 19       		.uleb128 0x19
+ 2084 00c8 01       		.uleb128 0x1
+ 2085 00c9 13       		.uleb128 0x13
+ 2086 00ca 00       		.byte	0
+ 2087 00cb 00       		.byte	0
+ 2088 00cc 0E       		.uleb128 0xe
+ 2089 00cd 05       		.uleb128 0x5
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 51
+
+
+ 2090 00ce 00       		.byte	0
+ 2091 00cf 03       		.uleb128 0x3
+ 2092 00d0 0E       		.uleb128 0xe
+ 2093 00d1 3A       		.uleb128 0x3a
+ 2094 00d2 0B       		.uleb128 0xb
+ 2095 00d3 3B       		.uleb128 0x3b
+ 2096 00d4 0B       		.uleb128 0xb
+ 2097 00d5 49       		.uleb128 0x49
+ 2098 00d6 13       		.uleb128 0x13
+ 2099 00d7 02       		.uleb128 0x2
+ 2100 00d8 18       		.uleb128 0x18
+ 2101 00d9 00       		.byte	0
+ 2102 00da 00       		.byte	0
+ 2103 00db 0F       		.uleb128 0xf
+ 2104 00dc 26       		.uleb128 0x26
+ 2105 00dd 00       		.byte	0
+ 2106 00de 49       		.uleb128 0x49
+ 2107 00df 13       		.uleb128 0x13
+ 2108 00e0 00       		.byte	0
+ 2109 00e1 00       		.byte	0
+ 2110 00e2 10       		.uleb128 0x10
+ 2111 00e3 2E       		.uleb128 0x2e
+ 2112 00e4 01       		.byte	0x1
+ 2113 00e5 03       		.uleb128 0x3
+ 2114 00e6 0E       		.uleb128 0xe
+ 2115 00e7 3A       		.uleb128 0x3a
+ 2116 00e8 0B       		.uleb128 0xb
+ 2117 00e9 3B       		.uleb128 0x3b
+ 2118 00ea 0B       		.uleb128 0xb
+ 2119 00eb 27       		.uleb128 0x27
+ 2120 00ec 19       		.uleb128 0x19
+ 2121 00ed 49       		.uleb128 0x49
+ 2122 00ee 13       		.uleb128 0x13
+ 2123 00ef 11       		.uleb128 0x11
+ 2124 00f0 01       		.uleb128 0x1
+ 2125 00f1 12       		.uleb128 0x12
+ 2126 00f2 06       		.uleb128 0x6
+ 2127 00f3 40       		.uleb128 0x40
+ 2128 00f4 18       		.uleb128 0x18
+ 2129 00f5 9742     		.uleb128 0x2117
+ 2130 00f7 19       		.uleb128 0x19
+ 2131 00f8 01       		.uleb128 0x1
+ 2132 00f9 13       		.uleb128 0x13
+ 2133 00fa 00       		.byte	0
+ 2134 00fb 00       		.byte	0
+ 2135 00fc 11       		.uleb128 0x11
+ 2136 00fd 34       		.uleb128 0x34
+ 2137 00fe 00       		.byte	0
+ 2138 00ff 03       		.uleb128 0x3
+ 2139 0100 08       		.uleb128 0x8
+ 2140 0101 3A       		.uleb128 0x3a
+ 2141 0102 0B       		.uleb128 0xb
+ 2142 0103 3B       		.uleb128 0x3b
+ 2143 0104 0B       		.uleb128 0xb
+ 2144 0105 49       		.uleb128 0x49
+ 2145 0106 13       		.uleb128 0x13
+ 2146 0107 02       		.uleb128 0x2
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 52
+
+
+ 2147 0108 18       		.uleb128 0x18
+ 2148 0109 00       		.byte	0
+ 2149 010a 00       		.byte	0
+ 2150 010b 12       		.uleb128 0x12
+ 2151 010c 2E       		.uleb128 0x2e
+ 2152 010d 01       		.byte	0x1
+ 2153 010e 3F       		.uleb128 0x3f
+ 2154 010f 19       		.uleb128 0x19
+ 2155 0110 03       		.uleb128 0x3
+ 2156 0111 0E       		.uleb128 0xe
+ 2157 0112 3A       		.uleb128 0x3a
+ 2158 0113 0B       		.uleb128 0xb
+ 2159 0114 3B       		.uleb128 0x3b
+ 2160 0115 05       		.uleb128 0x5
+ 2161 0116 27       		.uleb128 0x27
+ 2162 0117 19       		.uleb128 0x19
+ 2163 0118 11       		.uleb128 0x11
+ 2164 0119 01       		.uleb128 0x1
+ 2165 011a 12       		.uleb128 0x12
+ 2166 011b 06       		.uleb128 0x6
+ 2167 011c 40       		.uleb128 0x40
+ 2168 011d 18       		.uleb128 0x18
+ 2169 011e 9642     		.uleb128 0x2116
+ 2170 0120 19       		.uleb128 0x19
+ 2171 0121 01       		.uleb128 0x1
+ 2172 0122 13       		.uleb128 0x13
+ 2173 0123 00       		.byte	0
+ 2174 0124 00       		.byte	0
+ 2175 0125 13       		.uleb128 0x13
+ 2176 0126 05       		.uleb128 0x5
+ 2177 0127 00       		.byte	0
+ 2178 0128 03       		.uleb128 0x3
+ 2179 0129 0E       		.uleb128 0xe
+ 2180 012a 3A       		.uleb128 0x3a
+ 2181 012b 0B       		.uleb128 0xb
+ 2182 012c 3B       		.uleb128 0x3b
+ 2183 012d 05       		.uleb128 0x5
+ 2184 012e 49       		.uleb128 0x49
+ 2185 012f 13       		.uleb128 0x13
+ 2186 0130 02       		.uleb128 0x2
+ 2187 0131 18       		.uleb128 0x18
+ 2188 0132 00       		.byte	0
+ 2189 0133 00       		.byte	0
+ 2190 0134 14       		.uleb128 0x14
+ 2191 0135 34       		.uleb128 0x34
+ 2192 0136 00       		.byte	0
+ 2193 0137 03       		.uleb128 0x3
+ 2194 0138 0E       		.uleb128 0xe
+ 2195 0139 3A       		.uleb128 0x3a
+ 2196 013a 0B       		.uleb128 0xb
+ 2197 013b 3B       		.uleb128 0x3b
+ 2198 013c 05       		.uleb128 0x5
+ 2199 013d 49       		.uleb128 0x49
+ 2200 013e 13       		.uleb128 0x13
+ 2201 013f 02       		.uleb128 0x2
+ 2202 0140 18       		.uleb128 0x18
+ 2203 0141 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 53
+
+
+ 2204 0142 00       		.byte	0
+ 2205 0143 15       		.uleb128 0x15
+ 2206 0144 01       		.uleb128 0x1
+ 2207 0145 01       		.byte	0x1
+ 2208 0146 49       		.uleb128 0x49
+ 2209 0147 13       		.uleb128 0x13
+ 2210 0148 01       		.uleb128 0x1
+ 2211 0149 13       		.uleb128 0x13
+ 2212 014a 00       		.byte	0
+ 2213 014b 00       		.byte	0
+ 2214 014c 16       		.uleb128 0x16
+ 2215 014d 21       		.uleb128 0x21
+ 2216 014e 00       		.byte	0
+ 2217 014f 49       		.uleb128 0x49
+ 2218 0150 13       		.uleb128 0x13
+ 2219 0151 2F       		.uleb128 0x2f
+ 2220 0152 0B       		.uleb128 0xb
+ 2221 0153 00       		.byte	0
+ 2222 0154 00       		.byte	0
+ 2223 0155 17       		.uleb128 0x17
+ 2224 0156 2E       		.uleb128 0x2e
+ 2225 0157 01       		.byte	0x1
+ 2226 0158 3F       		.uleb128 0x3f
+ 2227 0159 19       		.uleb128 0x19
+ 2228 015a 03       		.uleb128 0x3
+ 2229 015b 0E       		.uleb128 0xe
+ 2230 015c 3A       		.uleb128 0x3a
+ 2231 015d 0B       		.uleb128 0xb
+ 2232 015e 3B       		.uleb128 0x3b
+ 2233 015f 05       		.uleb128 0x5
+ 2234 0160 27       		.uleb128 0x27
+ 2235 0161 19       		.uleb128 0x19
+ 2236 0162 49       		.uleb128 0x49
+ 2237 0163 13       		.uleb128 0x13
+ 2238 0164 11       		.uleb128 0x11
+ 2239 0165 01       		.uleb128 0x1
+ 2240 0166 12       		.uleb128 0x12
+ 2241 0167 06       		.uleb128 0x6
+ 2242 0168 40       		.uleb128 0x40
+ 2243 0169 18       		.uleb128 0x18
+ 2244 016a 9642     		.uleb128 0x2116
+ 2245 016c 19       		.uleb128 0x19
+ 2246 016d 01       		.uleb128 0x1
+ 2247 016e 13       		.uleb128 0x13
+ 2248 016f 00       		.byte	0
+ 2249 0170 00       		.byte	0
+ 2250 0171 18       		.uleb128 0x18
+ 2251 0172 2E       		.uleb128 0x2e
+ 2252 0173 00       		.byte	0
+ 2253 0174 3F       		.uleb128 0x3f
+ 2254 0175 19       		.uleb128 0x19
+ 2255 0176 03       		.uleb128 0x3
+ 2256 0177 0E       		.uleb128 0xe
+ 2257 0178 3A       		.uleb128 0x3a
+ 2258 0179 0B       		.uleb128 0xb
+ 2259 017a 3B       		.uleb128 0x3b
+ 2260 017b 05       		.uleb128 0x5
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 54
+
+
+ 2261 017c 27       		.uleb128 0x27
+ 2262 017d 19       		.uleb128 0x19
+ 2263 017e 49       		.uleb128 0x49
+ 2264 017f 13       		.uleb128 0x13
+ 2265 0180 11       		.uleb128 0x11
+ 2266 0181 01       		.uleb128 0x1
+ 2267 0182 12       		.uleb128 0x12
+ 2268 0183 06       		.uleb128 0x6
+ 2269 0184 40       		.uleb128 0x40
+ 2270 0185 18       		.uleb128 0x18
+ 2271 0186 9742     		.uleb128 0x2117
+ 2272 0188 19       		.uleb128 0x19
+ 2273 0189 00       		.byte	0
+ 2274 018a 00       		.byte	0
+ 2275 018b 19       		.uleb128 0x19
+ 2276 018c 2E       		.uleb128 0x2e
+ 2277 018d 01       		.byte	0x1
+ 2278 018e 3F       		.uleb128 0x3f
+ 2279 018f 19       		.uleb128 0x19
+ 2280 0190 03       		.uleb128 0x3
+ 2281 0191 0E       		.uleb128 0xe
+ 2282 0192 3A       		.uleb128 0x3a
+ 2283 0193 0B       		.uleb128 0xb
+ 2284 0194 3B       		.uleb128 0x3b
+ 2285 0195 05       		.uleb128 0x5
+ 2286 0196 27       		.uleb128 0x27
+ 2287 0197 19       		.uleb128 0x19
+ 2288 0198 49       		.uleb128 0x49
+ 2289 0199 13       		.uleb128 0x13
+ 2290 019a 11       		.uleb128 0x11
+ 2291 019b 01       		.uleb128 0x1
+ 2292 019c 12       		.uleb128 0x12
+ 2293 019d 06       		.uleb128 0x6
+ 2294 019e 40       		.uleb128 0x40
+ 2295 019f 18       		.uleb128 0x18
+ 2296 01a0 9742     		.uleb128 0x2117
+ 2297 01a2 19       		.uleb128 0x19
+ 2298 01a3 01       		.uleb128 0x1
+ 2299 01a4 13       		.uleb128 0x13
+ 2300 01a5 00       		.byte	0
+ 2301 01a6 00       		.byte	0
+ 2302 01a7 1A       		.uleb128 0x1a
+ 2303 01a8 34       		.uleb128 0x34
+ 2304 01a9 00       		.byte	0
+ 2305 01aa 03       		.uleb128 0x3
+ 2306 01ab 0E       		.uleb128 0xe
+ 2307 01ac 3A       		.uleb128 0x3a
+ 2308 01ad 0B       		.uleb128 0xb
+ 2309 01ae 3B       		.uleb128 0x3b
+ 2310 01af 05       		.uleb128 0x5
+ 2311 01b0 49       		.uleb128 0x49
+ 2312 01b1 13       		.uleb128 0x13
+ 2313 01b2 3F       		.uleb128 0x3f
+ 2314 01b3 19       		.uleb128 0x19
+ 2315 01b4 3C       		.uleb128 0x3c
+ 2316 01b5 19       		.uleb128 0x19
+ 2317 01b6 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 55
+
+
+ 2318 01b7 00       		.byte	0
+ 2319 01b8 1B       		.uleb128 0x1b
+ 2320 01b9 34       		.uleb128 0x34
+ 2321 01ba 00       		.byte	0
+ 2322 01bb 03       		.uleb128 0x3
+ 2323 01bc 0E       		.uleb128 0xe
+ 2324 01bd 3A       		.uleb128 0x3a
+ 2325 01be 0B       		.uleb128 0xb
+ 2326 01bf 3B       		.uleb128 0x3b
+ 2327 01c0 0B       		.uleb128 0xb
+ 2328 01c1 49       		.uleb128 0x49
+ 2329 01c2 13       		.uleb128 0x13
+ 2330 01c3 3F       		.uleb128 0x3f
+ 2331 01c4 19       		.uleb128 0x19
+ 2332 01c5 02       		.uleb128 0x2
+ 2333 01c6 18       		.uleb128 0x18
+ 2334 01c7 00       		.byte	0
+ 2335 01c8 00       		.byte	0
+ 2336 01c9 1C       		.uleb128 0x1c
+ 2337 01ca 34       		.uleb128 0x34
+ 2338 01cb 00       		.byte	0
+ 2339 01cc 03       		.uleb128 0x3
+ 2340 01cd 0E       		.uleb128 0xe
+ 2341 01ce 3A       		.uleb128 0x3a
+ 2342 01cf 0B       		.uleb128 0xb
+ 2343 01d0 3B       		.uleb128 0x3b
+ 2344 01d1 0B       		.uleb128 0xb
+ 2345 01d2 49       		.uleb128 0x49
+ 2346 01d3 13       		.uleb128 0x13
+ 2347 01d4 3F       		.uleb128 0x3f
+ 2348 01d5 19       		.uleb128 0x19
+ 2349 01d6 3C       		.uleb128 0x3c
+ 2350 01d7 19       		.uleb128 0x19
+ 2351 01d8 00       		.byte	0
+ 2352 01d9 00       		.byte	0
+ 2353 01da 00       		.byte	0
+ 2354              		.section	.debug_aranges,"",%progbits
+ 2355 0000 AC000000 		.4byte	0xac
+ 2356 0004 0200     		.2byte	0x2
+ 2357 0006 00000000 		.4byte	.Ldebug_info0
+ 2358 000a 04       		.byte	0x4
+ 2359 000b 00       		.byte	0
+ 2360 000c 0000     		.2byte	0
+ 2361 000e 0000     		.2byte	0
+ 2362 0010 00000000 		.4byte	.LFB0
+ 2363 0014 CC000000 		.4byte	.LFE0-.LFB0
+ 2364 0018 00000000 		.4byte	.LFB1
+ 2365 001c 20000000 		.4byte	.LFE1-.LFB1
+ 2366 0020 00000000 		.4byte	.LFB2
+ 2367 0024 68000000 		.4byte	.LFE2-.LFB2
+ 2368 0028 00000000 		.4byte	.LFB3
+ 2369 002c 2E000000 		.4byte	.LFE3-.LFB3
+ 2370 0030 00000000 		.4byte	.LFB4
+ 2371 0034 EC000000 		.4byte	.LFE4-.LFB4
+ 2372 0038 00000000 		.4byte	.LFB5
+ 2373 003c 2C000000 		.4byte	.LFE5-.LFB5
+ 2374 0040 00000000 		.4byte	.LFB6
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 56
+
+
+ 2375 0044 30000000 		.4byte	.LFE6-.LFB6
+ 2376 0048 00000000 		.4byte	.LFB7
+ 2377 004c 4C000000 		.4byte	.LFE7-.LFB7
+ 2378 0050 00000000 		.4byte	.LFB8
+ 2379 0054 30000000 		.4byte	.LFE8-.LFB8
+ 2380 0058 00000000 		.4byte	.LFB9
+ 2381 005c 30000000 		.4byte	.LFE9-.LFB9
+ 2382 0060 00000000 		.4byte	.LFB10
+ 2383 0064 2C000000 		.4byte	.LFE10-.LFB10
+ 2384 0068 00000000 		.4byte	.LFB11
+ 2385 006c 44000000 		.4byte	.LFE11-.LFB11
+ 2386 0070 00000000 		.4byte	.LFB12
+ 2387 0074 28000000 		.4byte	.LFE12-.LFB12
+ 2388 0078 00000000 		.4byte	.LFB13
+ 2389 007c 40000000 		.4byte	.LFE13-.LFB13
+ 2390 0080 00000000 		.4byte	.LFB14
+ 2391 0084 4C000000 		.4byte	.LFE14-.LFB14
+ 2392 0088 00000000 		.4byte	.LFB15
+ 2393 008c 18000000 		.4byte	.LFE15-.LFB15
+ 2394 0090 00000000 		.4byte	.LFB16
+ 2395 0094 18000000 		.4byte	.LFE16-.LFB16
+ 2396 0098 00000000 		.4byte	.LFB17
+ 2397 009c 18000000 		.4byte	.LFE17-.LFB17
+ 2398 00a0 00000000 		.4byte	.LFB18
+ 2399 00a4 18000000 		.4byte	.LFE18-.LFB18
+ 2400 00a8 00000000 		.4byte	0
+ 2401 00ac 00000000 		.4byte	0
+ 2402              		.section	.debug_ranges,"",%progbits
+ 2403              	.Ldebug_ranges0:
+ 2404 0000 00000000 		.4byte	.LFB0
+ 2405 0004 CC000000 		.4byte	.LFE0
+ 2406 0008 00000000 		.4byte	.LFB1
+ 2407 000c 20000000 		.4byte	.LFE1
+ 2408 0010 00000000 		.4byte	.LFB2
+ 2409 0014 68000000 		.4byte	.LFE2
+ 2410 0018 00000000 		.4byte	.LFB3
+ 2411 001c 2E000000 		.4byte	.LFE3
+ 2412 0020 00000000 		.4byte	.LFB4
+ 2413 0024 EC000000 		.4byte	.LFE4
+ 2414 0028 00000000 		.4byte	.LFB5
+ 2415 002c 2C000000 		.4byte	.LFE5
+ 2416 0030 00000000 		.4byte	.LFB6
+ 2417 0034 30000000 		.4byte	.LFE6
+ 2418 0038 00000000 		.4byte	.LFB7
+ 2419 003c 4C000000 		.4byte	.LFE7
+ 2420 0040 00000000 		.4byte	.LFB8
+ 2421 0044 30000000 		.4byte	.LFE8
+ 2422 0048 00000000 		.4byte	.LFB9
+ 2423 004c 30000000 		.4byte	.LFE9
+ 2424 0050 00000000 		.4byte	.LFB10
+ 2425 0054 2C000000 		.4byte	.LFE10
+ 2426 0058 00000000 		.4byte	.LFB11
+ 2427 005c 44000000 		.4byte	.LFE11
+ 2428 0060 00000000 		.4byte	.LFB12
+ 2429 0064 28000000 		.4byte	.LFE12
+ 2430 0068 00000000 		.4byte	.LFB13
+ 2431 006c 40000000 		.4byte	.LFE13
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 57
+
+
+ 2432 0070 00000000 		.4byte	.LFB14
+ 2433 0074 4C000000 		.4byte	.LFE14
+ 2434 0078 00000000 		.4byte	.LFB15
+ 2435 007c 18000000 		.4byte	.LFE15
+ 2436 0080 00000000 		.4byte	.LFB16
+ 2437 0084 18000000 		.4byte	.LFE16
+ 2438 0088 00000000 		.4byte	.LFB17
+ 2439 008c 18000000 		.4byte	.LFE17
+ 2440 0090 00000000 		.4byte	.LFB18
+ 2441 0094 18000000 		.4byte	.LFE18
+ 2442 0098 00000000 		.4byte	0
+ 2443 009c 00000000 		.4byte	0
+ 2444              		.section	.debug_line,"",%progbits
+ 2445              	.Ldebug_line0:
+ 2446 0000 37020000 		.section	.debug_str,"MS",%progbits,1
+ 2446      02006800 
+ 2446      00000201 
+ 2446      FB0E0D00 
+ 2446      01010101 
+ 2447              	.LASF33:
+ 2448 0000 70537461 		.ascii	"pStatusBlock\000"
+ 2448      74757342 
+ 2448      6C6F636B 
+ 2448      00
+ 2449              	.LASF31:
+ 2450 000d 636F756E 		.ascii	"count\000"
+ 2450      7400
+ 2451              	.LASF10:
+ 2452 0013 75696E74 		.ascii	"uint16\000"
+ 2452      313600
+ 2453              	.LASF43:
+ 2454 001a 74784461 		.ascii	"txDataByte\000"
+ 2454      74614279 
+ 2454      746500
+ 2455              	.LASF44:
+ 2456 0025 64617461 		.ascii	"dataByte\000"
+ 2456      42797465 
+ 2456      00
+ 2457              	.LASF35:
+ 2458 002e 73747269 		.ascii	"string\000"
+ 2458      6E6700
+ 2459              	.LASF60:
+ 2460 0035 55534255 		.ascii	"USBUART_GetCharFormat\000"
+ 2460      4152545F 
+ 2460      47657443 
+ 2460      68617246 
+ 2460      6F726D61 
+ 2461              	.LASF7:
+ 2462 004b 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2462      206C6F6E 
+ 2462      6720756E 
+ 2462      7369676E 
+ 2462      65642069 
+ 2463              	.LASF22:
+ 2464 0062 61646472 		.ascii	"addr\000"
+ 2464      00
+ 2465              	.LASF70:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 58
+
+
+ 2466 0067 55534255 		.ascii	"USBUART_EP\000"
+ 2466      4152545F 
+ 2466      455000
+ 2467              	.LASF30:
+ 2468 0072 545F5553 		.ascii	"T_USBUART_XFER_STATUS_BLOCK\000"
+ 2468      42554152 
+ 2468      545F5846 
+ 2468      45525F53 
+ 2468      54415455 
+ 2469              	.LASF6:
+ 2470 008e 6C6F6E67 		.ascii	"long long int\000"
+ 2470      206C6F6E 
+ 2470      6720696E 
+ 2470      7400
+ 2471              	.LASF0:
+ 2472 009c 7369676E 		.ascii	"signed char\000"
+ 2472      65642063 
+ 2472      68617200 
+ 2473              	.LASF59:
+ 2474 00a8 72617465 		.ascii	"rate\000"
+ 2474      00
+ 2475              	.LASF49:
+ 2476 00ad 62797465 		.ascii	"bytesCount\000"
+ 2476      73436F75 
+ 2476      6E7400
+ 2477              	.LASF51:
+ 2478 00b8 55534255 		.ascii	"USBUART_CDCIsReady\000"
+ 2478      4152545F 
+ 2478      43444349 
+ 2478      73526561 
+ 2478      647900
+ 2479              	.LASF57:
+ 2480 00cb 73746174 		.ascii	"state\000"
+ 2480      6500
+ 2481              	.LASF4:
+ 2482 00d1 6C6F6E67 		.ascii	"long int\000"
+ 2482      20696E74 
+ 2482      00
+ 2483              	.LASF54:
+ 2484 00da 55534255 		.ascii	"USBUART_GetChar\000"
+ 2484      4152545F 
+ 2484      47657443 
+ 2484      68617200 
+ 2485              	.LASF37:
+ 2486 00ea 55534255 		.ascii	"USBUART_PutData\000"
+ 2486      4152545F 
+ 2486      50757444 
+ 2486      61746100 
+ 2487              	.LASF9:
+ 2488 00fa 75696E74 		.ascii	"uint8\000"
+ 2488      3800
+ 2489              	.LASF21:
+ 2490 0100 6570546F 		.ascii	"epToggle\000"
+ 2490      67676C65 
+ 2490      00
+ 2491              	.LASF13:
+ 2492 0109 646F7562 		.ascii	"double\000"
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 59
+
+
+ 2492      6C6500
+ 2493              	.LASF73:
+ 2494 0110 2E5C4765 		.ascii	".\\Generated_Source\\PSoC5\\USBUART_cdc.c\000"
+ 2494      6E657261 
+ 2494      7465645F 
+ 2494      536F7572 
+ 2494      63655C50 
+ 2495              	.LASF63:
+ 2496 0137 55534255 		.ascii	"USBUART_GetLineControl\000"
+ 2496      4152545F 
+ 2496      4765744C 
+ 2496      696E6543 
+ 2496      6F6E7472 
+ 2497              	.LASF69:
+ 2498 014e 55534255 		.ascii	"USBUART_cdc_data_out_ep\000"
+ 2498      4152545F 
+ 2498      6364635F 
+ 2498      64617461 
+ 2498      5F6F7574 
+ 2499              	.LASF11:
+ 2500 0166 75696E74 		.ascii	"uint32\000"
+ 2500      333200
+ 2501              	.LASF68:
+ 2502 016d 55534255 		.ascii	"USBUART_cdc_data_in_ep\000"
+ 2502      4152545F 
+ 2502      6364635F 
+ 2502      64617461 
+ 2502      5F696E5F 
+ 2503              	.LASF32:
+ 2504 0184 70446174 		.ascii	"pData\000"
+ 2504      6100
+ 2505              	.LASF23:
+ 2506 018a 65704D6F 		.ascii	"epMode\000"
+ 2506      646500
+ 2507              	.LASF56:
+ 2508 0191 55534255 		.ascii	"USBUART_IsLineChanged\000"
+ 2508      4152545F 
+ 2508      49734C69 
+ 2508      6E654368 
+ 2508      616E6765 
+ 2509              	.LASF8:
+ 2510 01a7 756E7369 		.ascii	"unsigned int\000"
+ 2510      676E6564 
+ 2510      20696E74 
+ 2510      00
+ 2511              	.LASF50:
+ 2512 01b4 55534255 		.ascii	"USBUART_DataIsReady\000"
+ 2512      4152545F 
+ 2512      44617461 
+ 2512      49735265 
+ 2512      61647900 
+ 2513              	.LASF5:
+ 2514 01c8 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2514      20756E73 
+ 2514      69676E65 
+ 2514      6420696E 
+ 2514      7400
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 60
+
+
+ 2515              	.LASF61:
+ 2516 01da 55534255 		.ascii	"USBUART_GetParityType\000"
+ 2516      4152545F 
+ 2516      47657450 
+ 2516      61726974 
+ 2516      79547970 
+ 2517              	.LASF3:
+ 2518 01f0 73686F72 		.ascii	"short unsigned int\000"
+ 2518      7420756E 
+ 2518      7369676E 
+ 2518      65642069 
+ 2518      6E7400
+ 2519              	.LASF41:
+ 2520 0203 62756649 		.ascii	"bufIndex\000"
+ 2520      6E646578 
+ 2520      00
+ 2521              	.LASF53:
+ 2522 020c 55534255 		.ascii	"USBUART_GetAll\000"
+ 2522      4152545F 
+ 2522      47657441 
+ 2522      6C6C00
+ 2523              	.LASF71:
+ 2524 021b 55534255 		.ascii	"USBUART_currentTD\000"
+ 2524      4152545F 
+ 2524      63757272 
+ 2524      656E7454 
+ 2524      4400
+ 2525              	.LASF26:
+ 2526 022d 696E7465 		.ascii	"interface\000"
+ 2526      72666163 
+ 2526      6500
+ 2527              	.LASF65:
+ 2528 0237 55534255 		.ascii	"USBUART_lineCoding\000"
+ 2528      4152545F 
+ 2528      6C696E65 
+ 2528      436F6469 
+ 2528      6E6700
+ 2529              	.LASF20:
+ 2530 024a 68774570 		.ascii	"hwEpState\000"
+ 2530      53746174 
+ 2530      6500
+ 2531              	.LASF17:
+ 2532 0254 73697A65 		.ascii	"sizetype\000"
+ 2532      74797065 
+ 2532      00
+ 2533              	.LASF18:
+ 2534 025d 61747472 		.ascii	"attrib\000"
+ 2534      696200
+ 2535              	.LASF48:
+ 2536 0264 55534255 		.ascii	"USBUART_GetCount\000"
+ 2536      4152545F 
+ 2536      47657443 
+ 2536      6F756E74 
+ 2536      00
+ 2537              	.LASF72:
+ 2538 0275 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 2538      4320342E 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 61
+
+
+ 2538      392E3320 
+ 2538      32303135 
+ 2538      30333033 
+ 2539 02a8 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m3 -mthumb -g -O"
+ 2539      20726576 
+ 2539      6973696F 
+ 2539      6E203232 
+ 2539      31323230 
+ 2540 02db 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 2540      66756E63 
+ 2540      74696F6E 
+ 2540      2D736563 
+ 2540      74696F6E 
+ 2541              	.LASF62:
+ 2542 0303 55534255 		.ascii	"USBUART_GetDataBits\000"
+ 2542      4152545F 
+ 2542      47657444 
+ 2542      61746142 
+ 2542      69747300 
+ 2543              	.LASF38:
+ 2544 0317 55534255 		.ascii	"USBUART_PutString\000"
+ 2544      4152545F 
+ 2544      50757453 
+ 2544      7472696E 
+ 2544      6700
+ 2545              	.LASF12:
+ 2546 0329 666C6F61 		.ascii	"float\000"
+ 2546      7400
+ 2547              	.LASF42:
+ 2548 032f 55534255 		.ascii	"USBUART_PutChar\000"
+ 2548      4152545F 
+ 2548      50757443 
+ 2548      68617200 
+ 2549              	.LASF19:
+ 2550 033f 61706945 		.ascii	"apiEpState\000"
+ 2550      70537461 
+ 2550      746500
+ 2551              	.LASF16:
+ 2552 034a 72656738 		.ascii	"reg8\000"
+ 2552      00
+ 2553              	.LASF1:
+ 2554 034f 756E7369 		.ascii	"unsigned char\000"
+ 2554      676E6564 
+ 2554      20636861 
+ 2554      7200
+ 2555              	.LASF2:
+ 2556 035d 73686F72 		.ascii	"short int\000"
+ 2556      7420696E 
+ 2556      7400
+ 2557              	.LASF34:
+ 2558 0367 545F5553 		.ascii	"T_USBUART_TD\000"
+ 2558      42554152 
+ 2558      545F5444 
+ 2558      00
+ 2559              	.LASF45:
+ 2560 0374 55534255 		.ascii	"USBUART_PutCRLF\000"
+ 2560      4152545F 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 62
+
+
+ 2560      50757443 
+ 2560      524C4600 
+ 2561              	.LASF55:
+ 2562 0384 72784461 		.ascii	"rxData\000"
+ 2562      746100
+ 2563              	.LASF39:
+ 2564 038b 7374724C 		.ascii	"strLength\000"
+ 2564      656E6774 
+ 2564      6800
+ 2565              	.LASF75:
+ 2566 0395 55534255 		.ascii	"USBUART_CDC_Init\000"
+ 2566      4152545F 
+ 2566      4344435F 
+ 2566      496E6974 
+ 2566      00
+ 2567              	.LASF29:
+ 2568 03a6 6C656E67 		.ascii	"length\000"
+ 2568      746800
+ 2569              	.LASF15:
+ 2570 03ad 63686172 		.ascii	"char\000"
+ 2570      00
+ 2571              	.LASF25:
+ 2572 03b2 62756666 		.ascii	"bufferSize\000"
+ 2572      65725369 
+ 2572      7A6500
+ 2573              	.LASF36:
+ 2574 03bd 72657175 		.ascii	"requestHandled\000"
+ 2574      65737448 
+ 2574      616E646C 
+ 2574      656400
+ 2575              	.LASF27:
+ 2576 03cc 545F5553 		.ascii	"T_USBUART_EP_CTL_BLOCK\000"
+ 2576      42554152 
+ 2576      545F4550 
+ 2576      5F43544C 
+ 2576      5F424C4F 
+ 2577              	.LASF24:
+ 2578 03e3 62756666 		.ascii	"buffOffset\000"
+ 2578      4F666673 
+ 2578      657400
+ 2579              	.LASF14:
+ 2580 03ee 63686172 		.ascii	"char8\000"
+ 2580      3800
+ 2581              	.LASF74:
+ 2582 03f4 5C5C4441 		.ascii	"\\\\DATA\\Folder Redirection\\faithc\\Desktop\\FAIT"
+ 2582      54415C46 
+ 2582      6F6C6465 
+ 2582      72205265 
+ 2582      64697265 
+ 2583 0421 48532052 		.ascii	"HS RELEASED FIRMWARE\\SirenProject200W_RevF\\SirenP"
+ 2583      454C4541 
+ 2583      53454420 
+ 2583      4649524D 
+ 2583      57415245 
+ 2584 0452 726F6A65 		.ascii	"roject200W_RevD\\ReleaseVersion.cydsn\000"
+ 2584      63743230 
+ 2584      30575F52 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc1iJDWf.s 			page 63
+
+
+ 2584      6576445C 
+ 2584      52656C65 
+ 2585              	.LASF52:
+ 2586 0477 55534255 		.ascii	"USBUART_GetData\000"
+ 2586      4152545F 
+ 2586      47657444 
+ 2586      61746100 
+ 2587              	.LASF76:
+ 2588 0487 55534255 		.ascii	"USBUART_StrLen\000"
+ 2588      4152545F 
+ 2588      5374724C 
+ 2588      656E00
+ 2589              	.LASF28:
+ 2590 0496 73746174 		.ascii	"status\000"
+ 2590      757300
+ 2591              	.LASF47:
+ 2592 049d 55534255 		.ascii	"USBUART_DispatchCDCClassRqst\000"
+ 2592      4152545F 
+ 2592      44697370 
+ 2592      61746368 
+ 2592      43444343 
+ 2593              	.LASF58:
+ 2594 04ba 55534255 		.ascii	"USBUART_GetDTERate\000"
+ 2594      4152545F 
+ 2594      47657444 
+ 2594      54455261 
+ 2594      746500
+ 2595              	.LASF66:
+ 2596 04cd 55534255 		.ascii	"USBUART_lineChanged\000"
+ 2596      4152545F 
+ 2596      6C696E65 
+ 2596      4368616E 
+ 2596      67656400 
+ 2597              	.LASF67:
+ 2598 04e1 55534255 		.ascii	"USBUART_lineControlBitmap\000"
+ 2598      4152545F 
+ 2598      6C696E65 
+ 2598      436F6E74 
+ 2598      726F6C42 
+ 2599              	.LASF64:
+ 2600 04fb 55534255 		.ascii	"USBUART_transferState\000"
+ 2600      4152545F 
+ 2600      7472616E 
+ 2600      73666572 
+ 2600      53746174 
+ 2601              	.LASF40:
+ 2602 0511 73656E64 		.ascii	"sendLength\000"
+ 2602      4C656E67 
+ 2602      746800
+ 2603              	.LASF46:
+ 2604 051c 74784461 		.ascii	"txData\000"
+ 2604      746100
+ 2605              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

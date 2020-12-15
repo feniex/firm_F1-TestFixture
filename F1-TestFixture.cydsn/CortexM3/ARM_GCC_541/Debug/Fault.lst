@@ -1,0 +1,946 @@
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccOhA3bp.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"Fault.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.rodata
+  20              		.type	WAIT_TIME_IN_HALF_SECONDS, %object
+  21              		.size	WAIT_TIME_IN_HALF_SECONDS, 1
+  22              	WAIT_TIME_IN_HALF_SECONDS:
+  23 0000 0A       		.byte	10
+  24              		.bss
+  25              	bOverloadFlag:
+  26 0000 00       		.space	1
+  27              		.section	.text.isThereOverload,"ax",%progbits
+  28              		.align	2
+  29              		.global	isThereOverload
+  30              		.thumb
+  31              		.thumb_func
+  32              		.type	isThereOverload, %function
+  33              	isThereOverload:
+  34              	.LFB63:
+  35              		.file 1 "Fault.c"
+   1:Fault.c       **** /* ========================================
+   2:Fault.c       ****  *
+   3:Fault.c       ****  * Copyright YOUR COMPANY, THE YEAR
+   4:Fault.c       ****  * All Rights Reserved
+   5:Fault.c       ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:Fault.c       ****  *
+   7:Fault.c       ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:Fault.c       ****  * WHICH IS THE PROPERTY OF your company.
+   9:Fault.c       ****  *
+  10:Fault.c       ****  * ========================================
+  11:Fault.c       **** */
+  12:Fault.c       **** 
+  13:Fault.c       **** /**********PREPROCESSOR DIRECTIVES**********/
+  14:Fault.c       **** #include "CommonVariables.h"
+  15:Fault.c       **** #include "Fault.h"
+  16:Fault.c       **** #include "Tones.h"
+  17:Fault.c       **** #include "DACaudio.h"
+  18:Fault.c       **** 
+  19:Fault.c       **** /**********DEFINED CONSTANTS**********/
+  20:Fault.c       **** static const uint8 WAIT_TIME_IN_HALF_SECONDS = 10;
+  21:Fault.c       **** 
+  22:Fault.c       **** /**********DATA STRUCTURES**********/
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccOhA3bp.s 			page 2
+
+
+  23:Fault.c       **** 
+  24:Fault.c       **** /**********GLOBAL VARIABLES**********/
+  25:Fault.c       **** static uint8 bOverloadFlag = false;
+  26:Fault.c       **** 
+  27:Fault.c       **** /**********FUNCTION PROTOTYPES**********/
+  28:Fault.c       **** 
+  29:Fault.c       **** /**********DEFINED FUNCTIONS**********/
+  30:Fault.c       **** 
+  31:Fault.c       **** /*******************************************************************************
+  32:Fault.c       **** * Function Name: isThereOverload
+  33:Fault.c       **** ********************************************************************************
+  34:Fault.c       **** *
+  35:Fault.c       **** * Summary:
+  36:Fault.c       **** *  Returns the boolean for overload detection
+  37:Fault.c       **** *
+  38:Fault.c       **** * Parameters:  
+  39:Fault.c       **** *   None
+  40:Fault.c       **** *
+  41:Fault.c       **** * Return:
+  42:Fault.c       **** *   The boolean for overload detection
+  43:Fault.c       **** *
+  44:Fault.c       **** *******************************************************************************/
+  45:Fault.c       **** uint8 isThereOverload(void)
+  46:Fault.c       **** {   
+  36              		.loc 1 46 0
+  37              		.cfi_startproc
+  38              		@ args = 0, pretend = 0, frame = 0
+  39              		@ frame_needed = 1, uses_anonymous_args = 0
+  40              		@ link register save eliminated.
+  41 0000 80B4     		push	{r7}
+  42              		.cfi_def_cfa_offset 4
+  43              		.cfi_offset 7, -4
+  44 0002 00AF     		add	r7, sp, #0
+  45              		.cfi_def_cfa_register 7
+  47:Fault.c       ****     return bOverloadFlag;
+  46              		.loc 1 47 0
+  47 0004 024B     		ldr	r3, .L3
+  48 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  48:Fault.c       **** }
+  49              		.loc 1 48 0
+  50 0008 1846     		mov	r0, r3
+  51 000a BD46     		mov	sp, r7
+  52              		.cfi_def_cfa_register 13
+  53              		@ sp needed
+  54 000c 80BC     		pop	{r7}
+  55              		.cfi_restore 7
+  56              		.cfi_def_cfa_offset 0
+  57 000e 7047     		bx	lr
+  58              	.L4:
+  59              		.align	2
+  60              	.L3:
+  61 0010 00000000 		.word	bOverloadFlag
+  62              		.cfi_endproc
+  63              	.LFE63:
+  64              		.size	isThereOverload, .-isThereOverload
+  65              		.section	.text.processOverloadRoutine,"ax",%progbits
+  66              		.align	2
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccOhA3bp.s 			page 3
+
+
+  67              		.global	processOverloadRoutine
+  68              		.thumb
+  69              		.thumb_func
+  70              		.type	processOverloadRoutine, %function
+  71              	processOverloadRoutine:
+  72              	.LFB64:
+  49:Fault.c       **** 
+  50:Fault.c       **** /*******************************************************************************
+  51:Fault.c       **** * Function Name: processOverloadRoutine
+  52:Fault.c       **** ********************************************************************************
+  53:Fault.c       **** *
+  54:Fault.c       **** * Summary:
+  55:Fault.c       **** *  Waits for overload signal to clear before restarting the siren system,
+  56:Fault.c       **** *  called in main
+  57:Fault.c       **** *
+  58:Fault.c       **** * Parameters:  
+  59:Fault.c       **** *   None
+  60:Fault.c       **** *
+  61:Fault.c       **** * Return:
+  62:Fault.c       **** *   None
+  63:Fault.c       **** *
+  64:Fault.c       **** *******************************************************************************/
+  65:Fault.c       **** void processOverloadRoutine(void)
+  66:Fault.c       **** {
+  73              		.loc 1 66 0
+  74              		.cfi_startproc
+  75              		@ args = 0, pretend = 0, frame = 8
+  76              		@ frame_needed = 1, uses_anonymous_args = 0
+  77 0000 80B5     		push	{r7, lr}
+  78              		.cfi_def_cfa_offset 8
+  79              		.cfi_offset 7, -8
+  80              		.cfi_offset 14, -4
+  81 0002 82B0     		sub	sp, sp, #8
+  82              		.cfi_def_cfa_offset 16
+  83 0004 00AF     		add	r7, sp, #0
+  84              		.cfi_def_cfa_register 7
+  67:Fault.c       ****     uint8 index = 0;
+  85              		.loc 1 67 0
+  86 0006 0023     		movs	r3, #0
+  87 0008 FB71     		strb	r3, [r7, #7]
+  68:Fault.c       ****     CyGlobalIntDisable;
+  88              		.loc 1 68 0
+  89              		.syntax unified
+  90              	@ 68 "Fault.c" 1
+  91 000a 72B6     		CPSID   i
+  92              	@ 0 "" 2
+  69:Fault.c       ****     
+  70:Fault.c       ****     while(!OverloadInput1_Read() || !OverloadInput2_Read())
+  93              		.loc 1 70 0
+  94              		.thumb
+  95              		.syntax unified
+  96 000c 1AE0     		b	.L6
+  97              	.L9:
+  98              	.LBB2:
+  71:Fault.c       ****     {   //Cannot use do-while loop to prevent cool-down at startup
+  72:Fault.c       ****         PowerAmpOutput1_Write(false);
+  99              		.loc 1 72 0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccOhA3bp.s 			page 4
+
+
+ 100 000e 0020     		movs	r0, #0
+ 101 0010 FFF7FEFF 		bl	PowerAmpOutput1_Write
+  73:Fault.c       ****         //PowerAmpOutput1_Write(false);
+  74:Fault.c       ****         for(index = 0; index < WAIT_TIME_IN_HALF_SECONDS; index++)
+ 102              		.loc 1 74 0
+ 103 0014 0023     		movs	r3, #0
+ 104 0016 FB71     		strb	r3, [r7, #7]
+ 105 0018 10E0     		b	.L7
+ 106              	.L8:
+  75:Fault.c       ****         {
+  76:Fault.c       ****             CyWdtClear();
+ 107              		.loc 1 76 0 discriminator 3
+ 108 001a FFF7FEFF 		bl	CyWdtClear
+  77:Fault.c       ****             LEDoutput_Write(true);
+ 109              		.loc 1 77 0 discriminator 3
+ 110 001e 0120     		movs	r0, #1
+ 111 0020 FFF7FEFF 		bl	LEDoutput_Write
+  78:Fault.c       ****             CyDelay(250);
+ 112              		.loc 1 78 0 discriminator 3
+ 113 0024 FA20     		movs	r0, #250
+ 114 0026 FFF7FEFF 		bl	CyDelay
+  79:Fault.c       ****             LEDoutput_Write(false);
+ 115              		.loc 1 79 0 discriminator 3
+ 116 002a 0020     		movs	r0, #0
+ 117 002c FFF7FEFF 		bl	LEDoutput_Write
+  80:Fault.c       ****             CyDelay(250);
+ 118              		.loc 1 80 0 discriminator 3
+ 119 0030 FA20     		movs	r0, #250
+ 120 0032 FFF7FEFF 		bl	CyDelay
+  74:Fault.c       ****         {
+ 121              		.loc 1 74 0 discriminator 3
+ 122 0036 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 123 0038 0133     		adds	r3, r3, #1
+ 124 003a FB71     		strb	r3, [r7, #7]
+ 125              	.L7:
+  74:Fault.c       ****         {
+ 126              		.loc 1 74 0 is_stmt 0 discriminator 1
+ 127 003c 0A22     		movs	r2, #10
+ 128 003e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 129 0040 9342     		cmp	r3, r2
+ 130 0042 EAD3     		bcc	.L8
+ 131              	.L6:
+ 132              	.LBE2:
+  70:Fault.c       ****     {   //Cannot use do-while loop to prevent cool-down at startup
+ 133              		.loc 1 70 0 is_stmt 1
+ 134 0044 FFF7FEFF 		bl	OverloadInput1_Read
+ 135 0048 0346     		mov	r3, r0
+ 136 004a 002B     		cmp	r3, #0
+ 137 004c DFD0     		beq	.L9
+  70:Fault.c       ****     {   //Cannot use do-while loop to prevent cool-down at startup
+ 138              		.loc 1 70 0 is_stmt 0 discriminator 1
+ 139 004e FFF7FEFF 		bl	OverloadInput2_Read
+ 140 0052 0346     		mov	r3, r0
+ 141 0054 002B     		cmp	r3, #0
+ 142 0056 DAD0     		beq	.L9
+  81:Fault.c       ****         }
+  82:Fault.c       ****     }
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccOhA3bp.s 			page 5
+
+
+  83:Fault.c       ****     
+  84:Fault.c       ****     bOverloadFlag = false;   
+ 143              		.loc 1 84 0 is_stmt 1
+ 144 0058 044B     		ldr	r3, .L10
+ 145 005a 0022     		movs	r2, #0
+ 146 005c 1A70     		strb	r2, [r3]
+  85:Fault.c       ****     RadioMicKeyISR_ClearPending();   
+ 147              		.loc 1 85 0
+ 148 005e FFF7FEFF 		bl	RadioMicKeyISR_ClearPending
+  86:Fault.c       ****     //ParkKillISR_ClearPending(); 
+  87:Fault.c       ****     //TackSwitchISR_ClearPending();
+  88:Fault.c       ****     //DualDelayISR_ClearPending();
+  89:Fault.c       ****     //HornRingISR_ClearPending();
+  90:Fault.c       ****     //ModeStatusISR_ClearPending();
+  91:Fault.c       ****     CyGlobalIntEnable;
+ 149              		.loc 1 91 0
+ 150              		.syntax unified
+ 151              	@ 91 "Fault.c" 1
+ 152 0062 62B6     		CPSIE   i
+ 153              	@ 0 "" 2
+  92:Fault.c       **** }
+ 154              		.loc 1 92 0
+ 155              		.thumb
+ 156              		.syntax unified
+ 157 0064 00BF     		nop
+ 158 0066 0837     		adds	r7, r7, #8
+ 159              		.cfi_def_cfa_offset 8
+ 160 0068 BD46     		mov	sp, r7
+ 161              		.cfi_def_cfa_register 13
+ 162              		@ sp needed
+ 163 006a 80BD     		pop	{r7, pc}
+ 164              	.L11:
+ 165              		.align	2
+ 166              	.L10:
+ 167 006c 00000000 		.word	bOverloadFlag
+ 168              		.cfi_endproc
+ 169              	.LFE64:
+ 170              		.size	processOverloadRoutine, .-processOverloadRoutine
+ 171              		.section	.text.deactivatePoweredFunctions,"ax",%progbits
+ 172              		.align	2
+ 173              		.global	deactivatePoweredFunctions
+ 174              		.thumb
+ 175              		.thumb_func
+ 176              		.type	deactivatePoweredFunctions, %function
+ 177              	deactivatePoweredFunctions:
+ 178              	.LFB65:
+  93:Fault.c       **** 
+  94:Fault.c       **** /*******************************************************************************
+  95:Fault.c       **** * Function Name: deactivatePoweredFunctions
+  96:Fault.c       **** ********************************************************************************
+  97:Fault.c       **** *
+  98:Fault.c       **** * Summary:
+  99:Fault.c       **** *  Turns off PWM, power amps, and tone due to overload detection, called in
+ 100:Fault.c       **** *  OverloadISR
+ 101:Fault.c       **** *
+ 102:Fault.c       **** * Parameters:  
+ 103:Fault.c       **** *   None
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccOhA3bp.s 			page 6
+
+
+ 104:Fault.c       **** *
+ 105:Fault.c       **** * Return:
+ 106:Fault.c       **** *   None
+ 107:Fault.c       **** *
+ 108:Fault.c       **** *******************************************************************************/
+ 109:Fault.c       **** void deactivatePoweredFunctions(void)
+ 110:Fault.c       **** {
+ 179              		.loc 1 110 0
+ 180              		.cfi_startproc
+ 181              		@ args = 0, pretend = 0, frame = 0
+ 182              		@ frame_needed = 1, uses_anonymous_args = 0
+ 183 0000 80B5     		push	{r7, lr}
+ 184              		.cfi_def_cfa_offset 8
+ 185              		.cfi_offset 7, -8
+ 186              		.cfi_offset 14, -4
+ 187 0002 00AF     		add	r7, sp, #0
+ 188              		.cfi_def_cfa_register 7
+ 111:Fault.c       ****     CyGlobalIntDisable;    
+ 189              		.loc 1 111 0
+ 190              		.syntax unified
+ 191              	@ 111 "Fault.c" 1
+ 192 0004 72B6     		CPSID   i
+ 193              	@ 0 "" 2
+ 112:Fault.c       ****     PowerAmpOutput1_Write(false);
+ 194              		.loc 1 112 0
+ 195              		.thumb
+ 196              		.syntax unified
+ 197 0006 0020     		movs	r0, #0
+ 198 0008 FFF7FEFF 		bl	PowerAmpOutput1_Write
+ 113:Fault.c       ****     //PowerAmpOutput1_Write(false);
+ 114:Fault.c       ****     stopPWMTone(SPEAKER_1);
+ 199              		.loc 1 114 0
+ 200 000c 0020     		movs	r0, #0
+ 201 000e FFF7FEFF 		bl	stopPWMTone
+ 115:Fault.c       ****     stopPWMTone(SPEAKER_2);
+ 202              		.loc 1 115 0
+ 203 0012 0120     		movs	r0, #1
+ 204 0014 FFF7FEFF 		bl	stopPWMTone
+ 116:Fault.c       ****     stopAudioTone(SPEAKER_1);
+ 205              		.loc 1 116 0
+ 206 0018 0020     		movs	r0, #0
+ 207 001a FFF7FEFF 		bl	stopAudioTone
+ 117:Fault.c       ****     stopAudioTone(SPEAKER_2);
+ 208              		.loc 1 117 0
+ 209 001e 0120     		movs	r0, #1
+ 210 0020 FFF7FEFF 		bl	stopAudioTone
+ 118:Fault.c       ****     bOverloadFlag = true;
+ 211              		.loc 1 118 0
+ 212 0024 024B     		ldr	r3, .L13
+ 213 0026 0122     		movs	r2, #1
+ 214 0028 1A70     		strb	r2, [r3]
+ 119:Fault.c       **** }
+ 215              		.loc 1 119 0
+ 216 002a 00BF     		nop
+ 217 002c 80BD     		pop	{r7, pc}
+ 218              	.L14:
+ 219 002e 00BF     		.align	2
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccOhA3bp.s 			page 7
+
+
+ 220              	.L13:
+ 221 0030 00000000 		.word	bOverloadFlag
+ 222              		.cfi_endproc
+ 223              	.LFE65:
+ 224              		.size	deactivatePoweredFunctions, .-deactivatePoweredFunctions
+ 225              		.text
+ 226              	.Letext0:
+ 227              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 228              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 229              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 230              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 231              		.section	.debug_info,"",%progbits
+ 232              	.Ldebug_info0:
+ 233 0000 58010000 		.4byte	0x158
+ 234 0004 0400     		.2byte	0x4
+ 235 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 236 000a 04       		.byte	0x4
+ 237 000b 01       		.uleb128 0x1
+ 238 000c BA000000 		.4byte	.LASF23
+ 239 0010 0C       		.byte	0xc
+ 240 0011 67000000 		.4byte	.LASF24
+ 241 0015 64010000 		.4byte	.LASF25
+ 242 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 243 001d 00000000 		.4byte	0
+ 244 0021 00000000 		.4byte	.Ldebug_line0
+ 245 0025 02       		.uleb128 0x2
+ 246 0026 01       		.byte	0x1
+ 247 0027 06       		.byte	0x6
+ 248 0028 E1010000 		.4byte	.LASF0
+ 249 002c 02       		.uleb128 0x2
+ 250 002d 01       		.byte	0x1
+ 251 002e 08       		.byte	0x8
+ 252 002f 48010000 		.4byte	.LASF1
+ 253 0033 02       		.uleb128 0x2
+ 254 0034 02       		.byte	0x2
+ 255 0035 05       		.byte	0x5
+ 256 0036 0B020000 		.4byte	.LASF2
+ 257 003a 02       		.uleb128 0x2
+ 258 003b 02       		.byte	0x2
+ 259 003c 07       		.byte	0x7
+ 260 003d 1B000000 		.4byte	.LASF3
+ 261 0041 03       		.uleb128 0x3
+ 262 0042 FB010000 		.4byte	.LASF9
+ 263 0046 02       		.byte	0x2
+ 264 0047 3F       		.byte	0x3f
+ 265 0048 4C000000 		.4byte	0x4c
+ 266 004c 02       		.uleb128 0x2
+ 267 004d 04       		.byte	0x4
+ 268 004e 05       		.byte	0x5
+ 269 004f 5B010000 		.4byte	.LASF4
+ 270 0053 02       		.uleb128 0x2
+ 271 0054 04       		.byte	0x4
+ 272 0055 07       		.byte	0x7
+ 273 0056 77000000 		.4byte	.LASF5
+ 274 005a 02       		.uleb128 0x2
+ 275 005b 08       		.byte	0x8
+ 276 005c 05       		.byte	0x5
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccOhA3bp.s 			page 8
+
+
+ 277 005d BA010000 		.4byte	.LASF6
+ 278 0061 02       		.uleb128 0x2
+ 279 0062 08       		.byte	0x8
+ 280 0063 07       		.byte	0x7
+ 281 0064 89000000 		.4byte	.LASF7
+ 282 0068 04       		.uleb128 0x4
+ 283 0069 04       		.byte	0x4
+ 284 006a 05       		.byte	0x5
+ 285 006b 696E7400 		.ascii	"int\000"
+ 286 006f 02       		.uleb128 0x2
+ 287 0070 04       		.byte	0x4
+ 288 0071 07       		.byte	0x7
+ 289 0072 2E000000 		.4byte	.LASF8
+ 290 0076 03       		.uleb128 0x3
+ 291 0077 6F000000 		.4byte	.LASF10
+ 292 007b 03       		.byte	0x3
+ 293 007c 2C       		.byte	0x2c
+ 294 007d 41000000 		.4byte	0x41
+ 295 0081 05       		.uleb128 0x5
+ 296 0082 4B000000 		.4byte	.LASF11
+ 297 0086 04       		.byte	0x4
+ 298 0087 E401     		.2byte	0x1e4
+ 299 0089 2C000000 		.4byte	0x2c
+ 300 008d 02       		.uleb128 0x2
+ 301 008e 04       		.byte	0x4
+ 302 008f 04       		.byte	0x4
+ 303 0090 05020000 		.4byte	.LASF12
+ 304 0094 02       		.uleb128 0x2
+ 305 0095 08       		.byte	0x8
+ 306 0096 04       		.byte	0x4
+ 307 0097 B3010000 		.4byte	.LASF13
+ 308 009b 02       		.uleb128 0x2
+ 309 009c 01       		.byte	0x1
+ 310 009d 08       		.byte	0x8
+ 311 009e 56010000 		.4byte	.LASF14
+ 312 00a2 02       		.uleb128 0x2
+ 313 00a3 08       		.byte	0x8
+ 314 00a4 04       		.byte	0x4
+ 315 00a5 C8010000 		.4byte	.LASF15
+ 316 00a9 02       		.uleb128 0x2
+ 317 00aa 04       		.byte	0x4
+ 318 00ab 07       		.byte	0x7
+ 319 00ac 2C020000 		.4byte	.LASF16
+ 320 00b0 06       		.uleb128 0x6
+ 321 00b1 3B000000 		.4byte	.LASF26
+ 322 00b5 01       		.byte	0x1
+ 323 00b6 2D       		.byte	0x2d
+ 324 00b7 81000000 		.4byte	0x81
+ 325 00bb 00000000 		.4byte	.LFB63
+ 326 00bf 14000000 		.4byte	.LFE63-.LFB63
+ 327 00c3 01       		.uleb128 0x1
+ 328 00c4 9C       		.byte	0x9c
+ 329 00c5 07       		.uleb128 0x7
+ 330 00c6 15020000 		.4byte	.LASF17
+ 331 00ca 01       		.byte	0x1
+ 332 00cb 41       		.byte	0x41
+ 333 00cc 00000000 		.4byte	.LFB64
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccOhA3bp.s 			page 9
+
+
+ 334 00d0 70000000 		.4byte	.LFE64-.LFB64
+ 335 00d4 01       		.uleb128 0x1
+ 336 00d5 9C       		.byte	0x9c
+ 337 00d6 00010000 		.4byte	0x100
+ 338 00da 08       		.uleb128 0x8
+ 339 00db AD010000 		.4byte	.LASF20
+ 340 00df 01       		.byte	0x1
+ 341 00e0 43       		.byte	0x43
+ 342 00e1 81000000 		.4byte	0x81
+ 343 00e5 02       		.uleb128 0x2
+ 344 00e6 91       		.byte	0x91
+ 345 00e7 77       		.sleb128 -9
+ 346 00e8 09       		.uleb128 0x9
+ 347 00e9 0E000000 		.4byte	.LBB2
+ 348 00ed 36000000 		.4byte	.LBE2-.LBB2
+ 349 00f1 0A       		.uleb128 0xa
+ 350 00f2 51000000 		.4byte	.LASF19
+ 351 00f6 01       		.byte	0x1
+ 352 00f7 48       		.byte	0x48
+ 353 00f8 68000000 		.4byte	0x68
+ 354 00fc 0B       		.uleb128 0xb
+ 355 00fd 00       		.byte	0
+ 356 00fe 00       		.byte	0
+ 357 00ff 00       		.byte	0
+ 358 0100 07       		.uleb128 0x7
+ 359 0101 00000000 		.4byte	.LASF18
+ 360 0105 01       		.byte	0x1
+ 361 0106 6D       		.byte	0x6d
+ 362 0107 00000000 		.4byte	.LFB65
+ 363 010b 34000000 		.4byte	.LFE65-.LFB65
+ 364 010f 01       		.uleb128 0x1
+ 365 0110 9C       		.byte	0x9c
+ 366 0111 23010000 		.4byte	0x123
+ 367 0115 0A       		.uleb128 0xa
+ 368 0116 51000000 		.4byte	.LASF19
+ 369 011a 01       		.byte	0x1
+ 370 011b 48       		.byte	0x48
+ 371 011c 68000000 		.4byte	0x68
+ 372 0120 0B       		.uleb128 0xb
+ 373 0121 00       		.byte	0
+ 374 0122 00       		.byte	0
+ 375 0123 08       		.uleb128 0x8
+ 376 0124 A0000000 		.4byte	.LASF21
+ 377 0128 01       		.byte	0x1
+ 378 0129 14       		.byte	0x14
+ 379 012a 34010000 		.4byte	0x134
+ 380 012e 05       		.uleb128 0x5
+ 381 012f 03       		.byte	0x3
+ 382 0130 00000000 		.4byte	WAIT_TIME_IN_HALF_SECONDS
+ 383 0134 0C       		.uleb128 0xc
+ 384 0135 81000000 		.4byte	0x81
+ 385 0139 08       		.uleb128 0x8
+ 386 013a ED010000 		.4byte	.LASF22
+ 387 013e 01       		.byte	0x1
+ 388 013f 19       		.byte	0x19
+ 389 0140 81000000 		.4byte	0x81
+ 390 0144 05       		.uleb128 0x5
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccOhA3bp.s 			page 10
+
+
+ 391 0145 03       		.byte	0x3
+ 392 0146 00000000 		.4byte	bOverloadFlag
+ 393 014a 0D       		.uleb128 0xd
+ 394 014b D4010000 		.4byte	.LASF27
+ 395 014f 05       		.byte	0x5
+ 396 0150 1207     		.2byte	0x712
+ 397 0152 56010000 		.4byte	0x156
+ 398 0156 0E       		.uleb128 0xe
+ 399 0157 76000000 		.4byte	0x76
+ 400 015b 00       		.byte	0
+ 401              		.section	.debug_abbrev,"",%progbits
+ 402              	.Ldebug_abbrev0:
+ 403 0000 01       		.uleb128 0x1
+ 404 0001 11       		.uleb128 0x11
+ 405 0002 01       		.byte	0x1
+ 406 0003 25       		.uleb128 0x25
+ 407 0004 0E       		.uleb128 0xe
+ 408 0005 13       		.uleb128 0x13
+ 409 0006 0B       		.uleb128 0xb
+ 410 0007 03       		.uleb128 0x3
+ 411 0008 0E       		.uleb128 0xe
+ 412 0009 1B       		.uleb128 0x1b
+ 413 000a 0E       		.uleb128 0xe
+ 414 000b 55       		.uleb128 0x55
+ 415 000c 17       		.uleb128 0x17
+ 416 000d 11       		.uleb128 0x11
+ 417 000e 01       		.uleb128 0x1
+ 418 000f 10       		.uleb128 0x10
+ 419 0010 17       		.uleb128 0x17
+ 420 0011 00       		.byte	0
+ 421 0012 00       		.byte	0
+ 422 0013 02       		.uleb128 0x2
+ 423 0014 24       		.uleb128 0x24
+ 424 0015 00       		.byte	0
+ 425 0016 0B       		.uleb128 0xb
+ 426 0017 0B       		.uleb128 0xb
+ 427 0018 3E       		.uleb128 0x3e
+ 428 0019 0B       		.uleb128 0xb
+ 429 001a 03       		.uleb128 0x3
+ 430 001b 0E       		.uleb128 0xe
+ 431 001c 00       		.byte	0
+ 432 001d 00       		.byte	0
+ 433 001e 03       		.uleb128 0x3
+ 434 001f 16       		.uleb128 0x16
+ 435 0020 00       		.byte	0
+ 436 0021 03       		.uleb128 0x3
+ 437 0022 0E       		.uleb128 0xe
+ 438 0023 3A       		.uleb128 0x3a
+ 439 0024 0B       		.uleb128 0xb
+ 440 0025 3B       		.uleb128 0x3b
+ 441 0026 0B       		.uleb128 0xb
+ 442 0027 49       		.uleb128 0x49
+ 443 0028 13       		.uleb128 0x13
+ 444 0029 00       		.byte	0
+ 445 002a 00       		.byte	0
+ 446 002b 04       		.uleb128 0x4
+ 447 002c 24       		.uleb128 0x24
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccOhA3bp.s 			page 11
+
+
+ 448 002d 00       		.byte	0
+ 449 002e 0B       		.uleb128 0xb
+ 450 002f 0B       		.uleb128 0xb
+ 451 0030 3E       		.uleb128 0x3e
+ 452 0031 0B       		.uleb128 0xb
+ 453 0032 03       		.uleb128 0x3
+ 454 0033 08       		.uleb128 0x8
+ 455 0034 00       		.byte	0
+ 456 0035 00       		.byte	0
+ 457 0036 05       		.uleb128 0x5
+ 458 0037 16       		.uleb128 0x16
+ 459 0038 00       		.byte	0
+ 460 0039 03       		.uleb128 0x3
+ 461 003a 0E       		.uleb128 0xe
+ 462 003b 3A       		.uleb128 0x3a
+ 463 003c 0B       		.uleb128 0xb
+ 464 003d 3B       		.uleb128 0x3b
+ 465 003e 05       		.uleb128 0x5
+ 466 003f 49       		.uleb128 0x49
+ 467 0040 13       		.uleb128 0x13
+ 468 0041 00       		.byte	0
+ 469 0042 00       		.byte	0
+ 470 0043 06       		.uleb128 0x6
+ 471 0044 2E       		.uleb128 0x2e
+ 472 0045 00       		.byte	0
+ 473 0046 3F       		.uleb128 0x3f
+ 474 0047 19       		.uleb128 0x19
+ 475 0048 03       		.uleb128 0x3
+ 476 0049 0E       		.uleb128 0xe
+ 477 004a 3A       		.uleb128 0x3a
+ 478 004b 0B       		.uleb128 0xb
+ 479 004c 3B       		.uleb128 0x3b
+ 480 004d 0B       		.uleb128 0xb
+ 481 004e 27       		.uleb128 0x27
+ 482 004f 19       		.uleb128 0x19
+ 483 0050 49       		.uleb128 0x49
+ 484 0051 13       		.uleb128 0x13
+ 485 0052 11       		.uleb128 0x11
+ 486 0053 01       		.uleb128 0x1
+ 487 0054 12       		.uleb128 0x12
+ 488 0055 06       		.uleb128 0x6
+ 489 0056 40       		.uleb128 0x40
+ 490 0057 18       		.uleb128 0x18
+ 491 0058 9742     		.uleb128 0x2117
+ 492 005a 19       		.uleb128 0x19
+ 493 005b 00       		.byte	0
+ 494 005c 00       		.byte	0
+ 495 005d 07       		.uleb128 0x7
+ 496 005e 2E       		.uleb128 0x2e
+ 497 005f 01       		.byte	0x1
+ 498 0060 3F       		.uleb128 0x3f
+ 499 0061 19       		.uleb128 0x19
+ 500 0062 03       		.uleb128 0x3
+ 501 0063 0E       		.uleb128 0xe
+ 502 0064 3A       		.uleb128 0x3a
+ 503 0065 0B       		.uleb128 0xb
+ 504 0066 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccOhA3bp.s 			page 12
+
+
+ 505 0067 0B       		.uleb128 0xb
+ 506 0068 27       		.uleb128 0x27
+ 507 0069 19       		.uleb128 0x19
+ 508 006a 11       		.uleb128 0x11
+ 509 006b 01       		.uleb128 0x1
+ 510 006c 12       		.uleb128 0x12
+ 511 006d 06       		.uleb128 0x6
+ 512 006e 40       		.uleb128 0x40
+ 513 006f 18       		.uleb128 0x18
+ 514 0070 9642     		.uleb128 0x2116
+ 515 0072 19       		.uleb128 0x19
+ 516 0073 01       		.uleb128 0x1
+ 517 0074 13       		.uleb128 0x13
+ 518 0075 00       		.byte	0
+ 519 0076 00       		.byte	0
+ 520 0077 08       		.uleb128 0x8
+ 521 0078 34       		.uleb128 0x34
+ 522 0079 00       		.byte	0
+ 523 007a 03       		.uleb128 0x3
+ 524 007b 0E       		.uleb128 0xe
+ 525 007c 3A       		.uleb128 0x3a
+ 526 007d 0B       		.uleb128 0xb
+ 527 007e 3B       		.uleb128 0x3b
+ 528 007f 0B       		.uleb128 0xb
+ 529 0080 49       		.uleb128 0x49
+ 530 0081 13       		.uleb128 0x13
+ 531 0082 02       		.uleb128 0x2
+ 532 0083 18       		.uleb128 0x18
+ 533 0084 00       		.byte	0
+ 534 0085 00       		.byte	0
+ 535 0086 09       		.uleb128 0x9
+ 536 0087 0B       		.uleb128 0xb
+ 537 0088 01       		.byte	0x1
+ 538 0089 11       		.uleb128 0x11
+ 539 008a 01       		.uleb128 0x1
+ 540 008b 12       		.uleb128 0x12
+ 541 008c 06       		.uleb128 0x6
+ 542 008d 00       		.byte	0
+ 543 008e 00       		.byte	0
+ 544 008f 0A       		.uleb128 0xa
+ 545 0090 2E       		.uleb128 0x2e
+ 546 0091 01       		.byte	0x1
+ 547 0092 3F       		.uleb128 0x3f
+ 548 0093 19       		.uleb128 0x19
+ 549 0094 03       		.uleb128 0x3
+ 550 0095 0E       		.uleb128 0xe
+ 551 0096 3A       		.uleb128 0x3a
+ 552 0097 0B       		.uleb128 0xb
+ 553 0098 3B       		.uleb128 0x3b
+ 554 0099 0B       		.uleb128 0xb
+ 555 009a 49       		.uleb128 0x49
+ 556 009b 13       		.uleb128 0x13
+ 557 009c 3C       		.uleb128 0x3c
+ 558 009d 19       		.uleb128 0x19
+ 559 009e 00       		.byte	0
+ 560 009f 00       		.byte	0
+ 561 00a0 0B       		.uleb128 0xb
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccOhA3bp.s 			page 13
+
+
+ 562 00a1 18       		.uleb128 0x18
+ 563 00a2 00       		.byte	0
+ 564 00a3 00       		.byte	0
+ 565 00a4 00       		.byte	0
+ 566 00a5 0C       		.uleb128 0xc
+ 567 00a6 26       		.uleb128 0x26
+ 568 00a7 00       		.byte	0
+ 569 00a8 49       		.uleb128 0x49
+ 570 00a9 13       		.uleb128 0x13
+ 571 00aa 00       		.byte	0
+ 572 00ab 00       		.byte	0
+ 573 00ac 0D       		.uleb128 0xd
+ 574 00ad 34       		.uleb128 0x34
+ 575 00ae 00       		.byte	0
+ 576 00af 03       		.uleb128 0x3
+ 577 00b0 0E       		.uleb128 0xe
+ 578 00b1 3A       		.uleb128 0x3a
+ 579 00b2 0B       		.uleb128 0xb
+ 580 00b3 3B       		.uleb128 0x3b
+ 581 00b4 05       		.uleb128 0x5
+ 582 00b5 49       		.uleb128 0x49
+ 583 00b6 13       		.uleb128 0x13
+ 584 00b7 3F       		.uleb128 0x3f
+ 585 00b8 19       		.uleb128 0x19
+ 586 00b9 3C       		.uleb128 0x3c
+ 587 00ba 19       		.uleb128 0x19
+ 588 00bb 00       		.byte	0
+ 589 00bc 00       		.byte	0
+ 590 00bd 0E       		.uleb128 0xe
+ 591 00be 35       		.uleb128 0x35
+ 592 00bf 00       		.byte	0
+ 593 00c0 49       		.uleb128 0x49
+ 594 00c1 13       		.uleb128 0x13
+ 595 00c2 00       		.byte	0
+ 596 00c3 00       		.byte	0
+ 597 00c4 00       		.byte	0
+ 598              		.section	.debug_aranges,"",%progbits
+ 599 0000 2C000000 		.4byte	0x2c
+ 600 0004 0200     		.2byte	0x2
+ 601 0006 00000000 		.4byte	.Ldebug_info0
+ 602 000a 04       		.byte	0x4
+ 603 000b 00       		.byte	0
+ 604 000c 0000     		.2byte	0
+ 605 000e 0000     		.2byte	0
+ 606 0010 00000000 		.4byte	.LFB63
+ 607 0014 14000000 		.4byte	.LFE63-.LFB63
+ 608 0018 00000000 		.4byte	.LFB64
+ 609 001c 70000000 		.4byte	.LFE64-.LFB64
+ 610 0020 00000000 		.4byte	.LFB65
+ 611 0024 34000000 		.4byte	.LFE65-.LFB65
+ 612 0028 00000000 		.4byte	0
+ 613 002c 00000000 		.4byte	0
+ 614              		.section	.debug_ranges,"",%progbits
+ 615              	.Ldebug_ranges0:
+ 616 0000 00000000 		.4byte	.LFB63
+ 617 0004 14000000 		.4byte	.LFE63
+ 618 0008 00000000 		.4byte	.LFB64
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccOhA3bp.s 			page 14
+
+
+ 619 000c 70000000 		.4byte	.LFE64
+ 620 0010 00000000 		.4byte	.LFB65
+ 621 0014 34000000 		.4byte	.LFE65
+ 622 0018 00000000 		.4byte	0
+ 623 001c 00000000 		.4byte	0
+ 624              		.section	.debug_line,"",%progbits
+ 625              	.Ldebug_line0:
+ 626 0000 C6010000 		.section	.debug_str,"MS",%progbits,1
+ 626      02004D01 
+ 626      00000201 
+ 626      FB0E0D00 
+ 626      01010101 
+ 627              	.LASF18:
+ 628 0000 64656163 		.ascii	"deactivatePoweredFunctions\000"
+ 628      74697661 
+ 628      7465506F 
+ 628      77657265 
+ 628      6446756E 
+ 629              	.LASF3:
+ 630 001b 73686F72 		.ascii	"short unsigned int\000"
+ 630      7420756E 
+ 630      7369676E 
+ 630      65642069 
+ 630      6E7400
+ 631              	.LASF8:
+ 632 002e 756E7369 		.ascii	"unsigned int\000"
+ 632      676E6564 
+ 632      20696E74 
+ 632      00
+ 633              	.LASF26:
+ 634 003b 69735468 		.ascii	"isThereOverload\000"
+ 634      6572654F 
+ 634      7665726C 
+ 634      6F616400 
+ 635              	.LASF11:
+ 636 004b 75696E74 		.ascii	"uint8\000"
+ 636      3800
+ 637              	.LASF19:
+ 638 0051 506F7765 		.ascii	"PowerAmpOutput1_Write\000"
+ 638      72416D70 
+ 638      4F757470 
+ 638      7574315F 
+ 638      57726974 
+ 639              	.LASF24:
+ 640 0067 4661756C 		.ascii	"Fault.c\000"
+ 640      742E6300 
+ 641              	.LASF10:
+ 642 006f 696E7433 		.ascii	"int32_t\000"
+ 642      325F7400 
+ 643              	.LASF5:
+ 644 0077 6C6F6E67 		.ascii	"long unsigned int\000"
+ 644      20756E73 
+ 644      69676E65 
+ 644      6420696E 
+ 644      7400
+ 645              	.LASF7:
+ 646 0089 6C6F6E67 		.ascii	"long long unsigned int\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccOhA3bp.s 			page 15
+
+
+ 646      206C6F6E 
+ 646      6720756E 
+ 646      7369676E 
+ 646      65642069 
+ 647              	.LASF21:
+ 648 00a0 57414954 		.ascii	"WAIT_TIME_IN_HALF_SECONDS\000"
+ 648      5F54494D 
+ 648      455F494E 
+ 648      5F48414C 
+ 648      465F5345 
+ 649              	.LASF23:
+ 650 00ba 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 650      43313120 
+ 650      352E342E 
+ 650      31203230 
+ 650      31363036 
+ 651 00ed 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 651      20726576 
+ 651      6973696F 
+ 651      6E203233 
+ 651      37373135 
+ 652 0120 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 652      66756E63 
+ 652      74696F6E 
+ 652      2D736563 
+ 652      74696F6E 
+ 653              	.LASF1:
+ 654 0148 756E7369 		.ascii	"unsigned char\000"
+ 654      676E6564 
+ 654      20636861 
+ 654      7200
+ 655              	.LASF14:
+ 656 0156 63686172 		.ascii	"char\000"
+ 656      00
+ 657              	.LASF4:
+ 658 015b 6C6F6E67 		.ascii	"long int\000"
+ 658      20696E74 
+ 658      00
+ 659              	.LASF25:
+ 660 0164 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\F1-Test Fixture Firm"
+ 660      73657273 
+ 660      5C6D6172 
+ 660      74686E69 
+ 660      636B5C44 
+ 661 0193 77617265 		.ascii	"ware\\ReleaseVersion.cydsn\000"
+ 661      5C52656C 
+ 661      65617365 
+ 661      56657273 
+ 661      696F6E2E 
+ 662              	.LASF20:
+ 663 01ad 696E6465 		.ascii	"index\000"
+ 663      7800
+ 664              	.LASF13:
+ 665 01b3 646F7562 		.ascii	"double\000"
+ 665      6C6500
+ 666              	.LASF6:
+ 667 01ba 6C6F6E67 		.ascii	"long long int\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccOhA3bp.s 			page 16
+
+
+ 667      206C6F6E 
+ 667      6720696E 
+ 667      7400
+ 668              	.LASF15:
+ 669 01c8 6C6F6E67 		.ascii	"long double\000"
+ 669      20646F75 
+ 669      626C6500 
+ 670              	.LASF27:
+ 671 01d4 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 671      52784275 
+ 671      66666572 
+ 671      00
+ 672              	.LASF0:
+ 673 01e1 7369676E 		.ascii	"signed char\000"
+ 673      65642063 
+ 673      68617200 
+ 674              	.LASF22:
+ 675 01ed 624F7665 		.ascii	"bOverloadFlag\000"
+ 675      726C6F61 
+ 675      64466C61 
+ 675      6700
+ 676              	.LASF9:
+ 677 01fb 5F5F696E 		.ascii	"__int32_t\000"
+ 677      7433325F 
+ 677      7400
+ 678              	.LASF12:
+ 679 0205 666C6F61 		.ascii	"float\000"
+ 679      7400
+ 680              	.LASF2:
+ 681 020b 73686F72 		.ascii	"short int\000"
+ 681      7420696E 
+ 681      7400
+ 682              	.LASF17:
+ 683 0215 70726F63 		.ascii	"processOverloadRoutine\000"
+ 683      6573734F 
+ 683      7665726C 
+ 683      6F616452 
+ 683      6F757469 
+ 684              	.LASF16:
+ 685 022c 73697A65 		.ascii	"sizetype\000"
+ 685      74797065 
+ 685      00
+ 686              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

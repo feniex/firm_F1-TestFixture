@@ -1,0 +1,667 @@
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwA93tR.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"SirenTest.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.bss
+  20              	TestState:
+  21 0000 00       		.space	1
+  22              		.section	.text.SirenTest,"ax",%progbits
+  23              		.align	2
+  24              		.global	SirenTest
+  25              		.thumb
+  26              		.thumb_func
+  27              		.type	SirenTest, %function
+  28              	SirenTest:
+  29              	.LFB63:
+  30              		.file 1 "SirenTest.c"
+   1:SirenTest.c   **** /* ========================================
+   2:SirenTest.c   ****  *
+   3:SirenTest.c   ****  * Copyright YOUR COMPANY, THE YEAR
+   4:SirenTest.c   ****  * All Rights Reserved
+   5:SirenTest.c   ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:SirenTest.c   ****  *
+   7:SirenTest.c   ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:SirenTest.c   ****  * WHICH IS THE PROPERTY OF your company.
+   9:SirenTest.c   ****  *
+  10:SirenTest.c   ****  * ========================================
+  11:SirenTest.c   **** */
+  12:SirenTest.c   **** 
+  13:SirenTest.c   **** #include <project.h>
+  14:SirenTest.c   **** //#include "ControllerTest.h"
+  15:SirenTest.c   **** #include "UART_230400_Functions.h"
+  16:SirenTest.c   **** 
+  17:SirenTest.c   **** static uint8 TestState = 0;
+  18:SirenTest.c   **** 
+  19:SirenTest.c   **** // --------------Test steps---------------
+  20:SirenTest.c   **** enum DataType
+  21:SirenTest.c   **** { 
+  22:SirenTest.c   ****     CONFIRM_BOOTUP, 
+  23:SirenTest.c   ****     RRB_AMP1,
+  24:SirenTest.c   ****     MIC_AMP2,
+  25:SirenTest.c   ****     AUDIO_STREAM,
+  26:SirenTest.c   ****     FLASH,
+  27:SirenTest.c   ****     OVERLOAD,
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwA93tR.s 			page 2
+
+
+  28:SirenTest.c   ****     FAIL
+  29:SirenTest.c   **** };
+  30:SirenTest.c   **** 
+  31:SirenTest.c   **** void SirenTest(void)
+  32:SirenTest.c   **** {
+  31              		.loc 1 32 0
+  32              		.cfi_startproc
+  33              		@ args = 0, pretend = 0, frame = 0
+  34              		@ frame_needed = 1, uses_anonymous_args = 0
+  35              		@ link register save eliminated.
+  36 0000 80B4     		push	{r7}
+  37              		.cfi_def_cfa_offset 4
+  38              		.cfi_offset 7, -4
+  39 0002 00AF     		add	r7, sp, #0
+  40              		.cfi_def_cfa_register 7
+  33:SirenTest.c   ****     
+  34:SirenTest.c   ****     switch(TestState)
+  41              		.loc 1 34 0
+  42 0004 0D4B     		ldr	r3, .L13
+  43 0006 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  44 0008 062B     		cmp	r3, #6
+  45 000a 12D8     		bhi	.L11
+  46 000c 01A2     		adr	r2, .L4
+  47 000e 52F823F0 		ldr	pc, [r2, r3, lsl #2]
+  48 0012 00BF     		.p2align 2
+  49              	.L4:
+  50 0014 31000000 		.word	.L12+1
+  51 0018 31000000 		.word	.L12+1
+  52 001c 31000000 		.word	.L12+1
+  53 0020 31000000 		.word	.L12+1
+  54 0024 31000000 		.word	.L12+1
+  55 0028 31000000 		.word	.L12+1
+  56 002c 31000000 		.word	.L12+1
+  57              		.p2align 1
+  58              	.L12:
+  35:SirenTest.c   ****     {   
+  36:SirenTest.c   ****         
+  37:SirenTest.c   ****         //-------------------------         
+  38:SirenTest.c   ****         case CONFIRM_BOOTUP:
+  39:SirenTest.c   ****         
+  40:SirenTest.c   ****         break;
+  59              		.loc 1 40 0
+  60 0030 00BF     		nop
+  61              	.L11:
+  41:SirenTest.c   ****         
+  42:SirenTest.c   ****         //-------------------------        
+  43:SirenTest.c   ****         case RRB_AMP1:  
+  44:SirenTest.c   ****         
+  45:SirenTest.c   ****         break;    
+  46:SirenTest.c   ****         
+  47:SirenTest.c   ****         //-------------------------        
+  48:SirenTest.c   ****         case MIC_AMP2:  
+  49:SirenTest.c   ****         
+  50:SirenTest.c   ****         break;        
+  51:SirenTest.c   ****         
+  52:SirenTest.c   ****         //-------------------------        
+  53:SirenTest.c   ****         case AUDIO_STREAM:  
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwA93tR.s 			page 3
+
+
+  54:SirenTest.c   ****         
+  55:SirenTest.c   ****         break;  
+  56:SirenTest.c   ****         
+  57:SirenTest.c   ****         //-------------------------        
+  58:SirenTest.c   ****         case FLASH:  
+  59:SirenTest.c   ****         
+  60:SirenTest.c   ****         break;  
+  61:SirenTest.c   ****         
+  62:SirenTest.c   ****         //-------------------------        
+  63:SirenTest.c   ****         case OVERLOAD:  
+  64:SirenTest.c   ****         
+  65:SirenTest.c   ****         break;  
+  66:SirenTest.c   ****         
+  67:SirenTest.c   ****         //-------------------------        
+  68:SirenTest.c   ****         case FAIL:  
+  69:SirenTest.c   ****         
+  70:SirenTest.c   ****         break;          
+  71:SirenTest.c   ****            
+  72:SirenTest.c   ****     }
+  73:SirenTest.c   **** 
+  74:SirenTest.c   **** }
+  62              		.loc 1 74 0
+  63 0032 00BF     		nop
+  64 0034 BD46     		mov	sp, r7
+  65              		.cfi_def_cfa_register 13
+  66              		@ sp needed
+  67 0036 80BC     		pop	{r7}
+  68              		.cfi_restore 7
+  69              		.cfi_def_cfa_offset 0
+  70 0038 7047     		bx	lr
+  71              	.L14:
+  72 003a 00BF     		.align	2
+  73              	.L13:
+  74 003c 00000000 		.word	TestState
+  75              		.cfi_endproc
+  76              	.LFE63:
+  77              		.size	SirenTest, .-SirenTest
+  78              		.text
+  79              	.Letext0:
+  80              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+  81              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+  82              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+  83              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+  84              		.section	.debug_info,"",%progbits
+  85              	.Ldebug_info0:
+  86 0000 1B010000 		.4byte	0x11b
+  87 0004 0400     		.2byte	0x4
+  88 0006 00000000 		.4byte	.Ldebug_abbrev0
+  89 000a 04       		.byte	0x4
+  90 000b 01       		.uleb128 0x1
+  91 000c 0A000000 		.4byte	.LASF24
+  92 0010 0C       		.byte	0xc
+  93 0011 BB010000 		.4byte	.LASF25
+  94 0015 26010000 		.4byte	.LASF26
+  95 0019 00000000 		.4byte	.Ldebug_ranges0+0
+  96 001d 00000000 		.4byte	0
+  97 0021 00000000 		.4byte	.Ldebug_line0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwA93tR.s 			page 4
+
+
+  98 0025 02       		.uleb128 0x2
+  99 0026 01       		.byte	0x1
+ 100 0027 06       		.byte	0x6
+ 101 0028 F1010000 		.4byte	.LASF0
+ 102 002c 02       		.uleb128 0x2
+ 103 002d 01       		.byte	0x1
+ 104 002e 08       		.byte	0x8
+ 105 002f 0F010000 		.4byte	.LASF1
+ 106 0033 02       		.uleb128 0x2
+ 107 0034 02       		.byte	0x2
+ 108 0035 05       		.byte	0x5
+ 109 0036 CC010000 		.4byte	.LASF2
+ 110 003a 02       		.uleb128 0x2
+ 111 003b 02       		.byte	0x2
+ 112 003c 07       		.byte	0x7
+ 113 003d E6000000 		.4byte	.LASF3
+ 114 0041 03       		.uleb128 0x3
+ 115 0042 A5000000 		.4byte	.LASF9
+ 116 0046 02       		.byte	0x2
+ 117 0047 3F       		.byte	0x3f
+ 118 0048 4C000000 		.4byte	0x4c
+ 119 004c 02       		.uleb128 0x2
+ 120 004d 04       		.byte	0x4
+ 121 004e 05       		.byte	0x5
+ 122 004f DC010000 		.4byte	.LASF4
+ 123 0053 02       		.uleb128 0x2
+ 124 0054 04       		.byte	0x4
+ 125 0055 07       		.byte	0x7
+ 126 0056 D4000000 		.4byte	.LASF5
+ 127 005a 02       		.uleb128 0x2
+ 128 005b 08       		.byte	0x8
+ 129 005c 05       		.byte	0x5
+ 130 005d AD010000 		.4byte	.LASF6
+ 131 0061 02       		.uleb128 0x2
+ 132 0062 08       		.byte	0x8
+ 133 0063 07       		.byte	0x7
+ 134 0064 85010000 		.4byte	.LASF7
+ 135 0068 04       		.uleb128 0x4
+ 136 0069 04       		.byte	0x4
+ 137 006a 05       		.byte	0x5
+ 138 006b 696E7400 		.ascii	"int\000"
+ 139 006f 02       		.uleb128 0x2
+ 140 0070 04       		.byte	0x4
+ 141 0071 07       		.byte	0x7
+ 142 0072 78010000 		.4byte	.LASF8
+ 143 0076 03       		.uleb128 0x3
+ 144 0077 9C010000 		.4byte	.LASF10
+ 145 007b 03       		.byte	0x3
+ 146 007c 2C       		.byte	0x2c
+ 147 007d 41000000 		.4byte	0x41
+ 148 0081 05       		.uleb128 0x5
+ 149 0082 D6010000 		.4byte	.LASF11
+ 150 0086 04       		.byte	0x4
+ 151 0087 E401     		.2byte	0x1e4
+ 152 0089 2C000000 		.4byte	0x2c
+ 153 008d 02       		.uleb128 0x2
+ 154 008e 04       		.byte	0x4
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwA93tR.s 			page 5
+
+
+ 155 008f 04       		.byte	0x4
+ 156 0090 BF000000 		.4byte	.LASF12
+ 157 0094 02       		.uleb128 0x2
+ 158 0095 08       		.byte	0x8
+ 159 0096 04       		.byte	0x4
+ 160 0097 B8000000 		.4byte	.LASF13
+ 161 009b 02       		.uleb128 0x2
+ 162 009c 01       		.byte	0x1
+ 163 009d 08       		.byte	0x8
+ 164 009e C7010000 		.4byte	.LASF14
+ 165 00a2 02       		.uleb128 0x2
+ 166 00a3 08       		.byte	0x8
+ 167 00a4 04       		.byte	0x4
+ 168 00a5 E5010000 		.4byte	.LASF15
+ 169 00a9 02       		.uleb128 0x2
+ 170 00aa 04       		.byte	0x4
+ 171 00ab 07       		.byte	0x7
+ 172 00ac A4010000 		.4byte	.LASF16
+ 173 00b0 06       		.uleb128 0x6
+ 174 00b1 AF000000 		.4byte	.LASF27
+ 175 00b5 01       		.byte	0x1
+ 176 00b6 2C000000 		.4byte	0x2c
+ 177 00ba 01       		.byte	0x1
+ 178 00bb 14       		.byte	0x14
+ 179 00bc EB000000 		.4byte	0xeb
+ 180 00c0 07       		.uleb128 0x7
+ 181 00c1 C5000000 		.4byte	.LASF17
+ 182 00c5 00       		.byte	0
+ 183 00c6 07       		.uleb128 0x7
+ 184 00c7 1D010000 		.4byte	.LASF18
+ 185 00cb 01       		.byte	0x1
+ 186 00cc 07       		.uleb128 0x7
+ 187 00cd FD010000 		.4byte	.LASF19
+ 188 00d1 02       		.byte	0x2
+ 189 00d2 07       		.uleb128 0x7
+ 190 00d3 98000000 		.4byte	.LASF20
+ 191 00d7 03       		.byte	0x3
+ 192 00d8 07       		.uleb128 0x7
+ 193 00d9 0B020000 		.4byte	.LASF21
+ 194 00dd 04       		.byte	0x4
+ 195 00de 07       		.uleb128 0x7
+ 196 00df F9000000 		.4byte	.LASF22
+ 197 00e3 05       		.byte	0x5
+ 198 00e4 07       		.uleb128 0x7
+ 199 00e5 06020000 		.4byte	.LASF23
+ 200 00e9 06       		.byte	0x6
+ 201 00ea 00       		.byte	0
+ 202 00eb 08       		.uleb128 0x8
+ 203 00ec 00000000 		.4byte	.LASF28
+ 204 00f0 01       		.byte	0x1
+ 205 00f1 1F       		.byte	0x1f
+ 206 00f2 00000000 		.4byte	.LFB63
+ 207 00f6 40000000 		.4byte	.LFE63-.LFB63
+ 208 00fa 01       		.uleb128 0x1
+ 209 00fb 9C       		.byte	0x9c
+ 210 00fc 09       		.uleb128 0x9
+ 211 00fd 6E010000 		.4byte	.LASF29
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwA93tR.s 			page 6
+
+
+ 212 0101 01       		.byte	0x1
+ 213 0102 11       		.byte	0x11
+ 214 0103 81000000 		.4byte	0x81
+ 215 0107 05       		.uleb128 0x5
+ 216 0108 03       		.byte	0x3
+ 217 0109 00000000 		.4byte	TestState
+ 218 010d 0A       		.uleb128 0xa
+ 219 010e 02010000 		.4byte	.LASF30
+ 220 0112 05       		.byte	0x5
+ 221 0113 1207     		.2byte	0x712
+ 222 0115 19010000 		.4byte	0x119
+ 223 0119 0B       		.uleb128 0xb
+ 224 011a 76000000 		.4byte	0x76
+ 225 011e 00       		.byte	0
+ 226              		.section	.debug_abbrev,"",%progbits
+ 227              	.Ldebug_abbrev0:
+ 228 0000 01       		.uleb128 0x1
+ 229 0001 11       		.uleb128 0x11
+ 230 0002 01       		.byte	0x1
+ 231 0003 25       		.uleb128 0x25
+ 232 0004 0E       		.uleb128 0xe
+ 233 0005 13       		.uleb128 0x13
+ 234 0006 0B       		.uleb128 0xb
+ 235 0007 03       		.uleb128 0x3
+ 236 0008 0E       		.uleb128 0xe
+ 237 0009 1B       		.uleb128 0x1b
+ 238 000a 0E       		.uleb128 0xe
+ 239 000b 55       		.uleb128 0x55
+ 240 000c 17       		.uleb128 0x17
+ 241 000d 11       		.uleb128 0x11
+ 242 000e 01       		.uleb128 0x1
+ 243 000f 10       		.uleb128 0x10
+ 244 0010 17       		.uleb128 0x17
+ 245 0011 00       		.byte	0
+ 246 0012 00       		.byte	0
+ 247 0013 02       		.uleb128 0x2
+ 248 0014 24       		.uleb128 0x24
+ 249 0015 00       		.byte	0
+ 250 0016 0B       		.uleb128 0xb
+ 251 0017 0B       		.uleb128 0xb
+ 252 0018 3E       		.uleb128 0x3e
+ 253 0019 0B       		.uleb128 0xb
+ 254 001a 03       		.uleb128 0x3
+ 255 001b 0E       		.uleb128 0xe
+ 256 001c 00       		.byte	0
+ 257 001d 00       		.byte	0
+ 258 001e 03       		.uleb128 0x3
+ 259 001f 16       		.uleb128 0x16
+ 260 0020 00       		.byte	0
+ 261 0021 03       		.uleb128 0x3
+ 262 0022 0E       		.uleb128 0xe
+ 263 0023 3A       		.uleb128 0x3a
+ 264 0024 0B       		.uleb128 0xb
+ 265 0025 3B       		.uleb128 0x3b
+ 266 0026 0B       		.uleb128 0xb
+ 267 0027 49       		.uleb128 0x49
+ 268 0028 13       		.uleb128 0x13
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwA93tR.s 			page 7
+
+
+ 269 0029 00       		.byte	0
+ 270 002a 00       		.byte	0
+ 271 002b 04       		.uleb128 0x4
+ 272 002c 24       		.uleb128 0x24
+ 273 002d 00       		.byte	0
+ 274 002e 0B       		.uleb128 0xb
+ 275 002f 0B       		.uleb128 0xb
+ 276 0030 3E       		.uleb128 0x3e
+ 277 0031 0B       		.uleb128 0xb
+ 278 0032 03       		.uleb128 0x3
+ 279 0033 08       		.uleb128 0x8
+ 280 0034 00       		.byte	0
+ 281 0035 00       		.byte	0
+ 282 0036 05       		.uleb128 0x5
+ 283 0037 16       		.uleb128 0x16
+ 284 0038 00       		.byte	0
+ 285 0039 03       		.uleb128 0x3
+ 286 003a 0E       		.uleb128 0xe
+ 287 003b 3A       		.uleb128 0x3a
+ 288 003c 0B       		.uleb128 0xb
+ 289 003d 3B       		.uleb128 0x3b
+ 290 003e 05       		.uleb128 0x5
+ 291 003f 49       		.uleb128 0x49
+ 292 0040 13       		.uleb128 0x13
+ 293 0041 00       		.byte	0
+ 294 0042 00       		.byte	0
+ 295 0043 06       		.uleb128 0x6
+ 296 0044 04       		.uleb128 0x4
+ 297 0045 01       		.byte	0x1
+ 298 0046 03       		.uleb128 0x3
+ 299 0047 0E       		.uleb128 0xe
+ 300 0048 0B       		.uleb128 0xb
+ 301 0049 0B       		.uleb128 0xb
+ 302 004a 49       		.uleb128 0x49
+ 303 004b 13       		.uleb128 0x13
+ 304 004c 3A       		.uleb128 0x3a
+ 305 004d 0B       		.uleb128 0xb
+ 306 004e 3B       		.uleb128 0x3b
+ 307 004f 0B       		.uleb128 0xb
+ 308 0050 01       		.uleb128 0x1
+ 309 0051 13       		.uleb128 0x13
+ 310 0052 00       		.byte	0
+ 311 0053 00       		.byte	0
+ 312 0054 07       		.uleb128 0x7
+ 313 0055 28       		.uleb128 0x28
+ 314 0056 00       		.byte	0
+ 315 0057 03       		.uleb128 0x3
+ 316 0058 0E       		.uleb128 0xe
+ 317 0059 1C       		.uleb128 0x1c
+ 318 005a 0B       		.uleb128 0xb
+ 319 005b 00       		.byte	0
+ 320 005c 00       		.byte	0
+ 321 005d 08       		.uleb128 0x8
+ 322 005e 2E       		.uleb128 0x2e
+ 323 005f 00       		.byte	0
+ 324 0060 3F       		.uleb128 0x3f
+ 325 0061 19       		.uleb128 0x19
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwA93tR.s 			page 8
+
+
+ 326 0062 03       		.uleb128 0x3
+ 327 0063 0E       		.uleb128 0xe
+ 328 0064 3A       		.uleb128 0x3a
+ 329 0065 0B       		.uleb128 0xb
+ 330 0066 3B       		.uleb128 0x3b
+ 331 0067 0B       		.uleb128 0xb
+ 332 0068 27       		.uleb128 0x27
+ 333 0069 19       		.uleb128 0x19
+ 334 006a 11       		.uleb128 0x11
+ 335 006b 01       		.uleb128 0x1
+ 336 006c 12       		.uleb128 0x12
+ 337 006d 06       		.uleb128 0x6
+ 338 006e 40       		.uleb128 0x40
+ 339 006f 18       		.uleb128 0x18
+ 340 0070 9742     		.uleb128 0x2117
+ 341 0072 19       		.uleb128 0x19
+ 342 0073 00       		.byte	0
+ 343 0074 00       		.byte	0
+ 344 0075 09       		.uleb128 0x9
+ 345 0076 34       		.uleb128 0x34
+ 346 0077 00       		.byte	0
+ 347 0078 03       		.uleb128 0x3
+ 348 0079 0E       		.uleb128 0xe
+ 349 007a 3A       		.uleb128 0x3a
+ 350 007b 0B       		.uleb128 0xb
+ 351 007c 3B       		.uleb128 0x3b
+ 352 007d 0B       		.uleb128 0xb
+ 353 007e 49       		.uleb128 0x49
+ 354 007f 13       		.uleb128 0x13
+ 355 0080 02       		.uleb128 0x2
+ 356 0081 18       		.uleb128 0x18
+ 357 0082 00       		.byte	0
+ 358 0083 00       		.byte	0
+ 359 0084 0A       		.uleb128 0xa
+ 360 0085 34       		.uleb128 0x34
+ 361 0086 00       		.byte	0
+ 362 0087 03       		.uleb128 0x3
+ 363 0088 0E       		.uleb128 0xe
+ 364 0089 3A       		.uleb128 0x3a
+ 365 008a 0B       		.uleb128 0xb
+ 366 008b 3B       		.uleb128 0x3b
+ 367 008c 05       		.uleb128 0x5
+ 368 008d 49       		.uleb128 0x49
+ 369 008e 13       		.uleb128 0x13
+ 370 008f 3F       		.uleb128 0x3f
+ 371 0090 19       		.uleb128 0x19
+ 372 0091 3C       		.uleb128 0x3c
+ 373 0092 19       		.uleb128 0x19
+ 374 0093 00       		.byte	0
+ 375 0094 00       		.byte	0
+ 376 0095 0B       		.uleb128 0xb
+ 377 0096 35       		.uleb128 0x35
+ 378 0097 00       		.byte	0
+ 379 0098 49       		.uleb128 0x49
+ 380 0099 13       		.uleb128 0x13
+ 381 009a 00       		.byte	0
+ 382 009b 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwA93tR.s 			page 9
+
+
+ 383 009c 00       		.byte	0
+ 384              		.section	.debug_aranges,"",%progbits
+ 385 0000 1C000000 		.4byte	0x1c
+ 386 0004 0200     		.2byte	0x2
+ 387 0006 00000000 		.4byte	.Ldebug_info0
+ 388 000a 04       		.byte	0x4
+ 389 000b 00       		.byte	0
+ 390 000c 0000     		.2byte	0
+ 391 000e 0000     		.2byte	0
+ 392 0010 00000000 		.4byte	.LFB63
+ 393 0014 40000000 		.4byte	.LFE63-.LFB63
+ 394 0018 00000000 		.4byte	0
+ 395 001c 00000000 		.4byte	0
+ 396              		.section	.debug_ranges,"",%progbits
+ 397              	.Ldebug_ranges0:
+ 398 0000 00000000 		.4byte	.LFB63
+ 399 0004 40000000 		.4byte	.LFE63
+ 400 0008 00000000 		.4byte	0
+ 401 000c 00000000 		.4byte	0
+ 402              		.section	.debug_line,"",%progbits
+ 403              	.Ldebug_line0:
+ 404 0000 6C010000 		.section	.debug_str,"MS",%progbits,1
+ 404      02005101 
+ 404      00000201 
+ 404      FB0E0D00 
+ 404      01010101 
+ 405              	.LASF28:
+ 406 0000 53697265 		.ascii	"SirenTest\000"
+ 406      6E546573 
+ 406      7400
+ 407              	.LASF24:
+ 408 000a 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 408      43313120 
+ 408      352E342E 
+ 408      31203230 
+ 408      31363036 
+ 409 003d 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 409      20726576 
+ 409      6973696F 
+ 409      6E203233 
+ 409      37373135 
+ 410 0070 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 410      66756E63 
+ 410      74696F6E 
+ 410      2D736563 
+ 410      74696F6E 
+ 411              	.LASF20:
+ 412 0098 41554449 		.ascii	"AUDIO_STREAM\000"
+ 412      4F5F5354 
+ 412      5245414D 
+ 412      00
+ 413              	.LASF9:
+ 414 00a5 5F5F696E 		.ascii	"__int32_t\000"
+ 414      7433325F 
+ 414      7400
+ 415              	.LASF27:
+ 416 00af 44617461 		.ascii	"DataType\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwA93tR.s 			page 10
+
+
+ 416      54797065 
+ 416      00
+ 417              	.LASF13:
+ 418 00b8 646F7562 		.ascii	"double\000"
+ 418      6C6500
+ 419              	.LASF12:
+ 420 00bf 666C6F61 		.ascii	"float\000"
+ 420      7400
+ 421              	.LASF17:
+ 422 00c5 434F4E46 		.ascii	"CONFIRM_BOOTUP\000"
+ 422      49524D5F 
+ 422      424F4F54 
+ 422      555000
+ 423              	.LASF5:
+ 424 00d4 6C6F6E67 		.ascii	"long unsigned int\000"
+ 424      20756E73 
+ 424      69676E65 
+ 424      6420696E 
+ 424      7400
+ 425              	.LASF3:
+ 426 00e6 73686F72 		.ascii	"short unsigned int\000"
+ 426      7420756E 
+ 426      7369676E 
+ 426      65642069 
+ 426      6E7400
+ 427              	.LASF22:
+ 428 00f9 4F564552 		.ascii	"OVERLOAD\000"
+ 428      4C4F4144 
+ 428      00
+ 429              	.LASF30:
+ 430 0102 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 430      52784275 
+ 430      66666572 
+ 430      00
+ 431              	.LASF1:
+ 432 010f 756E7369 		.ascii	"unsigned char\000"
+ 432      676E6564 
+ 432      20636861 
+ 432      7200
+ 433              	.LASF18:
+ 434 011d 5252425F 		.ascii	"RRB_AMP1\000"
+ 434      414D5031 
+ 434      00
+ 435              	.LASF26:
+ 436 0126 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\F1-TestFixture _Sand"
+ 436      73657273 
+ 436      5C6D6172 
+ 436      74686E69 
+ 436      636B5C44 
+ 437 0155 626F785C 		.ascii	"box\\F1-TestFixture.cydsn\000"
+ 437      46312D54 
+ 437      65737446 
+ 437      69787475 
+ 437      72652E63 
+ 438              	.LASF29:
+ 439 016e 54657374 		.ascii	"TestState\000"
+ 439      53746174 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwA93tR.s 			page 11
+
+
+ 439      6500
+ 440              	.LASF8:
+ 441 0178 756E7369 		.ascii	"unsigned int\000"
+ 441      676E6564 
+ 441      20696E74 
+ 441      00
+ 442              	.LASF7:
+ 443 0185 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 443      206C6F6E 
+ 443      6720756E 
+ 443      7369676E 
+ 443      65642069 
+ 444              	.LASF10:
+ 445 019c 696E7433 		.ascii	"int32_t\000"
+ 445      325F7400 
+ 446              	.LASF16:
+ 447 01a4 73697A65 		.ascii	"sizetype\000"
+ 447      74797065 
+ 447      00
+ 448              	.LASF6:
+ 449 01ad 6C6F6E67 		.ascii	"long long int\000"
+ 449      206C6F6E 
+ 449      6720696E 
+ 449      7400
+ 450              	.LASF25:
+ 451 01bb 53697265 		.ascii	"SirenTest.c\000"
+ 451      6E546573 
+ 451      742E6300 
+ 452              	.LASF14:
+ 453 01c7 63686172 		.ascii	"char\000"
+ 453      00
+ 454              	.LASF2:
+ 455 01cc 73686F72 		.ascii	"short int\000"
+ 455      7420696E 
+ 455      7400
+ 456              	.LASF11:
+ 457 01d6 75696E74 		.ascii	"uint8\000"
+ 457      3800
+ 458              	.LASF4:
+ 459 01dc 6C6F6E67 		.ascii	"long int\000"
+ 459      20696E74 
+ 459      00
+ 460              	.LASF15:
+ 461 01e5 6C6F6E67 		.ascii	"long double\000"
+ 461      20646F75 
+ 461      626C6500 
+ 462              	.LASF0:
+ 463 01f1 7369676E 		.ascii	"signed char\000"
+ 463      65642063 
+ 463      68617200 
+ 464              	.LASF19:
+ 465 01fd 4D49435F 		.ascii	"MIC_AMP2\000"
+ 465      414D5032 
+ 465      00
+ 466              	.LASF23:
+ 467 0206 4641494C 		.ascii	"FAIL\000"
+ 467      00
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwA93tR.s 			page 12
+
+
+ 468              	.LASF21:
+ 469 020b 464C4153 		.ascii	"FLASH\000"
+ 469      4800
+ 470              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

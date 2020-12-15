@@ -1,0 +1,798 @@
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccatjbep.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"USBUART_vnd.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.USBUART_HandleVendorRqst,"ax",%progbits
+  19              		.align	2
+  20              		.global	USBUART_HandleVendorRqst
+  21              		.thumb
+  22              		.thumb_func
+  23              		.type	USBUART_HandleVendorRqst, %function
+  24              	USBUART_HandleVendorRqst:
+  25              	.LFB0:
+  26              		.file 1 ".\\Generated_Source\\PSoC5\\USBUART_vnd.c"
+   1:.\Generated_Source\PSoC5/USBUART_vnd.c **** /*******************************************************************************
+   2:.\Generated_Source\PSoC5/USBUART_vnd.c **** * File Name: USBUART_vnd.c
+   3:.\Generated_Source\PSoC5/USBUART_vnd.c **** * Version 2.80
+   4:.\Generated_Source\PSoC5/USBUART_vnd.c **** *
+   5:.\Generated_Source\PSoC5/USBUART_vnd.c **** * Description:
+   6:.\Generated_Source\PSoC5/USBUART_vnd.c **** *  USB vendor request handler.
+   7:.\Generated_Source\PSoC5/USBUART_vnd.c **** *
+   8:.\Generated_Source\PSoC5/USBUART_vnd.c **** * Note:
+   9:.\Generated_Source\PSoC5/USBUART_vnd.c **** *
+  10:.\Generated_Source\PSoC5/USBUART_vnd.c **** ********************************************************************************
+  11:.\Generated_Source\PSoC5/USBUART_vnd.c **** * Copyright 2008-2014, Cypress Semiconductor Corporation.  All rights reserved.
+  12:.\Generated_Source\PSoC5/USBUART_vnd.c **** * You may use this file only in accordance with the license, terms, conditions,
+  13:.\Generated_Source\PSoC5/USBUART_vnd.c **** * disclaimers, and limitations in the end user license agreement accompanying
+  14:.\Generated_Source\PSoC5/USBUART_vnd.c **** * the software package with which this file was provided.
+  15:.\Generated_Source\PSoC5/USBUART_vnd.c **** *******************************************************************************/
+  16:.\Generated_Source\PSoC5/USBUART_vnd.c **** 
+  17:.\Generated_Source\PSoC5/USBUART_vnd.c **** #include "USBUART.h"
+  18:.\Generated_Source\PSoC5/USBUART_vnd.c **** #include "USBUART_pvt.h"
+  19:.\Generated_Source\PSoC5/USBUART_vnd.c **** #include "cyapicallbacks.h"
+  20:.\Generated_Source\PSoC5/USBUART_vnd.c **** 
+  21:.\Generated_Source\PSoC5/USBUART_vnd.c **** #if(USBUART_EXTERN_VND == USBUART_FALSE)
+  22:.\Generated_Source\PSoC5/USBUART_vnd.c **** 
+  23:.\Generated_Source\PSoC5/USBUART_vnd.c **** 
+  24:.\Generated_Source\PSoC5/USBUART_vnd.c **** /***************************************
+  25:.\Generated_Source\PSoC5/USBUART_vnd.c **** * Vendor Specific Declarations
+  26:.\Generated_Source\PSoC5/USBUART_vnd.c **** ***************************************/
+  27:.\Generated_Source\PSoC5/USBUART_vnd.c **** 
+  28:.\Generated_Source\PSoC5/USBUART_vnd.c **** /* `#START VENDOR_SPECIFIC_DECLARATIONS` Place your declaration here */
+  29:.\Generated_Source\PSoC5/USBUART_vnd.c **** 
+  30:.\Generated_Source\PSoC5/USBUART_vnd.c **** /* `#END` */
+  31:.\Generated_Source\PSoC5/USBUART_vnd.c **** 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccatjbep.s 			page 2
+
+
+  32:.\Generated_Source\PSoC5/USBUART_vnd.c **** 
+  33:.\Generated_Source\PSoC5/USBUART_vnd.c **** /*******************************************************************************
+  34:.\Generated_Source\PSoC5/USBUART_vnd.c **** * Function Name: USBUART_HandleVendorRqst
+  35:.\Generated_Source\PSoC5/USBUART_vnd.c **** ********************************************************************************
+  36:.\Generated_Source\PSoC5/USBUART_vnd.c **** *
+  37:.\Generated_Source\PSoC5/USBUART_vnd.c **** * Summary:
+  38:.\Generated_Source\PSoC5/USBUART_vnd.c **** *  This routine provide users with a method to implement vendor specific
+  39:.\Generated_Source\PSoC5/USBUART_vnd.c **** *  requests.
+  40:.\Generated_Source\PSoC5/USBUART_vnd.c **** *
+  41:.\Generated_Source\PSoC5/USBUART_vnd.c **** *  To implement vendor specific requests, add your code in this function to
+  42:.\Generated_Source\PSoC5/USBUART_vnd.c **** *  decode and disposition the request.  If the request is handled, your code
+  43:.\Generated_Source\PSoC5/USBUART_vnd.c **** *  must set the variable "requestHandled" to TRUE, indicating that the
+  44:.\Generated_Source\PSoC5/USBUART_vnd.c **** *  request has been handled.
+  45:.\Generated_Source\PSoC5/USBUART_vnd.c **** *
+  46:.\Generated_Source\PSoC5/USBUART_vnd.c **** * Parameters:
+  47:.\Generated_Source\PSoC5/USBUART_vnd.c **** *  None.
+  48:.\Generated_Source\PSoC5/USBUART_vnd.c **** *
+  49:.\Generated_Source\PSoC5/USBUART_vnd.c **** * Return:
+  50:.\Generated_Source\PSoC5/USBUART_vnd.c **** *  requestHandled.
+  51:.\Generated_Source\PSoC5/USBUART_vnd.c **** *
+  52:.\Generated_Source\PSoC5/USBUART_vnd.c **** * Reentrant:
+  53:.\Generated_Source\PSoC5/USBUART_vnd.c **** *  No.
+  54:.\Generated_Source\PSoC5/USBUART_vnd.c **** *
+  55:.\Generated_Source\PSoC5/USBUART_vnd.c **** *******************************************************************************/
+  56:.\Generated_Source\PSoC5/USBUART_vnd.c **** uint8 USBUART_HandleVendorRqst(void) 
+  57:.\Generated_Source\PSoC5/USBUART_vnd.c **** {
+  27              		.loc 1 57 0
+  28              		.cfi_startproc
+  29              		@ args = 0, pretend = 0, frame = 8
+  30              		@ frame_needed = 1, uses_anonymous_args = 0
+  31 0000 80B5     		push	{r7, lr}
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 7, -8
+  34              		.cfi_offset 14, -4
+  35 0002 82B0     		sub	sp, sp, #8
+  36              		.cfi_def_cfa_offset 16
+  37 0004 00AF     		add	r7, sp, #0
+  38              		.cfi_def_cfa_register 7
+  58:.\Generated_Source\PSoC5/USBUART_vnd.c ****     uint8 requestHandled = USBUART_FALSE;
+  39              		.loc 1 58 0
+  40 0006 0023     		movs	r3, #0
+  41 0008 FB71     		strb	r3, [r7, #7]
+  59:.\Generated_Source\PSoC5/USBUART_vnd.c **** 
+  60:.\Generated_Source\PSoC5/USBUART_vnd.c ****     if ((CY_GET_REG8(USBUART_bmRequestType) & USBUART_RQST_DIR_MASK) == USBUART_RQST_DIR_D2H)
+  42              		.loc 1 60 0
+  43 000a 0F4B     		ldr	r3, .L6
+  44 000c 1B78     		ldrb	r3, [r3]
+  45 000e DBB2     		uxtb	r3, r3
+  46 0010 DBB2     		uxtb	r3, r3
+  47 0012 5BB2     		sxtb	r3, r3
+  48 0014 002B     		cmp	r3, #0
+  49 0016 12DA     		bge	.L2
+  61:.\Generated_Source\PSoC5/USBUART_vnd.c ****     {
+  62:.\Generated_Source\PSoC5/USBUART_vnd.c ****         /* Control Read */
+  63:.\Generated_Source\PSoC5/USBUART_vnd.c ****         switch (CY_GET_REG8(USBUART_bRequest))
+  50              		.loc 1 63 0
+  51 0018 0C4B     		ldr	r3, .L6+4
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccatjbep.s 			page 3
+
+
+  52 001a 1B78     		ldrb	r3, [r3]
+  53 001c DBB2     		uxtb	r3, r3
+  54 001e 012B     		cmp	r3, #1
+  55 0020 00D0     		beq	.L4
+  64:.\Generated_Source\PSoC5/USBUART_vnd.c ****         {
+  65:.\Generated_Source\PSoC5/USBUART_vnd.c ****             case USBUART_GET_EXTENDED_CONFIG_DESCRIPTOR:
+  66:.\Generated_Source\PSoC5/USBUART_vnd.c ****                 #if defined(USBUART_ENABLE_MSOS_STRING)
+  67:.\Generated_Source\PSoC5/USBUART_vnd.c ****                     USBUART_currentTD.pData = (volatile uint8 *)&USBUART_MSOS_CONFIGURATION_DESCR[0
+  68:.\Generated_Source\PSoC5/USBUART_vnd.c ****                     USBUART_currentTD.count = USBUART_MSOS_CONFIGURATION_DESCR[0u];
+  69:.\Generated_Source\PSoC5/USBUART_vnd.c ****                     requestHandled  = USBUART_InitControlRead();
+  70:.\Generated_Source\PSoC5/USBUART_vnd.c ****                 #endif /*  USBUART_ENABLE_MSOS_STRING */
+  71:.\Generated_Source\PSoC5/USBUART_vnd.c ****                 break;
+  72:.\Generated_Source\PSoC5/USBUART_vnd.c ****             default:
+  73:.\Generated_Source\PSoC5/USBUART_vnd.c ****                 break;
+  56              		.loc 1 73 0
+  57 0022 0CE0     		b	.L2
+  58              	.L4:
+  67:.\Generated_Source\PSoC5/USBUART_vnd.c ****                     USBUART_currentTD.count = USBUART_MSOS_CONFIGURATION_DESCR[0u];
+  59              		.loc 1 67 0
+  60 0024 0A4B     		ldr	r3, .L6+8
+  61 0026 0B4A     		ldr	r2, .L6+12
+  62 0028 5A60     		str	r2, [r3, #4]
+  68:.\Generated_Source\PSoC5/USBUART_vnd.c ****                     requestHandled  = USBUART_InitControlRead();
+  63              		.loc 1 68 0
+  64 002a 0A4B     		ldr	r3, .L6+12
+  65 002c 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  66 002e 9AB2     		uxth	r2, r3
+  67 0030 074B     		ldr	r3, .L6+8
+  68 0032 1A80     		strh	r2, [r3]	@ movhi
+  69:.\Generated_Source\PSoC5/USBUART_vnd.c ****                 #endif /*  USBUART_ENABLE_MSOS_STRING */
+  69              		.loc 1 69 0
+  70 0034 FFF7FEFF 		bl	USBUART_InitControlRead
+  71 0038 0346     		mov	r3, r0
+  72 003a FB71     		strb	r3, [r7, #7]
+  71:.\Generated_Source\PSoC5/USBUART_vnd.c ****             default:
+  73              		.loc 1 71 0
+  74 003c 00BF     		nop
+  75              	.L2:
+  74:.\Generated_Source\PSoC5/USBUART_vnd.c ****         }
+  75:.\Generated_Source\PSoC5/USBUART_vnd.c ****     }
+  76:.\Generated_Source\PSoC5/USBUART_vnd.c **** 
+  77:.\Generated_Source\PSoC5/USBUART_vnd.c ****     /* `#START VENDOR_SPECIFIC_CODE` Place your vendor specific request here */
+  78:.\Generated_Source\PSoC5/USBUART_vnd.c **** 
+  79:.\Generated_Source\PSoC5/USBUART_vnd.c ****     /* `#END` */
+  80:.\Generated_Source\PSoC5/USBUART_vnd.c **** 
+  81:.\Generated_Source\PSoC5/USBUART_vnd.c ****     #ifdef USBUART_HANDLE_VENDOR_RQST_CALLBACK
+  82:.\Generated_Source\PSoC5/USBUART_vnd.c ****         USBUART_HandleVendorRqst_Callback();
+  83:.\Generated_Source\PSoC5/USBUART_vnd.c ****     #endif /* USBUART_HANDLE_VENDOR_RQST_CALLBACK */
+  84:.\Generated_Source\PSoC5/USBUART_vnd.c **** 
+  85:.\Generated_Source\PSoC5/USBUART_vnd.c ****     return(requestHandled);
+  76              		.loc 1 85 0
+  77 003e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+  86:.\Generated_Source\PSoC5/USBUART_vnd.c **** }
+  78              		.loc 1 86 0
+  79 0040 1846     		mov	r0, r3
+  80 0042 0837     		adds	r7, r7, #8
+  81              		.cfi_def_cfa_offset 8
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccatjbep.s 			page 4
+
+
+  82 0044 BD46     		mov	sp, r7
+  83              		.cfi_def_cfa_register 13
+  84              		@ sp needed
+  85 0046 80BD     		pop	{r7, pc}
+  86              	.L7:
+  87              		.align	2
+  88              	.L6:
+  89 0048 00600040 		.word	1073766400
+  90 004c 01600040 		.word	1073766401
+  91 0050 00000000 		.word	USBUART_currentTD
+  92 0054 00000000 		.word	USBUART_MSOS_CONFIGURATION_DESCR
+  93              		.cfi_endproc
+  94              	.LFE0:
+  95              		.size	USBUART_HandleVendorRqst, .-USBUART_HandleVendorRqst
+  96              		.text
+  97              	.Letext0:
+  98              		.file 2 ".\\Generated_Source\\PSoC5\\cytypes.h"
+  99              		.file 3 ".\\Generated_Source\\PSoC5\\USBUART.h"
+ 100              		.file 4 ".\\Generated_Source\\PSoC5\\USBUART_pvt.h"
+ 101              		.section	.debug_info,"",%progbits
+ 102              	.Ldebug_info0:
+ 103 0000 73010000 		.4byte	0x173
+ 104 0004 0400     		.2byte	0x4
+ 105 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 106 000a 04       		.byte	0x4
+ 107 000b 01       		.uleb128 0x1
+ 108 000c B9000000 		.4byte	.LASF25
+ 109 0010 01       		.byte	0x1
+ 110 0011 26000000 		.4byte	.LASF26
+ 111 0015 B0010000 		.4byte	.LASF27
+ 112 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 113 001d 00000000 		.4byte	0
+ 114 0021 00000000 		.4byte	.Ldebug_line0
+ 115 0025 02       		.uleb128 0x2
+ 116 0026 01       		.byte	0x1
+ 117 0027 06       		.byte	0x6
+ 118 0028 81020000 		.4byte	.LASF0
+ 119 002c 02       		.uleb128 0x2
+ 120 002d 01       		.byte	0x1
+ 121 002e 08       		.byte	0x8
+ 122 002f 60000000 		.4byte	.LASF1
+ 123 0033 02       		.uleb128 0x2
+ 124 0034 02       		.byte	0x2
+ 125 0035 05       		.byte	0x5
+ 126 0036 46020000 		.4byte	.LASF2
+ 127 003a 02       		.uleb128 0x2
+ 128 003b 02       		.byte	0x2
+ 129 003c 07       		.byte	0x7
+ 130 003d 13000000 		.4byte	.LASF3
+ 131 0041 02       		.uleb128 0x2
+ 132 0042 04       		.byte	0x4
+ 133 0043 05       		.byte	0x5
+ 134 0044 78020000 		.4byte	.LASF4
+ 135 0048 02       		.uleb128 0x2
+ 136 0049 04       		.byte	0x4
+ 137 004a 07       		.byte	0x7
+ 138 004b 80000000 		.4byte	.LASF5
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccatjbep.s 			page 5
+
+
+ 139 004f 02       		.uleb128 0x2
+ 140 0050 08       		.byte	0x8
+ 141 0051 05       		.byte	0x5
+ 142 0052 33020000 		.4byte	.LASF6
+ 143 0056 02       		.uleb128 0x2
+ 144 0057 08       		.byte	0x8
+ 145 0058 07       		.byte	0x7
+ 146 0059 74010000 		.4byte	.LASF7
+ 147 005d 03       		.uleb128 0x3
+ 148 005e 04       		.byte	0x4
+ 149 005f 05       		.byte	0x5
+ 150 0060 696E7400 		.ascii	"int\000"
+ 151 0064 02       		.uleb128 0x2
+ 152 0065 04       		.byte	0x4
+ 153 0066 07       		.byte	0x7
+ 154 0067 67010000 		.4byte	.LASF8
+ 155 006b 04       		.uleb128 0x4
+ 156 006c 92000000 		.4byte	.LASF9
+ 157 0070 02       		.byte	0x2
+ 158 0071 C2       		.byte	0xc2
+ 159 0072 2C000000 		.4byte	0x2c
+ 160 0076 04       		.uleb128 0x4
+ 161 0077 60010000 		.4byte	.LASF10
+ 162 007b 02       		.byte	0x2
+ 163 007c C3       		.byte	0xc3
+ 164 007d 3A000000 		.4byte	0x3a
+ 165 0081 02       		.uleb128 0x2
+ 166 0082 04       		.byte	0x4
+ 167 0083 04       		.byte	0x4
+ 168 0084 5A000000 		.4byte	.LASF11
+ 169 0088 02       		.uleb128 0x2
+ 170 0089 08       		.byte	0x8
+ 171 008a 04       		.byte	0x4
+ 172 008b 47010000 		.4byte	.LASF12
+ 173 008f 02       		.uleb128 0x2
+ 174 0090 01       		.byte	0x1
+ 175 0091 08       		.byte	0x8
+ 176 0092 41020000 		.4byte	.LASF13
+ 177 0096 05       		.uleb128 0x5
+ 178 0097 7B000000 		.4byte	.LASF14
+ 179 009b 02       		.byte	0x2
+ 180 009c 6C01     		.2byte	0x16c
+ 181 009e A2000000 		.4byte	0xa2
+ 182 00a2 06       		.uleb128 0x6
+ 183 00a3 6B000000 		.4byte	0x6b
+ 184 00a7 02       		.uleb128 0x2
+ 185 00a8 04       		.byte	0x4
+ 186 00a9 07       		.byte	0x7
+ 187 00aa A7010000 		.4byte	.LASF15
+ 188 00ae 07       		.uleb128 0x7
+ 189 00af 04       		.byte	0x4
+ 190 00b0 03       		.byte	0x3
+ 191 00b1 91       		.byte	0x91
+ 192 00b2 CF000000 		.4byte	0xcf
+ 193 00b6 08       		.uleb128 0x8
+ 194 00b7 4D000000 		.4byte	.LASF16
+ 195 00bb 03       		.byte	0x3
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccatjbep.s 			page 6
+
+
+ 196 00bc 93       		.byte	0x93
+ 197 00bd 6B000000 		.4byte	0x6b
+ 198 00c1 00       		.byte	0
+ 199 00c2 08       		.uleb128 0x8
+ 200 00c3 8D020000 		.4byte	.LASF17
+ 201 00c7 03       		.byte	0x3
+ 202 00c8 94       		.byte	0x94
+ 203 00c9 76000000 		.4byte	0x76
+ 204 00cd 02       		.byte	0x2
+ 205 00ce 00       		.byte	0
+ 206 00cf 04       		.uleb128 0x4
+ 207 00d0 8B010000 		.4byte	.LASF18
+ 208 00d4 03       		.byte	0x3
+ 209 00d5 95       		.byte	0x95
+ 210 00d6 AE000000 		.4byte	0xae
+ 211 00da 07       		.uleb128 0x7
+ 212 00db 0C       		.byte	0xc
+ 213 00dc 03       		.byte	0x3
+ 214 00dd 97       		.byte	0x97
+ 215 00de 07010000 		.4byte	0x107
+ 216 00e2 08       		.uleb128 0x8
+ 217 00e3 0D000000 		.4byte	.LASF19
+ 218 00e7 03       		.byte	0x3
+ 219 00e8 99       		.byte	0x99
+ 220 00e9 76000000 		.4byte	0x76
+ 221 00ed 00       		.byte	0
+ 222 00ee 08       		.uleb128 0x8
+ 223 00ef 54000000 		.4byte	.LASF20
+ 224 00f3 03       		.byte	0x3
+ 225 00f4 9A       		.byte	0x9a
+ 226 00f5 07010000 		.4byte	0x107
+ 227 00f9 04       		.byte	0x4
+ 228 00fa 08       		.uleb128 0x8
+ 229 00fb 00000000 		.4byte	.LASF21
+ 230 00ff 03       		.byte	0x3
+ 231 0100 9B       		.byte	0x9b
+ 232 0101 0D010000 		.4byte	0x10d
+ 233 0105 08       		.byte	0x8
+ 234 0106 00       		.byte	0
+ 235 0107 09       		.uleb128 0x9
+ 236 0108 04       		.byte	0x4
+ 237 0109 A2000000 		.4byte	0xa2
+ 238 010d 09       		.uleb128 0x9
+ 239 010e 04       		.byte	0x4
+ 240 010f CF000000 		.4byte	0xcf
+ 241 0113 04       		.uleb128 0x4
+ 242 0114 6E000000 		.4byte	.LASF22
+ 243 0118 03       		.byte	0x3
+ 244 0119 9C       		.byte	0x9c
+ 245 011a DA000000 		.4byte	0xda
+ 246 011e 0A       		.uleb128 0xa
+ 247 011f 50020000 		.4byte	.LASF28
+ 248 0123 01       		.byte	0x1
+ 249 0124 38       		.byte	0x38
+ 250 0125 6B000000 		.4byte	0x6b
+ 251 0129 00000000 		.4byte	.LFB0
+ 252 012d 58000000 		.4byte	.LFE0-.LFB0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccatjbep.s 			page 7
+
+
+ 253 0131 01       		.uleb128 0x1
+ 254 0132 9C       		.byte	0x9c
+ 255 0133 46010000 		.4byte	0x146
+ 256 0137 0B       		.uleb128 0xb
+ 257 0138 69020000 		.4byte	.LASF29
+ 258 013c 01       		.byte	0x1
+ 259 013d 3A       		.byte	0x3a
+ 260 013e 6B000000 		.4byte	0x6b
+ 261 0142 02       		.uleb128 0x2
+ 262 0143 91       		.byte	0x91
+ 263 0144 77       		.sleb128 -9
+ 264 0145 00       		.byte	0
+ 265 0146 0C       		.uleb128 0xc
+ 266 0147 6B000000 		.4byte	0x6b
+ 267 014b 56010000 		.4byte	0x156
+ 268 014f 0D       		.uleb128 0xd
+ 269 0150 A7000000 		.4byte	0xa7
+ 270 0154 27       		.byte	0x27
+ 271 0155 00       		.byte	0
+ 272 0156 0E       		.uleb128 0xe
+ 273 0157 98000000 		.4byte	.LASF23
+ 274 015b 04       		.byte	0x4
+ 275 015c 28       		.byte	0x28
+ 276 015d 61010000 		.4byte	0x161
+ 277 0161 0F       		.uleb128 0xf
+ 278 0162 46010000 		.4byte	0x146
+ 279 0166 0E       		.uleb128 0xe
+ 280 0167 4E010000 		.4byte	.LASF24
+ 281 016b 04       		.byte	0x4
+ 282 016c 35       		.byte	0x35
+ 283 016d 71010000 		.4byte	0x171
+ 284 0171 06       		.uleb128 0x6
+ 285 0172 13010000 		.4byte	0x113
+ 286 0176 00       		.byte	0
+ 287              		.section	.debug_abbrev,"",%progbits
+ 288              	.Ldebug_abbrev0:
+ 289 0000 01       		.uleb128 0x1
+ 290 0001 11       		.uleb128 0x11
+ 291 0002 01       		.byte	0x1
+ 292 0003 25       		.uleb128 0x25
+ 293 0004 0E       		.uleb128 0xe
+ 294 0005 13       		.uleb128 0x13
+ 295 0006 0B       		.uleb128 0xb
+ 296 0007 03       		.uleb128 0x3
+ 297 0008 0E       		.uleb128 0xe
+ 298 0009 1B       		.uleb128 0x1b
+ 299 000a 0E       		.uleb128 0xe
+ 300 000b 55       		.uleb128 0x55
+ 301 000c 17       		.uleb128 0x17
+ 302 000d 11       		.uleb128 0x11
+ 303 000e 01       		.uleb128 0x1
+ 304 000f 10       		.uleb128 0x10
+ 305 0010 17       		.uleb128 0x17
+ 306 0011 00       		.byte	0
+ 307 0012 00       		.byte	0
+ 308 0013 02       		.uleb128 0x2
+ 309 0014 24       		.uleb128 0x24
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccatjbep.s 			page 8
+
+
+ 310 0015 00       		.byte	0
+ 311 0016 0B       		.uleb128 0xb
+ 312 0017 0B       		.uleb128 0xb
+ 313 0018 3E       		.uleb128 0x3e
+ 314 0019 0B       		.uleb128 0xb
+ 315 001a 03       		.uleb128 0x3
+ 316 001b 0E       		.uleb128 0xe
+ 317 001c 00       		.byte	0
+ 318 001d 00       		.byte	0
+ 319 001e 03       		.uleb128 0x3
+ 320 001f 24       		.uleb128 0x24
+ 321 0020 00       		.byte	0
+ 322 0021 0B       		.uleb128 0xb
+ 323 0022 0B       		.uleb128 0xb
+ 324 0023 3E       		.uleb128 0x3e
+ 325 0024 0B       		.uleb128 0xb
+ 326 0025 03       		.uleb128 0x3
+ 327 0026 08       		.uleb128 0x8
+ 328 0027 00       		.byte	0
+ 329 0028 00       		.byte	0
+ 330 0029 04       		.uleb128 0x4
+ 331 002a 16       		.uleb128 0x16
+ 332 002b 00       		.byte	0
+ 333 002c 03       		.uleb128 0x3
+ 334 002d 0E       		.uleb128 0xe
+ 335 002e 3A       		.uleb128 0x3a
+ 336 002f 0B       		.uleb128 0xb
+ 337 0030 3B       		.uleb128 0x3b
+ 338 0031 0B       		.uleb128 0xb
+ 339 0032 49       		.uleb128 0x49
+ 340 0033 13       		.uleb128 0x13
+ 341 0034 00       		.byte	0
+ 342 0035 00       		.byte	0
+ 343 0036 05       		.uleb128 0x5
+ 344 0037 16       		.uleb128 0x16
+ 345 0038 00       		.byte	0
+ 346 0039 03       		.uleb128 0x3
+ 347 003a 0E       		.uleb128 0xe
+ 348 003b 3A       		.uleb128 0x3a
+ 349 003c 0B       		.uleb128 0xb
+ 350 003d 3B       		.uleb128 0x3b
+ 351 003e 05       		.uleb128 0x5
+ 352 003f 49       		.uleb128 0x49
+ 353 0040 13       		.uleb128 0x13
+ 354 0041 00       		.byte	0
+ 355 0042 00       		.byte	0
+ 356 0043 06       		.uleb128 0x6
+ 357 0044 35       		.uleb128 0x35
+ 358 0045 00       		.byte	0
+ 359 0046 49       		.uleb128 0x49
+ 360 0047 13       		.uleb128 0x13
+ 361 0048 00       		.byte	0
+ 362 0049 00       		.byte	0
+ 363 004a 07       		.uleb128 0x7
+ 364 004b 13       		.uleb128 0x13
+ 365 004c 01       		.byte	0x1
+ 366 004d 0B       		.uleb128 0xb
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccatjbep.s 			page 9
+
+
+ 367 004e 0B       		.uleb128 0xb
+ 368 004f 3A       		.uleb128 0x3a
+ 369 0050 0B       		.uleb128 0xb
+ 370 0051 3B       		.uleb128 0x3b
+ 371 0052 0B       		.uleb128 0xb
+ 372 0053 01       		.uleb128 0x1
+ 373 0054 13       		.uleb128 0x13
+ 374 0055 00       		.byte	0
+ 375 0056 00       		.byte	0
+ 376 0057 08       		.uleb128 0x8
+ 377 0058 0D       		.uleb128 0xd
+ 378 0059 00       		.byte	0
+ 379 005a 03       		.uleb128 0x3
+ 380 005b 0E       		.uleb128 0xe
+ 381 005c 3A       		.uleb128 0x3a
+ 382 005d 0B       		.uleb128 0xb
+ 383 005e 3B       		.uleb128 0x3b
+ 384 005f 0B       		.uleb128 0xb
+ 385 0060 49       		.uleb128 0x49
+ 386 0061 13       		.uleb128 0x13
+ 387 0062 38       		.uleb128 0x38
+ 388 0063 0B       		.uleb128 0xb
+ 389 0064 00       		.byte	0
+ 390 0065 00       		.byte	0
+ 391 0066 09       		.uleb128 0x9
+ 392 0067 0F       		.uleb128 0xf
+ 393 0068 00       		.byte	0
+ 394 0069 0B       		.uleb128 0xb
+ 395 006a 0B       		.uleb128 0xb
+ 396 006b 49       		.uleb128 0x49
+ 397 006c 13       		.uleb128 0x13
+ 398 006d 00       		.byte	0
+ 399 006e 00       		.byte	0
+ 400 006f 0A       		.uleb128 0xa
+ 401 0070 2E       		.uleb128 0x2e
+ 402 0071 01       		.byte	0x1
+ 403 0072 3F       		.uleb128 0x3f
+ 404 0073 19       		.uleb128 0x19
+ 405 0074 03       		.uleb128 0x3
+ 406 0075 0E       		.uleb128 0xe
+ 407 0076 3A       		.uleb128 0x3a
+ 408 0077 0B       		.uleb128 0xb
+ 409 0078 3B       		.uleb128 0x3b
+ 410 0079 0B       		.uleb128 0xb
+ 411 007a 27       		.uleb128 0x27
+ 412 007b 19       		.uleb128 0x19
+ 413 007c 49       		.uleb128 0x49
+ 414 007d 13       		.uleb128 0x13
+ 415 007e 11       		.uleb128 0x11
+ 416 007f 01       		.uleb128 0x1
+ 417 0080 12       		.uleb128 0x12
+ 418 0081 06       		.uleb128 0x6
+ 419 0082 40       		.uleb128 0x40
+ 420 0083 18       		.uleb128 0x18
+ 421 0084 9642     		.uleb128 0x2116
+ 422 0086 19       		.uleb128 0x19
+ 423 0087 01       		.uleb128 0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccatjbep.s 			page 10
+
+
+ 424 0088 13       		.uleb128 0x13
+ 425 0089 00       		.byte	0
+ 426 008a 00       		.byte	0
+ 427 008b 0B       		.uleb128 0xb
+ 428 008c 34       		.uleb128 0x34
+ 429 008d 00       		.byte	0
+ 430 008e 03       		.uleb128 0x3
+ 431 008f 0E       		.uleb128 0xe
+ 432 0090 3A       		.uleb128 0x3a
+ 433 0091 0B       		.uleb128 0xb
+ 434 0092 3B       		.uleb128 0x3b
+ 435 0093 0B       		.uleb128 0xb
+ 436 0094 49       		.uleb128 0x49
+ 437 0095 13       		.uleb128 0x13
+ 438 0096 02       		.uleb128 0x2
+ 439 0097 18       		.uleb128 0x18
+ 440 0098 00       		.byte	0
+ 441 0099 00       		.byte	0
+ 442 009a 0C       		.uleb128 0xc
+ 443 009b 01       		.uleb128 0x1
+ 444 009c 01       		.byte	0x1
+ 445 009d 49       		.uleb128 0x49
+ 446 009e 13       		.uleb128 0x13
+ 447 009f 01       		.uleb128 0x1
+ 448 00a0 13       		.uleb128 0x13
+ 449 00a1 00       		.byte	0
+ 450 00a2 00       		.byte	0
+ 451 00a3 0D       		.uleb128 0xd
+ 452 00a4 21       		.uleb128 0x21
+ 453 00a5 00       		.byte	0
+ 454 00a6 49       		.uleb128 0x49
+ 455 00a7 13       		.uleb128 0x13
+ 456 00a8 2F       		.uleb128 0x2f
+ 457 00a9 0B       		.uleb128 0xb
+ 458 00aa 00       		.byte	0
+ 459 00ab 00       		.byte	0
+ 460 00ac 0E       		.uleb128 0xe
+ 461 00ad 34       		.uleb128 0x34
+ 462 00ae 00       		.byte	0
+ 463 00af 03       		.uleb128 0x3
+ 464 00b0 0E       		.uleb128 0xe
+ 465 00b1 3A       		.uleb128 0x3a
+ 466 00b2 0B       		.uleb128 0xb
+ 467 00b3 3B       		.uleb128 0x3b
+ 468 00b4 0B       		.uleb128 0xb
+ 469 00b5 49       		.uleb128 0x49
+ 470 00b6 13       		.uleb128 0x13
+ 471 00b7 3F       		.uleb128 0x3f
+ 472 00b8 19       		.uleb128 0x19
+ 473 00b9 3C       		.uleb128 0x3c
+ 474 00ba 19       		.uleb128 0x19
+ 475 00bb 00       		.byte	0
+ 476 00bc 00       		.byte	0
+ 477 00bd 0F       		.uleb128 0xf
+ 478 00be 26       		.uleb128 0x26
+ 479 00bf 00       		.byte	0
+ 480 00c0 49       		.uleb128 0x49
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccatjbep.s 			page 11
+
+
+ 481 00c1 13       		.uleb128 0x13
+ 482 00c2 00       		.byte	0
+ 483 00c3 00       		.byte	0
+ 484 00c4 00       		.byte	0
+ 485              		.section	.debug_aranges,"",%progbits
+ 486 0000 1C000000 		.4byte	0x1c
+ 487 0004 0200     		.2byte	0x2
+ 488 0006 00000000 		.4byte	.Ldebug_info0
+ 489 000a 04       		.byte	0x4
+ 490 000b 00       		.byte	0
+ 491 000c 0000     		.2byte	0
+ 492 000e 0000     		.2byte	0
+ 493 0010 00000000 		.4byte	.LFB0
+ 494 0014 58000000 		.4byte	.LFE0-.LFB0
+ 495 0018 00000000 		.4byte	0
+ 496 001c 00000000 		.4byte	0
+ 497              		.section	.debug_ranges,"",%progbits
+ 498              	.Ldebug_ranges0:
+ 499 0000 00000000 		.4byte	.LFB0
+ 500 0004 58000000 		.4byte	.LFE0
+ 501 0008 00000000 		.4byte	0
+ 502 000c 00000000 		.4byte	0
+ 503              		.section	.debug_line,"",%progbits
+ 504              	.Ldebug_line0:
+ 505 0000 8D000000 		.section	.debug_str,"MS",%progbits,1
+ 505      02006800 
+ 505      00000201 
+ 505      FB0E0D00 
+ 505      01010101 
+ 506              	.LASF21:
+ 507 0000 70537461 		.ascii	"pStatusBlock\000"
+ 507      74757342 
+ 507      6C6F636B 
+ 507      00
+ 508              	.LASF19:
+ 509 000d 636F756E 		.ascii	"count\000"
+ 509      7400
+ 510              	.LASF3:
+ 511 0013 73686F72 		.ascii	"short unsigned int\000"
+ 511      7420756E 
+ 511      7369676E 
+ 511      65642069 
+ 511      6E7400
+ 512              	.LASF26:
+ 513 0026 2E5C4765 		.ascii	".\\Generated_Source\\PSoC5\\USBUART_vnd.c\000"
+ 513      6E657261 
+ 513      7465645F 
+ 513      536F7572 
+ 513      63655C50 
+ 514              	.LASF16:
+ 515 004d 73746174 		.ascii	"status\000"
+ 515      757300
+ 516              	.LASF20:
+ 517 0054 70446174 		.ascii	"pData\000"
+ 517      6100
+ 518              	.LASF11:
+ 519 005a 666C6F61 		.ascii	"float\000"
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccatjbep.s 			page 12
+
+
+ 519      7400
+ 520              	.LASF1:
+ 521 0060 756E7369 		.ascii	"unsigned char\000"
+ 521      676E6564 
+ 521      20636861 
+ 521      7200
+ 522              	.LASF22:
+ 523 006e 545F5553 		.ascii	"T_USBUART_TD\000"
+ 523      42554152 
+ 523      545F5444 
+ 523      00
+ 524              	.LASF14:
+ 525 007b 72656738 		.ascii	"reg8\000"
+ 525      00
+ 526              	.LASF5:
+ 527 0080 6C6F6E67 		.ascii	"long unsigned int\000"
+ 527      20756E73 
+ 527      69676E65 
+ 527      6420696E 
+ 527      7400
+ 528              	.LASF9:
+ 529 0092 75696E74 		.ascii	"uint8\000"
+ 529      3800
+ 530              	.LASF23:
+ 531 0098 55534255 		.ascii	"USBUART_MSOS_CONFIGURATION_DESCR\000"
+ 531      4152545F 
+ 531      4D534F53 
+ 531      5F434F4E 
+ 531      46494755 
+ 532              	.LASF25:
+ 533 00b9 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 533      4320342E 
+ 533      392E3320 
+ 533      32303135 
+ 533      30333033 
+ 534 00ec 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m3 -mthumb -g -O"
+ 534      20726576 
+ 534      6973696F 
+ 534      6E203232 
+ 534      31323230 
+ 535 011f 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 535      66756E63 
+ 535      74696F6E 
+ 535      2D736563 
+ 535      74696F6E 
+ 536              	.LASF12:
+ 537 0147 646F7562 		.ascii	"double\000"
+ 537      6C6500
+ 538              	.LASF24:
+ 539 014e 55534255 		.ascii	"USBUART_currentTD\000"
+ 539      4152545F 
+ 539      63757272 
+ 539      656E7454 
+ 539      4400
+ 540              	.LASF10:
+ 541 0160 75696E74 		.ascii	"uint16\000"
+ 541      313600
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccatjbep.s 			page 13
+
+
+ 542              	.LASF8:
+ 543 0167 756E7369 		.ascii	"unsigned int\000"
+ 543      676E6564 
+ 543      20696E74 
+ 543      00
+ 544              	.LASF7:
+ 545 0174 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 545      206C6F6E 
+ 545      6720756E 
+ 545      7369676E 
+ 545      65642069 
+ 546              	.LASF18:
+ 547 018b 545F5553 		.ascii	"T_USBUART_XFER_STATUS_BLOCK\000"
+ 547      42554152 
+ 547      545F5846 
+ 547      45525F53 
+ 547      54415455 
+ 548              	.LASF15:
+ 549 01a7 73697A65 		.ascii	"sizetype\000"
+ 549      74797065 
+ 549      00
+ 550              	.LASF27:
+ 551 01b0 5C5C4441 		.ascii	"\\\\DATA\\Folder Redirection\\faithc\\Desktop\\FAIT"
+ 551      54415C46 
+ 551      6F6C6465 
+ 551      72205265 
+ 551      64697265 
+ 552 01dd 48532052 		.ascii	"HS RELEASED FIRMWARE\\SirenProject200W_RevF\\SirenP"
+ 552      454C4541 
+ 552      53454420 
+ 552      4649524D 
+ 552      57415245 
+ 553 020e 726F6A65 		.ascii	"roject200W_RevD\\ReleaseVersion.cydsn\000"
+ 553      63743230 
+ 553      30575F52 
+ 553      6576445C 
+ 553      52656C65 
+ 554              	.LASF6:
+ 555 0233 6C6F6E67 		.ascii	"long long int\000"
+ 555      206C6F6E 
+ 555      6720696E 
+ 555      7400
+ 556              	.LASF13:
+ 557 0241 63686172 		.ascii	"char\000"
+ 557      00
+ 558              	.LASF2:
+ 559 0246 73686F72 		.ascii	"short int\000"
+ 559      7420696E 
+ 559      7400
+ 560              	.LASF28:
+ 561 0250 55534255 		.ascii	"USBUART_HandleVendorRqst\000"
+ 561      4152545F 
+ 561      48616E64 
+ 561      6C655665 
+ 561      6E646F72 
+ 562              	.LASF29:
+ 563 0269 72657175 		.ascii	"requestHandled\000"
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccatjbep.s 			page 14
+
+
+ 563      65737448 
+ 563      616E646C 
+ 563      656400
+ 564              	.LASF4:
+ 565 0278 6C6F6E67 		.ascii	"long int\000"
+ 565      20696E74 
+ 565      00
+ 566              	.LASF0:
+ 567 0281 7369676E 		.ascii	"signed char\000"
+ 567      65642063 
+ 567      68617200 
+ 568              	.LASF17:
+ 569 028d 6C656E67 		.ascii	"length\000"
+ 569      746800
+ 570              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

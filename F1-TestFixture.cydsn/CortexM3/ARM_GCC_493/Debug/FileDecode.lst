@@ -1,0 +1,4632 @@
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"FileDecode.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.convertToBigEndian,"ax",%progbits
+  19              		.align	2
+  20              		.thumb
+  21              		.thumb_func
+  22              		.type	convertToBigEndian, %function
+  23              	convertToBigEndian:
+  24              	.LFB73:
+  25              		.file 1 ".\\FileDecode.c"
+   1:.\FileDecode.c **** /* ========================================
+   2:.\FileDecode.c ****  *
+   3:.\FileDecode.c ****  * Copyright YOUR COMPANY, THE YEAR
+   4:.\FileDecode.c ****  * All Rights Reserved
+   5:.\FileDecode.c ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:.\FileDecode.c ****  *
+   7:.\FileDecode.c ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:.\FileDecode.c ****  * WHICH IS THE PROPERTY OF your company.
+   9:.\FileDecode.c ****  *
+  10:.\FileDecode.c ****  * ========================================
+  11:.\FileDecode.c **** */
+  12:.\FileDecode.c **** 
+  13:.\FileDecode.c **** /**********PREPROCESSOR DIRECTIVES**********/
+  14:.\FileDecode.c **** #include "CommonVariables.h"
+  15:.\FileDecode.c **** #include <string.h>
+  16:.\FileDecode.c **** 
+  17:.\FileDecode.c **** #define SONG_COUNT              9//10
+  18:.\FileDecode.c **** 
+  19:.\FileDecode.c **** #define BITS_PER_BYTE           8
+  20:.\FileDecode.c **** #define MAX_READ_SIZE           4
+  21:.\FileDecode.c **** 
+  22:.\FileDecode.c **** #define ID_SIZE                 4
+  23:.\FileDecode.c **** #define FORMAT_SIZE             4
+  24:.\FileDecode.c **** #define SUBCHUNK_SIZE_FOR_PCM   16
+  25:.\FileDecode.c **** #define AUDIO_FORMAT_VALUE      1   //PCM, values other than 1 indicate compression
+  26:.\FileDecode.c **** #define MAX_CHANNEL_COUNT       2
+  27:.\FileDecode.c **** #define EXPECTED_SAMPLING_RATE  8000
+  28:.\FileDecode.c **** 
+  29:.\FileDecode.c **** #define HEADER_SIZE             44    
+  30:.\FileDecode.c **** #define NO_COMPARE_VALUE        0
+  31:.\FileDecode.c **** 
+  32:.\FileDecode.c **** /**********DEFINED CONSTANTS**********/
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 2
+
+
+  33:.\FileDecode.c **** enum HeaderDataStartIndex
+  34:.\FileDecode.c **** {
+  35:.\FileDecode.c ****     WAVE_CHUNK_ID = 0,
+  36:.\FileDecode.c ****     WAVE_CHUNK_SIZE = 4,
+  37:.\FileDecode.c ****     WAVE_CHUNK_FORMAT = 8,
+  38:.\FileDecode.c ****     
+  39:.\FileDecode.c ****     FIRST_SUBCHUNK_ID = 12,
+  40:.\FileDecode.c ****     FIRST_SUBCHUNK_SIZE = 16,
+  41:.\FileDecode.c ****     FIRST_SUBCHUNK_AUDIO_FORMAT = 20,
+  42:.\FileDecode.c ****     FIRST_SUBCHUNK_CHANNEL_COUNT = 22,
+  43:.\FileDecode.c ****     FIRST_SUBCHUNK_SAMPLE_RATE = 24,
+  44:.\FileDecode.c ****     FIRST_SUBCHUNK_BYTE_RATE = 28,
+  45:.\FileDecode.c ****     FIRST_SUBCHUNK_BLOCK_ALIGN = 32,
+  46:.\FileDecode.c ****     FIRST_SUBCHUNK_BITS_PER_SAMPLE = 34,
+  47:.\FileDecode.c ****     
+  48:.\FileDecode.c ****     SECOND_SUBCHUNK_ID = 36,
+  49:.\FileDecode.c ****     SECOND_SUBCHUNK_SIZE = 40,
+  50:.\FileDecode.c ****     SECOND_SUBCHUNK_DATA = 44
+  51:.\FileDecode.c **** };
+  52:.\FileDecode.c **** 
+  53:.\FileDecode.c **** static const uint8 READ_COMMAND = 0x03;
+  54:.\FileDecode.c **** static const uint32 BYTE_SHIFT_FACTOR = 256;
+  55:.\FileDecode.c **** 
+  56:.\FileDecode.c **** static const uint8 LOWEST_DAC_VALUE = 0x00;
+  57:.\FileDecode.c **** static const uint8 CENTER_DAC_VALUE = 0x80;
+  58:.\FileDecode.c **** static const uint8 HIGHEST_DAC_VALUE = 0xFF;
+  59:.\FileDecode.c **** 
+  60:.\FileDecode.c **** /**********DATA STRUCTURES**********/
+  61:.\FileDecode.c **** static uint8 headerArray[HEADER_SIZE];
+  62:.\FileDecode.c **** 
+  63:.\FileDecode.c **** static const uint32 SONG_START_ADDRESS[SONG_COUNT] = 
+  64:.\FileDecode.c **** {   0x00,       //ECTOSIREN
+  65:.\FileDecode.c ****     //0x18420,    //GHOSTBUSTERS
+  66:.\FileDecode.c ****     0x1DFBD0,   //COPS_SONG
+  67:.\FileDecode.c ****     0x38B340,   //MOVE_OUT
+  68:.\FileDecode.c ****     0x38EA70,   //PULL_OVER
+  69:.\FileDecode.c ****     0x3911D0,   //STEP_OUT
+  70:.\FileDecode.c ****     0x395430,   //STEP_OUT_HANDS_UP
+  71:.\FileDecode.c ****     0x39BAB0,   //REMAIN_IN_VEHICLE
+  72:.\FileDecode.c ****     0x39FAC0,   //REMAIN_WINDOW_DOWN
+  73:.\FileDecode.c ****     0x3A6180    //MECHANICAL_DAC
+  74:.\FileDecode.c **** };
+  75:.\FileDecode.c **** 
+  76:.\FileDecode.c **** static struct
+  77:.\FileDecode.c **** {
+  78:.\FileDecode.c ****     uint8 ID[ID_SIZE];
+  79:.\FileDecode.c ****     uint32 size;
+  80:.\FileDecode.c ****     uint8 format[FORMAT_SIZE];
+  81:.\FileDecode.c **** }WaveChunk;
+  82:.\FileDecode.c **** 
+  83:.\FileDecode.c **** static struct
+  84:.\FileDecode.c **** {
+  85:.\FileDecode.c ****     uint8 ID[ID_SIZE];
+  86:.\FileDecode.c ****     uint32 size;
+  87:.\FileDecode.c ****     uint32 audioFormat;     // 1 for PCM
+  88:.\FileDecode.c ****     uint32 channelCount;    // 1 or 2
+  89:.\FileDecode.c ****     uint32 sampleRate;      // samples per second
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 3
+
+
+  90:.\FileDecode.c ****     uint32 byteRate;        // bytes per second (for both channels)
+  91:.\FileDecode.c ****     uint32 blockAlign;      // bytes per sample (for both channels)
+  92:.\FileDecode.c ****     uint32 bitsPerSample;   // expecting either 8 or 16
+  93:.\FileDecode.c **** }FirstSubChunk;
+  94:.\FileDecode.c **** 
+  95:.\FileDecode.c **** static struct
+  96:.\FileDecode.c **** {
+  97:.\FileDecode.c ****     uint8 ID[ID_SIZE];
+  98:.\FileDecode.c ****     uint32 size;
+  99:.\FileDecode.c **** }SecondSubChunk;
+ 100:.\FileDecode.c **** 
+ 101:.\FileDecode.c **** /**********GLOBAL VARIABLES**********/
+ 102:.\FileDecode.c **** static enum ToneType currentSong = NO_TONE;
+ 103:.\FileDecode.c **** 
+ 104:.\FileDecode.c **** /**********FUNCTION PROTOTYPES**********/
+ 105:.\FileDecode.c **** static uint8 adjustDACvalue(uint8 oldDACvalue);
+ 106:.\FileDecode.c **** static uint8 convertToUnsignedByte(int16 signedValue);
+ 107:.\FileDecode.c **** static uint8 processBigEndianData(uint8* dataArray, uint8* headerSubArray, char* compareString, uin
+ 108:.\FileDecode.c **** static uint8 processLittleEndianData(uint32* dataParameter, uint8* headerSubArray, uint16 compareVa
+ 109:.\FileDecode.c **** static uint32 convertToBigEndian(uint32 littleEndianValue, uint8 byteCount);
+ 110:.\FileDecode.c **** 
+ 111:.\FileDecode.c **** /**********DEFINED FUNCTIONS**********/
+ 112:.\FileDecode.c **** 
+ 113:.\FileDecode.c **** /*******************************************************************************
+ 114:.\FileDecode.c **** * Function Name: getChannelCount
+ 115:.\FileDecode.c **** ********************************************************************************
+ 116:.\FileDecode.c **** *
+ 117:.\FileDecode.c **** * Summary:
+ 118:.\FileDecode.c **** *  Returns the channel count for the current file
+ 119:.\FileDecode.c **** *
+ 120:.\FileDecode.c **** * Parameters: 
+ 121:.\FileDecode.c **** *   None
+ 122:.\FileDecode.c **** *
+ 123:.\FileDecode.c **** * Return:
+ 124:.\FileDecode.c **** *   The channel count as 1 or 2
+ 125:.\FileDecode.c **** *
+ 126:.\FileDecode.c **** *******************************************************************************/
+ 127:.\FileDecode.c **** uint8 getChannelCount(void)
+ 128:.\FileDecode.c **** {
+ 129:.\FileDecode.c **** 	return (uint8)(FirstSubChunk.channelCount);
+ 130:.\FileDecode.c **** }
+ 131:.\FileDecode.c **** 
+ 132:.\FileDecode.c **** /*******************************************************************************
+ 133:.\FileDecode.c **** * Function Name: getBytesPerSample
+ 134:.\FileDecode.c **** ********************************************************************************
+ 135:.\FileDecode.c **** *
+ 136:.\FileDecode.c **** * Summary:
+ 137:.\FileDecode.c **** *  Returns the number of bytes in each sample
+ 138:.\FileDecode.c **** *
+ 139:.\FileDecode.c **** * Parameters: 
+ 140:.\FileDecode.c **** *   None
+ 141:.\FileDecode.c **** *
+ 142:.\FileDecode.c **** * Return:
+ 143:.\FileDecode.c **** *   The number of bytes per sample as 1 or 2
+ 144:.\FileDecode.c **** *
+ 145:.\FileDecode.c **** *******************************************************************************/
+ 146:.\FileDecode.c **** uint8 getBytesPerSample(void)
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 4
+
+
+ 147:.\FileDecode.c **** {
+ 148:.\FileDecode.c **** 	return (uint8)(FirstSubChunk.blockAlign);
+ 149:.\FileDecode.c **** }
+ 150:.\FileDecode.c **** 
+ 151:.\FileDecode.c **** /*******************************************************************************
+ 152:.\FileDecode.c **** * Function Name: getSamplingRate
+ 153:.\FileDecode.c **** ********************************************************************************
+ 154:.\FileDecode.c **** *
+ 155:.\FileDecode.c **** * Summary:
+ 156:.\FileDecode.c **** *  Returns the sampling rate for the current file
+ 157:.\FileDecode.c **** *
+ 158:.\FileDecode.c **** * Parameters: 
+ 159:.\FileDecode.c **** *   None
+ 160:.\FileDecode.c **** *
+ 161:.\FileDecode.c **** * Return:
+ 162:.\FileDecode.c **** *   The sampling rate in Hertz
+ 163:.\FileDecode.c **** *
+ 164:.\FileDecode.c **** *******************************************************************************/
+ 165:.\FileDecode.c **** uint32 getSamplingRate(void)
+ 166:.\FileDecode.c **** {
+ 167:.\FileDecode.c **** 	return FirstSubChunk.sampleRate;
+ 168:.\FileDecode.c **** }
+ 169:.\FileDecode.c **** 
+ 170:.\FileDecode.c **** /*******************************************************************************
+ 171:.\FileDecode.c **** * Function Name: getDataSize
+ 172:.\FileDecode.c **** ********************************************************************************
+ 173:.\FileDecode.c **** *
+ 174:.\FileDecode.c **** * Summary:
+ 175:.\FileDecode.c **** *  Returns the number of data sample bytes for the current file
+ 176:.\FileDecode.c **** *
+ 177:.\FileDecode.c **** * Parameters: 
+ 178:.\FileDecode.c **** *   None
+ 179:.\FileDecode.c **** *
+ 180:.\FileDecode.c **** * Return:
+ 181:.\FileDecode.c **** *   The number of data sample bytes
+ 182:.\FileDecode.c **** *
+ 183:.\FileDecode.c **** *******************************************************************************/
+ 184:.\FileDecode.c **** uint32 getDataSize(void)
+ 185:.\FileDecode.c **** {
+ 186:.\FileDecode.c **** 	return SecondSubChunk.size;
+ 187:.\FileDecode.c **** }
+ 188:.\FileDecode.c **** 
+ 189:.\FileDecode.c **** /*******************************************************************************
+ 190:.\FileDecode.c **** * Function Name: getNextWaveData
+ 191:.\FileDecode.c **** ********************************************************************************
+ 192:.\FileDecode.c **** *
+ 193:.\FileDecode.c **** * Summary:
+ 194:.\FileDecode.c **** *  Gets the next 8-bit value to send out to the DAC, called in the DAC1_ISR or DAC2_ISR
+ 195:.\FileDecode.c **** *
+ 196:.\FileDecode.c **** * Parameters: 
+ 197:.\FileDecode.c **** *   addressIndex: The index to retrieve the next data point
+ 198:.\FileDecode.c **** *
+ 199:.\FileDecode.c **** * Return:
+ 200:.\FileDecode.c **** *   The DAC value ranging 0 - 255
+ 201:.\FileDecode.c **** *
+ 202:.\FileDecode.c **** *******************************************************************************/
+ 203:.\FileDecode.c **** uint8 getNextWaveData(uint32 addressIndex)
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 5
+
+
+ 204:.\FileDecode.c **** { 
+ 205:.\FileDecode.c ****     static uint8 bFirstTime = true;
+ 206:.\FileDecode.c ****     uint8 addressMSB = 0;
+ 207:.\FileDecode.c ****     uint8 addressCSB = 0;
+ 208:.\FileDecode.c ****     uint8 addressLSB = 0;
+ 209:.\FileDecode.c ****     uint8 DACvalue = CENTER_DAC_VALUE;
+ 210:.\FileDecode.c ****     
+ 211:.\FileDecode.c ****     addressIndex += SONG_START_ADDRESS[currentSong-ECTOSIREN] + (uint32)(SECOND_SUBCHUNK_DATA);
+ 212:.\FileDecode.c ****     
+ 213:.\FileDecode.c ****     addressMSB = (uint8)((addressIndex & 0xFF0000) / (BYTE_SHIFT_FACTOR * BYTE_SHIFT_FACTOR));
+ 214:.\FileDecode.c ****     addressCSB = (uint8)((addressIndex & 0xFF00) / BYTE_SHIFT_FACTOR);
+ 215:.\FileDecode.c ****     addressLSB = (uint8)(addressIndex & 0x00FF);    //Splits the 24-bit address up into 3 separate 
+ 216:.\FileDecode.c ****     
+ 217:.\FileDecode.c ****     if(SPIM_ReadTxStatus() & SPIM_STS_SPI_IDLE)
+ 218:.\FileDecode.c ****     {   //Chip Select is high and the SPI transmission is done
+ 219:.\FileDecode.c ****         if(bFirstTime)
+ 220:.\FileDecode.c ****             bFirstTime = false; //Don't read on first iteration, just send command and address
+ 221:.\FileDecode.c ****         else
+ 222:.\FileDecode.c ****             DACvalue = SPIM_ReadRxData();   //Retrieve next DAC value from the SPI buffer
+ 223:.\FileDecode.c ****             
+ 224:.\FileDecode.c ****         SPIM_WriteTxData(READ_COMMAND); //Send command (8 bits)
+ 225:.\FileDecode.c ****         SPIM_WriteTxData(addressMSB);   //Send address (24 bits)
+ 226:.\FileDecode.c ****         SPIM_WriteTxData(addressCSB);
+ 227:.\FileDecode.c ****         SPIM_WriteTxData(addressLSB);        
+ 228:.\FileDecode.c ****         SPIM_WriteTxData(0x00);         //Send dummy byte (8 bits) to make total of 40 SPI clock cy
+ 229:.\FileDecode.c ****     }
+ 230:.\FileDecode.c **** 
+ 231:.\FileDecode.c ****     return DACvalue;
+ 232:.\FileDecode.c **** }
+ 233:.\FileDecode.c **** 
+ 234:.\FileDecode.c **** /*******************************************************************************
+ 235:.\FileDecode.c **** * Function Name: processHeaderData
+ 236:.\FileDecode.c **** ********************************************************************************
+ 237:.\FileDecode.c **** *
+ 238:.\FileDecode.c **** * Summary:
+ 239:.\FileDecode.c **** *  Verifies valid file by inspecting the header content
+ 240:.\FileDecode.c **** *
+ 241:.\FileDecode.c **** * Parameters: 
+ 242:.\FileDecode.c **** *   None
+ 243:.\FileDecode.c **** *
+ 244:.\FileDecode.c **** * Return:
+ 245:.\FileDecode.c **** *   TRUE for valid header, FALSE otherwise
+ 246:.\FileDecode.c **** *
+ 247:.\FileDecode.c **** *******************************************************************************/
+ 248:.\FileDecode.c **** uint8 processHeaderData(enum ToneType songChoice)
+ 249:.\FileDecode.c **** {  
+ 250:.\FileDecode.c ****     uint32 address = 0;
+ 251:.\FileDecode.c ****     uint8 addressMSB = 0;
+ 252:.\FileDecode.c ****     uint8 addressCSB = 0;
+ 253:.\FileDecode.c ****     uint8 addressLSB = 0;
+ 254:.\FileDecode.c ****     uint8 index = 0;
+ 255:.\FileDecode.c ****     
+ 256:.\FileDecode.c ****     if((songChoice < ECTOSIREN) || (songChoice > REMAIN_WINDOW_DOWN))
+ 257:.\FileDecode.c ****         return false;
+ 258:.\FileDecode.c ****     
+ 259:.\FileDecode.c ****     currentSong = songChoice;
+ 260:.\FileDecode.c ****     address = SONG_START_ADDRESS[currentSong-ECTOSIREN];
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 6
+
+
+ 261:.\FileDecode.c ****     
+ 262:.\FileDecode.c ****     addressMSB = (uint8)((address & 0xFF0000) / (BYTE_SHIFT_FACTOR * BYTE_SHIFT_FACTOR));
+ 263:.\FileDecode.c ****     addressCSB = (uint8)((address & 0xFF00) / BYTE_SHIFT_FACTOR);
+ 264:.\FileDecode.c ****     addressLSB = (uint8)(address & 0x00FF);
+ 265:.\FileDecode.c ****     
+ 266:.\FileDecode.c ****     for(index = 0; index < HEADER_SIZE; index++)
+ 267:.\FileDecode.c ****     {
+ 268:.\FileDecode.c ****         SPIM_WriteTxData(READ_COMMAND);         //Send command (8 bits)
+ 269:.\FileDecode.c ****         SPIM_WriteTxData(addressMSB);
+ 270:.\FileDecode.c ****         SPIM_WriteTxData(addressCSB);           //Send address (24 bits)
+ 271:.\FileDecode.c ****         SPIM_WriteTxData(addressLSB + index);
+ 272:.\FileDecode.c ****         
+ 273:.\FileDecode.c ****         SPIM_WriteTxData(0x00);                 //Send dummy byte (8 bits) to make total of 40 SPI 
+ 274:.\FileDecode.c ****         while(!(SPIM_ReadTxStatus() & SPIM_STS_SPI_IDLE)){} //Wait for Chip Select to go high
+ 275:.\FileDecode.c ****         headerArray[index] = SPIM_ReadRxData(); //Retrieve next header data from the SPI buffer
+ 276:.\FileDecode.c ****     }
+ 277:.\FileDecode.c ****     
+ 278:.\FileDecode.c ****     if(!processBigEndianData(WaveChunk.ID, &headerArray[WAVE_CHUNK_ID], "RIFF", ID_SIZE))
+ 279:.\FileDecode.c ****         return false;
+ 280:.\FileDecode.c **** 		
+ 281:.\FileDecode.c **** 	if(!processLittleEndianData(&WaveChunk.size, &headerArray[WAVE_CHUNK_SIZE], NO_COMPARE_VALUE, MAX_
+ 282:.\FileDecode.c **** 		return false;
+ 283:.\FileDecode.c **** 
+ 284:.\FileDecode.c **** 	if(!processBigEndianData(WaveChunk.format, &headerArray[WAVE_CHUNK_FORMAT], "WAVE", FORMAT_SIZE))
+ 285:.\FileDecode.c ****         return false;
+ 286:.\FileDecode.c **** 		
+ 287:.\FileDecode.c **** 	if(!processBigEndianData(FirstSubChunk.ID, &headerArray[FIRST_SUBCHUNK_ID], "fmt ", ID_SIZE))
+ 288:.\FileDecode.c ****         return false;
+ 289:.\FileDecode.c **** 		
+ 290:.\FileDecode.c **** 	if(!processLittleEndianData(&FirstSubChunk.size, &headerArray[FIRST_SUBCHUNK_SIZE], SUBCHUNK_SIZE_
+ 291:.\FileDecode.c **** 		return false;
+ 292:.\FileDecode.c **** 		
+ 293:.\FileDecode.c **** 	if(!processLittleEndianData(&FirstSubChunk.audioFormat, &headerArray[FIRST_SUBCHUNK_AUDIO_FORMAT],
+ 294:.\FileDecode.c **** 		return false;
+ 295:.\FileDecode.c **** 		
+ 296:.\FileDecode.c **** 	if(!processLittleEndianData(&FirstSubChunk.channelCount, &headerArray[FIRST_SUBCHUNK_CHANNEL_COUNT
+ 297:.\FileDecode.c **** 		return false;
+ 298:.\FileDecode.c **** 	
+ 299:.\FileDecode.c **** 	if(!processLittleEndianData(&FirstSubChunk.sampleRate, &headerArray[FIRST_SUBCHUNK_SAMPLE_RATE], E
+ 300:.\FileDecode.c **** 		return false;
+ 301:.\FileDecode.c **** 		
+ 302:.\FileDecode.c **** 	if(!processLittleEndianData(&FirstSubChunk.byteRate, &headerArray[FIRST_SUBCHUNK_BYTE_RATE], NO_CO
+ 303:.\FileDecode.c **** 		return false;
+ 304:.\FileDecode.c **** 		
+ 305:.\FileDecode.c **** 	if(!processLittleEndianData(&FirstSubChunk.blockAlign, &headerArray[FIRST_SUBCHUNK_BLOCK_ALIGN], N
+ 306:.\FileDecode.c **** 		return false;
+ 307:.\FileDecode.c **** 		
+ 308:.\FileDecode.c **** 	if(!processLittleEndianData(&FirstSubChunk.bitsPerSample, &headerArray[FIRST_SUBCHUNK_BITS_PER_SAM
+ 309:.\FileDecode.c **** 		return false;
+ 310:.\FileDecode.c **** 	
+ 311:.\FileDecode.c **** 	if(!processBigEndianData(SecondSubChunk.ID, &headerArray[SECOND_SUBCHUNK_ID], "data", ID_SIZE))
+ 312:.\FileDecode.c ****         return false;
+ 313:.\FileDecode.c **** 		
+ 314:.\FileDecode.c **** 	if(!processLittleEndianData(&SecondSubChunk.size, &headerArray[SECOND_SUBCHUNK_SIZE], NO_COMPARE_V
+ 315:.\FileDecode.c **** 		return false;
+ 316:.\FileDecode.c ****     
+ 317:.\FileDecode.c ****     return true;
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 7
+
+
+ 318:.\FileDecode.c **** }
+ 319:.\FileDecode.c **** 
+ 320:.\FileDecode.c **** /*******************************************************************************
+ 321:.\FileDecode.c **** * Function Name: adjustDACvalue
+ 322:.\FileDecode.c **** ********************************************************************************
+ 323:.\FileDecode.c **** *
+ 324:.\FileDecode.c **** * Summary:
+ 325:.\FileDecode.c **** *  Alters the current DAC value based on the offset and amplitude constants
+ 326:.\FileDecode.c **** *
+ 327:.\FileDecode.c **** * Parameters: 
+ 328:.\FileDecode.c **** *   oldDACvalue: The original value to send to the DAC
+ 329:.\FileDecode.c **** *
+ 330:.\FileDecode.c **** * Return:
+ 331:.\FileDecode.c **** *   The altered DAC value, should still be in range 0 - 255
+ 332:.\FileDecode.c **** *
+ 333:.\FileDecode.c **** *******************************************************************************/
+ 334:.\FileDecode.c **** static uint8 adjustDACvalue(uint8 oldDACvalue)
+ 335:.\FileDecode.c **** {
+ 336:.\FileDecode.c ****     static const uint8 OFFSET_VALUE = 0;
+ 337:.\FileDecode.c ****     static const uint8 AMPLITUDE_FACTOR = 1;
+ 338:.\FileDecode.c ****     uint8 newDACvalue = CENTER_DAC_VALUE;
+ 339:.\FileDecode.c ****     
+ 340:.\FileDecode.c ****     newDACvalue = oldDACvalue / AMPLITUDE_FACTOR + OFFSET_VALUE;
+ 341:.\FileDecode.c ****     
+ 342:.\FileDecode.c ****     if((oldDACvalue > LOWEST_DAC_VALUE) && (newDACvalue == LOWEST_DAC_VALUE))
+ 343:.\FileDecode.c ****         return LOWEST_DAC_VALUE;   //Indicates truncation at 0
+ 344:.\FileDecode.c ****     
+ 345:.\FileDecode.c ****     if((oldDACvalue < HIGHEST_DAC_VALUE) && (newDACvalue == HIGHEST_DAC_VALUE))
+ 346:.\FileDecode.c ****         return HIGHEST_DAC_VALUE;   //Indicates truncation at 255
+ 347:.\FileDecode.c ****     
+ 348:.\FileDecode.c ****     return newDACvalue;
+ 349:.\FileDecode.c **** }
+ 350:.\FileDecode.c **** 
+ 351:.\FileDecode.c **** /*******************************************************************************
+ 352:.\FileDecode.c **** * Function Name: convertToUnsignedByte
+ 353:.\FileDecode.c **** ********************************************************************************
+ 354:.\FileDecode.c **** *
+ 355:.\FileDecode.c **** * Summary:
+ 356:.\FileDecode.c **** *  Converts a signed 16-bit value to an unsigned 8-bit value
+ 357:.\FileDecode.c **** *
+ 358:.\FileDecode.c **** * Parameters: 
+ 359:.\FileDecode.c **** *   signedValue: The 16-bit signed value
+ 360:.\FileDecode.c **** *
+ 361:.\FileDecode.c **** * Return:
+ 362:.\FileDecode.c **** *   The unsigned 8-bit value in range 0 - 255
+ 363:.\FileDecode.c **** *
+ 364:.\FileDecode.c **** *******************************************************************************/
+ 365:.\FileDecode.c **** static uint8 convertToUnsignedByte(int16 signedValue)
+ 366:.\FileDecode.c **** {
+ 367:.\FileDecode.c ****     static const int16 SIGNED_MASK = 0x8000;
+ 368:.\FileDecode.c ****     int16 adjustedValue = 0;
+ 369:.\FileDecode.c ****     
+ 370:.\FileDecode.c ****     if((FirstSubChunk.blockAlign == 1) &&
+ 371:.\FileDecode.c ****         ((signedValue < 0x0080) || (signedValue > 0x007F)))
+ 372:.\FileDecode.c ****         return 0;   //8-bit values must be in range -128 to 127
+ 373:.\FileDecode.c ****     
+ 374:.\FileDecode.c ****     if(FirstSubChunk.blockAlign == 2)
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 8
+
+
+ 375:.\FileDecode.c ****     {   //Convert 16-bit to 8-bit with rounding
+ 376:.\FileDecode.c ****         if(signedValue & SIGNED_MASK)
+ 377:.\FileDecode.c ****             adjustedValue = ((2 * signedValue - BYTE_SHIFT_FACTOR) / 2) / BYTE_SHIFT_FACTOR;
+ 378:.\FileDecode.c ****         else
+ 379:.\FileDecode.c ****             adjustedValue = ((2 * signedValue + BYTE_SHIFT_FACTOR) / 2) / BYTE_SHIFT_FACTOR;
+ 380:.\FileDecode.c ****     }
+ 381:.\FileDecode.c ****     
+ 382:.\FileDecode.c ****     adjustedValue += CENTER_DAC_VALUE;    //Add offset to meet range 0 - 255
+ 383:.\FileDecode.c ****     
+ 384:.\FileDecode.c **** 	return (uint8)(adjustedValue);
+ 385:.\FileDecode.c **** }
+ 386:.\FileDecode.c **** 
+ 387:.\FileDecode.c **** /*******************************************************************************
+ 388:.\FileDecode.c **** * Function Name: processBigEndianData
+ 389:.\FileDecode.c **** ********************************************************************************
+ 390:.\FileDecode.c **** *
+ 391:.\FileDecode.c **** * Summary:
+ 392:.\FileDecode.c **** *  Retrieves next header data and verifies that the big endian (ASCII) header 
+ 393:.\FileDecode.c **** *   parameters are valid
+ 394:.\FileDecode.c **** *
+ 395:.\FileDecode.c **** * Parameters: 
+ 396:.\FileDecode.c **** *   dataArray: The pointer to the array that will store the ASCII content
+ 397:.\FileDecode.c **** *   headerSubArray: The pointer to a section of the header array for validation
+ 398:.\FileDecode.c **** *   compareString: Used with the string compare function to check that the
+ 399:.\FileDecode.c **** *                   ASCII values are correct
+ 400:.\FileDecode.c **** *   arraySize: The number of elements to check in the arrays
+ 401:.\FileDecode.c **** *
+ 402:.\FileDecode.c **** * Return:
+ 403:.\FileDecode.c **** *   TRUE for valid content, FALSE otherwise
+ 404:.\FileDecode.c **** *
+ 405:.\FileDecode.c **** *******************************************************************************/
+ 406:.\FileDecode.c **** static uint8 processBigEndianData(uint8* dataArray, uint8* headerSubArray, char* compareString, uin
+ 407:.\FileDecode.c **** {
+ 408:.\FileDecode.c ****     uint8 arrayCopy[MAX_READ_SIZE+1];
+ 409:.\FileDecode.c ****     uint8 index = 0;
+ 410:.\FileDecode.c ****     
+ 411:.\FileDecode.c ****     if((dataArray == NULL) || (headerSubArray == NULL) 
+ 412:.\FileDecode.c ****         || (compareString == NULL) || (arraySize > MAX_READ_SIZE)) 
+ 413:.\FileDecode.c ****         return false;   //Validate input parameters
+ 414:.\FileDecode.c ****     
+ 415:.\FileDecode.c ****     memset(arrayCopy, 0, MAX_READ_SIZE+1);  //Clear array
+ 416:.\FileDecode.c ****     
+ 417:.\FileDecode.c ****     for(index = 0; index < arraySize; index++)
+ 418:.\FileDecode.c ****         arrayCopy[index] = headerSubArray[index];   //Make copy of ASCII content + null character t
+ 419:.\FileDecode.c ****     
+ 420:.\FileDecode.c ****     if(strcmp((char*)(arrayCopy), compareString))   //0 for match, 1 for no match
+ 421:.\FileDecode.c **** 		return false;
+ 422:.\FileDecode.c ****     
+ 423:.\FileDecode.c ****     for(index = 0; index < arraySize; index++)      //Matched, store ASCII content
+ 424:.\FileDecode.c ****         dataArray[index] = headerSubArray[index];
+ 425:.\FileDecode.c **** 		
+ 426:.\FileDecode.c **** 	return true;
+ 427:.\FileDecode.c **** }
+ 428:.\FileDecode.c **** 
+ 429:.\FileDecode.c **** /*******************************************************************************
+ 430:.\FileDecode.c **** * Function Name: processLittleEndianData
+ 431:.\FileDecode.c **** ********************************************************************************
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 9
+
+
+ 432:.\FileDecode.c **** *
+ 433:.\FileDecode.c **** * Summary:
+ 434:.\FileDecode.c **** *  Retrieves next header data and verifies that the little endian header 
+ 435:.\FileDecode.c **** *   parameters are valid
+ 436:.\FileDecode.c **** *
+ 437:.\FileDecode.c **** * Parameters: 
+ 438:.\FileDecode.c **** *   dataParameter: The pointer to variable that will hold the next header data
+ 439:.\FileDecode.c **** *   headerSubArray: The pointer to a section of the header array for validation
+ 440:.\FileDecode.c **** *   compareValue: Used to verify that the tested value is in range
+ 441:.\FileDecode.c **** *   byteCount: Number of bytes to validate
+ 442:.\FileDecode.c **** *
+ 443:.\FileDecode.c **** * Return:
+ 444:.\FileDecode.c **** *   TRUE for valid content, FALSE otherwise
+ 445:.\FileDecode.c **** *
+ 446:.\FileDecode.c **** *******************************************************************************/
+ 447:.\FileDecode.c **** static uint8 processLittleEndianData(uint32* dataParameter, uint8* headerSubArray, uint16 compareVa
+ 448:.\FileDecode.c **** {
+ 449:.\FileDecode.c ****     uint8 index = 0;
+ 450:.\FileDecode.c **** 	uint32 littleEndianValue = 0;
+ 451:.\FileDecode.c **** 	uint32 bigEndianValue = 0;
+ 452:.\FileDecode.c **** 	
+ 453:.\FileDecode.c **** 	if((dataParameter == NULL) || (headerSubArray == NULL) || (byteCount > MAX_READ_SIZE))
+ 454:.\FileDecode.c **** 		return false;   //Validate input parameters
+ 455:.\FileDecode.c **** 	
+ 456:.\FileDecode.c **** 	for(index = 0; index < byteCount; index++)
+ 457:.\FileDecode.c **** 	{   //Convert bytes into one little endian value
+ 458:.\FileDecode.c **** 		littleEndianValue *= BYTE_SHIFT_FACTOR;        
+ 459:.\FileDecode.c ****         littleEndianValue += headerSubArray[index];
+ 460:.\FileDecode.c **** 	}
+ 461:.\FileDecode.c **** 	
+ 462:.\FileDecode.c **** 	bigEndianValue = convertToBigEndian(littleEndianValue, byteCount);
+ 463:.\FileDecode.c **** 	if((compareValue != NO_COMPARE_VALUE) && (bigEndianValue > compareValue))
+ 464:.\FileDecode.c ****         return false;   //Check if the data meets the limitations
+ 465:.\FileDecode.c **** 		
+ 466:.\FileDecode.c ****     *dataParameter = bigEndianValue;    //Passed check, store the value
+ 467:.\FileDecode.c **** 
+ 468:.\FileDecode.c **** 	return true;
+ 469:.\FileDecode.c **** }
+ 470:.\FileDecode.c **** 
+ 471:.\FileDecode.c **** /*******************************************************************************
+ 472:.\FileDecode.c **** * Function Name: convertToBigEndian
+ 473:.\FileDecode.c **** ********************************************************************************
+ 474:.\FileDecode.c **** *
+ 475:.\FileDecode.c **** * Summary:
+ 476:.\FileDecode.c **** *  Converts a little endian value to a big endian value
+ 477:.\FileDecode.c **** *
+ 478:.\FileDecode.c **** * Parameters: 
+ 479:.\FileDecode.c **** *   littleEndianValue: The little endian value
+ 480:.\FileDecode.c **** *   byteCount: The number of bytes to rearrange
+ 481:.\FileDecode.c **** *
+ 482:.\FileDecode.c **** * Return:
+ 483:.\FileDecode.c **** *   The big endian equivalent
+ 484:.\FileDecode.c **** *
+ 485:.\FileDecode.c **** *******************************************************************************/
+ 486:.\FileDecode.c **** static uint32 convertToBigEndian(uint32 littleEndianValue, uint8 byteCount)
+ 487:.\FileDecode.c **** {
+  26              		.loc 1 487 0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 10
+
+
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              		@ link register save eliminated.
+  31              	.LVL0:
+  32 0000 10B4     		push	{r4}
+  33              		.cfi_def_cfa_offset 4
+  34              		.cfi_offset 4, -4
+  35 0002 0246     		mov	r2, r0
+  36              	.LVL1:
+ 488:.\FileDecode.c ****     uint8 index = 0;
+ 489:.\FileDecode.c ****     uint32 bigEndianValue = 0;
+  37              		.loc 1 489 0
+  38 0004 0020     		movs	r0, #0
+  39              	.LVL2:
+ 490:.\FileDecode.c ****     
+ 491:.\FileDecode.c ****     for(index = 0; index < byteCount; index++)
+  40              		.loc 1 491 0
+  41 0006 0346     		mov	r3, r0
+  42 0008 05E0     		b	.L2
+  43              	.LVL3:
+  44              	.L3:
+ 492:.\FileDecode.c ****     {
+ 493:.\FileDecode.c ****         bigEndianValue *= BYTE_SHIFT_FACTOR;
+ 494:.\FileDecode.c ****         bigEndianValue += (littleEndianValue & 0xFF);
+  45              		.loc 1 494 0 discriminator 3
+  46 000a D4B2     		uxtb	r4, r2
+  47 000c 04EB0020 		add	r0, r4, r0, lsl #8
+  48              	.LVL4:
+ 495:.\FileDecode.c ****         littleEndianValue /= BYTE_SHIFT_FACTOR;        
+  49              		.loc 1 495 0 discriminator 3
+  50 0010 120A     		lsrs	r2, r2, #8
+  51              	.LVL5:
+ 491:.\FileDecode.c ****     {
+  52              		.loc 1 491 0 discriminator 3
+  53 0012 0133     		adds	r3, r3, #1
+  54              	.LVL6:
+  55 0014 DBB2     		uxtb	r3, r3
+  56              	.LVL7:
+  57              	.L2:
+ 491:.\FileDecode.c ****     {
+  58              		.loc 1 491 0 is_stmt 0 discriminator 1
+  59 0016 8B42     		cmp	r3, r1
+  60 0018 F7D3     		bcc	.L3
+ 496:.\FileDecode.c ****     }
+ 497:.\FileDecode.c ****     
+ 498:.\FileDecode.c ****     return bigEndianValue;
+ 499:.\FileDecode.c **** }
+  61              		.loc 1 499 0 is_stmt 1
+  62 001a 5DF8044B 		ldr	r4, [sp], #4
+  63              		.cfi_restore 4
+  64              		.cfi_def_cfa_offset 0
+  65 001e 7047     		bx	lr
+  66              		.cfi_endproc
+  67              	.LFE73:
+  68              		.size	convertToBigEndian, .-convertToBigEndian
+  69              		.section	.text.processLittleEndianData,"ax",%progbits
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 11
+
+
+  70              		.align	2
+  71              		.thumb
+  72              		.thumb_func
+  73              		.type	processLittleEndianData, %function
+  74              	processLittleEndianData:
+  75              	.LFB72:
+ 448:.\FileDecode.c ****     uint8 index = 0;
+  76              		.loc 1 448 0
+  77              		.cfi_startproc
+  78              		@ args = 0, pretend = 0, frame = 0
+  79              		@ frame_needed = 0, uses_anonymous_args = 0
+  80              	.LVL8:
+ 453:.\FileDecode.c **** 		return false;   //Validate input parameters
+  81              		.loc 1 453 0
+  82 0000 C0B1     		cbz	r0, .L10
+ 448:.\FileDecode.c ****     uint8 index = 0;
+  83              		.loc 1 448 0 discriminator 1
+  84 0002 70B5     		push	{r4, r5, r6, lr}
+  85              		.cfi_def_cfa_offset 16
+  86              		.cfi_offset 4, -16
+  87              		.cfi_offset 5, -12
+  88              		.cfi_offset 6, -8
+  89              		.cfi_offset 14, -4
+  90 0004 0646     		mov	r6, r0
+ 453:.\FileDecode.c **** 		return false;   //Validate input parameters
+  91              		.loc 1 453 0 discriminator 1
+  92 0006 B9B1     		cbz	r1, .L11
+ 453:.\FileDecode.c **** 		return false;   //Validate input parameters
+  93              		.loc 1 453 0 is_stmt 0 discriminator 2
+  94 0008 042B     		cmp	r3, #4
+  95 000a 17D8     		bhi	.L12
+  96 000c 0020     		movs	r0, #0
+  97              	.LVL9:
+  98 000e 0446     		mov	r4, r0
+  99 0010 04E0     		b	.L7
+ 100              	.LVL10:
+ 101              	.L8:
+ 459:.\FileDecode.c **** 	}
+ 102              		.loc 1 459 0 is_stmt 1 discriminator 3
+ 103 0012 0D5D     		ldrb	r5, [r1, r4]	@ zero_extendqisi2
+ 104 0014 05EB0020 		add	r0, r5, r0, lsl #8
+ 105              	.LVL11:
+ 456:.\FileDecode.c **** 	{   //Convert bytes into one little endian value
+ 106              		.loc 1 456 0 discriminator 3
+ 107 0018 0134     		adds	r4, r4, #1
+ 108              	.LVL12:
+ 109 001a E4B2     		uxtb	r4, r4
+ 110              	.LVL13:
+ 111              	.L7:
+ 456:.\FileDecode.c **** 	{   //Convert bytes into one little endian value
+ 112              		.loc 1 456 0 is_stmt 0 discriminator 1
+ 113 001c 9C42     		cmp	r4, r3
+ 114 001e F8D3     		bcc	.L8
+ 115 0020 1946     		mov	r1, r3
+ 116              	.LVL14:
+ 117 0022 1446     		mov	r4, r2
+ 118              	.LVL15:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 12
+
+
+ 462:.\FileDecode.c **** 	if((compareValue != NO_COMPARE_VALUE) && (bigEndianValue > compareValue))
+ 119              		.loc 1 462 0 is_stmt 1
+ 120 0024 FFF7FEFF 		bl	convertToBigEndian
+ 121              	.LVL16:
+ 463:.\FileDecode.c ****         return false;   //Check if the data meets the limitations
+ 122              		.loc 1 463 0
+ 123 0028 0CB1     		cbz	r4, .L9
+ 463:.\FileDecode.c ****         return false;   //Check if the data meets the limitations
+ 124              		.loc 1 463 0 is_stmt 0 discriminator 1
+ 125 002a 8442     		cmp	r4, r0
+ 126 002c 08D3     		bcc	.L13
+ 127              	.L9:
+ 466:.\FileDecode.c **** 
+ 128              		.loc 1 466 0 is_stmt 1
+ 129 002e 3060     		str	r0, [r6]
+ 468:.\FileDecode.c **** }
+ 130              		.loc 1 468 0
+ 131 0030 0120     		movs	r0, #1
+ 132              	.LVL17:
+ 133 0032 70BD     		pop	{r4, r5, r6, pc}
+ 134              	.LVL18:
+ 135              	.L10:
+ 136              		.cfi_def_cfa_offset 0
+ 137              		.cfi_restore 4
+ 138              		.cfi_restore 5
+ 139              		.cfi_restore 6
+ 140              		.cfi_restore 14
+ 454:.\FileDecode.c **** 	
+ 141              		.loc 1 454 0
+ 142 0034 0020     		movs	r0, #0
+ 143              	.LVL19:
+ 469:.\FileDecode.c **** 
+ 144              		.loc 1 469 0
+ 145 0036 7047     		bx	lr
+ 146              	.LVL20:
+ 147              	.L11:
+ 148              		.cfi_def_cfa_offset 16
+ 149              		.cfi_offset 4, -16
+ 150              		.cfi_offset 5, -12
+ 151              		.cfi_offset 6, -8
+ 152              		.cfi_offset 14, -4
+ 454:.\FileDecode.c **** 	
+ 153              		.loc 1 454 0
+ 154 0038 0020     		movs	r0, #0
+ 155              	.LVL21:
+ 156 003a 70BD     		pop	{r4, r5, r6, pc}
+ 157              	.LVL22:
+ 158              	.L12:
+ 159 003c 0020     		movs	r0, #0
+ 160              	.LVL23:
+ 161 003e 70BD     		pop	{r4, r5, r6, pc}
+ 162              	.LVL24:
+ 163              	.L13:
+ 464:.\FileDecode.c **** 		
+ 164              		.loc 1 464 0
+ 165 0040 0020     		movs	r0, #0
+ 166              	.LVL25:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 13
+
+
+ 469:.\FileDecode.c **** 
+ 167              		.loc 1 469 0
+ 168 0042 70BD     		pop	{r4, r5, r6, pc}
+ 169              		.cfi_endproc
+ 170              	.LFE72:
+ 171              		.size	processLittleEndianData, .-processLittleEndianData
+ 172              		.section	.text.processBigEndianData,"ax",%progbits
+ 173              		.align	2
+ 174              		.thumb
+ 175              		.thumb_func
+ 176              		.type	processBigEndianData, %function
+ 177              	processBigEndianData:
+ 178              	.LFB71:
+ 407:.\FileDecode.c ****     uint8 arrayCopy[MAX_READ_SIZE+1];
+ 179              		.loc 1 407 0
+ 180              		.cfi_startproc
+ 181              		@ args = 0, pretend = 0, frame = 8
+ 182              		@ frame_needed = 0, uses_anonymous_args = 0
+ 183              	.LVL26:
+ 411:.\FileDecode.c ****         || (compareString == NULL) || (arraySize > MAX_READ_SIZE)) 
+ 184              		.loc 1 411 0
+ 185 0000 28B3     		cbz	r0, .L21
+ 407:.\FileDecode.c ****     uint8 arrayCopy[MAX_READ_SIZE+1];
+ 186              		.loc 1 407 0 discriminator 1
+ 187 0002 70B5     		push	{r4, r5, r6, lr}
+ 188              		.cfi_def_cfa_offset 16
+ 189              		.cfi_offset 4, -16
+ 190              		.cfi_offset 5, -12
+ 191              		.cfi_offset 6, -8
+ 192              		.cfi_offset 14, -4
+ 193 0004 82B0     		sub	sp, sp, #8
+ 194              		.cfi_def_cfa_offset 24
+ 195 0006 0646     		mov	r6, r0
+ 411:.\FileDecode.c ****         || (compareString == NULL) || (arraySize > MAX_READ_SIZE)) 
+ 196              		.loc 1 411 0 discriminator 1
+ 197 0008 19B3     		cbz	r1, .L22
+ 412:.\FileDecode.c ****         return false;   //Validate input parameters
+ 198              		.loc 1 412 0
+ 199 000a 22B3     		cbz	r2, .L23
+ 412:.\FileDecode.c ****         return false;   //Validate input parameters
+ 200              		.loc 1 412 0 is_stmt 0 discriminator 1
+ 201 000c 042B     		cmp	r3, #4
+ 202 000e 24D8     		bhi	.L24
+ 415:.\FileDecode.c ****     
+ 203              		.loc 1 415 0 is_stmt 1
+ 204 0010 0020     		movs	r0, #0
+ 205              	.LVL27:
+ 206 0012 0090     		str	r0, [sp]
+ 207 0014 8DF80400 		strb	r0, [sp, #4]
+ 417:.\FileDecode.c ****         arrayCopy[index] = headerSubArray[index];   //Make copy of ASCII content + null character t
+ 208              		.loc 1 417 0
+ 209 0018 06E0     		b	.L17
+ 210              	.LVL28:
+ 211              	.L18:
+ 418:.\FileDecode.c ****     
+ 212              		.loc 1 418 0 discriminator 3
+ 213 001a 0D5C     		ldrb	r5, [r1, r0]	@ zero_extendqisi2
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 14
+
+
+ 214 001c 02AC     		add	r4, sp, #8
+ 215 001e 0444     		add	r4, r4, r0
+ 216 0020 04F8085C 		strb	r5, [r4, #-8]
+ 417:.\FileDecode.c ****         arrayCopy[index] = headerSubArray[index];   //Make copy of ASCII content + null character t
+ 217              		.loc 1 417 0 discriminator 3
+ 218 0024 0130     		adds	r0, r0, #1
+ 219              	.LVL29:
+ 220 0026 C0B2     		uxtb	r0, r0
+ 221              	.LVL30:
+ 222              	.L17:
+ 417:.\FileDecode.c ****         arrayCopy[index] = headerSubArray[index];   //Make copy of ASCII content + null character t
+ 223              		.loc 1 417 0 is_stmt 0 discriminator 1
+ 224 0028 9842     		cmp	r0, r3
+ 225 002a F6D3     		bcc	.L18
+ 226 002c 1D46     		mov	r5, r3
+ 227 002e 0C46     		mov	r4, r1
+ 420:.\FileDecode.c **** 		return false;
+ 228              		.loc 1 420 0 is_stmt 1
+ 229 0030 6846     		mov	r0, sp
+ 230              	.LVL31:
+ 231 0032 1146     		mov	r1, r2
+ 232              	.LVL32:
+ 233 0034 FFF7FEFF 		bl	strcmp
+ 234              	.LVL33:
+ 235 0038 88B9     		cbnz	r0, .L25
+ 236 003a 0022     		movs	r2, #0
+ 237 003c 03E0     		b	.L19
+ 238              	.LVL34:
+ 239              	.L20:
+ 424:.\FileDecode.c **** 		
+ 240              		.loc 1 424 0 discriminator 3
+ 241 003e A15C     		ldrb	r1, [r4, r2]	@ zero_extendqisi2
+ 242 0040 B154     		strb	r1, [r6, r2]
+ 423:.\FileDecode.c ****         dataArray[index] = headerSubArray[index];
+ 243              		.loc 1 423 0 discriminator 3
+ 244 0042 0132     		adds	r2, r2, #1
+ 245              	.LVL35:
+ 246 0044 D2B2     		uxtb	r2, r2
+ 247              	.LVL36:
+ 248              	.L19:
+ 423:.\FileDecode.c ****         dataArray[index] = headerSubArray[index];
+ 249              		.loc 1 423 0 is_stmt 0 discriminator 1
+ 250 0046 AA42     		cmp	r2, r5
+ 251 0048 F9D3     		bcc	.L20
+ 426:.\FileDecode.c **** }
+ 252              		.loc 1 426 0 is_stmt 1
+ 253 004a 0120     		movs	r0, #1
+ 254 004c 08E0     		b	.L16
+ 255              	.LVL37:
+ 256              	.L21:
+ 257              		.cfi_def_cfa_offset 0
+ 258              		.cfi_restore 4
+ 259              		.cfi_restore 5
+ 260              		.cfi_restore 6
+ 261              		.cfi_restore 14
+ 413:.\FileDecode.c ****     
+ 262              		.loc 1 413 0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 15
+
+
+ 263 004e 0020     		movs	r0, #0
+ 264              	.LVL38:
+ 427:.\FileDecode.c **** 
+ 265              		.loc 1 427 0
+ 266 0050 7047     		bx	lr
+ 267              	.LVL39:
+ 268              	.L22:
+ 269              		.cfi_def_cfa_offset 24
+ 270              		.cfi_offset 4, -16
+ 271              		.cfi_offset 5, -12
+ 272              		.cfi_offset 6, -8
+ 273              		.cfi_offset 14, -4
+ 413:.\FileDecode.c ****     
+ 274              		.loc 1 413 0
+ 275 0052 0020     		movs	r0, #0
+ 276              	.LVL40:
+ 277 0054 04E0     		b	.L16
+ 278              	.LVL41:
+ 279              	.L23:
+ 280 0056 0020     		movs	r0, #0
+ 281              	.LVL42:
+ 282 0058 02E0     		b	.L16
+ 283              	.LVL43:
+ 284              	.L24:
+ 285 005a 0020     		movs	r0, #0
+ 286              	.LVL44:
+ 287 005c 00E0     		b	.L16
+ 288              	.LVL45:
+ 289              	.L25:
+ 421:.\FileDecode.c ****     
+ 290              		.loc 1 421 0
+ 291 005e 0020     		movs	r0, #0
+ 292              	.LVL46:
+ 293              	.L16:
+ 427:.\FileDecode.c **** 
+ 294              		.loc 1 427 0
+ 295 0060 02B0     		add	sp, sp, #8
+ 296              		.cfi_def_cfa_offset 16
+ 297              		@ sp needed
+ 298 0062 70BD     		pop	{r4, r5, r6, pc}
+ 299              		.cfi_endproc
+ 300              	.LFE71:
+ 301              		.size	processBigEndianData, .-processBigEndianData
+ 302              		.section	.text.getChannelCount,"ax",%progbits
+ 303              		.align	2
+ 304              		.global	getChannelCount
+ 305              		.thumb
+ 306              		.thumb_func
+ 307              		.type	getChannelCount, %function
+ 308              	getChannelCount:
+ 309              	.LFB63:
+ 128:.\FileDecode.c **** 	return (uint8)(FirstSubChunk.channelCount);
+ 310              		.loc 1 128 0
+ 311              		.cfi_startproc
+ 312              		@ args = 0, pretend = 0, frame = 0
+ 313              		@ frame_needed = 0, uses_anonymous_args = 0
+ 314              		@ link register save eliminated.
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 16
+
+
+ 130:.\FileDecode.c **** 
+ 315              		.loc 1 130 0
+ 316 0000 014B     		ldr	r3, .L28
+ 317 0002 187B     		ldrb	r0, [r3, #12]	@ zero_extendqisi2
+ 318 0004 7047     		bx	lr
+ 319              	.L29:
+ 320 0006 00BF     		.align	2
+ 321              	.L28:
+ 322 0008 00000000 		.word	.LANCHOR0
+ 323              		.cfi_endproc
+ 324              	.LFE63:
+ 325              		.size	getChannelCount, .-getChannelCount
+ 326              		.section	.text.getBytesPerSample,"ax",%progbits
+ 327              		.align	2
+ 328              		.global	getBytesPerSample
+ 329              		.thumb
+ 330              		.thumb_func
+ 331              		.type	getBytesPerSample, %function
+ 332              	getBytesPerSample:
+ 333              	.LFB64:
+ 147:.\FileDecode.c **** 	return (uint8)(FirstSubChunk.blockAlign);
+ 334              		.loc 1 147 0
+ 335              		.cfi_startproc
+ 336              		@ args = 0, pretend = 0, frame = 0
+ 337              		@ frame_needed = 0, uses_anonymous_args = 0
+ 338              		@ link register save eliminated.
+ 149:.\FileDecode.c **** 
+ 339              		.loc 1 149 0
+ 340 0000 014B     		ldr	r3, .L31
+ 341 0002 187E     		ldrb	r0, [r3, #24]	@ zero_extendqisi2
+ 342 0004 7047     		bx	lr
+ 343              	.L32:
+ 344 0006 00BF     		.align	2
+ 345              	.L31:
+ 346 0008 00000000 		.word	.LANCHOR0
+ 347              		.cfi_endproc
+ 348              	.LFE64:
+ 349              		.size	getBytesPerSample, .-getBytesPerSample
+ 350              		.section	.text.getSamplingRate,"ax",%progbits
+ 351              		.align	2
+ 352              		.global	getSamplingRate
+ 353              		.thumb
+ 354              		.thumb_func
+ 355              		.type	getSamplingRate, %function
+ 356              	getSamplingRate:
+ 357              	.LFB65:
+ 166:.\FileDecode.c **** 	return FirstSubChunk.sampleRate;
+ 358              		.loc 1 166 0
+ 359              		.cfi_startproc
+ 360              		@ args = 0, pretend = 0, frame = 0
+ 361              		@ frame_needed = 0, uses_anonymous_args = 0
+ 362              		@ link register save eliminated.
+ 168:.\FileDecode.c **** 
+ 363              		.loc 1 168 0
+ 364 0000 014B     		ldr	r3, .L34
+ 365 0002 1869     		ldr	r0, [r3, #16]
+ 366 0004 7047     		bx	lr
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 17
+
+
+ 367              	.L35:
+ 368 0006 00BF     		.align	2
+ 369              	.L34:
+ 370 0008 00000000 		.word	.LANCHOR0
+ 371              		.cfi_endproc
+ 372              	.LFE65:
+ 373              		.size	getSamplingRate, .-getSamplingRate
+ 374              		.section	.text.getDataSize,"ax",%progbits
+ 375              		.align	2
+ 376              		.global	getDataSize
+ 377              		.thumb
+ 378              		.thumb_func
+ 379              		.type	getDataSize, %function
+ 380              	getDataSize:
+ 381              	.LFB66:
+ 185:.\FileDecode.c **** 	return SecondSubChunk.size;
+ 382              		.loc 1 185 0
+ 383              		.cfi_startproc
+ 384              		@ args = 0, pretend = 0, frame = 0
+ 385              		@ frame_needed = 0, uses_anonymous_args = 0
+ 386              		@ link register save eliminated.
+ 187:.\FileDecode.c **** 
+ 387              		.loc 1 187 0
+ 388 0000 014B     		ldr	r3, .L37
+ 389 0002 586A     		ldr	r0, [r3, #36]
+ 390 0004 7047     		bx	lr
+ 391              	.L38:
+ 392 0006 00BF     		.align	2
+ 393              	.L37:
+ 394 0008 00000000 		.word	.LANCHOR0
+ 395              		.cfi_endproc
+ 396              	.LFE66:
+ 397              		.size	getDataSize, .-getDataSize
+ 398              		.section	.text.getNextWaveData,"ax",%progbits
+ 399              		.align	2
+ 400              		.global	getNextWaveData
+ 401              		.thumb
+ 402              		.thumb_func
+ 403              		.type	getNextWaveData, %function
+ 404              	getNextWaveData:
+ 405              	.LFB67:
+ 204:.\FileDecode.c ****     static uint8 bFirstTime = true;
+ 406              		.loc 1 204 0
+ 407              		.cfi_startproc
+ 408              		@ args = 0, pretend = 0, frame = 0
+ 409              		@ frame_needed = 0, uses_anonymous_args = 0
+ 410              	.LVL47:
+ 411 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 412              		.cfi_def_cfa_offset 24
+ 413              		.cfi_offset 3, -24
+ 414              		.cfi_offset 4, -20
+ 415              		.cfi_offset 5, -16
+ 416              		.cfi_offset 6, -12
+ 417              		.cfi_offset 7, -8
+ 418              		.cfi_offset 14, -4
+ 419              	.LVL48:
+ 211:.\FileDecode.c ****     
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 18
+
+
+ 420              		.loc 1 211 0
+ 421 0002 184B     		ldr	r3, .L45
+ 422 0004 93F82830 		ldrb	r3, [r3, #40]	@ zero_extendqisi2
+ 423 0008 0E3B     		subs	r3, r3, #14
+ 424 000a 174A     		ldr	r2, .L45+4
+ 425 000c 52F82330 		ldr	r3, [r2, r3, lsl #2]
+ 426 0010 1844     		add	r0, r0, r3
+ 427              	.LVL49:
+ 428 0012 2C30     		adds	r0, r0, #44
+ 429              	.LVL50:
+ 213:.\FileDecode.c ****     addressCSB = (uint8)((addressIndex & 0xFF00) / BYTE_SHIFT_FACTOR);
+ 430              		.loc 1 213 0
+ 431 0014 C0F30747 		ubfx	r7, r0, #16, #8
+ 432              	.LVL51:
+ 214:.\FileDecode.c ****     addressLSB = (uint8)(addressIndex & 0x00FF);    //Splits the 24-bit address up into 3 separate 
+ 433              		.loc 1 214 0
+ 434 0018 C0F30726 		ubfx	r6, r0, #8, #8
+ 435              	.LVL52:
+ 215:.\FileDecode.c ****     
+ 436              		.loc 1 215 0
+ 437 001c C4B2     		uxtb	r4, r0
+ 438              	.LVL53:
+ 217:.\FileDecode.c ****     {   //Chip Select is high and the SPI transmission is done
+ 439              		.loc 1 217 0
+ 440 001e FFF7FEFF 		bl	SPIM_ReadTxStatus
+ 441              	.LVL54:
+ 442 0022 10F0100F 		tst	r0, #16
+ 443 0026 1AD0     		beq	.L43
+ 219:.\FileDecode.c ****             bFirstTime = false; //Don't read on first iteration, just send command and address
+ 444              		.loc 1 219 0
+ 445 0028 104B     		ldr	r3, .L45+8
+ 446 002a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 447 002c 23B1     		cbz	r3, .L41
+ 220:.\FileDecode.c ****         else
+ 448              		.loc 1 220 0
+ 449 002e 0022     		movs	r2, #0
+ 450 0030 0E4B     		ldr	r3, .L45+8
+ 451 0032 1A70     		strb	r2, [r3]
+ 209:.\FileDecode.c ****     
+ 452              		.loc 1 209 0
+ 453 0034 8025     		movs	r5, #128
+ 454 0036 02E0     		b	.L42
+ 455              	.L41:
+ 222:.\FileDecode.c ****             
+ 456              		.loc 1 222 0
+ 457 0038 FFF7FEFF 		bl	SPIM_ReadRxData
+ 458              	.LVL55:
+ 459 003c 0546     		mov	r5, r0
+ 460              	.LVL56:
+ 461              	.L42:
+ 224:.\FileDecode.c ****         SPIM_WriteTxData(addressMSB);   //Send address (24 bits)
+ 462              		.loc 1 224 0
+ 463 003e 0320     		movs	r0, #3
+ 464 0040 FFF7FEFF 		bl	SPIM_WriteTxData
+ 465              	.LVL57:
+ 225:.\FileDecode.c ****         SPIM_WriteTxData(addressCSB);
+ 466              		.loc 1 225 0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 19
+
+
+ 467 0044 3846     		mov	r0, r7
+ 468 0046 FFF7FEFF 		bl	SPIM_WriteTxData
+ 469              	.LVL58:
+ 226:.\FileDecode.c ****         SPIM_WriteTxData(addressLSB);        
+ 470              		.loc 1 226 0
+ 471 004a 3046     		mov	r0, r6
+ 472 004c FFF7FEFF 		bl	SPIM_WriteTxData
+ 473              	.LVL59:
+ 227:.\FileDecode.c ****         SPIM_WriteTxData(0x00);         //Send dummy byte (8 bits) to make total of 40 SPI clock cy
+ 474              		.loc 1 227 0
+ 475 0050 2046     		mov	r0, r4
+ 476 0052 FFF7FEFF 		bl	SPIM_WriteTxData
+ 477              	.LVL60:
+ 228:.\FileDecode.c ****     }
+ 478              		.loc 1 228 0
+ 479 0056 0020     		movs	r0, #0
+ 480 0058 FFF7FEFF 		bl	SPIM_WriteTxData
+ 481              	.LVL61:
+ 482 005c 00E0     		b	.L40
+ 483              	.LVL62:
+ 484              	.L43:
+ 209:.\FileDecode.c ****     
+ 485              		.loc 1 209 0
+ 486 005e 8025     		movs	r5, #128
+ 487              	.LVL63:
+ 488              	.L40:
+ 232:.\FileDecode.c **** 
+ 489              		.loc 1 232 0
+ 490 0060 2846     		mov	r0, r5
+ 491 0062 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 492              	.LVL64:
+ 493              	.L46:
+ 494              		.align	2
+ 495              	.L45:
+ 496 0064 00000000 		.word	.LANCHOR0
+ 497 0068 00000000 		.word	.LANCHOR1
+ 498 006c 00000000 		.word	.LANCHOR2
+ 499              		.cfi_endproc
+ 500              	.LFE67:
+ 501              		.size	getNextWaveData, .-getNextWaveData
+ 502              		.section	.text.processHeaderData,"ax",%progbits
+ 503              		.align	2
+ 504              		.global	processHeaderData
+ 505              		.thumb
+ 506              		.thumb_func
+ 507              		.type	processHeaderData, %function
+ 508              	processHeaderData:
+ 509              	.LFB68:
+ 249:.\FileDecode.c ****     uint32 address = 0;
+ 510              		.loc 1 249 0
+ 511              		.cfi_startproc
+ 512              		@ args = 0, pretend = 0, frame = 0
+ 513              		@ frame_needed = 0, uses_anonymous_args = 0
+ 514              	.LVL65:
+ 515 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 516              		.cfi_def_cfa_offset 24
+ 517              		.cfi_offset 3, -24
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 20
+
+
+ 518              		.cfi_offset 4, -20
+ 519              		.cfi_offset 5, -16
+ 520              		.cfi_offset 6, -12
+ 521              		.cfi_offset 7, -8
+ 522              		.cfi_offset 14, -4
+ 523              	.LVL66:
+ 256:.\FileDecode.c ****         return false;
+ 524              		.loc 1 256 0
+ 525 0002 A0F10E03 		sub	r3, r0, #14
+ 526 0006 DBB2     		uxtb	r3, r3
+ 527 0008 072B     		cmp	r3, #7
+ 528 000a 00F2B780 		bhi	.L52
+ 259:.\FileDecode.c ****     address = SONG_START_ADDRESS[currentSong-ECTOSIREN];
+ 529              		.loc 1 259 0
+ 530 000e 5E4B     		ldr	r3, .L55
+ 531 0010 83F82800 		strb	r0, [r3, #40]
+ 260:.\FileDecode.c ****     
+ 532              		.loc 1 260 0
+ 533 0014 0E38     		subs	r0, r0, #14
+ 534              	.LVL67:
+ 535 0016 5D4B     		ldr	r3, .L55+4
+ 536 0018 53F82050 		ldr	r5, [r3, r0, lsl #2]
+ 537              	.LVL68:
+ 262:.\FileDecode.c ****     addressCSB = (uint8)((address & 0xFF00) / BYTE_SHIFT_FACTOR);
+ 538              		.loc 1 262 0
+ 539 001c C5F30747 		ubfx	r7, r5, #16, #8
+ 540              	.LVL69:
+ 263:.\FileDecode.c ****     addressLSB = (uint8)(address & 0x00FF);
+ 541              		.loc 1 263 0
+ 542 0020 C5F30726 		ubfx	r6, r5, #8, #8
+ 543              	.LVL70:
+ 264:.\FileDecode.c ****     
+ 544              		.loc 1 264 0
+ 545 0024 EDB2     		uxtb	r5, r5
+ 546              	.LVL71:
+ 266:.\FileDecode.c ****     {
+ 547              		.loc 1 266 0
+ 548 0026 0024     		movs	r4, #0
+ 549 0028 1CE0     		b	.L49
+ 550              	.LVL72:
+ 551              	.L51:
+ 268:.\FileDecode.c ****         SPIM_WriteTxData(addressMSB);
+ 552              		.loc 1 268 0
+ 553 002a 0320     		movs	r0, #3
+ 554 002c FFF7FEFF 		bl	SPIM_WriteTxData
+ 555              	.LVL73:
+ 269:.\FileDecode.c ****         SPIM_WriteTxData(addressCSB);           //Send address (24 bits)
+ 556              		.loc 1 269 0
+ 557 0030 3846     		mov	r0, r7
+ 558 0032 FFF7FEFF 		bl	SPIM_WriteTxData
+ 559              	.LVL74:
+ 270:.\FileDecode.c ****         SPIM_WriteTxData(addressLSB + index);
+ 560              		.loc 1 270 0
+ 561 0036 3046     		mov	r0, r6
+ 562 0038 FFF7FEFF 		bl	SPIM_WriteTxData
+ 563              	.LVL75:
+ 271:.\FileDecode.c ****         
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 21
+
+
+ 564              		.loc 1 271 0
+ 565 003c 2819     		adds	r0, r5, r4
+ 566 003e C0B2     		uxtb	r0, r0
+ 567 0040 FFF7FEFF 		bl	SPIM_WriteTxData
+ 568              	.LVL76:
+ 273:.\FileDecode.c ****         while(!(SPIM_ReadTxStatus() & SPIM_STS_SPI_IDLE)){} //Wait for Chip Select to go high
+ 569              		.loc 1 273 0
+ 570 0044 0020     		movs	r0, #0
+ 571 0046 FFF7FEFF 		bl	SPIM_WriteTxData
+ 572              	.LVL77:
+ 573              	.L50:
+ 274:.\FileDecode.c ****         headerArray[index] = SPIM_ReadRxData(); //Retrieve next header data from the SPI buffer
+ 574              		.loc 1 274 0 discriminator 1
+ 575 004a FFF7FEFF 		bl	SPIM_ReadTxStatus
+ 576              	.LVL78:
+ 577 004e 10F0100F 		tst	r0, #16
+ 578 0052 FAD0     		beq	.L50
+ 275:.\FileDecode.c ****     }
+ 579              		.loc 1 275 0 discriminator 2
+ 580 0054 FFF7FEFF 		bl	SPIM_ReadRxData
+ 581              	.LVL79:
+ 582 0058 4B4B     		ldr	r3, .L55
+ 583 005a 2344     		add	r3, r3, r4
+ 584 005c 83F82C00 		strb	r0, [r3, #44]
+ 266:.\FileDecode.c ****     {
+ 585              		.loc 1 266 0 discriminator 2
+ 586 0060 0134     		adds	r4, r4, #1
+ 587              	.LVL80:
+ 588 0062 E4B2     		uxtb	r4, r4
+ 589              	.LVL81:
+ 590              	.L49:
+ 266:.\FileDecode.c ****     {
+ 591              		.loc 1 266 0 is_stmt 0 discriminator 1
+ 592 0064 2B2C     		cmp	r4, #43
+ 593 0066 E0D9     		bls	.L51
+ 278:.\FileDecode.c ****         return false;
+ 594              		.loc 1 278 0 is_stmt 1
+ 595 0068 4749     		ldr	r1, .L55
+ 596 006a 01F15800 		add	r0, r1, #88
+ 597 006e 2C31     		adds	r1, r1, #44
+ 598 0070 474A     		ldr	r2, .L55+8
+ 599 0072 0423     		movs	r3, #4
+ 600 0074 FFF7FEFF 		bl	processBigEndianData
+ 601              	.LVL82:
+ 602 0078 0346     		mov	r3, r0
+ 603 007a 0028     		cmp	r0, #0
+ 604 007c 00F08180 		beq	.L48
+ 281:.\FileDecode.c **** 		return false;
+ 605              		.loc 1 281 0
+ 606 0080 4149     		ldr	r1, .L55
+ 607 0082 01F15C00 		add	r0, r1, #92
+ 608 0086 3031     		adds	r1, r1, #48
+ 609 0088 0022     		movs	r2, #0
+ 610 008a 0423     		movs	r3, #4
+ 611 008c FFF7FEFF 		bl	processLittleEndianData
+ 612              	.LVL83:
+ 613 0090 0346     		mov	r3, r0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 22
+
+
+ 614 0092 0028     		cmp	r0, #0
+ 615 0094 75D0     		beq	.L48
+ 284:.\FileDecode.c ****         return false;
+ 616              		.loc 1 284 0
+ 617 0096 3C49     		ldr	r1, .L55
+ 618 0098 01F16000 		add	r0, r1, #96
+ 619 009c 3431     		adds	r1, r1, #52
+ 620 009e 3D4A     		ldr	r2, .L55+12
+ 621 00a0 0423     		movs	r3, #4
+ 622 00a2 FFF7FEFF 		bl	processBigEndianData
+ 623              	.LVL84:
+ 624 00a6 0346     		mov	r3, r0
+ 625 00a8 0028     		cmp	r0, #0
+ 626 00aa 6AD0     		beq	.L48
+ 287:.\FileDecode.c ****         return false;
+ 627              		.loc 1 287 0
+ 628 00ac 3649     		ldr	r1, .L55
+ 629 00ae 0846     		mov	r0, r1
+ 630 00b0 3831     		adds	r1, r1, #56
+ 631 00b2 394A     		ldr	r2, .L55+16
+ 632 00b4 0423     		movs	r3, #4
+ 633 00b6 FFF7FEFF 		bl	processBigEndianData
+ 634              	.LVL85:
+ 635 00ba 0346     		mov	r3, r0
+ 636 00bc 0028     		cmp	r0, #0
+ 637 00be 60D0     		beq	.L48
+ 290:.\FileDecode.c **** 		return false;
+ 638              		.loc 1 290 0
+ 639 00c0 3149     		ldr	r1, .L55
+ 640 00c2 081D     		adds	r0, r1, #4
+ 641 00c4 3C31     		adds	r1, r1, #60
+ 642 00c6 1022     		movs	r2, #16
+ 643 00c8 0423     		movs	r3, #4
+ 644 00ca FFF7FEFF 		bl	processLittleEndianData
+ 645              	.LVL86:
+ 646 00ce 0346     		mov	r3, r0
+ 647 00d0 0028     		cmp	r0, #0
+ 648 00d2 56D0     		beq	.L48
+ 293:.\FileDecode.c **** 		return false;
+ 649              		.loc 1 293 0
+ 650 00d4 2C49     		ldr	r1, .L55
+ 651 00d6 01F10800 		add	r0, r1, #8
+ 652 00da 4031     		adds	r1, r1, #64
+ 653 00dc 0122     		movs	r2, #1
+ 654 00de 0223     		movs	r3, #2
+ 655 00e0 FFF7FEFF 		bl	processLittleEndianData
+ 656              	.LVL87:
+ 657 00e4 0346     		mov	r3, r0
+ 658 00e6 0028     		cmp	r0, #0
+ 659 00e8 4BD0     		beq	.L48
+ 296:.\FileDecode.c **** 		return false;
+ 660              		.loc 1 296 0
+ 661 00ea 2749     		ldr	r1, .L55
+ 662 00ec 01F10C00 		add	r0, r1, #12
+ 663 00f0 4231     		adds	r1, r1, #66
+ 664 00f2 0222     		movs	r2, #2
+ 665 00f4 1346     		mov	r3, r2
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 23
+
+
+ 666 00f6 FFF7FEFF 		bl	processLittleEndianData
+ 667              	.LVL88:
+ 668 00fa 0346     		mov	r3, r0
+ 669 00fc 0028     		cmp	r0, #0
+ 670 00fe 40D0     		beq	.L48
+ 299:.\FileDecode.c **** 		return false;
+ 671              		.loc 1 299 0
+ 672 0100 2149     		ldr	r1, .L55
+ 673 0102 01F11000 		add	r0, r1, #16
+ 674 0106 4431     		adds	r1, r1, #68
+ 675 0108 4FF4FA52 		mov	r2, #8000
+ 676 010c 0423     		movs	r3, #4
+ 677 010e FFF7FEFF 		bl	processLittleEndianData
+ 678              	.LVL89:
+ 679 0112 0346     		mov	r3, r0
+ 680 0114 A8B3     		cbz	r0, .L48
+ 302:.\FileDecode.c **** 		return false;
+ 681              		.loc 1 302 0
+ 682 0116 1C49     		ldr	r1, .L55
+ 683 0118 01F11400 		add	r0, r1, #20
+ 684 011c 4831     		adds	r1, r1, #72
+ 685 011e 0022     		movs	r2, #0
+ 686 0120 0423     		movs	r3, #4
+ 687 0122 FFF7FEFF 		bl	processLittleEndianData
+ 688              	.LVL90:
+ 689 0126 0346     		mov	r3, r0
+ 690 0128 58B3     		cbz	r0, .L48
+ 305:.\FileDecode.c **** 		return false;
+ 691              		.loc 1 305 0
+ 692 012a 1749     		ldr	r1, .L55
+ 693 012c 01F11800 		add	r0, r1, #24
+ 694 0130 4C31     		adds	r1, r1, #76
+ 695 0132 0022     		movs	r2, #0
+ 696 0134 0223     		movs	r3, #2
+ 697 0136 FFF7FEFF 		bl	processLittleEndianData
+ 698              	.LVL91:
+ 699 013a 0346     		mov	r3, r0
+ 700 013c 08B3     		cbz	r0, .L48
+ 308:.\FileDecode.c **** 		return false;
+ 701              		.loc 1 308 0
+ 702 013e 1249     		ldr	r1, .L55
+ 703 0140 01F11C00 		add	r0, r1, #28
+ 704 0144 4E31     		adds	r1, r1, #78
+ 705 0146 0022     		movs	r2, #0
+ 706 0148 0223     		movs	r3, #2
+ 707 014a FFF7FEFF 		bl	processLittleEndianData
+ 708              	.LVL92:
+ 709 014e 0346     		mov	r3, r0
+ 710 0150 B8B1     		cbz	r0, .L48
+ 311:.\FileDecode.c ****         return false;
+ 711              		.loc 1 311 0
+ 712 0152 0D49     		ldr	r1, .L55
+ 713 0154 01F12000 		add	r0, r1, #32
+ 714 0158 5031     		adds	r1, r1, #80
+ 715 015a 104A     		ldr	r2, .L55+20
+ 716 015c 0423     		movs	r3, #4
+ 717 015e FFF7FEFF 		bl	processBigEndianData
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 24
+
+
+ 718              	.LVL93:
+ 719 0162 0346     		mov	r3, r0
+ 720 0164 68B1     		cbz	r0, .L48
+ 314:.\FileDecode.c **** 		return false;
+ 721              		.loc 1 314 0
+ 722 0166 0849     		ldr	r1, .L55
+ 723 0168 01F12400 		add	r0, r1, #36
+ 724 016c 5431     		adds	r1, r1, #84
+ 725 016e 0022     		movs	r2, #0
+ 726 0170 0423     		movs	r3, #4
+ 727 0172 FFF7FEFF 		bl	processLittleEndianData
+ 728              	.LVL94:
+ 729 0176 0346     		mov	r3, r0
+ 730 0178 10B9     		cbnz	r0, .L53
+ 731 017a 02E0     		b	.L48
+ 732              	.LVL95:
+ 733              	.L52:
+ 257:.\FileDecode.c ****     
+ 734              		.loc 1 257 0
+ 735 017c 0023     		movs	r3, #0
+ 736 017e 00E0     		b	.L48
+ 737              	.LVL96:
+ 738              	.L53:
+ 317:.\FileDecode.c **** }
+ 739              		.loc 1 317 0
+ 740 0180 0123     		movs	r3, #1
+ 741              	.LVL97:
+ 742              	.L48:
+ 318:.\FileDecode.c **** 
+ 743              		.loc 1 318 0
+ 744 0182 1846     		mov	r0, r3
+ 745 0184 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 746              	.L56:
+ 747 0186 00BF     		.align	2
+ 748              	.L55:
+ 749 0188 00000000 		.word	.LANCHOR0
+ 750 018c 00000000 		.word	.LANCHOR1
+ 751 0190 00000000 		.word	.LC0
+ 752 0194 08000000 		.word	.LC1
+ 753 0198 10000000 		.word	.LC2
+ 754 019c 18000000 		.word	.LC3
+ 755              		.cfi_endproc
+ 756              	.LFE68:
+ 757              		.size	processHeaderData, .-processHeaderData
+ 758              		.section	.rodata
+ 759              		.align	2
+ 760              		.set	.LANCHOR1,. + 0
+ 761              		.type	SONG_START_ADDRESS, %object
+ 762              		.size	SONG_START_ADDRESS, 36
+ 763              	SONG_START_ADDRESS:
+ 764 0000 00000000 		.word	0
+ 765 0004 D0FB1D00 		.word	1965008
+ 766 0008 40B33800 		.word	3715904
+ 767 000c 70EA3800 		.word	3730032
+ 768 0010 D0113900 		.word	3740112
+ 769 0014 30543900 		.word	3757104
+ 770 0018 B0BA3900 		.word	3783344
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 25
+
+
+ 771 001c C0FA3900 		.word	3799744
+ 772 0020 80613A00 		.word	3826048
+ 773              		.data
+ 774              		.set	.LANCHOR2,. + 0
+ 775              		.type	bFirstTime.7242, %object
+ 776              		.size	bFirstTime.7242, 1
+ 777              	bFirstTime.7242:
+ 778 0000 01       		.byte	1
+ 779              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 780              		.align	2
+ 781              	.LC0:
+ 782 0000 52494646 		.ascii	"RIFF\000"
+ 782      00
+ 783 0005 000000   		.space	3
+ 784              	.LC1:
+ 785 0008 57415645 		.ascii	"WAVE\000"
+ 785      00
+ 786 000d 000000   		.space	3
+ 787              	.LC2:
+ 788 0010 666D7420 		.ascii	"fmt \000"
+ 788      00
+ 789 0015 000000   		.space	3
+ 790              	.LC3:
+ 791 0018 64617461 		.ascii	"data\000"
+ 791      00
+ 792 001d 000000   		.bss
+ 793              		.align	2
+ 794              		.set	.LANCHOR0,. + 0
+ 795              		.type	FirstSubChunk, %object
+ 796              		.size	FirstSubChunk, 32
+ 797              	FirstSubChunk:
+ 798 0000 00000000 		.space	32
+ 798      00000000 
+ 798      00000000 
+ 798      00000000 
+ 798      00000000 
+ 799              		.type	SecondSubChunk, %object
+ 800              		.size	SecondSubChunk, 8
+ 801              	SecondSubChunk:
+ 802 0020 00000000 		.space	8
+ 802      00000000 
+ 803              		.type	currentSong, %object
+ 804              		.size	currentSong, 1
+ 805              	currentSong:
+ 806 0028 00       		.space	1
+ 807 0029 000000   		.space	3
+ 808              		.type	headerArray, %object
+ 809              		.size	headerArray, 44
+ 810              	headerArray:
+ 811 002c 00000000 		.space	44
+ 811      00000000 
+ 811      00000000 
+ 811      00000000 
+ 811      00000000 
+ 812              		.type	WaveChunk, %object
+ 813              		.size	WaveChunk, 12
+ 814              	WaveChunk:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 26
+
+
+ 815 0058 00000000 		.space	12
+ 815      00000000 
+ 815      00000000 
+ 816              		.text
+ 817              	.Letext0:
+ 818              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 819              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 820              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 821              		.file 5 ".\\CommonVariables.h"
+ 822              		.file 6 "Generated_Source\\PSoC5/SPIM.h"
+ 823              		.file 7 "Generated_Source\\PSoC5/core_cm3.h"
+ 824              		.file 8 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 825              		.section	.debug_info,"",%progbits
+ 826              	.Ldebug_info0:
+ 827 0000 98090000 		.4byte	0x998
+ 828 0004 0400     		.2byte	0x4
+ 829 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 830 000a 04       		.byte	0x4
+ 831 000b 01       		.uleb128 0x1
+ 832 000c EA030000 		.4byte	.LASF106
+ 833 0010 01       		.byte	0x1
+ 834 0011 35030000 		.4byte	.LASF107
+ 835 0015 7B000000 		.4byte	.LASF108
+ 836 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 837 001d 00000000 		.4byte	0
+ 838 0021 00000000 		.4byte	.Ldebug_line0
+ 839 0025 02       		.uleb128 0x2
+ 840 0026 01       		.byte	0x1
+ 841 0027 06       		.byte	0x6
+ 842 0028 F9010000 		.4byte	.LASF0
+ 843 002c 02       		.uleb128 0x2
+ 844 002d 01       		.byte	0x1
+ 845 002e 08       		.byte	0x8
+ 846 002f 05030000 		.4byte	.LASF1
+ 847 0033 02       		.uleb128 0x2
+ 848 0034 02       		.byte	0x2
+ 849 0035 05       		.byte	0x5
+ 850 0036 5F000000 		.4byte	.LASF2
+ 851 003a 02       		.uleb128 0x2
+ 852 003b 02       		.byte	0x2
+ 853 003c 07       		.byte	0x7
+ 854 003d 93040000 		.4byte	.LASF3
+ 855 0041 03       		.uleb128 0x3
+ 856 0042 C8050000 		.4byte	.LASF9
+ 857 0046 02       		.byte	0x2
+ 858 0047 3F       		.byte	0x3f
+ 859 0048 4C000000 		.4byte	0x4c
+ 860 004c 02       		.uleb128 0x2
+ 861 004d 04       		.byte	0x4
+ 862 004e 05       		.byte	0x5
+ 863 004f 6D020000 		.4byte	.LASF4
+ 864 0053 02       		.uleb128 0x2
+ 865 0054 04       		.byte	0x4
+ 866 0055 07       		.byte	0x7
+ 867 0056 7C030000 		.4byte	.LASF5
+ 868 005a 02       		.uleb128 0x2
+ 869 005b 08       		.byte	0x8
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 27
+
+
+ 870 005c 05       		.byte	0x5
+ 871 005d 35010000 		.4byte	.LASF6
+ 872 0061 02       		.uleb128 0x2
+ 873 0062 08       		.byte	0x8
+ 874 0063 07       		.byte	0x7
+ 875 0064 4D030000 		.4byte	.LASF7
+ 876 0068 04       		.uleb128 0x4
+ 877 0069 04       		.byte	0x4
+ 878 006a 05       		.byte	0x5
+ 879 006b 696E7400 		.ascii	"int\000"
+ 880 006f 02       		.uleb128 0x2
+ 881 0070 04       		.byte	0x4
+ 882 0071 07       		.byte	0x7
+ 883 0072 64030000 		.4byte	.LASF8
+ 884 0076 03       		.uleb128 0x3
+ 885 0077 78040000 		.4byte	.LASF10
+ 886 007b 03       		.byte	0x3
+ 887 007c 2C       		.byte	0x2c
+ 888 007d 41000000 		.4byte	0x41
+ 889 0081 03       		.uleb128 0x3
+ 890 0082 F3010000 		.4byte	.LASF11
+ 891 0086 04       		.byte	0x4
+ 892 0087 C2       		.byte	0xc2
+ 893 0088 2C000000 		.4byte	0x2c
+ 894 008c 03       		.uleb128 0x3
+ 895 008d 9E010000 		.4byte	.LASF12
+ 896 0091 04       		.byte	0x4
+ 897 0092 C3       		.byte	0xc3
+ 898 0093 3A000000 		.4byte	0x3a
+ 899 0097 03       		.uleb128 0x3
+ 900 0098 83050000 		.4byte	.LASF13
+ 901 009c 04       		.byte	0x4
+ 902 009d C4       		.byte	0xc4
+ 903 009e 53000000 		.4byte	0x53
+ 904 00a2 02       		.uleb128 0x2
+ 905 00a3 04       		.byte	0x4
+ 906 00a4 04       		.byte	0x4
+ 907 00a5 19020000 		.4byte	.LASF14
+ 908 00a9 02       		.uleb128 0x2
+ 909 00aa 08       		.byte	0x8
+ 910 00ab 04       		.byte	0x4
+ 911 00ac 55060000 		.4byte	.LASF15
+ 912 00b0 02       		.uleb128 0x2
+ 913 00b1 01       		.byte	0x1
+ 914 00b2 08       		.byte	0x8
+ 915 00b3 5A000000 		.4byte	.LASF16
+ 916 00b7 02       		.uleb128 0x2
+ 917 00b8 04       		.byte	0x4
+ 918 00b9 07       		.byte	0x7
+ 919 00ba 72000000 		.4byte	.LASF17
+ 920 00be 05       		.uleb128 0x5
+ 921 00bf 04       		.byte	0x4
+ 922 00c0 B0000000 		.4byte	0xb0
+ 923 00c4 05       		.uleb128 0x5
+ 924 00c5 04       		.byte	0x4
+ 925 00c6 CA000000 		.4byte	0xca
+ 926 00ca 06       		.uleb128 0x6
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 28
+
+
+ 927 00cb B0000000 		.4byte	0xb0
+ 928 00cf 07       		.uleb128 0x7
+ 929 00d0 81000000 		.4byte	0x81
+ 930 00d4 DF000000 		.4byte	0xdf
+ 931 00d8 08       		.uleb128 0x8
+ 932 00d9 B7000000 		.4byte	0xb7
+ 933 00dd 03       		.byte	0x3
+ 934 00de 00       		.byte	0
+ 935 00df 09       		.uleb128 0x9
+ 936 00e0 0A000000 		.4byte	.LASF41
+ 937 00e4 01       		.byte	0x1
+ 938 00e5 05       		.byte	0x5
+ 939 00e6 1D       		.byte	0x1d
+ 940 00e7 76010000 		.4byte	0x176
+ 941 00eb 0A       		.uleb128 0xa
+ 942 00ec 38020000 		.4byte	.LASF18
+ 943 00f0 00       		.sleb128 0
+ 944 00f1 0A       		.uleb128 0xa
+ 945 00f2 EF040000 		.4byte	.LASF19
+ 946 00f6 01       		.sleb128 1
+ 947 00f7 0A       		.uleb128 0xa
+ 948 00f8 E3060000 		.4byte	.LASF20
+ 949 00fc 02       		.sleb128 2
+ 950 00fd 0A       		.uleb128 0xa
+ 951 00fe B8020000 		.4byte	.LASF21
+ 952 0102 03       		.sleb128 3
+ 953 0103 0A       		.uleb128 0xa
+ 954 0104 13000000 		.4byte	.LASF22
+ 955 0108 04       		.sleb128 4
+ 956 0109 0A       		.uleb128 0xa
+ 957 010a 8F020000 		.4byte	.LASF23
+ 958 010e 05       		.sleb128 5
+ 959 010f 0A       		.uleb128 0xa
+ 960 0110 E1020000 		.4byte	.LASF24
+ 961 0114 06       		.sleb128 6
+ 962 0115 0A       		.uleb128 0xa
+ 963 0116 D8040000 		.4byte	.LASF25
+ 964 011a 07       		.sleb128 7
+ 965 011b 0A       		.uleb128 0xa
+ 966 011c 2B000000 		.4byte	.LASF26
+ 967 0120 08       		.sleb128 8
+ 968 0121 0A       		.uleb128 0xa
+ 969 0122 8A050000 		.4byte	.LASF27
+ 970 0126 09       		.sleb128 9
+ 971 0127 0A       		.uleb128 0xa
+ 972 0128 2F050000 		.4byte	.LASF28
+ 973 012c 0A       		.sleb128 10
+ 974 012d 0A       		.uleb128 0xa
+ 975 012e 5C060000 		.4byte	.LASF29
+ 976 0132 0B       		.sleb128 11
+ 977 0133 0A       		.uleb128 0xa
+ 978 0134 0F020000 		.4byte	.LASF30
+ 979 0138 0C       		.sleb128 12
+ 980 0139 0A       		.uleb128 0xa
+ 981 013a 8E030000 		.4byte	.LASF31
+ 982 013e 0D       		.sleb128 13
+ 983 013f 0A       		.uleb128 0xa
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 29
+
+
+ 984 0140 AE020000 		.4byte	.LASF32
+ 985 0144 0E       		.sleb128 14
+ 986 0145 0A       		.uleb128 0xa
+ 987 0146 05020000 		.4byte	.LASF33
+ 988 014a 0F       		.sleb128 15
+ 989 014b 0A       		.uleb128 0xa
+ 990 014c 69000000 		.4byte	.LASF34
+ 991 0150 10       		.sleb128 16
+ 992 0151 0A       		.uleb128 0xa
+ 993 0152 00000000 		.4byte	.LASF35
+ 994 0156 11       		.sleb128 17
+ 995 0157 0A       		.uleb128 0xa
+ 996 0158 64020000 		.4byte	.LASF36
+ 997 015c 12       		.sleb128 18
+ 998 015d 0A       		.uleb128 0xa
+ 999 015e FE000000 		.4byte	.LASF37
+ 1000 0162 13       		.sleb128 19
+ 1001 0163 0A       		.uleb128 0xa
+ 1002 0164 E2050000 		.4byte	.LASF38
+ 1003 0168 14       		.sleb128 20
+ 1004 0169 0A       		.uleb128 0xa
+ 1005 016a 9A030000 		.4byte	.LASF39
+ 1006 016e 15       		.sleb128 21
+ 1007 016f 0A       		.uleb128 0xa
+ 1008 0170 40020000 		.4byte	.LASF40
+ 1009 0174 16       		.sleb128 22
+ 1010 0175 00       		.byte	0
+ 1011 0176 09       		.uleb128 0x9
+ 1012 0177 C3040000 		.4byte	.LASF42
+ 1013 017b 01       		.byte	0x1
+ 1014 017c 01       		.byte	0x1
+ 1015 017d 21       		.byte	0x21
+ 1016 017e D7010000 		.4byte	0x1d7
+ 1017 0182 0A       		.uleb128 0xa
+ 1018 0183 D5060000 		.4byte	.LASF43
+ 1019 0187 00       		.sleb128 0
+ 1020 0188 0A       		.uleb128 0xa
+ 1021 0189 D2050000 		.4byte	.LASF44
+ 1022 018d 04       		.sleb128 4
+ 1023 018e 0A       		.uleb128 0xa
+ 1024 018f 30060000 		.4byte	.LASF45
+ 1025 0193 08       		.sleb128 8
+ 1026 0194 0A       		.uleb128 0xa
+ 1027 0195 B6050000 		.4byte	.LASF46
+ 1028 0199 0C       		.sleb128 12
+ 1029 019a 0A       		.uleb128 0xa
+ 1030 019b C2020000 		.4byte	.LASF47
+ 1031 019f 10       		.sleb128 16
+ 1032 01a0 0A       		.uleb128 0xa
+ 1033 01a1 AB010000 		.4byte	.LASF48
+ 1034 01a5 14       		.sleb128 20
+ 1035 01a6 0A       		.uleb128 0xa
+ 1036 01a7 A6040000 		.4byte	.LASF49
+ 1037 01ab 16       		.sleb128 22
+ 1038 01ac 0A       		.uleb128 0xa
+ 1039 01ad 09050000 		.4byte	.LASF50
+ 1040 01b1 18       		.sleb128 24
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 30
+
+
+ 1041 01b2 0A       		.uleb128 0xa
+ 1042 01b3 6A050000 		.4byte	.LASF51
+ 1043 01b7 1C       		.sleb128 28
+ 1044 01b8 0A       		.uleb128 0xa
+ 1045 01b9 D8010000 		.4byte	.LASF52
+ 1046 01bd 20       		.sleb128 32
+ 1047 01be 0A       		.uleb128 0xa
+ 1048 01bf 84060000 		.4byte	.LASF53
+ 1049 01c3 22       		.sleb128 34
+ 1050 01c4 0A       		.uleb128 0xa
+ 1051 01c5 B0060000 		.4byte	.LASF54
+ 1052 01c9 24       		.sleb128 36
+ 1053 01ca 0A       		.uleb128 0xa
+ 1054 01cb F4040000 		.4byte	.LASF55
+ 1055 01cf 28       		.sleb128 40
+ 1056 01d0 0A       		.uleb128 0xa
+ 1057 01d1 20010000 		.4byte	.LASF56
+ 1058 01d5 2C       		.sleb128 44
+ 1059 01d6 00       		.byte	0
+ 1060 01d7 0B       		.uleb128 0xb
+ 1061 01d8 0C       		.byte	0xc
+ 1062 01d9 01       		.byte	0x1
+ 1063 01da 4C       		.byte	0x4c
+ 1064 01db 03020000 		.4byte	0x203
+ 1065 01df 0C       		.uleb128 0xc
+ 1066 01e0 494400   		.ascii	"ID\000"
+ 1067 01e3 01       		.byte	0x1
+ 1068 01e4 4E       		.byte	0x4e
+ 1069 01e5 CF000000 		.4byte	0xcf
+ 1070 01e9 00       		.byte	0
+ 1071 01ea 0D       		.uleb128 0xd
+ 1072 01eb 95050000 		.4byte	.LASF57
+ 1073 01ef 01       		.byte	0x1
+ 1074 01f0 4F       		.byte	0x4f
+ 1075 01f1 97000000 		.4byte	0x97
+ 1076 01f5 04       		.byte	0x4
+ 1077 01f6 0D       		.uleb128 0xd
+ 1078 01f7 31020000 		.4byte	.LASF58
+ 1079 01fb 01       		.byte	0x1
+ 1080 01fc 50       		.byte	0x50
+ 1081 01fd CF000000 		.4byte	0xcf
+ 1082 0201 08       		.byte	0x8
+ 1083 0202 00       		.byte	0
+ 1084 0203 0B       		.uleb128 0xb
+ 1085 0204 20       		.byte	0x20
+ 1086 0205 01       		.byte	0x1
+ 1087 0206 53       		.byte	0x53
+ 1088 0207 6B020000 		.4byte	0x26b
+ 1089 020b 0C       		.uleb128 0xc
+ 1090 020c 494400   		.ascii	"ID\000"
+ 1091 020f 01       		.byte	0x1
+ 1092 0210 55       		.byte	0x55
+ 1093 0211 CF000000 		.4byte	0xcf
+ 1094 0215 00       		.byte	0
+ 1095 0216 0D       		.uleb128 0xd
+ 1096 0217 95050000 		.4byte	.LASF57
+ 1097 021b 01       		.byte	0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 31
+
+
+ 1098 021c 56       		.byte	0x56
+ 1099 021d 97000000 		.4byte	0x97
+ 1100 0221 04       		.byte	0x4
+ 1101 0222 0D       		.uleb128 0xd
+ 1102 0223 94020000 		.4byte	.LASF59
+ 1103 0227 01       		.byte	0x1
+ 1104 0228 57       		.byte	0x57
+ 1105 0229 97000000 		.4byte	0x97
+ 1106 022d 08       		.byte	0x8
+ 1107 022e 0D       		.uleb128 0xd
+ 1108 022f A3060000 		.4byte	.LASF60
+ 1109 0233 01       		.byte	0x1
+ 1110 0234 58       		.byte	0x58
+ 1111 0235 97000000 		.4byte	0x97
+ 1112 0239 0C       		.byte	0xc
+ 1113 023a 0D       		.uleb128 0xd
+ 1114 023b E4040000 		.4byte	.LASF61
+ 1115 023f 01       		.byte	0x1
+ 1116 0240 59       		.byte	0x59
+ 1117 0241 97000000 		.4byte	0x97
+ 1118 0245 10       		.byte	0x10
+ 1119 0246 0D       		.uleb128 0xd
+ 1120 0247 44030000 		.4byte	.LASF62
+ 1121 024b 01       		.byte	0x1
+ 1122 024c 5A       		.byte	0x5a
+ 1123 024d 97000000 		.4byte	0x97
+ 1124 0251 14       		.byte	0x14
+ 1125 0252 0D       		.uleb128 0xd
+ 1126 0253 24050000 		.4byte	.LASF63
+ 1127 0257 01       		.byte	0x1
+ 1128 0258 5B       		.byte	0x5b
+ 1129 0259 97000000 		.4byte	0x97
+ 1130 025d 18       		.byte	0x18
+ 1131 025e 0D       		.uleb128 0xd
+ 1132 025f 4A050000 		.4byte	.LASF64
+ 1133 0263 01       		.byte	0x1
+ 1134 0264 5C       		.byte	0x5c
+ 1135 0265 97000000 		.4byte	0x97
+ 1136 0269 1C       		.byte	0x1c
+ 1137 026a 00       		.byte	0
+ 1138 026b 0B       		.uleb128 0xb
+ 1139 026c 08       		.byte	0x8
+ 1140 026d 01       		.byte	0x1
+ 1141 026e 5F       		.byte	0x5f
+ 1142 026f 8B020000 		.4byte	0x28b
+ 1143 0273 0C       		.uleb128 0xc
+ 1144 0274 494400   		.ascii	"ID\000"
+ 1145 0277 01       		.byte	0x1
+ 1146 0278 61       		.byte	0x61
+ 1147 0279 CF000000 		.4byte	0xcf
+ 1148 027d 00       		.byte	0
+ 1149 027e 0D       		.uleb128 0xd
+ 1150 027f 95050000 		.4byte	.LASF57
+ 1151 0283 01       		.byte	0x1
+ 1152 0284 62       		.byte	0x62
+ 1153 0285 97000000 		.4byte	0x97
+ 1154 0289 04       		.byte	0x4
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 32
+
+
+ 1155 028a 00       		.byte	0
+ 1156 028b 0E       		.uleb128 0xe
+ 1157 028c 42060000 		.4byte	.LASF69
+ 1158 0290 01       		.byte	0x1
+ 1159 0291 E601     		.2byte	0x1e6
+ 1160 0293 97000000 		.4byte	0x97
+ 1161 0297 00000000 		.4byte	.LFB73
+ 1162 029b 20000000 		.4byte	.LFE73-.LFB73
+ 1163 029f 01       		.uleb128 0x1
+ 1164 02a0 9C       		.byte	0x9c
+ 1165 02a1 E4020000 		.4byte	0x2e4
+ 1166 02a5 0F       		.uleb128 0xf
+ 1167 02a6 9A050000 		.4byte	.LASF65
+ 1168 02aa 01       		.byte	0x1
+ 1169 02ab E601     		.2byte	0x1e6
+ 1170 02ad 97000000 		.4byte	0x97
+ 1171 02b1 00000000 		.4byte	.LLST0
+ 1172 02b5 10       		.uleb128 0x10
+ 1173 02b6 18060000 		.4byte	.LASF66
+ 1174 02ba 01       		.byte	0x1
+ 1175 02bb E601     		.2byte	0x1e6
+ 1176 02bd 81000000 		.4byte	0x81
+ 1177 02c1 01       		.uleb128 0x1
+ 1178 02c2 51       		.byte	0x51
+ 1179 02c3 11       		.uleb128 0x11
+ 1180 02c4 A5010000 		.4byte	.LASF67
+ 1181 02c8 01       		.byte	0x1
+ 1182 02c9 E801     		.2byte	0x1e8
+ 1183 02cb 81000000 		.4byte	0x81
+ 1184 02cf 1E000000 		.4byte	.LLST1
+ 1185 02d3 11       		.uleb128 0x11
+ 1186 02d4 09060000 		.4byte	.LASF68
+ 1187 02d8 01       		.byte	0x1
+ 1188 02d9 E901     		.2byte	0x1e9
+ 1189 02db 97000000 		.4byte	0x97
+ 1190 02df 48000000 		.4byte	.LLST2
+ 1191 02e3 00       		.byte	0
+ 1192 02e4 0E       		.uleb128 0xe
+ 1193 02e5 D2030000 		.4byte	.LASF70
+ 1194 02e9 01       		.byte	0x1
+ 1195 02ea BF01     		.2byte	0x1bf
+ 1196 02ec 81000000 		.4byte	0x81
+ 1197 02f0 00000000 		.4byte	.LFB72
+ 1198 02f4 44000000 		.4byte	.LFE72-.LFB72
+ 1199 02f8 01       		.uleb128 0x1
+ 1200 02f9 9C       		.byte	0x9c
+ 1201 02fa 78030000 		.4byte	0x378
+ 1202 02fe 0F       		.uleb128 0xf
+ 1203 02ff 62010000 		.4byte	.LASF71
+ 1204 0303 01       		.byte	0x1
+ 1205 0304 BF01     		.2byte	0x1bf
+ 1206 0306 78030000 		.4byte	0x378
+ 1207 030a 76000000 		.4byte	.LLST3
+ 1208 030e 0F       		.uleb128 0xf
+ 1209 030f 4B000000 		.4byte	.LASF72
+ 1210 0313 01       		.byte	0x1
+ 1211 0314 BF01     		.2byte	0x1bf
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 33
+
+
+ 1212 0316 7E030000 		.4byte	0x37e
+ 1213 031a D9000000 		.4byte	.LLST4
+ 1214 031e 0F       		.uleb128 0xf
+ 1215 031f 55010000 		.4byte	.LASF73
+ 1216 0323 01       		.byte	0x1
+ 1217 0324 BF01     		.2byte	0x1bf
+ 1218 0326 8C000000 		.4byte	0x8c
+ 1219 032a 13010000 		.4byte	.LLST5
+ 1220 032e 0F       		.uleb128 0xf
+ 1221 032f 18060000 		.4byte	.LASF66
+ 1222 0333 01       		.byte	0x1
+ 1223 0334 BF01     		.2byte	0x1bf
+ 1224 0336 81000000 		.4byte	0x81
+ 1225 033a 4D010000 		.4byte	.LLST6
+ 1226 033e 11       		.uleb128 0x11
+ 1227 033f A5010000 		.4byte	.LASF67
+ 1228 0343 01       		.byte	0x1
+ 1229 0344 C101     		.2byte	0x1c1
+ 1230 0346 81000000 		.4byte	0x81
+ 1231 034a 87010000 		.4byte	.LLST7
+ 1232 034e 11       		.uleb128 0x11
+ 1233 034f 9A050000 		.4byte	.LASF65
+ 1234 0353 01       		.byte	0x1
+ 1235 0354 C201     		.2byte	0x1c2
+ 1236 0356 97000000 		.4byte	0x97
+ 1237 035a BD010000 		.4byte	.LLST8
+ 1238 035e 11       		.uleb128 0x11
+ 1239 035f 09060000 		.4byte	.LASF68
+ 1240 0363 01       		.byte	0x1
+ 1241 0364 C301     		.2byte	0x1c3
+ 1242 0366 97000000 		.4byte	0x97
+ 1243 036a F7010000 		.4byte	.LLST9
+ 1244 036e 12       		.uleb128 0x12
+ 1245 036f 28000000 		.4byte	.LVL16
+ 1246 0373 8B020000 		.4byte	0x28b
+ 1247 0377 00       		.byte	0
+ 1248 0378 05       		.uleb128 0x5
+ 1249 0379 04       		.byte	0x4
+ 1250 037a 97000000 		.4byte	0x97
+ 1251 037e 05       		.uleb128 0x5
+ 1252 037f 04       		.byte	0x4
+ 1253 0380 81000000 		.4byte	0x81
+ 1254 0384 0E       		.uleb128 0xe
+ 1255 0385 89010000 		.4byte	.LASF74
+ 1256 0389 01       		.byte	0x1
+ 1257 038a 9601     		.2byte	0x196
+ 1258 038c 81000000 		.4byte	0x81
+ 1259 0390 00000000 		.4byte	.LFB71
+ 1260 0394 64000000 		.4byte	.LFE71-.LFB71
+ 1261 0398 01       		.uleb128 0x1
+ 1262 0399 9C       		.byte	0x9c
+ 1263 039a 15040000 		.4byte	0x415
+ 1264 039e 0F       		.uleb128 0xf
+ 1265 039f 4A020000 		.4byte	.LASF75
+ 1266 03a3 01       		.byte	0x1
+ 1267 03a4 9601     		.2byte	0x196
+ 1268 03a6 7E030000 		.4byte	0x37e
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 34
+
+
+ 1269 03aa 39020000 		.4byte	.LLST10
+ 1270 03ae 0F       		.uleb128 0xf
+ 1271 03af 4B000000 		.4byte	.LASF72
+ 1272 03b3 01       		.byte	0x1
+ 1273 03b4 9601     		.2byte	0x196
+ 1274 03b6 7E030000 		.4byte	0x37e
+ 1275 03ba B2020000 		.4byte	.LLST11
+ 1276 03be 0F       		.uleb128 0xf
+ 1277 03bf A0020000 		.4byte	.LASF76
+ 1278 03c3 01       		.byte	0x1
+ 1279 03c4 9601     		.2byte	0x196
+ 1280 03c6 BE000000 		.4byte	0xbe
+ 1281 03ca F4020000 		.4byte	.LLST12
+ 1282 03ce 0F       		.uleb128 0xf
+ 1283 03cf FF050000 		.4byte	.LASF77
+ 1284 03d3 01       		.byte	0x1
+ 1285 03d4 9601     		.2byte	0x196
+ 1286 03d6 81000000 		.4byte	0x81
+ 1287 03da 2E030000 		.4byte	.LLST13
+ 1288 03de 13       		.uleb128 0x13
+ 1289 03df AC050000 		.4byte	.LASF78
+ 1290 03e3 01       		.byte	0x1
+ 1291 03e4 9801     		.2byte	0x198
+ 1292 03e6 15040000 		.4byte	0x415
+ 1293 03ea 02       		.uleb128 0x2
+ 1294 03eb 91       		.byte	0x91
+ 1295 03ec 68       		.sleb128 -24
+ 1296 03ed 11       		.uleb128 0x11
+ 1297 03ee A5010000 		.4byte	.LASF67
+ 1298 03f2 01       		.byte	0x1
+ 1299 03f3 9901     		.2byte	0x199
+ 1300 03f5 81000000 		.4byte	0x81
+ 1301 03f9 68030000 		.4byte	.LLST14
+ 1302 03fd 14       		.uleb128 0x14
+ 1303 03fe 38000000 		.4byte	.LVL33
+ 1304 0402 5E090000 		.4byte	0x95e
+ 1305 0406 15       		.uleb128 0x15
+ 1306 0407 01       		.uleb128 0x1
+ 1307 0408 51       		.byte	0x51
+ 1308 0409 03       		.uleb128 0x3
+ 1309 040a F3       		.byte	0xf3
+ 1310 040b 01       		.uleb128 0x1
+ 1311 040c 52       		.byte	0x52
+ 1312 040d 15       		.uleb128 0x15
+ 1313 040e 01       		.uleb128 0x1
+ 1314 040f 50       		.byte	0x50
+ 1315 0410 02       		.uleb128 0x2
+ 1316 0411 7D       		.byte	0x7d
+ 1317 0412 00       		.sleb128 0
+ 1318 0413 00       		.byte	0
+ 1319 0414 00       		.byte	0
+ 1320 0415 07       		.uleb128 0x7
+ 1321 0416 81000000 		.4byte	0x81
+ 1322 041a 25040000 		.4byte	0x425
+ 1323 041e 08       		.uleb128 0x8
+ 1324 041f B7000000 		.4byte	0xb7
+ 1325 0423 04       		.byte	0x4
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 35
+
+
+ 1326 0424 00       		.byte	0
+ 1327 0425 16       		.uleb128 0x16
+ 1328 0426 3A050000 		.4byte	.LASF79
+ 1329 042a 01       		.byte	0x1
+ 1330 042b 7F       		.byte	0x7f
+ 1331 042c 81000000 		.4byte	0x81
+ 1332 0430 00000000 		.4byte	.LFB63
+ 1333 0434 0C000000 		.4byte	.LFE63-.LFB63
+ 1334 0438 01       		.uleb128 0x1
+ 1335 0439 9C       		.byte	0x9c
+ 1336 043a 16       		.uleb128 0x16
+ 1337 043b 70010000 		.4byte	.LASF80
+ 1338 043f 01       		.byte	0x1
+ 1339 0440 92       		.byte	0x92
+ 1340 0441 81000000 		.4byte	0x81
+ 1341 0445 00000000 		.4byte	.LFB64
+ 1342 0449 0C000000 		.4byte	.LFE64-.LFB64
+ 1343 044d 01       		.uleb128 0x1
+ 1344 044e 9C       		.byte	0x9c
+ 1345 044f 16       		.uleb128 0x16
+ 1346 0450 10010000 		.4byte	.LASF81
+ 1347 0454 01       		.byte	0x1
+ 1348 0455 A5       		.byte	0xa5
+ 1349 0456 97000000 		.4byte	0x97
+ 1350 045a 00000000 		.4byte	.LFB65
+ 1351 045e 0C000000 		.4byte	.LFE65-.LFB65
+ 1352 0462 01       		.uleb128 0x1
+ 1353 0463 9C       		.byte	0x9c
+ 1354 0464 16       		.uleb128 0x16
+ 1355 0465 F9020000 		.4byte	.LASF82
+ 1356 0469 01       		.byte	0x1
+ 1357 046a B8       		.byte	0xb8
+ 1358 046b 97000000 		.4byte	0x97
+ 1359 046f 00000000 		.4byte	.LFB66
+ 1360 0473 0C000000 		.4byte	.LFE66-.LFB66
+ 1361 0477 01       		.uleb128 0x1
+ 1362 0478 9C       		.byte	0x9c
+ 1363 0479 17       		.uleb128 0x17
+ 1364 047a 54020000 		.4byte	.LASF89
+ 1365 047e 01       		.byte	0x1
+ 1366 047f CB       		.byte	0xcb
+ 1367 0480 81000000 		.4byte	0x81
+ 1368 0484 00000000 		.4byte	.LFB67
+ 1369 0488 70000000 		.4byte	.LFE67-.LFB67
+ 1370 048c 01       		.uleb128 0x1
+ 1371 048d 9C       		.byte	0x9c
+ 1372 048e 5F050000 		.4byte	0x55f
+ 1373 0492 18       		.uleb128 0x18
+ 1374 0493 13030000 		.4byte	.LASF83
+ 1375 0497 01       		.byte	0x1
+ 1376 0498 CB       		.byte	0xcb
+ 1377 0499 97000000 		.4byte	0x97
+ 1378 049d B4030000 		.4byte	.LLST15
+ 1379 04a1 19       		.uleb128 0x19
+ 1380 04a2 F4050000 		.4byte	.LASF84
+ 1381 04a6 01       		.byte	0x1
+ 1382 04a7 CD       		.byte	0xcd
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 36
+
+
+ 1383 04a8 81000000 		.4byte	0x81
+ 1384 04ac 05       		.uleb128 0x5
+ 1385 04ad 03       		.byte	0x3
+ 1386 04ae 00000000 		.4byte	bFirstTime.7242
+ 1387 04b2 1A       		.uleb128 0x1a
+ 1388 04b3 D6020000 		.4byte	.LASF85
+ 1389 04b7 01       		.byte	0x1
+ 1390 04b8 CE       		.byte	0xce
+ 1391 04b9 81000000 		.4byte	0x81
+ 1392 04bd E0030000 		.4byte	.LLST16
+ 1393 04c1 1A       		.uleb128 0x1a
+ 1394 04c2 AD030000 		.4byte	.LASF86
+ 1395 04c6 01       		.byte	0x1
+ 1396 04c7 CF       		.byte	0xcf
+ 1397 04c8 81000000 		.4byte	0x81
+ 1398 04cc FF030000 		.4byte	.LLST17
+ 1399 04d0 1A       		.uleb128 0x1a
+ 1400 04d1 71030000 		.4byte	.LASF87
+ 1401 04d5 01       		.byte	0x1
+ 1402 04d6 D0       		.byte	0xd0
+ 1403 04d7 81000000 		.4byte	0x81
+ 1404 04db 1E040000 		.4byte	.LLST18
+ 1405 04df 1A       		.uleb128 0x1a
+ 1406 04e0 20030000 		.4byte	.LASF88
+ 1407 04e4 01       		.byte	0x1
+ 1408 04e5 D1       		.byte	0xd1
+ 1409 04e6 81000000 		.4byte	0x81
+ 1410 04ea 3D040000 		.4byte	.LLST19
+ 1411 04ee 12       		.uleb128 0x12
+ 1412 04ef 22000000 		.4byte	.LVL54
+ 1413 04f3 78090000 		.4byte	0x978
+ 1414 04f7 12       		.uleb128 0x12
+ 1415 04f8 3C000000 		.4byte	.LVL55
+ 1416 04fc 83090000 		.4byte	0x983
+ 1417 0500 1B       		.uleb128 0x1b
+ 1418 0501 44000000 		.4byte	.LVL57
+ 1419 0505 8E090000 		.4byte	0x98e
+ 1420 0509 13050000 		.4byte	0x513
+ 1421 050d 15       		.uleb128 0x15
+ 1422 050e 01       		.uleb128 0x1
+ 1423 050f 50       		.byte	0x50
+ 1424 0510 01       		.uleb128 0x1
+ 1425 0511 33       		.byte	0x33
+ 1426 0512 00       		.byte	0
+ 1427 0513 1B       		.uleb128 0x1b
+ 1428 0514 4A000000 		.4byte	.LVL58
+ 1429 0518 8E090000 		.4byte	0x98e
+ 1430 051c 27050000 		.4byte	0x527
+ 1431 0520 15       		.uleb128 0x15
+ 1432 0521 01       		.uleb128 0x1
+ 1433 0522 50       		.byte	0x50
+ 1434 0523 02       		.uleb128 0x2
+ 1435 0524 77       		.byte	0x77
+ 1436 0525 00       		.sleb128 0
+ 1437 0526 00       		.byte	0
+ 1438 0527 1B       		.uleb128 0x1b
+ 1439 0528 50000000 		.4byte	.LVL59
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 37
+
+
+ 1440 052c 8E090000 		.4byte	0x98e
+ 1441 0530 3B050000 		.4byte	0x53b
+ 1442 0534 15       		.uleb128 0x15
+ 1443 0535 01       		.uleb128 0x1
+ 1444 0536 50       		.byte	0x50
+ 1445 0537 02       		.uleb128 0x2
+ 1446 0538 76       		.byte	0x76
+ 1447 0539 00       		.sleb128 0
+ 1448 053a 00       		.byte	0
+ 1449 053b 1B       		.uleb128 0x1b
+ 1450 053c 56000000 		.4byte	.LVL60
+ 1451 0540 8E090000 		.4byte	0x98e
+ 1452 0544 4F050000 		.4byte	0x54f
+ 1453 0548 15       		.uleb128 0x15
+ 1454 0549 01       		.uleb128 0x1
+ 1455 054a 50       		.byte	0x50
+ 1456 054b 02       		.uleb128 0x2
+ 1457 054c 74       		.byte	0x74
+ 1458 054d 00       		.sleb128 0
+ 1459 054e 00       		.byte	0
+ 1460 054f 14       		.uleb128 0x14
+ 1461 0550 5C000000 		.4byte	.LVL61
+ 1462 0554 8E090000 		.4byte	0x98e
+ 1463 0558 15       		.uleb128 0x15
+ 1464 0559 01       		.uleb128 0x1
+ 1465 055a 50       		.byte	0x50
+ 1466 055b 01       		.uleb128 0x1
+ 1467 055c 30       		.byte	0x30
+ 1468 055d 00       		.byte	0
+ 1469 055e 00       		.byte	0
+ 1470 055f 17       		.uleb128 0x17
+ 1471 0560 43010000 		.4byte	.LASF90
+ 1472 0564 01       		.byte	0x1
+ 1473 0565 F8       		.byte	0xf8
+ 1474 0566 81000000 		.4byte	0x81
+ 1475 056a 00000000 		.4byte	.LFB68
+ 1476 056e A0010000 		.4byte	.LFE68-.LFB68
+ 1477 0572 01       		.uleb128 0x1
+ 1478 0573 9C       		.byte	0x9c
+ 1479 0574 7A080000 		.4byte	0x87a
+ 1480 0578 18       		.uleb128 0x18
+ 1481 0579 34000000 		.4byte	.LASF91
+ 1482 057d 01       		.byte	0x1
+ 1483 057e F8       		.byte	0xf8
+ 1484 057f DF000000 		.4byte	0xdf
+ 1485 0583 75040000 		.4byte	.LLST20
+ 1486 0587 1A       		.uleb128 0x1a
+ 1487 0588 76020000 		.4byte	.LASF92
+ 1488 058c 01       		.byte	0x1
+ 1489 058d FA       		.byte	0xfa
+ 1490 058e 97000000 		.4byte	0x97
+ 1491 0592 BE040000 		.4byte	.LLST21
+ 1492 0596 1A       		.uleb128 0x1a
+ 1493 0597 D6020000 		.4byte	.LASF85
+ 1494 059b 01       		.byte	0x1
+ 1495 059c FB       		.byte	0xfb
+ 1496 059d 81000000 		.4byte	0x81
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 38
+
+
+ 1497 05a1 FA040000 		.4byte	.LLST22
+ 1498 05a5 1A       		.uleb128 0x1a
+ 1499 05a6 AD030000 		.4byte	.LASF86
+ 1500 05aa 01       		.byte	0x1
+ 1501 05ab FC       		.byte	0xfc
+ 1502 05ac 81000000 		.4byte	0x81
+ 1503 05b0 30050000 		.4byte	.LLST23
+ 1504 05b4 1A       		.uleb128 0x1a
+ 1505 05b5 71030000 		.4byte	.LASF87
+ 1506 05b9 01       		.byte	0x1
+ 1507 05ba FD       		.byte	0xfd
+ 1508 05bb 81000000 		.4byte	0x81
+ 1509 05bf 66050000 		.4byte	.LLST24
+ 1510 05c3 1A       		.uleb128 0x1a
+ 1511 05c4 A5010000 		.4byte	.LASF67
+ 1512 05c8 01       		.byte	0x1
+ 1513 05c9 FE       		.byte	0xfe
+ 1514 05ca 81000000 		.4byte	0x81
+ 1515 05ce 9C050000 		.4byte	.LLST25
+ 1516 05d2 1B       		.uleb128 0x1b
+ 1517 05d3 30000000 		.4byte	.LVL73
+ 1518 05d7 8E090000 		.4byte	0x98e
+ 1519 05db E5050000 		.4byte	0x5e5
+ 1520 05df 15       		.uleb128 0x15
+ 1521 05e0 01       		.uleb128 0x1
+ 1522 05e1 50       		.byte	0x50
+ 1523 05e2 01       		.uleb128 0x1
+ 1524 05e3 33       		.byte	0x33
+ 1525 05e4 00       		.byte	0
+ 1526 05e5 1B       		.uleb128 0x1b
+ 1527 05e6 36000000 		.4byte	.LVL74
+ 1528 05ea 8E090000 		.4byte	0x98e
+ 1529 05ee F9050000 		.4byte	0x5f9
+ 1530 05f2 15       		.uleb128 0x15
+ 1531 05f3 01       		.uleb128 0x1
+ 1532 05f4 50       		.byte	0x50
+ 1533 05f5 02       		.uleb128 0x2
+ 1534 05f6 77       		.byte	0x77
+ 1535 05f7 00       		.sleb128 0
+ 1536 05f8 00       		.byte	0
+ 1537 05f9 1B       		.uleb128 0x1b
+ 1538 05fa 3C000000 		.4byte	.LVL75
+ 1539 05fe 8E090000 		.4byte	0x98e
+ 1540 0602 0D060000 		.4byte	0x60d
+ 1541 0606 15       		.uleb128 0x15
+ 1542 0607 01       		.uleb128 0x1
+ 1543 0608 50       		.byte	0x50
+ 1544 0609 02       		.uleb128 0x2
+ 1545 060a 76       		.byte	0x76
+ 1546 060b 00       		.sleb128 0
+ 1547 060c 00       		.byte	0
+ 1548 060d 1B       		.uleb128 0x1b
+ 1549 060e 44000000 		.4byte	.LVL76
+ 1550 0612 8E090000 		.4byte	0x98e
+ 1551 0616 24060000 		.4byte	0x624
+ 1552 061a 15       		.uleb128 0x15
+ 1553 061b 01       		.uleb128 0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 39
+
+
+ 1554 061c 50       		.byte	0x50
+ 1555 061d 05       		.uleb128 0x5
+ 1556 061e 75       		.byte	0x75
+ 1557 061f 00       		.sleb128 0
+ 1558 0620 74       		.byte	0x74
+ 1559 0621 00       		.sleb128 0
+ 1560 0622 22       		.byte	0x22
+ 1561 0623 00       		.byte	0
+ 1562 0624 1B       		.uleb128 0x1b
+ 1563 0625 4A000000 		.4byte	.LVL77
+ 1564 0629 8E090000 		.4byte	0x98e
+ 1565 062d 37060000 		.4byte	0x637
+ 1566 0631 15       		.uleb128 0x15
+ 1567 0632 01       		.uleb128 0x1
+ 1568 0633 50       		.byte	0x50
+ 1569 0634 01       		.uleb128 0x1
+ 1570 0635 30       		.byte	0x30
+ 1571 0636 00       		.byte	0
+ 1572 0637 12       		.uleb128 0x12
+ 1573 0638 4E000000 		.4byte	.LVL78
+ 1574 063c 78090000 		.4byte	0x978
+ 1575 0640 12       		.uleb128 0x12
+ 1576 0641 58000000 		.4byte	.LVL79
+ 1577 0645 83090000 		.4byte	0x983
+ 1578 0649 1B       		.uleb128 0x1b
+ 1579 064a 78000000 		.4byte	.LVL82
+ 1580 064e 84030000 		.4byte	0x384
+ 1581 0652 77060000 		.4byte	0x677
+ 1582 0656 15       		.uleb128 0x15
+ 1583 0657 01       		.uleb128 0x1
+ 1584 0658 53       		.byte	0x53
+ 1585 0659 01       		.uleb128 0x1
+ 1586 065a 34       		.byte	0x34
+ 1587 065b 15       		.uleb128 0x15
+ 1588 065c 01       		.uleb128 0x1
+ 1589 065d 52       		.byte	0x52
+ 1590 065e 05       		.uleb128 0x5
+ 1591 065f 03       		.byte	0x3
+ 1592 0660 00000000 		.4byte	.LC0
+ 1593 0664 15       		.uleb128 0x15
+ 1594 0665 01       		.uleb128 0x1
+ 1595 0666 51       		.byte	0x51
+ 1596 0667 05       		.uleb128 0x5
+ 1597 0668 03       		.byte	0x3
+ 1598 0669 2C000000 		.4byte	.LANCHOR0+44
+ 1599 066d 15       		.uleb128 0x15
+ 1600 066e 01       		.uleb128 0x1
+ 1601 066f 50       		.byte	0x50
+ 1602 0670 05       		.uleb128 0x5
+ 1603 0671 03       		.byte	0x3
+ 1604 0672 58000000 		.4byte	.LANCHOR0+88
+ 1605 0676 00       		.byte	0
+ 1606 0677 1B       		.uleb128 0x1b
+ 1607 0678 90000000 		.4byte	.LVL83
+ 1608 067c E4020000 		.4byte	0x2e4
+ 1609 0680 A1060000 		.4byte	0x6a1
+ 1610 0684 15       		.uleb128 0x15
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 40
+
+
+ 1611 0685 01       		.uleb128 0x1
+ 1612 0686 53       		.byte	0x53
+ 1613 0687 01       		.uleb128 0x1
+ 1614 0688 34       		.byte	0x34
+ 1615 0689 15       		.uleb128 0x15
+ 1616 068a 01       		.uleb128 0x1
+ 1617 068b 52       		.byte	0x52
+ 1618 068c 01       		.uleb128 0x1
+ 1619 068d 30       		.byte	0x30
+ 1620 068e 15       		.uleb128 0x15
+ 1621 068f 01       		.uleb128 0x1
+ 1622 0690 51       		.byte	0x51
+ 1623 0691 05       		.uleb128 0x5
+ 1624 0692 03       		.byte	0x3
+ 1625 0693 30000000 		.4byte	.LANCHOR0+48
+ 1626 0697 15       		.uleb128 0x15
+ 1627 0698 01       		.uleb128 0x1
+ 1628 0699 50       		.byte	0x50
+ 1629 069a 05       		.uleb128 0x5
+ 1630 069b 03       		.byte	0x3
+ 1631 069c 5C000000 		.4byte	.LANCHOR0+92
+ 1632 06a0 00       		.byte	0
+ 1633 06a1 1B       		.uleb128 0x1b
+ 1634 06a2 A6000000 		.4byte	.LVL84
+ 1635 06a6 84030000 		.4byte	0x384
+ 1636 06aa CF060000 		.4byte	0x6cf
+ 1637 06ae 15       		.uleb128 0x15
+ 1638 06af 01       		.uleb128 0x1
+ 1639 06b0 53       		.byte	0x53
+ 1640 06b1 01       		.uleb128 0x1
+ 1641 06b2 34       		.byte	0x34
+ 1642 06b3 15       		.uleb128 0x15
+ 1643 06b4 01       		.uleb128 0x1
+ 1644 06b5 52       		.byte	0x52
+ 1645 06b6 05       		.uleb128 0x5
+ 1646 06b7 03       		.byte	0x3
+ 1647 06b8 08000000 		.4byte	.LC1
+ 1648 06bc 15       		.uleb128 0x15
+ 1649 06bd 01       		.uleb128 0x1
+ 1650 06be 51       		.byte	0x51
+ 1651 06bf 05       		.uleb128 0x5
+ 1652 06c0 03       		.byte	0x3
+ 1653 06c1 34000000 		.4byte	.LANCHOR0+52
+ 1654 06c5 15       		.uleb128 0x15
+ 1655 06c6 01       		.uleb128 0x1
+ 1656 06c7 50       		.byte	0x50
+ 1657 06c8 05       		.uleb128 0x5
+ 1658 06c9 03       		.byte	0x3
+ 1659 06ca 60000000 		.4byte	.LANCHOR0+96
+ 1660 06ce 00       		.byte	0
+ 1661 06cf 1B       		.uleb128 0x1b
+ 1662 06d0 BA000000 		.4byte	.LVL85
+ 1663 06d4 84030000 		.4byte	0x384
+ 1664 06d8 FD060000 		.4byte	0x6fd
+ 1665 06dc 15       		.uleb128 0x15
+ 1666 06dd 01       		.uleb128 0x1
+ 1667 06de 53       		.byte	0x53
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 41
+
+
+ 1668 06df 01       		.uleb128 0x1
+ 1669 06e0 34       		.byte	0x34
+ 1670 06e1 15       		.uleb128 0x15
+ 1671 06e2 01       		.uleb128 0x1
+ 1672 06e3 52       		.byte	0x52
+ 1673 06e4 05       		.uleb128 0x5
+ 1674 06e5 03       		.byte	0x3
+ 1675 06e6 10000000 		.4byte	.LC2
+ 1676 06ea 15       		.uleb128 0x15
+ 1677 06eb 01       		.uleb128 0x1
+ 1678 06ec 51       		.byte	0x51
+ 1679 06ed 05       		.uleb128 0x5
+ 1680 06ee 03       		.byte	0x3
+ 1681 06ef 38000000 		.4byte	.LANCHOR0+56
+ 1682 06f3 15       		.uleb128 0x15
+ 1683 06f4 01       		.uleb128 0x1
+ 1684 06f5 50       		.byte	0x50
+ 1685 06f6 05       		.uleb128 0x5
+ 1686 06f7 03       		.byte	0x3
+ 1687 06f8 00000000 		.4byte	.LANCHOR0
+ 1688 06fc 00       		.byte	0
+ 1689 06fd 1B       		.uleb128 0x1b
+ 1690 06fe CE000000 		.4byte	.LVL86
+ 1691 0702 E4020000 		.4byte	0x2e4
+ 1692 0706 27070000 		.4byte	0x727
+ 1693 070a 15       		.uleb128 0x15
+ 1694 070b 01       		.uleb128 0x1
+ 1695 070c 53       		.byte	0x53
+ 1696 070d 01       		.uleb128 0x1
+ 1697 070e 34       		.byte	0x34
+ 1698 070f 15       		.uleb128 0x15
+ 1699 0710 01       		.uleb128 0x1
+ 1700 0711 52       		.byte	0x52
+ 1701 0712 01       		.uleb128 0x1
+ 1702 0713 40       		.byte	0x40
+ 1703 0714 15       		.uleb128 0x15
+ 1704 0715 01       		.uleb128 0x1
+ 1705 0716 51       		.byte	0x51
+ 1706 0717 05       		.uleb128 0x5
+ 1707 0718 03       		.byte	0x3
+ 1708 0719 3C000000 		.4byte	.LANCHOR0+60
+ 1709 071d 15       		.uleb128 0x15
+ 1710 071e 01       		.uleb128 0x1
+ 1711 071f 50       		.byte	0x50
+ 1712 0720 05       		.uleb128 0x5
+ 1713 0721 03       		.byte	0x3
+ 1714 0722 04000000 		.4byte	.LANCHOR0+4
+ 1715 0726 00       		.byte	0
+ 1716 0727 1B       		.uleb128 0x1b
+ 1717 0728 E4000000 		.4byte	.LVL87
+ 1718 072c E4020000 		.4byte	0x2e4
+ 1719 0730 51070000 		.4byte	0x751
+ 1720 0734 15       		.uleb128 0x15
+ 1721 0735 01       		.uleb128 0x1
+ 1722 0736 53       		.byte	0x53
+ 1723 0737 01       		.uleb128 0x1
+ 1724 0738 32       		.byte	0x32
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 42
+
+
+ 1725 0739 15       		.uleb128 0x15
+ 1726 073a 01       		.uleb128 0x1
+ 1727 073b 52       		.byte	0x52
+ 1728 073c 01       		.uleb128 0x1
+ 1729 073d 31       		.byte	0x31
+ 1730 073e 15       		.uleb128 0x15
+ 1731 073f 01       		.uleb128 0x1
+ 1732 0740 51       		.byte	0x51
+ 1733 0741 05       		.uleb128 0x5
+ 1734 0742 03       		.byte	0x3
+ 1735 0743 40000000 		.4byte	.LANCHOR0+64
+ 1736 0747 15       		.uleb128 0x15
+ 1737 0748 01       		.uleb128 0x1
+ 1738 0749 50       		.byte	0x50
+ 1739 074a 05       		.uleb128 0x5
+ 1740 074b 03       		.byte	0x3
+ 1741 074c 08000000 		.4byte	.LANCHOR0+8
+ 1742 0750 00       		.byte	0
+ 1743 0751 1B       		.uleb128 0x1b
+ 1744 0752 FA000000 		.4byte	.LVL88
+ 1745 0756 E4020000 		.4byte	0x2e4
+ 1746 075a 7B070000 		.4byte	0x77b
+ 1747 075e 15       		.uleb128 0x15
+ 1748 075f 01       		.uleb128 0x1
+ 1749 0760 53       		.byte	0x53
+ 1750 0761 01       		.uleb128 0x1
+ 1751 0762 32       		.byte	0x32
+ 1752 0763 15       		.uleb128 0x15
+ 1753 0764 01       		.uleb128 0x1
+ 1754 0765 52       		.byte	0x52
+ 1755 0766 01       		.uleb128 0x1
+ 1756 0767 32       		.byte	0x32
+ 1757 0768 15       		.uleb128 0x15
+ 1758 0769 01       		.uleb128 0x1
+ 1759 076a 51       		.byte	0x51
+ 1760 076b 05       		.uleb128 0x5
+ 1761 076c 03       		.byte	0x3
+ 1762 076d 42000000 		.4byte	.LANCHOR0+66
+ 1763 0771 15       		.uleb128 0x15
+ 1764 0772 01       		.uleb128 0x1
+ 1765 0773 50       		.byte	0x50
+ 1766 0774 05       		.uleb128 0x5
+ 1767 0775 03       		.byte	0x3
+ 1768 0776 0C000000 		.4byte	.LANCHOR0+12
+ 1769 077a 00       		.byte	0
+ 1770 077b 1B       		.uleb128 0x1b
+ 1771 077c 12010000 		.4byte	.LVL89
+ 1772 0780 E4020000 		.4byte	0x2e4
+ 1773 0784 A7070000 		.4byte	0x7a7
+ 1774 0788 15       		.uleb128 0x15
+ 1775 0789 01       		.uleb128 0x1
+ 1776 078a 53       		.byte	0x53
+ 1777 078b 01       		.uleb128 0x1
+ 1778 078c 34       		.byte	0x34
+ 1779 078d 15       		.uleb128 0x15
+ 1780 078e 01       		.uleb128 0x1
+ 1781 078f 52       		.byte	0x52
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 43
+
+
+ 1782 0790 03       		.uleb128 0x3
+ 1783 0791 0A       		.byte	0xa
+ 1784 0792 401F     		.2byte	0x1f40
+ 1785 0794 15       		.uleb128 0x15
+ 1786 0795 01       		.uleb128 0x1
+ 1787 0796 51       		.byte	0x51
+ 1788 0797 05       		.uleb128 0x5
+ 1789 0798 03       		.byte	0x3
+ 1790 0799 44000000 		.4byte	.LANCHOR0+68
+ 1791 079d 15       		.uleb128 0x15
+ 1792 079e 01       		.uleb128 0x1
+ 1793 079f 50       		.byte	0x50
+ 1794 07a0 05       		.uleb128 0x5
+ 1795 07a1 03       		.byte	0x3
+ 1796 07a2 10000000 		.4byte	.LANCHOR0+16
+ 1797 07a6 00       		.byte	0
+ 1798 07a7 1B       		.uleb128 0x1b
+ 1799 07a8 26010000 		.4byte	.LVL90
+ 1800 07ac E4020000 		.4byte	0x2e4
+ 1801 07b0 D1070000 		.4byte	0x7d1
+ 1802 07b4 15       		.uleb128 0x15
+ 1803 07b5 01       		.uleb128 0x1
+ 1804 07b6 53       		.byte	0x53
+ 1805 07b7 01       		.uleb128 0x1
+ 1806 07b8 34       		.byte	0x34
+ 1807 07b9 15       		.uleb128 0x15
+ 1808 07ba 01       		.uleb128 0x1
+ 1809 07bb 52       		.byte	0x52
+ 1810 07bc 01       		.uleb128 0x1
+ 1811 07bd 30       		.byte	0x30
+ 1812 07be 15       		.uleb128 0x15
+ 1813 07bf 01       		.uleb128 0x1
+ 1814 07c0 51       		.byte	0x51
+ 1815 07c1 05       		.uleb128 0x5
+ 1816 07c2 03       		.byte	0x3
+ 1817 07c3 48000000 		.4byte	.LANCHOR0+72
+ 1818 07c7 15       		.uleb128 0x15
+ 1819 07c8 01       		.uleb128 0x1
+ 1820 07c9 50       		.byte	0x50
+ 1821 07ca 05       		.uleb128 0x5
+ 1822 07cb 03       		.byte	0x3
+ 1823 07cc 14000000 		.4byte	.LANCHOR0+20
+ 1824 07d0 00       		.byte	0
+ 1825 07d1 1B       		.uleb128 0x1b
+ 1826 07d2 3A010000 		.4byte	.LVL91
+ 1827 07d6 E4020000 		.4byte	0x2e4
+ 1828 07da FB070000 		.4byte	0x7fb
+ 1829 07de 15       		.uleb128 0x15
+ 1830 07df 01       		.uleb128 0x1
+ 1831 07e0 53       		.byte	0x53
+ 1832 07e1 01       		.uleb128 0x1
+ 1833 07e2 32       		.byte	0x32
+ 1834 07e3 15       		.uleb128 0x15
+ 1835 07e4 01       		.uleb128 0x1
+ 1836 07e5 52       		.byte	0x52
+ 1837 07e6 01       		.uleb128 0x1
+ 1838 07e7 30       		.byte	0x30
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 44
+
+
+ 1839 07e8 15       		.uleb128 0x15
+ 1840 07e9 01       		.uleb128 0x1
+ 1841 07ea 51       		.byte	0x51
+ 1842 07eb 05       		.uleb128 0x5
+ 1843 07ec 03       		.byte	0x3
+ 1844 07ed 4C000000 		.4byte	.LANCHOR0+76
+ 1845 07f1 15       		.uleb128 0x15
+ 1846 07f2 01       		.uleb128 0x1
+ 1847 07f3 50       		.byte	0x50
+ 1848 07f4 05       		.uleb128 0x5
+ 1849 07f5 03       		.byte	0x3
+ 1850 07f6 18000000 		.4byte	.LANCHOR0+24
+ 1851 07fa 00       		.byte	0
+ 1852 07fb 1B       		.uleb128 0x1b
+ 1853 07fc 4E010000 		.4byte	.LVL92
+ 1854 0800 E4020000 		.4byte	0x2e4
+ 1855 0804 25080000 		.4byte	0x825
+ 1856 0808 15       		.uleb128 0x15
+ 1857 0809 01       		.uleb128 0x1
+ 1858 080a 53       		.byte	0x53
+ 1859 080b 01       		.uleb128 0x1
+ 1860 080c 32       		.byte	0x32
+ 1861 080d 15       		.uleb128 0x15
+ 1862 080e 01       		.uleb128 0x1
+ 1863 080f 52       		.byte	0x52
+ 1864 0810 01       		.uleb128 0x1
+ 1865 0811 30       		.byte	0x30
+ 1866 0812 15       		.uleb128 0x15
+ 1867 0813 01       		.uleb128 0x1
+ 1868 0814 51       		.byte	0x51
+ 1869 0815 05       		.uleb128 0x5
+ 1870 0816 03       		.byte	0x3
+ 1871 0817 4E000000 		.4byte	.LANCHOR0+78
+ 1872 081b 15       		.uleb128 0x15
+ 1873 081c 01       		.uleb128 0x1
+ 1874 081d 50       		.byte	0x50
+ 1875 081e 05       		.uleb128 0x5
+ 1876 081f 03       		.byte	0x3
+ 1877 0820 1C000000 		.4byte	.LANCHOR0+28
+ 1878 0824 00       		.byte	0
+ 1879 0825 1B       		.uleb128 0x1b
+ 1880 0826 62010000 		.4byte	.LVL93
+ 1881 082a 84030000 		.4byte	0x384
+ 1882 082e 53080000 		.4byte	0x853
+ 1883 0832 15       		.uleb128 0x15
+ 1884 0833 01       		.uleb128 0x1
+ 1885 0834 53       		.byte	0x53
+ 1886 0835 01       		.uleb128 0x1
+ 1887 0836 34       		.byte	0x34
+ 1888 0837 15       		.uleb128 0x15
+ 1889 0838 01       		.uleb128 0x1
+ 1890 0839 52       		.byte	0x52
+ 1891 083a 05       		.uleb128 0x5
+ 1892 083b 03       		.byte	0x3
+ 1893 083c 18000000 		.4byte	.LC3
+ 1894 0840 15       		.uleb128 0x15
+ 1895 0841 01       		.uleb128 0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 45
+
+
+ 1896 0842 51       		.byte	0x51
+ 1897 0843 05       		.uleb128 0x5
+ 1898 0844 03       		.byte	0x3
+ 1899 0845 50000000 		.4byte	.LANCHOR0+80
+ 1900 0849 15       		.uleb128 0x15
+ 1901 084a 01       		.uleb128 0x1
+ 1902 084b 50       		.byte	0x50
+ 1903 084c 05       		.uleb128 0x5
+ 1904 084d 03       		.byte	0x3
+ 1905 084e 20000000 		.4byte	.LANCHOR0+32
+ 1906 0852 00       		.byte	0
+ 1907 0853 14       		.uleb128 0x14
+ 1908 0854 76010000 		.4byte	.LVL94
+ 1909 0858 E4020000 		.4byte	0x2e4
+ 1910 085c 15       		.uleb128 0x15
+ 1911 085d 01       		.uleb128 0x1
+ 1912 085e 53       		.byte	0x53
+ 1913 085f 01       		.uleb128 0x1
+ 1914 0860 34       		.byte	0x34
+ 1915 0861 15       		.uleb128 0x15
+ 1916 0862 01       		.uleb128 0x1
+ 1917 0863 52       		.byte	0x52
+ 1918 0864 01       		.uleb128 0x1
+ 1919 0865 30       		.byte	0x30
+ 1920 0866 15       		.uleb128 0x15
+ 1921 0867 01       		.uleb128 0x1
+ 1922 0868 51       		.byte	0x51
+ 1923 0869 05       		.uleb128 0x5
+ 1924 086a 03       		.byte	0x3
+ 1925 086b 54000000 		.4byte	.LANCHOR0+84
+ 1926 086f 15       		.uleb128 0x15
+ 1927 0870 01       		.uleb128 0x1
+ 1928 0871 50       		.byte	0x50
+ 1929 0872 05       		.uleb128 0x5
+ 1930 0873 03       		.byte	0x3
+ 1931 0874 24000000 		.4byte	.LANCHOR0+36
+ 1932 0878 00       		.byte	0
+ 1933 0879 00       		.byte	0
+ 1934 087a 1C       		.uleb128 0x1c
+ 1935 087b EC020000 		.4byte	.LASF93
+ 1936 087f 01       		.byte	0x1
+ 1937 0880 35       		.byte	0x35
+ 1938 0881 86080000 		.4byte	0x886
+ 1939 0885 03       		.byte	0x3
+ 1940 0886 06       		.uleb128 0x6
+ 1941 0887 81000000 		.4byte	0x81
+ 1942 088b 1D       		.uleb128 0x1d
+ 1943 088c 58050000 		.4byte	.LASF94
+ 1944 0890 01       		.byte	0x1
+ 1945 0891 36       		.byte	0x36
+ 1946 0892 98080000 		.4byte	0x898
+ 1947 0896 0001     		.2byte	0x100
+ 1948 0898 06       		.uleb128 0x6
+ 1949 0899 97000000 		.4byte	0x97
+ 1950 089d 1C       		.uleb128 0x1c
+ 1951 089e 7E020000 		.4byte	.LASF95
+ 1952 08a2 01       		.byte	0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 46
+
+
+ 1953 08a3 38       		.byte	0x38
+ 1954 08a4 86080000 		.4byte	0x886
+ 1955 08a8 00       		.byte	0
+ 1956 08a9 1E       		.uleb128 0x1e
+ 1957 08aa 1A000000 		.4byte	.LASF96
+ 1958 08ae 01       		.byte	0x1
+ 1959 08af 39       		.byte	0x39
+ 1960 08b0 86080000 		.4byte	0x886
+ 1961 08b4 807F     		.sleb128 -128
+ 1962 08b6 1E       		.uleb128 0x1e
+ 1963 08b7 C3060000 		.4byte	.LASF97
+ 1964 08bb 01       		.byte	0x1
+ 1965 08bc 3A       		.byte	0x3a
+ 1966 08bd 86080000 		.4byte	0x886
+ 1967 08c1 7F       		.sleb128 -1
+ 1968 08c2 07       		.uleb128 0x7
+ 1969 08c3 81000000 		.4byte	0x81
+ 1970 08c7 D2080000 		.4byte	0x8d2
+ 1971 08cb 08       		.uleb128 0x8
+ 1972 08cc B7000000 		.4byte	0xb7
+ 1973 08d0 2B       		.byte	0x2b
+ 1974 08d1 00       		.byte	0
+ 1975 08d2 19       		.uleb128 0x19
+ 1976 08d3 3F000000 		.4byte	.LASF98
+ 1977 08d7 01       		.byte	0x1
+ 1978 08d8 3D       		.byte	0x3d
+ 1979 08d9 C2080000 		.4byte	0x8c2
+ 1980 08dd 05       		.uleb128 0x5
+ 1981 08de 03       		.byte	0x3
+ 1982 08df 2C000000 		.4byte	headerArray
+ 1983 08e3 07       		.uleb128 0x7
+ 1984 08e4 97000000 		.4byte	0x97
+ 1985 08e8 F3080000 		.4byte	0x8f3
+ 1986 08ec 08       		.uleb128 0x8
+ 1987 08ed B7000000 		.4byte	0xb7
+ 1988 08f1 08       		.byte	0x8
+ 1989 08f2 00       		.byte	0
+ 1990 08f3 19       		.uleb128 0x19
+ 1991 08f4 80040000 		.4byte	.LASF99
+ 1992 08f8 01       		.byte	0x1
+ 1993 08f9 3F       		.byte	0x3f
+ 1994 08fa 04090000 		.4byte	0x904
+ 1995 08fe 05       		.uleb128 0x5
+ 1996 08ff 03       		.byte	0x3
+ 1997 0900 00000000 		.4byte	SONG_START_ADDRESS
+ 1998 0904 06       		.uleb128 0x6
+ 1999 0905 E3080000 		.4byte	0x8e3
+ 2000 0909 19       		.uleb128 0x19
+ 2001 090a B8030000 		.4byte	.LASF100
+ 2002 090e 01       		.byte	0x1
+ 2003 090f 51       		.byte	0x51
+ 2004 0910 D7010000 		.4byte	0x1d7
+ 2005 0914 05       		.uleb128 0x5
+ 2006 0915 03       		.byte	0x3
+ 2007 0916 58000000 		.4byte	WaveChunk
+ 2008 091a 19       		.uleb128 0x19
+ 2009 091b 22060000 		.4byte	.LASF101
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 47
+
+
+ 2010 091f 01       		.byte	0x1
+ 2011 0920 5D       		.byte	0x5d
+ 2012 0921 03020000 		.4byte	0x203
+ 2013 0925 05       		.uleb128 0x5
+ 2014 0926 03       		.byte	0x3
+ 2015 0927 00000000 		.4byte	FirstSubChunk
+ 2016 092b 19       		.uleb128 0x19
+ 2017 092c 68060000 		.4byte	.LASF102
+ 2018 0930 01       		.byte	0x1
+ 2019 0931 63       		.byte	0x63
+ 2020 0932 6B020000 		.4byte	0x26b
+ 2021 0936 05       		.uleb128 0x5
+ 2022 0937 03       		.byte	0x3
+ 2023 0938 20000000 		.4byte	SecondSubChunk
+ 2024 093c 19       		.uleb128 0x19
+ 2025 093d 29030000 		.4byte	.LASF103
+ 2026 0941 01       		.byte	0x1
+ 2027 0942 66       		.byte	0x66
+ 2028 0943 DF000000 		.4byte	0xdf
+ 2029 0947 05       		.uleb128 0x5
+ 2030 0948 03       		.byte	0x3
+ 2031 0949 28000000 		.4byte	currentSong
+ 2032 094d 1F       		.uleb128 0x1f
+ 2033 094e 77060000 		.4byte	.LASF109
+ 2034 0952 07       		.byte	0x7
+ 2035 0953 2A06     		.2byte	0x62a
+ 2036 0955 59090000 		.4byte	0x959
+ 2037 0959 20       		.uleb128 0x20
+ 2038 095a 76000000 		.4byte	0x76
+ 2039 095e 21       		.uleb128 0x21
+ 2040 095f 82010000 		.4byte	.LASF110
+ 2041 0963 08       		.byte	0x8
+ 2042 0964 1C       		.byte	0x1c
+ 2043 0965 68000000 		.4byte	0x68
+ 2044 0969 78090000 		.4byte	0x978
+ 2045 096d 22       		.uleb128 0x22
+ 2046 096e C4000000 		.4byte	0xc4
+ 2047 0972 22       		.uleb128 0x22
+ 2048 0973 C4000000 		.4byte	0xc4
+ 2049 0977 00       		.byte	0
+ 2050 0978 23       		.uleb128 0x23
+ 2051 0979 1F020000 		.4byte	.LASF104
+ 2052 097d 06       		.byte	0x6
+ 2053 097e 62       		.byte	0x62
+ 2054 097f 81000000 		.4byte	0x81
+ 2055 0983 23       		.uleb128 0x23
+ 2056 0984 C2030000 		.4byte	.LASF105
+ 2057 0988 06       		.byte	0x6
+ 2058 0989 66       		.byte	0x66
+ 2059 098a 81000000 		.4byte	0x81
+ 2060 098e 24       		.uleb128 0x24
+ 2061 098f C7010000 		.4byte	.LASF111
+ 2062 0993 06       		.byte	0x6
+ 2063 0994 64       		.byte	0x64
+ 2064 0995 22       		.uleb128 0x22
+ 2065 0996 81000000 		.4byte	0x81
+ 2066 099a 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 48
+
+
+ 2067 099b 00       		.byte	0
+ 2068              		.section	.debug_abbrev,"",%progbits
+ 2069              	.Ldebug_abbrev0:
+ 2070 0000 01       		.uleb128 0x1
+ 2071 0001 11       		.uleb128 0x11
+ 2072 0002 01       		.byte	0x1
+ 2073 0003 25       		.uleb128 0x25
+ 2074 0004 0E       		.uleb128 0xe
+ 2075 0005 13       		.uleb128 0x13
+ 2076 0006 0B       		.uleb128 0xb
+ 2077 0007 03       		.uleb128 0x3
+ 2078 0008 0E       		.uleb128 0xe
+ 2079 0009 1B       		.uleb128 0x1b
+ 2080 000a 0E       		.uleb128 0xe
+ 2081 000b 55       		.uleb128 0x55
+ 2082 000c 17       		.uleb128 0x17
+ 2083 000d 11       		.uleb128 0x11
+ 2084 000e 01       		.uleb128 0x1
+ 2085 000f 10       		.uleb128 0x10
+ 2086 0010 17       		.uleb128 0x17
+ 2087 0011 00       		.byte	0
+ 2088 0012 00       		.byte	0
+ 2089 0013 02       		.uleb128 0x2
+ 2090 0014 24       		.uleb128 0x24
+ 2091 0015 00       		.byte	0
+ 2092 0016 0B       		.uleb128 0xb
+ 2093 0017 0B       		.uleb128 0xb
+ 2094 0018 3E       		.uleb128 0x3e
+ 2095 0019 0B       		.uleb128 0xb
+ 2096 001a 03       		.uleb128 0x3
+ 2097 001b 0E       		.uleb128 0xe
+ 2098 001c 00       		.byte	0
+ 2099 001d 00       		.byte	0
+ 2100 001e 03       		.uleb128 0x3
+ 2101 001f 16       		.uleb128 0x16
+ 2102 0020 00       		.byte	0
+ 2103 0021 03       		.uleb128 0x3
+ 2104 0022 0E       		.uleb128 0xe
+ 2105 0023 3A       		.uleb128 0x3a
+ 2106 0024 0B       		.uleb128 0xb
+ 2107 0025 3B       		.uleb128 0x3b
+ 2108 0026 0B       		.uleb128 0xb
+ 2109 0027 49       		.uleb128 0x49
+ 2110 0028 13       		.uleb128 0x13
+ 2111 0029 00       		.byte	0
+ 2112 002a 00       		.byte	0
+ 2113 002b 04       		.uleb128 0x4
+ 2114 002c 24       		.uleb128 0x24
+ 2115 002d 00       		.byte	0
+ 2116 002e 0B       		.uleb128 0xb
+ 2117 002f 0B       		.uleb128 0xb
+ 2118 0030 3E       		.uleb128 0x3e
+ 2119 0031 0B       		.uleb128 0xb
+ 2120 0032 03       		.uleb128 0x3
+ 2121 0033 08       		.uleb128 0x8
+ 2122 0034 00       		.byte	0
+ 2123 0035 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 49
+
+
+ 2124 0036 05       		.uleb128 0x5
+ 2125 0037 0F       		.uleb128 0xf
+ 2126 0038 00       		.byte	0
+ 2127 0039 0B       		.uleb128 0xb
+ 2128 003a 0B       		.uleb128 0xb
+ 2129 003b 49       		.uleb128 0x49
+ 2130 003c 13       		.uleb128 0x13
+ 2131 003d 00       		.byte	0
+ 2132 003e 00       		.byte	0
+ 2133 003f 06       		.uleb128 0x6
+ 2134 0040 26       		.uleb128 0x26
+ 2135 0041 00       		.byte	0
+ 2136 0042 49       		.uleb128 0x49
+ 2137 0043 13       		.uleb128 0x13
+ 2138 0044 00       		.byte	0
+ 2139 0045 00       		.byte	0
+ 2140 0046 07       		.uleb128 0x7
+ 2141 0047 01       		.uleb128 0x1
+ 2142 0048 01       		.byte	0x1
+ 2143 0049 49       		.uleb128 0x49
+ 2144 004a 13       		.uleb128 0x13
+ 2145 004b 01       		.uleb128 0x1
+ 2146 004c 13       		.uleb128 0x13
+ 2147 004d 00       		.byte	0
+ 2148 004e 00       		.byte	0
+ 2149 004f 08       		.uleb128 0x8
+ 2150 0050 21       		.uleb128 0x21
+ 2151 0051 00       		.byte	0
+ 2152 0052 49       		.uleb128 0x49
+ 2153 0053 13       		.uleb128 0x13
+ 2154 0054 2F       		.uleb128 0x2f
+ 2155 0055 0B       		.uleb128 0xb
+ 2156 0056 00       		.byte	0
+ 2157 0057 00       		.byte	0
+ 2158 0058 09       		.uleb128 0x9
+ 2159 0059 04       		.uleb128 0x4
+ 2160 005a 01       		.byte	0x1
+ 2161 005b 03       		.uleb128 0x3
+ 2162 005c 0E       		.uleb128 0xe
+ 2163 005d 0B       		.uleb128 0xb
+ 2164 005e 0B       		.uleb128 0xb
+ 2165 005f 3A       		.uleb128 0x3a
+ 2166 0060 0B       		.uleb128 0xb
+ 2167 0061 3B       		.uleb128 0x3b
+ 2168 0062 0B       		.uleb128 0xb
+ 2169 0063 01       		.uleb128 0x1
+ 2170 0064 13       		.uleb128 0x13
+ 2171 0065 00       		.byte	0
+ 2172 0066 00       		.byte	0
+ 2173 0067 0A       		.uleb128 0xa
+ 2174 0068 28       		.uleb128 0x28
+ 2175 0069 00       		.byte	0
+ 2176 006a 03       		.uleb128 0x3
+ 2177 006b 0E       		.uleb128 0xe
+ 2178 006c 1C       		.uleb128 0x1c
+ 2179 006d 0D       		.uleb128 0xd
+ 2180 006e 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 50
+
+
+ 2181 006f 00       		.byte	0
+ 2182 0070 0B       		.uleb128 0xb
+ 2183 0071 13       		.uleb128 0x13
+ 2184 0072 01       		.byte	0x1
+ 2185 0073 0B       		.uleb128 0xb
+ 2186 0074 0B       		.uleb128 0xb
+ 2187 0075 3A       		.uleb128 0x3a
+ 2188 0076 0B       		.uleb128 0xb
+ 2189 0077 3B       		.uleb128 0x3b
+ 2190 0078 0B       		.uleb128 0xb
+ 2191 0079 01       		.uleb128 0x1
+ 2192 007a 13       		.uleb128 0x13
+ 2193 007b 00       		.byte	0
+ 2194 007c 00       		.byte	0
+ 2195 007d 0C       		.uleb128 0xc
+ 2196 007e 0D       		.uleb128 0xd
+ 2197 007f 00       		.byte	0
+ 2198 0080 03       		.uleb128 0x3
+ 2199 0081 08       		.uleb128 0x8
+ 2200 0082 3A       		.uleb128 0x3a
+ 2201 0083 0B       		.uleb128 0xb
+ 2202 0084 3B       		.uleb128 0x3b
+ 2203 0085 0B       		.uleb128 0xb
+ 2204 0086 49       		.uleb128 0x49
+ 2205 0087 13       		.uleb128 0x13
+ 2206 0088 38       		.uleb128 0x38
+ 2207 0089 0B       		.uleb128 0xb
+ 2208 008a 00       		.byte	0
+ 2209 008b 00       		.byte	0
+ 2210 008c 0D       		.uleb128 0xd
+ 2211 008d 0D       		.uleb128 0xd
+ 2212 008e 00       		.byte	0
+ 2213 008f 03       		.uleb128 0x3
+ 2214 0090 0E       		.uleb128 0xe
+ 2215 0091 3A       		.uleb128 0x3a
+ 2216 0092 0B       		.uleb128 0xb
+ 2217 0093 3B       		.uleb128 0x3b
+ 2218 0094 0B       		.uleb128 0xb
+ 2219 0095 49       		.uleb128 0x49
+ 2220 0096 13       		.uleb128 0x13
+ 2221 0097 38       		.uleb128 0x38
+ 2222 0098 0B       		.uleb128 0xb
+ 2223 0099 00       		.byte	0
+ 2224 009a 00       		.byte	0
+ 2225 009b 0E       		.uleb128 0xe
+ 2226 009c 2E       		.uleb128 0x2e
+ 2227 009d 01       		.byte	0x1
+ 2228 009e 03       		.uleb128 0x3
+ 2229 009f 0E       		.uleb128 0xe
+ 2230 00a0 3A       		.uleb128 0x3a
+ 2231 00a1 0B       		.uleb128 0xb
+ 2232 00a2 3B       		.uleb128 0x3b
+ 2233 00a3 05       		.uleb128 0x5
+ 2234 00a4 27       		.uleb128 0x27
+ 2235 00a5 19       		.uleb128 0x19
+ 2236 00a6 49       		.uleb128 0x49
+ 2237 00a7 13       		.uleb128 0x13
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 51
+
+
+ 2238 00a8 11       		.uleb128 0x11
+ 2239 00a9 01       		.uleb128 0x1
+ 2240 00aa 12       		.uleb128 0x12
+ 2241 00ab 06       		.uleb128 0x6
+ 2242 00ac 40       		.uleb128 0x40
+ 2243 00ad 18       		.uleb128 0x18
+ 2244 00ae 9742     		.uleb128 0x2117
+ 2245 00b0 19       		.uleb128 0x19
+ 2246 00b1 01       		.uleb128 0x1
+ 2247 00b2 13       		.uleb128 0x13
+ 2248 00b3 00       		.byte	0
+ 2249 00b4 00       		.byte	0
+ 2250 00b5 0F       		.uleb128 0xf
+ 2251 00b6 05       		.uleb128 0x5
+ 2252 00b7 00       		.byte	0
+ 2253 00b8 03       		.uleb128 0x3
+ 2254 00b9 0E       		.uleb128 0xe
+ 2255 00ba 3A       		.uleb128 0x3a
+ 2256 00bb 0B       		.uleb128 0xb
+ 2257 00bc 3B       		.uleb128 0x3b
+ 2258 00bd 05       		.uleb128 0x5
+ 2259 00be 49       		.uleb128 0x49
+ 2260 00bf 13       		.uleb128 0x13
+ 2261 00c0 02       		.uleb128 0x2
+ 2262 00c1 17       		.uleb128 0x17
+ 2263 00c2 00       		.byte	0
+ 2264 00c3 00       		.byte	0
+ 2265 00c4 10       		.uleb128 0x10
+ 2266 00c5 05       		.uleb128 0x5
+ 2267 00c6 00       		.byte	0
+ 2268 00c7 03       		.uleb128 0x3
+ 2269 00c8 0E       		.uleb128 0xe
+ 2270 00c9 3A       		.uleb128 0x3a
+ 2271 00ca 0B       		.uleb128 0xb
+ 2272 00cb 3B       		.uleb128 0x3b
+ 2273 00cc 05       		.uleb128 0x5
+ 2274 00cd 49       		.uleb128 0x49
+ 2275 00ce 13       		.uleb128 0x13
+ 2276 00cf 02       		.uleb128 0x2
+ 2277 00d0 18       		.uleb128 0x18
+ 2278 00d1 00       		.byte	0
+ 2279 00d2 00       		.byte	0
+ 2280 00d3 11       		.uleb128 0x11
+ 2281 00d4 34       		.uleb128 0x34
+ 2282 00d5 00       		.byte	0
+ 2283 00d6 03       		.uleb128 0x3
+ 2284 00d7 0E       		.uleb128 0xe
+ 2285 00d8 3A       		.uleb128 0x3a
+ 2286 00d9 0B       		.uleb128 0xb
+ 2287 00da 3B       		.uleb128 0x3b
+ 2288 00db 05       		.uleb128 0x5
+ 2289 00dc 49       		.uleb128 0x49
+ 2290 00dd 13       		.uleb128 0x13
+ 2291 00de 02       		.uleb128 0x2
+ 2292 00df 17       		.uleb128 0x17
+ 2293 00e0 00       		.byte	0
+ 2294 00e1 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 52
+
+
+ 2295 00e2 12       		.uleb128 0x12
+ 2296 00e3 898201   		.uleb128 0x4109
+ 2297 00e6 00       		.byte	0
+ 2298 00e7 11       		.uleb128 0x11
+ 2299 00e8 01       		.uleb128 0x1
+ 2300 00e9 31       		.uleb128 0x31
+ 2301 00ea 13       		.uleb128 0x13
+ 2302 00eb 00       		.byte	0
+ 2303 00ec 00       		.byte	0
+ 2304 00ed 13       		.uleb128 0x13
+ 2305 00ee 34       		.uleb128 0x34
+ 2306 00ef 00       		.byte	0
+ 2307 00f0 03       		.uleb128 0x3
+ 2308 00f1 0E       		.uleb128 0xe
+ 2309 00f2 3A       		.uleb128 0x3a
+ 2310 00f3 0B       		.uleb128 0xb
+ 2311 00f4 3B       		.uleb128 0x3b
+ 2312 00f5 05       		.uleb128 0x5
+ 2313 00f6 49       		.uleb128 0x49
+ 2314 00f7 13       		.uleb128 0x13
+ 2315 00f8 02       		.uleb128 0x2
+ 2316 00f9 18       		.uleb128 0x18
+ 2317 00fa 00       		.byte	0
+ 2318 00fb 00       		.byte	0
+ 2319 00fc 14       		.uleb128 0x14
+ 2320 00fd 898201   		.uleb128 0x4109
+ 2321 0100 01       		.byte	0x1
+ 2322 0101 11       		.uleb128 0x11
+ 2323 0102 01       		.uleb128 0x1
+ 2324 0103 31       		.uleb128 0x31
+ 2325 0104 13       		.uleb128 0x13
+ 2326 0105 00       		.byte	0
+ 2327 0106 00       		.byte	0
+ 2328 0107 15       		.uleb128 0x15
+ 2329 0108 8A8201   		.uleb128 0x410a
+ 2330 010b 00       		.byte	0
+ 2331 010c 02       		.uleb128 0x2
+ 2332 010d 18       		.uleb128 0x18
+ 2333 010e 9142     		.uleb128 0x2111
+ 2334 0110 18       		.uleb128 0x18
+ 2335 0111 00       		.byte	0
+ 2336 0112 00       		.byte	0
+ 2337 0113 16       		.uleb128 0x16
+ 2338 0114 2E       		.uleb128 0x2e
+ 2339 0115 00       		.byte	0
+ 2340 0116 3F       		.uleb128 0x3f
+ 2341 0117 19       		.uleb128 0x19
+ 2342 0118 03       		.uleb128 0x3
+ 2343 0119 0E       		.uleb128 0xe
+ 2344 011a 3A       		.uleb128 0x3a
+ 2345 011b 0B       		.uleb128 0xb
+ 2346 011c 3B       		.uleb128 0x3b
+ 2347 011d 0B       		.uleb128 0xb
+ 2348 011e 27       		.uleb128 0x27
+ 2349 011f 19       		.uleb128 0x19
+ 2350 0120 49       		.uleb128 0x49
+ 2351 0121 13       		.uleb128 0x13
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 53
+
+
+ 2352 0122 11       		.uleb128 0x11
+ 2353 0123 01       		.uleb128 0x1
+ 2354 0124 12       		.uleb128 0x12
+ 2355 0125 06       		.uleb128 0x6
+ 2356 0126 40       		.uleb128 0x40
+ 2357 0127 18       		.uleb128 0x18
+ 2358 0128 9742     		.uleb128 0x2117
+ 2359 012a 19       		.uleb128 0x19
+ 2360 012b 00       		.byte	0
+ 2361 012c 00       		.byte	0
+ 2362 012d 17       		.uleb128 0x17
+ 2363 012e 2E       		.uleb128 0x2e
+ 2364 012f 01       		.byte	0x1
+ 2365 0130 3F       		.uleb128 0x3f
+ 2366 0131 19       		.uleb128 0x19
+ 2367 0132 03       		.uleb128 0x3
+ 2368 0133 0E       		.uleb128 0xe
+ 2369 0134 3A       		.uleb128 0x3a
+ 2370 0135 0B       		.uleb128 0xb
+ 2371 0136 3B       		.uleb128 0x3b
+ 2372 0137 0B       		.uleb128 0xb
+ 2373 0138 27       		.uleb128 0x27
+ 2374 0139 19       		.uleb128 0x19
+ 2375 013a 49       		.uleb128 0x49
+ 2376 013b 13       		.uleb128 0x13
+ 2377 013c 11       		.uleb128 0x11
+ 2378 013d 01       		.uleb128 0x1
+ 2379 013e 12       		.uleb128 0x12
+ 2380 013f 06       		.uleb128 0x6
+ 2381 0140 40       		.uleb128 0x40
+ 2382 0141 18       		.uleb128 0x18
+ 2383 0142 9742     		.uleb128 0x2117
+ 2384 0144 19       		.uleb128 0x19
+ 2385 0145 01       		.uleb128 0x1
+ 2386 0146 13       		.uleb128 0x13
+ 2387 0147 00       		.byte	0
+ 2388 0148 00       		.byte	0
+ 2389 0149 18       		.uleb128 0x18
+ 2390 014a 05       		.uleb128 0x5
+ 2391 014b 00       		.byte	0
+ 2392 014c 03       		.uleb128 0x3
+ 2393 014d 0E       		.uleb128 0xe
+ 2394 014e 3A       		.uleb128 0x3a
+ 2395 014f 0B       		.uleb128 0xb
+ 2396 0150 3B       		.uleb128 0x3b
+ 2397 0151 0B       		.uleb128 0xb
+ 2398 0152 49       		.uleb128 0x49
+ 2399 0153 13       		.uleb128 0x13
+ 2400 0154 02       		.uleb128 0x2
+ 2401 0155 17       		.uleb128 0x17
+ 2402 0156 00       		.byte	0
+ 2403 0157 00       		.byte	0
+ 2404 0158 19       		.uleb128 0x19
+ 2405 0159 34       		.uleb128 0x34
+ 2406 015a 00       		.byte	0
+ 2407 015b 03       		.uleb128 0x3
+ 2408 015c 0E       		.uleb128 0xe
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 54
+
+
+ 2409 015d 3A       		.uleb128 0x3a
+ 2410 015e 0B       		.uleb128 0xb
+ 2411 015f 3B       		.uleb128 0x3b
+ 2412 0160 0B       		.uleb128 0xb
+ 2413 0161 49       		.uleb128 0x49
+ 2414 0162 13       		.uleb128 0x13
+ 2415 0163 02       		.uleb128 0x2
+ 2416 0164 18       		.uleb128 0x18
+ 2417 0165 00       		.byte	0
+ 2418 0166 00       		.byte	0
+ 2419 0167 1A       		.uleb128 0x1a
+ 2420 0168 34       		.uleb128 0x34
+ 2421 0169 00       		.byte	0
+ 2422 016a 03       		.uleb128 0x3
+ 2423 016b 0E       		.uleb128 0xe
+ 2424 016c 3A       		.uleb128 0x3a
+ 2425 016d 0B       		.uleb128 0xb
+ 2426 016e 3B       		.uleb128 0x3b
+ 2427 016f 0B       		.uleb128 0xb
+ 2428 0170 49       		.uleb128 0x49
+ 2429 0171 13       		.uleb128 0x13
+ 2430 0172 02       		.uleb128 0x2
+ 2431 0173 17       		.uleb128 0x17
+ 2432 0174 00       		.byte	0
+ 2433 0175 00       		.byte	0
+ 2434 0176 1B       		.uleb128 0x1b
+ 2435 0177 898201   		.uleb128 0x4109
+ 2436 017a 01       		.byte	0x1
+ 2437 017b 11       		.uleb128 0x11
+ 2438 017c 01       		.uleb128 0x1
+ 2439 017d 31       		.uleb128 0x31
+ 2440 017e 13       		.uleb128 0x13
+ 2441 017f 01       		.uleb128 0x1
+ 2442 0180 13       		.uleb128 0x13
+ 2443 0181 00       		.byte	0
+ 2444 0182 00       		.byte	0
+ 2445 0183 1C       		.uleb128 0x1c
+ 2446 0184 34       		.uleb128 0x34
+ 2447 0185 00       		.byte	0
+ 2448 0186 03       		.uleb128 0x3
+ 2449 0187 0E       		.uleb128 0xe
+ 2450 0188 3A       		.uleb128 0x3a
+ 2451 0189 0B       		.uleb128 0xb
+ 2452 018a 3B       		.uleb128 0x3b
+ 2453 018b 0B       		.uleb128 0xb
+ 2454 018c 49       		.uleb128 0x49
+ 2455 018d 13       		.uleb128 0x13
+ 2456 018e 1C       		.uleb128 0x1c
+ 2457 018f 0B       		.uleb128 0xb
+ 2458 0190 00       		.byte	0
+ 2459 0191 00       		.byte	0
+ 2460 0192 1D       		.uleb128 0x1d
+ 2461 0193 34       		.uleb128 0x34
+ 2462 0194 00       		.byte	0
+ 2463 0195 03       		.uleb128 0x3
+ 2464 0196 0E       		.uleb128 0xe
+ 2465 0197 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 55
+
+
+ 2466 0198 0B       		.uleb128 0xb
+ 2467 0199 3B       		.uleb128 0x3b
+ 2468 019a 0B       		.uleb128 0xb
+ 2469 019b 49       		.uleb128 0x49
+ 2470 019c 13       		.uleb128 0x13
+ 2471 019d 1C       		.uleb128 0x1c
+ 2472 019e 05       		.uleb128 0x5
+ 2473 019f 00       		.byte	0
+ 2474 01a0 00       		.byte	0
+ 2475 01a1 1E       		.uleb128 0x1e
+ 2476 01a2 34       		.uleb128 0x34
+ 2477 01a3 00       		.byte	0
+ 2478 01a4 03       		.uleb128 0x3
+ 2479 01a5 0E       		.uleb128 0xe
+ 2480 01a6 3A       		.uleb128 0x3a
+ 2481 01a7 0B       		.uleb128 0xb
+ 2482 01a8 3B       		.uleb128 0x3b
+ 2483 01a9 0B       		.uleb128 0xb
+ 2484 01aa 49       		.uleb128 0x49
+ 2485 01ab 13       		.uleb128 0x13
+ 2486 01ac 1C       		.uleb128 0x1c
+ 2487 01ad 0D       		.uleb128 0xd
+ 2488 01ae 00       		.byte	0
+ 2489 01af 00       		.byte	0
+ 2490 01b0 1F       		.uleb128 0x1f
+ 2491 01b1 34       		.uleb128 0x34
+ 2492 01b2 00       		.byte	0
+ 2493 01b3 03       		.uleb128 0x3
+ 2494 01b4 0E       		.uleb128 0xe
+ 2495 01b5 3A       		.uleb128 0x3a
+ 2496 01b6 0B       		.uleb128 0xb
+ 2497 01b7 3B       		.uleb128 0x3b
+ 2498 01b8 05       		.uleb128 0x5
+ 2499 01b9 49       		.uleb128 0x49
+ 2500 01ba 13       		.uleb128 0x13
+ 2501 01bb 3F       		.uleb128 0x3f
+ 2502 01bc 19       		.uleb128 0x19
+ 2503 01bd 3C       		.uleb128 0x3c
+ 2504 01be 19       		.uleb128 0x19
+ 2505 01bf 00       		.byte	0
+ 2506 01c0 00       		.byte	0
+ 2507 01c1 20       		.uleb128 0x20
+ 2508 01c2 35       		.uleb128 0x35
+ 2509 01c3 00       		.byte	0
+ 2510 01c4 49       		.uleb128 0x49
+ 2511 01c5 13       		.uleb128 0x13
+ 2512 01c6 00       		.byte	0
+ 2513 01c7 00       		.byte	0
+ 2514 01c8 21       		.uleb128 0x21
+ 2515 01c9 2E       		.uleb128 0x2e
+ 2516 01ca 01       		.byte	0x1
+ 2517 01cb 3F       		.uleb128 0x3f
+ 2518 01cc 19       		.uleb128 0x19
+ 2519 01cd 03       		.uleb128 0x3
+ 2520 01ce 0E       		.uleb128 0xe
+ 2521 01cf 3A       		.uleb128 0x3a
+ 2522 01d0 0B       		.uleb128 0xb
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 56
+
+
+ 2523 01d1 3B       		.uleb128 0x3b
+ 2524 01d2 0B       		.uleb128 0xb
+ 2525 01d3 27       		.uleb128 0x27
+ 2526 01d4 19       		.uleb128 0x19
+ 2527 01d5 49       		.uleb128 0x49
+ 2528 01d6 13       		.uleb128 0x13
+ 2529 01d7 3C       		.uleb128 0x3c
+ 2530 01d8 19       		.uleb128 0x19
+ 2531 01d9 01       		.uleb128 0x1
+ 2532 01da 13       		.uleb128 0x13
+ 2533 01db 00       		.byte	0
+ 2534 01dc 00       		.byte	0
+ 2535 01dd 22       		.uleb128 0x22
+ 2536 01de 05       		.uleb128 0x5
+ 2537 01df 00       		.byte	0
+ 2538 01e0 49       		.uleb128 0x49
+ 2539 01e1 13       		.uleb128 0x13
+ 2540 01e2 00       		.byte	0
+ 2541 01e3 00       		.byte	0
+ 2542 01e4 23       		.uleb128 0x23
+ 2543 01e5 2E       		.uleb128 0x2e
+ 2544 01e6 00       		.byte	0
+ 2545 01e7 3F       		.uleb128 0x3f
+ 2546 01e8 19       		.uleb128 0x19
+ 2547 01e9 03       		.uleb128 0x3
+ 2548 01ea 0E       		.uleb128 0xe
+ 2549 01eb 3A       		.uleb128 0x3a
+ 2550 01ec 0B       		.uleb128 0xb
+ 2551 01ed 3B       		.uleb128 0x3b
+ 2552 01ee 0B       		.uleb128 0xb
+ 2553 01ef 27       		.uleb128 0x27
+ 2554 01f0 19       		.uleb128 0x19
+ 2555 01f1 49       		.uleb128 0x49
+ 2556 01f2 13       		.uleb128 0x13
+ 2557 01f3 3C       		.uleb128 0x3c
+ 2558 01f4 19       		.uleb128 0x19
+ 2559 01f5 00       		.byte	0
+ 2560 01f6 00       		.byte	0
+ 2561 01f7 24       		.uleb128 0x24
+ 2562 01f8 2E       		.uleb128 0x2e
+ 2563 01f9 01       		.byte	0x1
+ 2564 01fa 3F       		.uleb128 0x3f
+ 2565 01fb 19       		.uleb128 0x19
+ 2566 01fc 03       		.uleb128 0x3
+ 2567 01fd 0E       		.uleb128 0xe
+ 2568 01fe 3A       		.uleb128 0x3a
+ 2569 01ff 0B       		.uleb128 0xb
+ 2570 0200 3B       		.uleb128 0x3b
+ 2571 0201 0B       		.uleb128 0xb
+ 2572 0202 27       		.uleb128 0x27
+ 2573 0203 19       		.uleb128 0x19
+ 2574 0204 3C       		.uleb128 0x3c
+ 2575 0205 19       		.uleb128 0x19
+ 2576 0206 00       		.byte	0
+ 2577 0207 00       		.byte	0
+ 2578 0208 00       		.byte	0
+ 2579              		.section	.debug_loc,"",%progbits
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 57
+
+
+ 2580              	.Ldebug_loc0:
+ 2581              	.LLST0:
+ 2582 0000 00000000 		.4byte	.LVL0
+ 2583 0004 06000000 		.4byte	.LVL2
+ 2584 0008 0100     		.2byte	0x1
+ 2585 000a 50       		.byte	0x50
+ 2586 000b 06000000 		.4byte	.LVL2
+ 2587 000f 20000000 		.4byte	.LFE73
+ 2588 0013 0100     		.2byte	0x1
+ 2589 0015 52       		.byte	0x52
+ 2590 0016 00000000 		.4byte	0
+ 2591 001a 00000000 		.4byte	0
+ 2592              	.LLST1:
+ 2593 001e 04000000 		.4byte	.LVL1
+ 2594 0022 0A000000 		.4byte	.LVL3
+ 2595 0026 0200     		.2byte	0x2
+ 2596 0028 30       		.byte	0x30
+ 2597 0029 9F       		.byte	0x9f
+ 2598 002a 0A000000 		.4byte	.LVL3
+ 2599 002e 14000000 		.4byte	.LVL6
+ 2600 0032 0100     		.2byte	0x1
+ 2601 0034 53       		.byte	0x53
+ 2602 0035 16000000 		.4byte	.LVL7
+ 2603 0039 20000000 		.4byte	.LFE73
+ 2604 003d 0100     		.2byte	0x1
+ 2605 003f 53       		.byte	0x53
+ 2606 0040 00000000 		.4byte	0
+ 2607 0044 00000000 		.4byte	0
+ 2608              	.LLST2:
+ 2609 0048 04000000 		.4byte	.LVL1
+ 2610 004c 0A000000 		.4byte	.LVL3
+ 2611 0050 0200     		.2byte	0x2
+ 2612 0052 30       		.byte	0x30
+ 2613 0053 9F       		.byte	0x9f
+ 2614 0054 0A000000 		.4byte	.LVL3
+ 2615 0058 10000000 		.4byte	.LVL4
+ 2616 005c 0500     		.2byte	0x5
+ 2617 005e 70       		.byte	0x70
+ 2618 005f 00       		.sleb128 0
+ 2619 0060 38       		.byte	0x38
+ 2620 0061 24       		.byte	0x24
+ 2621 0062 9F       		.byte	0x9f
+ 2622 0063 10000000 		.4byte	.LVL4
+ 2623 0067 20000000 		.4byte	.LFE73
+ 2624 006b 0100     		.2byte	0x1
+ 2625 006d 50       		.byte	0x50
+ 2626 006e 00000000 		.4byte	0
+ 2627 0072 00000000 		.4byte	0
+ 2628              	.LLST3:
+ 2629 0076 00000000 		.4byte	.LVL8
+ 2630 007a 0E000000 		.4byte	.LVL9
+ 2631 007e 0100     		.2byte	0x1
+ 2632 0080 50       		.byte	0x50
+ 2633 0081 0E000000 		.4byte	.LVL9
+ 2634 0085 34000000 		.4byte	.LVL18
+ 2635 0089 0100     		.2byte	0x1
+ 2636 008b 56       		.byte	0x56
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 58
+
+
+ 2637 008c 34000000 		.4byte	.LVL18
+ 2638 0090 36000000 		.4byte	.LVL19
+ 2639 0094 0100     		.2byte	0x1
+ 2640 0096 50       		.byte	0x50
+ 2641 0097 36000000 		.4byte	.LVL19
+ 2642 009b 38000000 		.4byte	.LVL20
+ 2643 009f 0400     		.2byte	0x4
+ 2644 00a1 F3       		.byte	0xf3
+ 2645 00a2 01       		.uleb128 0x1
+ 2646 00a3 50       		.byte	0x50
+ 2647 00a4 9F       		.byte	0x9f
+ 2648 00a5 38000000 		.4byte	.LVL20
+ 2649 00a9 3A000000 		.4byte	.LVL21
+ 2650 00ad 0100     		.2byte	0x1
+ 2651 00af 50       		.byte	0x50
+ 2652 00b0 3A000000 		.4byte	.LVL21
+ 2653 00b4 3C000000 		.4byte	.LVL22
+ 2654 00b8 0100     		.2byte	0x1
+ 2655 00ba 56       		.byte	0x56
+ 2656 00bb 3C000000 		.4byte	.LVL22
+ 2657 00bf 3E000000 		.4byte	.LVL23
+ 2658 00c3 0100     		.2byte	0x1
+ 2659 00c5 50       		.byte	0x50
+ 2660 00c6 3E000000 		.4byte	.LVL23
+ 2661 00ca 44000000 		.4byte	.LFE72
+ 2662 00ce 0100     		.2byte	0x1
+ 2663 00d0 56       		.byte	0x56
+ 2664 00d1 00000000 		.4byte	0
+ 2665 00d5 00000000 		.4byte	0
+ 2666              	.LLST4:
+ 2667 00d9 00000000 		.4byte	.LVL8
+ 2668 00dd 22000000 		.4byte	.LVL14
+ 2669 00e1 0100     		.2byte	0x1
+ 2670 00e3 51       		.byte	0x51
+ 2671 00e4 22000000 		.4byte	.LVL14
+ 2672 00e8 34000000 		.4byte	.LVL18
+ 2673 00ec 0400     		.2byte	0x4
+ 2674 00ee F3       		.byte	0xf3
+ 2675 00ef 01       		.uleb128 0x1
+ 2676 00f0 51       		.byte	0x51
+ 2677 00f1 9F       		.byte	0x9f
+ 2678 00f2 34000000 		.4byte	.LVL18
+ 2679 00f6 40000000 		.4byte	.LVL24
+ 2680 00fa 0100     		.2byte	0x1
+ 2681 00fc 51       		.byte	0x51
+ 2682 00fd 40000000 		.4byte	.LVL24
+ 2683 0101 44000000 		.4byte	.LFE72
+ 2684 0105 0400     		.2byte	0x4
+ 2685 0107 F3       		.byte	0xf3
+ 2686 0108 01       		.uleb128 0x1
+ 2687 0109 51       		.byte	0x51
+ 2688 010a 9F       		.byte	0x9f
+ 2689 010b 00000000 		.4byte	0
+ 2690 010f 00000000 		.4byte	0
+ 2691              	.LLST5:
+ 2692 0113 00000000 		.4byte	.LVL8
+ 2693 0117 27000000 		.4byte	.LVL16-1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 59
+
+
+ 2694 011b 0100     		.2byte	0x1
+ 2695 011d 52       		.byte	0x52
+ 2696 011e 27000000 		.4byte	.LVL16-1
+ 2697 0122 34000000 		.4byte	.LVL18
+ 2698 0126 0400     		.2byte	0x4
+ 2699 0128 F3       		.byte	0xf3
+ 2700 0129 01       		.uleb128 0x1
+ 2701 012a 52       		.byte	0x52
+ 2702 012b 9F       		.byte	0x9f
+ 2703 012c 34000000 		.4byte	.LVL18
+ 2704 0130 40000000 		.4byte	.LVL24
+ 2705 0134 0100     		.2byte	0x1
+ 2706 0136 52       		.byte	0x52
+ 2707 0137 40000000 		.4byte	.LVL24
+ 2708 013b 44000000 		.4byte	.LFE72
+ 2709 013f 0400     		.2byte	0x4
+ 2710 0141 F3       		.byte	0xf3
+ 2711 0142 01       		.uleb128 0x1
+ 2712 0143 52       		.byte	0x52
+ 2713 0144 9F       		.byte	0x9f
+ 2714 0145 00000000 		.4byte	0
+ 2715 0149 00000000 		.4byte	0
+ 2716              	.LLST6:
+ 2717 014d 00000000 		.4byte	.LVL8
+ 2718 0151 27000000 		.4byte	.LVL16-1
+ 2719 0155 0100     		.2byte	0x1
+ 2720 0157 53       		.byte	0x53
+ 2721 0158 27000000 		.4byte	.LVL16-1
+ 2722 015c 34000000 		.4byte	.LVL18
+ 2723 0160 0400     		.2byte	0x4
+ 2724 0162 F3       		.byte	0xf3
+ 2725 0163 01       		.uleb128 0x1
+ 2726 0164 53       		.byte	0x53
+ 2727 0165 9F       		.byte	0x9f
+ 2728 0166 34000000 		.4byte	.LVL18
+ 2729 016a 40000000 		.4byte	.LVL24
+ 2730 016e 0100     		.2byte	0x1
+ 2731 0170 53       		.byte	0x53
+ 2732 0171 40000000 		.4byte	.LVL24
+ 2733 0175 44000000 		.4byte	.LFE72
+ 2734 0179 0400     		.2byte	0x4
+ 2735 017b F3       		.byte	0xf3
+ 2736 017c 01       		.uleb128 0x1
+ 2737 017d 53       		.byte	0x53
+ 2738 017e 9F       		.byte	0x9f
+ 2739 017f 00000000 		.4byte	0
+ 2740 0183 00000000 		.4byte	0
+ 2741              	.LLST7:
+ 2742 0187 00000000 		.4byte	.LVL8
+ 2743 018b 12000000 		.4byte	.LVL10
+ 2744 018f 0200     		.2byte	0x2
+ 2745 0191 30       		.byte	0x30
+ 2746 0192 9F       		.byte	0x9f
+ 2747 0193 12000000 		.4byte	.LVL10
+ 2748 0197 1A000000 		.4byte	.LVL12
+ 2749 019b 0100     		.2byte	0x1
+ 2750 019d 54       		.byte	0x54
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 60
+
+
+ 2751 019e 1C000000 		.4byte	.LVL13
+ 2752 01a2 24000000 		.4byte	.LVL15
+ 2753 01a6 0100     		.2byte	0x1
+ 2754 01a8 54       		.byte	0x54
+ 2755 01a9 34000000 		.4byte	.LVL18
+ 2756 01ad 40000000 		.4byte	.LVL24
+ 2757 01b1 0200     		.2byte	0x2
+ 2758 01b3 30       		.byte	0x30
+ 2759 01b4 9F       		.byte	0x9f
+ 2760 01b5 00000000 		.4byte	0
+ 2761 01b9 00000000 		.4byte	0
+ 2762              	.LLST8:
+ 2763 01bd 00000000 		.4byte	.LVL8
+ 2764 01c1 12000000 		.4byte	.LVL10
+ 2765 01c5 0200     		.2byte	0x2
+ 2766 01c7 30       		.byte	0x30
+ 2767 01c8 9F       		.byte	0x9f
+ 2768 01c9 12000000 		.4byte	.LVL10
+ 2769 01cd 18000000 		.4byte	.LVL11
+ 2770 01d1 0500     		.2byte	0x5
+ 2771 01d3 70       		.byte	0x70
+ 2772 01d4 00       		.sleb128 0
+ 2773 01d5 38       		.byte	0x38
+ 2774 01d6 24       		.byte	0x24
+ 2775 01d7 9F       		.byte	0x9f
+ 2776 01d8 18000000 		.4byte	.LVL11
+ 2777 01dc 27000000 		.4byte	.LVL16-1
+ 2778 01e0 0100     		.2byte	0x1
+ 2779 01e2 50       		.byte	0x50
+ 2780 01e3 34000000 		.4byte	.LVL18
+ 2781 01e7 40000000 		.4byte	.LVL24
+ 2782 01eb 0200     		.2byte	0x2
+ 2783 01ed 30       		.byte	0x30
+ 2784 01ee 9F       		.byte	0x9f
+ 2785 01ef 00000000 		.4byte	0
+ 2786 01f3 00000000 		.4byte	0
+ 2787              	.LLST9:
+ 2788 01f7 00000000 		.4byte	.LVL8
+ 2789 01fb 28000000 		.4byte	.LVL16
+ 2790 01ff 0200     		.2byte	0x2
+ 2791 0201 30       		.byte	0x30
+ 2792 0202 9F       		.byte	0x9f
+ 2793 0203 28000000 		.4byte	.LVL16
+ 2794 0207 32000000 		.4byte	.LVL17
+ 2795 020b 0100     		.2byte	0x1
+ 2796 020d 50       		.byte	0x50
+ 2797 020e 32000000 		.4byte	.LVL17
+ 2798 0212 34000000 		.4byte	.LVL18
+ 2799 0216 0200     		.2byte	0x2
+ 2800 0218 76       		.byte	0x76
+ 2801 0219 00       		.sleb128 0
+ 2802 021a 34000000 		.4byte	.LVL18
+ 2803 021e 40000000 		.4byte	.LVL24
+ 2804 0222 0200     		.2byte	0x2
+ 2805 0224 30       		.byte	0x30
+ 2806 0225 9F       		.byte	0x9f
+ 2807 0226 40000000 		.4byte	.LVL24
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 61
+
+
+ 2808 022a 42000000 		.4byte	.LVL25
+ 2809 022e 0100     		.2byte	0x1
+ 2810 0230 50       		.byte	0x50
+ 2811 0231 00000000 		.4byte	0
+ 2812 0235 00000000 		.4byte	0
+ 2813              	.LLST10:
+ 2814 0239 00000000 		.4byte	.LVL26
+ 2815 023d 12000000 		.4byte	.LVL27
+ 2816 0241 0100     		.2byte	0x1
+ 2817 0243 50       		.byte	0x50
+ 2818 0244 12000000 		.4byte	.LVL27
+ 2819 0248 4E000000 		.4byte	.LVL37
+ 2820 024c 0100     		.2byte	0x1
+ 2821 024e 56       		.byte	0x56
+ 2822 024f 4E000000 		.4byte	.LVL37
+ 2823 0253 50000000 		.4byte	.LVL38
+ 2824 0257 0100     		.2byte	0x1
+ 2825 0259 50       		.byte	0x50
+ 2826 025a 50000000 		.4byte	.LVL38
+ 2827 025e 52000000 		.4byte	.LVL39
+ 2828 0262 0400     		.2byte	0x4
+ 2829 0264 F3       		.byte	0xf3
+ 2830 0265 01       		.uleb128 0x1
+ 2831 0266 50       		.byte	0x50
+ 2832 0267 9F       		.byte	0x9f
+ 2833 0268 52000000 		.4byte	.LVL39
+ 2834 026c 54000000 		.4byte	.LVL40
+ 2835 0270 0100     		.2byte	0x1
+ 2836 0272 50       		.byte	0x50
+ 2837 0273 54000000 		.4byte	.LVL40
+ 2838 0277 56000000 		.4byte	.LVL41
+ 2839 027b 0100     		.2byte	0x1
+ 2840 027d 56       		.byte	0x56
+ 2841 027e 56000000 		.4byte	.LVL41
+ 2842 0282 58000000 		.4byte	.LVL42
+ 2843 0286 0100     		.2byte	0x1
+ 2844 0288 50       		.byte	0x50
+ 2845 0289 58000000 		.4byte	.LVL42
+ 2846 028d 5A000000 		.4byte	.LVL43
+ 2847 0291 0100     		.2byte	0x1
+ 2848 0293 56       		.byte	0x56
+ 2849 0294 5A000000 		.4byte	.LVL43
+ 2850 0298 5C000000 		.4byte	.LVL44
+ 2851 029c 0100     		.2byte	0x1
+ 2852 029e 50       		.byte	0x50
+ 2853 029f 5C000000 		.4byte	.LVL44
+ 2854 02a3 64000000 		.4byte	.LFE71
+ 2855 02a7 0100     		.2byte	0x1
+ 2856 02a9 56       		.byte	0x56
+ 2857 02aa 00000000 		.4byte	0
+ 2858 02ae 00000000 		.4byte	0
+ 2859              	.LLST11:
+ 2860 02b2 00000000 		.4byte	.LVL26
+ 2861 02b6 34000000 		.4byte	.LVL32
+ 2862 02ba 0100     		.2byte	0x1
+ 2863 02bc 51       		.byte	0x51
+ 2864 02bd 34000000 		.4byte	.LVL32
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 62
+
+
+ 2865 02c1 4E000000 		.4byte	.LVL37
+ 2866 02c5 0100     		.2byte	0x1
+ 2867 02c7 54       		.byte	0x54
+ 2868 02c8 4E000000 		.4byte	.LVL37
+ 2869 02cc 5E000000 		.4byte	.LVL45
+ 2870 02d0 0100     		.2byte	0x1
+ 2871 02d2 51       		.byte	0x51
+ 2872 02d3 5E000000 		.4byte	.LVL45
+ 2873 02d7 60000000 		.4byte	.LVL46
+ 2874 02db 0100     		.2byte	0x1
+ 2875 02dd 54       		.byte	0x54
+ 2876 02de 60000000 		.4byte	.LVL46
+ 2877 02e2 64000000 		.4byte	.LFE71
+ 2878 02e6 0400     		.2byte	0x4
+ 2879 02e8 F3       		.byte	0xf3
+ 2880 02e9 01       		.uleb128 0x1
+ 2881 02ea 51       		.byte	0x51
+ 2882 02eb 9F       		.byte	0x9f
+ 2883 02ec 00000000 		.4byte	0
+ 2884 02f0 00000000 		.4byte	0
+ 2885              	.LLST12:
+ 2886 02f4 00000000 		.4byte	.LVL26
+ 2887 02f8 37000000 		.4byte	.LVL33-1
+ 2888 02fc 0100     		.2byte	0x1
+ 2889 02fe 52       		.byte	0x52
+ 2890 02ff 37000000 		.4byte	.LVL33-1
+ 2891 0303 4E000000 		.4byte	.LVL37
+ 2892 0307 0400     		.2byte	0x4
+ 2893 0309 F3       		.byte	0xf3
+ 2894 030a 01       		.uleb128 0x1
+ 2895 030b 52       		.byte	0x52
+ 2896 030c 9F       		.byte	0x9f
+ 2897 030d 4E000000 		.4byte	.LVL37
+ 2898 0311 5E000000 		.4byte	.LVL45
+ 2899 0315 0100     		.2byte	0x1
+ 2900 0317 52       		.byte	0x52
+ 2901 0318 5E000000 		.4byte	.LVL45
+ 2902 031c 64000000 		.4byte	.LFE71
+ 2903 0320 0400     		.2byte	0x4
+ 2904 0322 F3       		.byte	0xf3
+ 2905 0323 01       		.uleb128 0x1
+ 2906 0324 52       		.byte	0x52
+ 2907 0325 9F       		.byte	0x9f
+ 2908 0326 00000000 		.4byte	0
+ 2909 032a 00000000 		.4byte	0
+ 2910              	.LLST13:
+ 2911 032e 00000000 		.4byte	.LVL26
+ 2912 0332 37000000 		.4byte	.LVL33-1
+ 2913 0336 0100     		.2byte	0x1
+ 2914 0338 53       		.byte	0x53
+ 2915 0339 37000000 		.4byte	.LVL33-1
+ 2916 033d 4E000000 		.4byte	.LVL37
+ 2917 0341 0400     		.2byte	0x4
+ 2918 0343 F3       		.byte	0xf3
+ 2919 0344 01       		.uleb128 0x1
+ 2920 0345 53       		.byte	0x53
+ 2921 0346 9F       		.byte	0x9f
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 63
+
+
+ 2922 0347 4E000000 		.4byte	.LVL37
+ 2923 034b 5E000000 		.4byte	.LVL45
+ 2924 034f 0100     		.2byte	0x1
+ 2925 0351 53       		.byte	0x53
+ 2926 0352 5E000000 		.4byte	.LVL45
+ 2927 0356 64000000 		.4byte	.LFE71
+ 2928 035a 0400     		.2byte	0x4
+ 2929 035c F3       		.byte	0xf3
+ 2930 035d 01       		.uleb128 0x1
+ 2931 035e 53       		.byte	0x53
+ 2932 035f 9F       		.byte	0x9f
+ 2933 0360 00000000 		.4byte	0
+ 2934 0364 00000000 		.4byte	0
+ 2935              	.LLST14:
+ 2936 0368 00000000 		.4byte	.LVL26
+ 2937 036c 1A000000 		.4byte	.LVL28
+ 2938 0370 0200     		.2byte	0x2
+ 2939 0372 30       		.byte	0x30
+ 2940 0373 9F       		.byte	0x9f
+ 2941 0374 1A000000 		.4byte	.LVL28
+ 2942 0378 26000000 		.4byte	.LVL29
+ 2943 037c 0100     		.2byte	0x1
+ 2944 037e 50       		.byte	0x50
+ 2945 037f 28000000 		.4byte	.LVL30
+ 2946 0383 32000000 		.4byte	.LVL31
+ 2947 0387 0100     		.2byte	0x1
+ 2948 0389 50       		.byte	0x50
+ 2949 038a 3E000000 		.4byte	.LVL34
+ 2950 038e 44000000 		.4byte	.LVL35
+ 2951 0392 0100     		.2byte	0x1
+ 2952 0394 52       		.byte	0x52
+ 2953 0395 46000000 		.4byte	.LVL36
+ 2954 0399 4E000000 		.4byte	.LVL37
+ 2955 039d 0100     		.2byte	0x1
+ 2956 039f 52       		.byte	0x52
+ 2957 03a0 4E000000 		.4byte	.LVL37
+ 2958 03a4 5E000000 		.4byte	.LVL45
+ 2959 03a8 0200     		.2byte	0x2
+ 2960 03aa 30       		.byte	0x30
+ 2961 03ab 9F       		.byte	0x9f
+ 2962 03ac 00000000 		.4byte	0
+ 2963 03b0 00000000 		.4byte	0
+ 2964              	.LLST15:
+ 2965 03b4 00000000 		.4byte	.LVL47
+ 2966 03b8 12000000 		.4byte	.LVL49
+ 2967 03bc 0100     		.2byte	0x1
+ 2968 03be 50       		.byte	0x50
+ 2969 03bf 12000000 		.4byte	.LVL49
+ 2970 03c3 14000000 		.4byte	.LVL50
+ 2971 03c7 0400     		.2byte	0x4
+ 2972 03c9 F3       		.byte	0xf3
+ 2973 03ca 01       		.uleb128 0x1
+ 2974 03cb 50       		.byte	0x50
+ 2975 03cc 9F       		.byte	0x9f
+ 2976 03cd 14000000 		.4byte	.LVL50
+ 2977 03d1 21000000 		.4byte	.LVL54-1
+ 2978 03d5 0100     		.2byte	0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 64
+
+
+ 2979 03d7 50       		.byte	0x50
+ 2980 03d8 00000000 		.4byte	0
+ 2981 03dc 00000000 		.4byte	0
+ 2982              	.LLST16:
+ 2983 03e0 02000000 		.4byte	.LVL48
+ 2984 03e4 18000000 		.4byte	.LVL51
+ 2985 03e8 0200     		.2byte	0x2
+ 2986 03ea 30       		.byte	0x30
+ 2987 03eb 9F       		.byte	0x9f
+ 2988 03ec 18000000 		.4byte	.LVL51
+ 2989 03f0 64000000 		.4byte	.LVL64
+ 2990 03f4 0100     		.2byte	0x1
+ 2991 03f6 57       		.byte	0x57
+ 2992 03f7 00000000 		.4byte	0
+ 2993 03fb 00000000 		.4byte	0
+ 2994              	.LLST17:
+ 2995 03ff 02000000 		.4byte	.LVL48
+ 2996 0403 1C000000 		.4byte	.LVL52
+ 2997 0407 0200     		.2byte	0x2
+ 2998 0409 30       		.byte	0x30
+ 2999 040a 9F       		.byte	0x9f
+ 3000 040b 1C000000 		.4byte	.LVL52
+ 3001 040f 64000000 		.4byte	.LVL64
+ 3002 0413 0100     		.2byte	0x1
+ 3003 0415 56       		.byte	0x56
+ 3004 0416 00000000 		.4byte	0
+ 3005 041a 00000000 		.4byte	0
+ 3006              	.LLST18:
+ 3007 041e 02000000 		.4byte	.LVL48
+ 3008 0422 1E000000 		.4byte	.LVL53
+ 3009 0426 0200     		.2byte	0x2
+ 3010 0428 30       		.byte	0x30
+ 3011 0429 9F       		.byte	0x9f
+ 3012 042a 1E000000 		.4byte	.LVL53
+ 3013 042e 64000000 		.4byte	.LVL64
+ 3014 0432 0100     		.2byte	0x1
+ 3015 0434 54       		.byte	0x54
+ 3016 0435 00000000 		.4byte	0
+ 3017 0439 00000000 		.4byte	0
+ 3018              	.LLST19:
+ 3019 043d 02000000 		.4byte	.LVL48
+ 3020 0441 3E000000 		.4byte	.LVL56
+ 3021 0445 0300     		.2byte	0x3
+ 3022 0447 09       		.byte	0x9
+ 3023 0448 80       		.byte	0x80
+ 3024 0449 9F       		.byte	0x9f
+ 3025 044a 3E000000 		.4byte	.LVL56
+ 3026 044e 5E000000 		.4byte	.LVL62
+ 3027 0452 0100     		.2byte	0x1
+ 3028 0454 55       		.byte	0x55
+ 3029 0455 5E000000 		.4byte	.LVL62
+ 3030 0459 60000000 		.4byte	.LVL63
+ 3031 045d 0300     		.2byte	0x3
+ 3032 045f 09       		.byte	0x9
+ 3033 0460 80       		.byte	0x80
+ 3034 0461 9F       		.byte	0x9f
+ 3035 0462 60000000 		.4byte	.LVL63
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 65
+
+
+ 3036 0466 64000000 		.4byte	.LVL64
+ 3037 046a 0100     		.2byte	0x1
+ 3038 046c 55       		.byte	0x55
+ 3039 046d 00000000 		.4byte	0
+ 3040 0471 00000000 		.4byte	0
+ 3041              	.LLST20:
+ 3042 0475 00000000 		.4byte	.LVL65
+ 3043 0479 16000000 		.4byte	.LVL67
+ 3044 047d 0100     		.2byte	0x1
+ 3045 047f 50       		.byte	0x50
+ 3046 0480 16000000 		.4byte	.LVL67
+ 3047 0484 2A000000 		.4byte	.LVL72
+ 3048 0488 0500     		.2byte	0x5
+ 3049 048a 03       		.byte	0x3
+ 3050 048b 28000000 		.4byte	currentSong
+ 3051 048f 2A000000 		.4byte	.LVL72
+ 3052 0493 7C010000 		.4byte	.LVL95
+ 3053 0497 0400     		.2byte	0x4
+ 3054 0499 F3       		.byte	0xf3
+ 3055 049a 01       		.uleb128 0x1
+ 3056 049b 50       		.byte	0x50
+ 3057 049c 9F       		.byte	0x9f
+ 3058 049d 7C010000 		.4byte	.LVL95
+ 3059 04a1 80010000 		.4byte	.LVL96
+ 3060 04a5 0100     		.2byte	0x1
+ 3061 04a7 50       		.byte	0x50
+ 3062 04a8 80010000 		.4byte	.LVL96
+ 3063 04ac A0010000 		.4byte	.LFE68
+ 3064 04b0 0400     		.2byte	0x4
+ 3065 04b2 F3       		.byte	0xf3
+ 3066 04b3 01       		.uleb128 0x1
+ 3067 04b4 50       		.byte	0x50
+ 3068 04b5 9F       		.byte	0x9f
+ 3069 04b6 00000000 		.4byte	0
+ 3070 04ba 00000000 		.4byte	0
+ 3071              	.LLST21:
+ 3072 04be 02000000 		.4byte	.LVL66
+ 3073 04c2 1C000000 		.4byte	.LVL68
+ 3074 04c6 0200     		.2byte	0x2
+ 3075 04c8 30       		.byte	0x30
+ 3076 04c9 9F       		.byte	0x9f
+ 3077 04ca 1C000000 		.4byte	.LVL68
+ 3078 04ce 26000000 		.4byte	.LVL71
+ 3079 04d2 0100     		.2byte	0x1
+ 3080 04d4 55       		.byte	0x55
+ 3081 04d5 26000000 		.4byte	.LVL71
+ 3082 04d9 2A000000 		.4byte	.LVL72
+ 3083 04dd 0700     		.2byte	0x7
+ 3084 04df 70       		.byte	0x70
+ 3085 04e0 00       		.sleb128 0
+ 3086 04e1 32       		.byte	0x32
+ 3087 04e2 24       		.byte	0x24
+ 3088 04e3 73       		.byte	0x73
+ 3089 04e4 00       		.sleb128 0
+ 3090 04e5 22       		.byte	0x22
+ 3091 04e6 7C010000 		.4byte	.LVL95
+ 3092 04ea 80010000 		.4byte	.LVL96
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 66
+
+
+ 3093 04ee 0200     		.2byte	0x2
+ 3094 04f0 30       		.byte	0x30
+ 3095 04f1 9F       		.byte	0x9f
+ 3096 04f2 00000000 		.4byte	0
+ 3097 04f6 00000000 		.4byte	0
+ 3098              	.LLST22:
+ 3099 04fa 02000000 		.4byte	.LVL66
+ 3100 04fe 20000000 		.4byte	.LVL69
+ 3101 0502 0200     		.2byte	0x2
+ 3102 0504 30       		.byte	0x30
+ 3103 0505 9F       		.byte	0x9f
+ 3104 0506 20000000 		.4byte	.LVL69
+ 3105 050a 7C010000 		.4byte	.LVL95
+ 3106 050e 0100     		.2byte	0x1
+ 3107 0510 57       		.byte	0x57
+ 3108 0511 7C010000 		.4byte	.LVL95
+ 3109 0515 80010000 		.4byte	.LVL96
+ 3110 0519 0200     		.2byte	0x2
+ 3111 051b 30       		.byte	0x30
+ 3112 051c 9F       		.byte	0x9f
+ 3113 051d 80010000 		.4byte	.LVL96
+ 3114 0521 82010000 		.4byte	.LVL97
+ 3115 0525 0100     		.2byte	0x1
+ 3116 0527 57       		.byte	0x57
+ 3117 0528 00000000 		.4byte	0
+ 3118 052c 00000000 		.4byte	0
+ 3119              	.LLST23:
+ 3120 0530 02000000 		.4byte	.LVL66
+ 3121 0534 24000000 		.4byte	.LVL70
+ 3122 0538 0200     		.2byte	0x2
+ 3123 053a 30       		.byte	0x30
+ 3124 053b 9F       		.byte	0x9f
+ 3125 053c 24000000 		.4byte	.LVL70
+ 3126 0540 7C010000 		.4byte	.LVL95
+ 3127 0544 0100     		.2byte	0x1
+ 3128 0546 56       		.byte	0x56
+ 3129 0547 7C010000 		.4byte	.LVL95
+ 3130 054b 80010000 		.4byte	.LVL96
+ 3131 054f 0200     		.2byte	0x2
+ 3132 0551 30       		.byte	0x30
+ 3133 0552 9F       		.byte	0x9f
+ 3134 0553 80010000 		.4byte	.LVL96
+ 3135 0557 82010000 		.4byte	.LVL97
+ 3136 055b 0100     		.2byte	0x1
+ 3137 055d 56       		.byte	0x56
+ 3138 055e 00000000 		.4byte	0
+ 3139 0562 00000000 		.4byte	0
+ 3140              	.LLST24:
+ 3141 0566 02000000 		.4byte	.LVL66
+ 3142 056a 26000000 		.4byte	.LVL71
+ 3143 056e 0200     		.2byte	0x2
+ 3144 0570 30       		.byte	0x30
+ 3145 0571 9F       		.byte	0x9f
+ 3146 0572 26000000 		.4byte	.LVL71
+ 3147 0576 7C010000 		.4byte	.LVL95
+ 3148 057a 0100     		.2byte	0x1
+ 3149 057c 55       		.byte	0x55
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 67
+
+
+ 3150 057d 7C010000 		.4byte	.LVL95
+ 3151 0581 80010000 		.4byte	.LVL96
+ 3152 0585 0200     		.2byte	0x2
+ 3153 0587 30       		.byte	0x30
+ 3154 0588 9F       		.byte	0x9f
+ 3155 0589 80010000 		.4byte	.LVL96
+ 3156 058d 82010000 		.4byte	.LVL97
+ 3157 0591 0100     		.2byte	0x1
+ 3158 0593 55       		.byte	0x55
+ 3159 0594 00000000 		.4byte	0
+ 3160 0598 00000000 		.4byte	0
+ 3161              	.LLST25:
+ 3162 059c 02000000 		.4byte	.LVL66
+ 3163 05a0 2A000000 		.4byte	.LVL72
+ 3164 05a4 0200     		.2byte	0x2
+ 3165 05a6 30       		.byte	0x30
+ 3166 05a7 9F       		.byte	0x9f
+ 3167 05a8 2A000000 		.4byte	.LVL72
+ 3168 05ac 62000000 		.4byte	.LVL80
+ 3169 05b0 0100     		.2byte	0x1
+ 3170 05b2 54       		.byte	0x54
+ 3171 05b3 64000000 		.4byte	.LVL81
+ 3172 05b7 7C010000 		.4byte	.LVL95
+ 3173 05bb 0100     		.2byte	0x1
+ 3174 05bd 54       		.byte	0x54
+ 3175 05be 7C010000 		.4byte	.LVL95
+ 3176 05c2 80010000 		.4byte	.LVL96
+ 3177 05c6 0200     		.2byte	0x2
+ 3178 05c8 30       		.byte	0x30
+ 3179 05c9 9F       		.byte	0x9f
+ 3180 05ca 80010000 		.4byte	.LVL96
+ 3181 05ce 82010000 		.4byte	.LVL97
+ 3182 05d2 0100     		.2byte	0x1
+ 3183 05d4 54       		.byte	0x54
+ 3184 05d5 00000000 		.4byte	0
+ 3185 05d9 00000000 		.4byte	0
+ 3186              		.section	.debug_aranges,"",%progbits
+ 3187 0000 5C000000 		.4byte	0x5c
+ 3188 0004 0200     		.2byte	0x2
+ 3189 0006 00000000 		.4byte	.Ldebug_info0
+ 3190 000a 04       		.byte	0x4
+ 3191 000b 00       		.byte	0
+ 3192 000c 0000     		.2byte	0
+ 3193 000e 0000     		.2byte	0
+ 3194 0010 00000000 		.4byte	.LFB73
+ 3195 0014 20000000 		.4byte	.LFE73-.LFB73
+ 3196 0018 00000000 		.4byte	.LFB72
+ 3197 001c 44000000 		.4byte	.LFE72-.LFB72
+ 3198 0020 00000000 		.4byte	.LFB71
+ 3199 0024 64000000 		.4byte	.LFE71-.LFB71
+ 3200 0028 00000000 		.4byte	.LFB63
+ 3201 002c 0C000000 		.4byte	.LFE63-.LFB63
+ 3202 0030 00000000 		.4byte	.LFB64
+ 3203 0034 0C000000 		.4byte	.LFE64-.LFB64
+ 3204 0038 00000000 		.4byte	.LFB65
+ 3205 003c 0C000000 		.4byte	.LFE65-.LFB65
+ 3206 0040 00000000 		.4byte	.LFB66
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 68
+
+
+ 3207 0044 0C000000 		.4byte	.LFE66-.LFB66
+ 3208 0048 00000000 		.4byte	.LFB67
+ 3209 004c 70000000 		.4byte	.LFE67-.LFB67
+ 3210 0050 00000000 		.4byte	.LFB68
+ 3211 0054 A0010000 		.4byte	.LFE68-.LFB68
+ 3212 0058 00000000 		.4byte	0
+ 3213 005c 00000000 		.4byte	0
+ 3214              		.section	.debug_ranges,"",%progbits
+ 3215              	.Ldebug_ranges0:
+ 3216 0000 00000000 		.4byte	.LFB73
+ 3217 0004 20000000 		.4byte	.LFE73
+ 3218 0008 00000000 		.4byte	.LFB72
+ 3219 000c 44000000 		.4byte	.LFE72
+ 3220 0010 00000000 		.4byte	.LFB71
+ 3221 0014 64000000 		.4byte	.LFE71
+ 3222 0018 00000000 		.4byte	.LFB63
+ 3223 001c 0C000000 		.4byte	.LFE63
+ 3224 0020 00000000 		.4byte	.LFB64
+ 3225 0024 0C000000 		.4byte	.LFE64
+ 3226 0028 00000000 		.4byte	.LFB65
+ 3227 002c 0C000000 		.4byte	.LFE65
+ 3228 0030 00000000 		.4byte	.LFB66
+ 3229 0034 0C000000 		.4byte	.LFE66
+ 3230 0038 00000000 		.4byte	.LFB67
+ 3231 003c 70000000 		.4byte	.LFE67
+ 3232 0040 00000000 		.4byte	.LFB68
+ 3233 0044 A0010000 		.4byte	.LFE68
+ 3234 0048 00000000 		.4byte	0
+ 3235 004c 00000000 		.4byte	0
+ 3236              		.section	.debug_line,"",%progbits
+ 3237              	.Ldebug_line0:
+ 3238 0000 00030000 		.section	.debug_str,"MS",%progbits,1
+ 3238      02007C01 
+ 3238      00000201 
+ 3238      FB0E0D00 
+ 3238      01010101 
+ 3239              	.LASF35:
+ 3240 0000 50554C4C 		.ascii	"PULL_OVER\000"
+ 3240      5F4F5645 
+ 3240      5200
+ 3241              	.LASF41:
+ 3242 000a 546F6E65 		.ascii	"ToneType\000"
+ 3242      54797065 
+ 3242      00
+ 3243              	.LASF22:
+ 3244 0013 50484153 		.ascii	"PHASER\000"
+ 3244      455200
+ 3245              	.LASF96:
+ 3246 001a 43454E54 		.ascii	"CENTER_DAC_VALUE\000"
+ 3246      45525F44 
+ 3246      41435F56 
+ 3246      414C5545 
+ 3246      00
+ 3247              	.LASF26:
+ 3248 002b 48494748 		.ascii	"HIGH_LOW\000"
+ 3248      5F4C4F57 
+ 3248      00
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 69
+
+
+ 3249              	.LASF91:
+ 3250 0034 736F6E67 		.ascii	"songChoice\000"
+ 3250      43686F69 
+ 3250      636500
+ 3251              	.LASF98:
+ 3252 003f 68656164 		.ascii	"headerArray\000"
+ 3252      65724172 
+ 3252      72617900 
+ 3253              	.LASF72:
+ 3254 004b 68656164 		.ascii	"headerSubArray\000"
+ 3254      65725375 
+ 3254      62417272 
+ 3254      617900
+ 3255              	.LASF16:
+ 3256 005a 63686172 		.ascii	"char\000"
+ 3256      00
+ 3257              	.LASF2:
+ 3258 005f 73686F72 		.ascii	"short int\000"
+ 3258      7420696E 
+ 3258      7400
+ 3259              	.LASF34:
+ 3260 0069 4D4F5645 		.ascii	"MOVE_OUT\000"
+ 3260      5F4F5554 
+ 3260      00
+ 3261              	.LASF17:
+ 3262 0072 73697A65 		.ascii	"sizetype\000"
+ 3262      74797065 
+ 3262      00
+ 3263              	.LASF108:
+ 3264 007b 5C5C4441 		.ascii	"\\\\DATA\\Folder Redirection\\faithc\\Desktop\\FAIT"
+ 3264      54415C46 
+ 3264      6F6C6465 
+ 3264      72205265 
+ 3264      64697265 
+ 3265 00a8 48532052 		.ascii	"HS RELEASED FIRMWARE\\SirenProject200W_RevF\\SirenP"
+ 3265      454C4541 
+ 3265      53454420 
+ 3265      4649524D 
+ 3265      57415245 
+ 3266 00d9 726F6A65 		.ascii	"roject200W_RevD\\ReleaseVersion.cydsn\000"
+ 3266      63743230 
+ 3266      30575F52 
+ 3266      6576445C 
+ 3266      52656C65 
+ 3267              	.LASF37:
+ 3268 00fe 53544550 		.ascii	"STEP_OUT_HANDS_UP\000"
+ 3268      5F4F5554 
+ 3268      5F48414E 
+ 3268      44535F55 
+ 3268      5000
+ 3269              	.LASF81:
+ 3270 0110 67657453 		.ascii	"getSamplingRate\000"
+ 3270      616D706C 
+ 3270      696E6752 
+ 3270      61746500 
+ 3271              	.LASF56:
+ 3272 0120 5345434F 		.ascii	"SECOND_SUBCHUNK_DATA\000"
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 70
+
+
+ 3272      4E445F53 
+ 3272      55424348 
+ 3272      554E4B5F 
+ 3272      44415441 
+ 3273              	.LASF6:
+ 3274 0135 6C6F6E67 		.ascii	"long long int\000"
+ 3274      206C6F6E 
+ 3274      6720696E 
+ 3274      7400
+ 3275              	.LASF90:
+ 3276 0143 70726F63 		.ascii	"processHeaderData\000"
+ 3276      65737348 
+ 3276      65616465 
+ 3276      72446174 
+ 3276      6100
+ 3277              	.LASF73:
+ 3278 0155 636F6D70 		.ascii	"compareValue\000"
+ 3278      61726556 
+ 3278      616C7565 
+ 3278      00
+ 3279              	.LASF71:
+ 3280 0162 64617461 		.ascii	"dataParameter\000"
+ 3280      50617261 
+ 3280      6D657465 
+ 3280      7200
+ 3281              	.LASF80:
+ 3282 0170 67657442 		.ascii	"getBytesPerSample\000"
+ 3282      79746573 
+ 3282      50657253 
+ 3282      616D706C 
+ 3282      6500
+ 3283              	.LASF110:
+ 3284 0182 73747263 		.ascii	"strcmp\000"
+ 3284      6D7000
+ 3285              	.LASF74:
+ 3286 0189 70726F63 		.ascii	"processBigEndianData\000"
+ 3286      65737342 
+ 3286      6967456E 
+ 3286      6469616E 
+ 3286      44617461 
+ 3287              	.LASF12:
+ 3288 019e 75696E74 		.ascii	"uint16\000"
+ 3288      313600
+ 3289              	.LASF67:
+ 3290 01a5 696E6465 		.ascii	"index\000"
+ 3290      7800
+ 3291              	.LASF48:
+ 3292 01ab 46495253 		.ascii	"FIRST_SUBCHUNK_AUDIO_FORMAT\000"
+ 3292      545F5355 
+ 3292      42434855 
+ 3292      4E4B5F41 
+ 3292      5544494F 
+ 3293              	.LASF111:
+ 3294 01c7 5350494D 		.ascii	"SPIM_WriteTxData\000"
+ 3294      5F577269 
+ 3294      74655478 
+ 3294      44617461 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 71
+
+
+ 3294      00
+ 3295              	.LASF52:
+ 3296 01d8 46495253 		.ascii	"FIRST_SUBCHUNK_BLOCK_ALIGN\000"
+ 3296      545F5355 
+ 3296      42434855 
+ 3296      4E4B5F42 
+ 3296      4C4F434B 
+ 3297              	.LASF11:
+ 3298 01f3 75696E74 		.ascii	"uint8\000"
+ 3298      3800
+ 3299              	.LASF0:
+ 3300 01f9 7369676E 		.ascii	"signed char\000"
+ 3300      65642063 
+ 3300      68617200 
+ 3301              	.LASF33:
+ 3302 0205 434F5053 		.ascii	"COPS_SONG\000"
+ 3302      5F534F4E 
+ 3302      4700
+ 3303              	.LASF30:
+ 3304 020f 484F524E 		.ascii	"HORN_YELP\000"
+ 3304      5F59454C 
+ 3304      5000
+ 3305              	.LASF14:
+ 3306 0219 666C6F61 		.ascii	"float\000"
+ 3306      7400
+ 3307              	.LASF104:
+ 3308 021f 5350494D 		.ascii	"SPIM_ReadTxStatus\000"
+ 3308      5F526561 
+ 3308      64547853 
+ 3308      74617475 
+ 3308      7300
+ 3309              	.LASF58:
+ 3310 0231 666F726D 		.ascii	"format\000"
+ 3310      617400
+ 3311              	.LASF18:
+ 3312 0238 4E4F5F54 		.ascii	"NO_TONE\000"
+ 3312      4F4E4500 
+ 3313              	.LASF40:
+ 3314 0240 54455354 		.ascii	"TEST_TONE\000"
+ 3314      5F544F4E 
+ 3314      4500
+ 3315              	.LASF75:
+ 3316 024a 64617461 		.ascii	"dataArray\000"
+ 3316      41727261 
+ 3316      7900
+ 3317              	.LASF89:
+ 3318 0254 6765744E 		.ascii	"getNextWaveData\000"
+ 3318      65787457 
+ 3318      61766544 
+ 3318      61746100 
+ 3319              	.LASF36:
+ 3320 0264 53544550 		.ascii	"STEP_OUT\000"
+ 3320      5F4F5554 
+ 3320      00
+ 3321              	.LASF4:
+ 3322 026d 6C6F6E67 		.ascii	"long int\000"
+ 3322      20696E74 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 72
+
+
+ 3322      00
+ 3323              	.LASF92:
+ 3324 0276 61646472 		.ascii	"address\000"
+ 3324      65737300 
+ 3325              	.LASF95:
+ 3326 027e 4C4F5745 		.ascii	"LOWEST_DAC_VALUE\000"
+ 3326      53545F44 
+ 3326      41435F56 
+ 3326      414C5545 
+ 3326      00
+ 3327              	.LASF23:
+ 3328 028f 484F524E 		.ascii	"HORN\000"
+ 3328      00
+ 3329              	.LASF59:
+ 3330 0294 61756469 		.ascii	"audioFormat\000"
+ 3330      6F466F72 
+ 3330      6D617400 
+ 3331              	.LASF76:
+ 3332 02a0 636F6D70 		.ascii	"compareString\000"
+ 3332      61726553 
+ 3332      7472696E 
+ 3332      6700
+ 3333              	.LASF32:
+ 3334 02ae 4543544F 		.ascii	"ECTOSIREN\000"
+ 3334      53495245 
+ 3334      4E00
+ 3335              	.LASF21:
+ 3336 02b8 46415354 		.ascii	"FAST_YELP\000"
+ 3336      5F59454C 
+ 3336      5000
+ 3337              	.LASF47:
+ 3338 02c2 46495253 		.ascii	"FIRST_SUBCHUNK_SIZE\000"
+ 3338      545F5355 
+ 3338      42434855 
+ 3338      4E4B5F53 
+ 3338      495A4500 
+ 3339              	.LASF85:
+ 3340 02d6 61646472 		.ascii	"addressMSB\000"
+ 3340      6573734D 
+ 3340      534200
+ 3341              	.LASF24:
+ 3342 02e1 4D454348 		.ascii	"MECHANICAL\000"
+ 3342      414E4943 
+ 3342      414C00
+ 3343              	.LASF93:
+ 3344 02ec 52454144 		.ascii	"READ_COMMAND\000"
+ 3344      5F434F4D 
+ 3344      4D414E44 
+ 3344      00
+ 3345              	.LASF82:
+ 3346 02f9 67657444 		.ascii	"getDataSize\000"
+ 3346      61746153 
+ 3346      697A6500 
+ 3347              	.LASF1:
+ 3348 0305 756E7369 		.ascii	"unsigned char\000"
+ 3348      676E6564 
+ 3348      20636861 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 73
+
+
+ 3348      7200
+ 3349              	.LASF83:
+ 3350 0313 61646472 		.ascii	"addressIndex\000"
+ 3350      65737349 
+ 3350      6E646578 
+ 3350      00
+ 3351              	.LASF88:
+ 3352 0320 44414376 		.ascii	"DACvalue\000"
+ 3352      616C7565 
+ 3352      00
+ 3353              	.LASF103:
+ 3354 0329 63757272 		.ascii	"currentSong\000"
+ 3354      656E7453 
+ 3354      6F6E6700 
+ 3355              	.LASF107:
+ 3356 0335 2E5C4669 		.ascii	".\\FileDecode.c\000"
+ 3356      6C654465 
+ 3356      636F6465 
+ 3356      2E6300
+ 3357              	.LASF62:
+ 3358 0344 62797465 		.ascii	"byteRate\000"
+ 3358      52617465 
+ 3358      00
+ 3359              	.LASF7:
+ 3360 034d 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 3360      206C6F6E 
+ 3360      6720756E 
+ 3360      7369676E 
+ 3360      65642069 
+ 3361              	.LASF8:
+ 3362 0364 756E7369 		.ascii	"unsigned int\000"
+ 3362      676E6564 
+ 3362      20696E74 
+ 3362      00
+ 3363              	.LASF87:
+ 3364 0371 61646472 		.ascii	"addressLSB\000"
+ 3364      6573734C 
+ 3364      534200
+ 3365              	.LASF5:
+ 3366 037c 6C6F6E67 		.ascii	"long unsigned int\000"
+ 3366      20756E73 
+ 3366      69676E65 
+ 3366      6420696E 
+ 3366      7400
+ 3367              	.LASF31:
+ 3368 038e 50484153 		.ascii	"PHASER_YELP\000"
+ 3368      45525F59 
+ 3368      454C5000 
+ 3369              	.LASF39:
+ 3370 039a 52454D41 		.ascii	"REMAIN_WINDOW_DOWN\000"
+ 3370      494E5F57 
+ 3370      494E444F 
+ 3370      575F444F 
+ 3370      574E00
+ 3371              	.LASF86:
+ 3372 03ad 61646472 		.ascii	"addressCSB\000"
+ 3372      65737343 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 74
+
+
+ 3372      534200
+ 3373              	.LASF100:
+ 3374 03b8 57617665 		.ascii	"WaveChunk\000"
+ 3374      4368756E 
+ 3374      6B00
+ 3375              	.LASF105:
+ 3376 03c2 5350494D 		.ascii	"SPIM_ReadRxData\000"
+ 3376      5F526561 
+ 3376      64527844 
+ 3376      61746100 
+ 3377              	.LASF70:
+ 3378 03d2 70726F63 		.ascii	"processLittleEndianData\000"
+ 3378      6573734C 
+ 3378      6974746C 
+ 3378      65456E64 
+ 3378      69616E44 
+ 3379              	.LASF106:
+ 3380 03ea 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 3380      4320342E 
+ 3380      392E3320 
+ 3380      32303135 
+ 3380      30333033 
+ 3381 041d 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m3 -mthumb -g -O"
+ 3381      20726576 
+ 3381      6973696F 
+ 3381      6E203232 
+ 3381      31323230 
+ 3382 0450 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 3382      66756E63 
+ 3382      74696F6E 
+ 3382      2D736563 
+ 3382      74696F6E 
+ 3383              	.LASF10:
+ 3384 0478 696E7433 		.ascii	"int32_t\000"
+ 3384      325F7400 
+ 3385              	.LASF99:
+ 3386 0480 534F4E47 		.ascii	"SONG_START_ADDRESS\000"
+ 3386      5F535441 
+ 3386      52545F41 
+ 3386      44445245 
+ 3386      535300
+ 3387              	.LASF3:
+ 3388 0493 73686F72 		.ascii	"short unsigned int\000"
+ 3388      7420756E 
+ 3388      7369676E 
+ 3388      65642069 
+ 3388      6E7400
+ 3389              	.LASF49:
+ 3390 04a6 46495253 		.ascii	"FIRST_SUBCHUNK_CHANNEL_COUNT\000"
+ 3390      545F5355 
+ 3390      42434855 
+ 3390      4E4B5F43 
+ 3390      48414E4E 
+ 3391              	.LASF42:
+ 3392 04c3 48656164 		.ascii	"HeaderDataStartIndex\000"
+ 3392      65724461 
+ 3392      74615374 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 75
+
+
+ 3392      61727449 
+ 3392      6E646578 
+ 3393              	.LASF25:
+ 3394 04d8 4D414E55 		.ascii	"MANUAL_WAIL\000"
+ 3394      414C5F57 
+ 3394      41494C00 
+ 3395              	.LASF61:
+ 3396 04e4 73616D70 		.ascii	"sampleRate\000"
+ 3396      6C655261 
+ 3396      746500
+ 3397              	.LASF19:
+ 3398 04ef 5741494C 		.ascii	"WAIL\000"
+ 3398      00
+ 3399              	.LASF55:
+ 3400 04f4 5345434F 		.ascii	"SECOND_SUBCHUNK_SIZE\000"
+ 3400      4E445F53 
+ 3400      55424348 
+ 3400      554E4B5F 
+ 3400      53495A45 
+ 3401              	.LASF50:
+ 3402 0509 46495253 		.ascii	"FIRST_SUBCHUNK_SAMPLE_RATE\000"
+ 3402      545F5355 
+ 3402      42434855 
+ 3402      4E4B5F53 
+ 3402      414D504C 
+ 3403              	.LASF63:
+ 3404 0524 626C6F63 		.ascii	"blockAlign\000"
+ 3404      6B416C69 
+ 3404      676E00
+ 3405              	.LASF28:
+ 3406 052f 5043414C 		.ascii	"PCALL_FAST\000"
+ 3406      4C5F4641 
+ 3406      535400
+ 3407              	.LASF79:
+ 3408 053a 67657443 		.ascii	"getChannelCount\000"
+ 3408      68616E6E 
+ 3408      656C436F 
+ 3408      756E7400 
+ 3409              	.LASF64:
+ 3410 054a 62697473 		.ascii	"bitsPerSample\000"
+ 3410      50657253 
+ 3410      616D706C 
+ 3410      6500
+ 3411              	.LASF94:
+ 3412 0558 42595445 		.ascii	"BYTE_SHIFT_FACTOR\000"
+ 3412      5F534849 
+ 3412      46545F46 
+ 3412      4143544F 
+ 3412      5200
+ 3413              	.LASF51:
+ 3414 056a 46495253 		.ascii	"FIRST_SUBCHUNK_BYTE_RATE\000"
+ 3414      545F5355 
+ 3414      42434855 
+ 3414      4E4B5F42 
+ 3414      5954455F 
+ 3415              	.LASF13:
+ 3416 0583 75696E74 		.ascii	"uint32\000"
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 76
+
+
+ 3416      333200
+ 3417              	.LASF27:
+ 3418 058a 5043414C 		.ascii	"PCALL_SLOW\000"
+ 3418      4C5F534C 
+ 3418      4F5700
+ 3419              	.LASF57:
+ 3420 0595 73697A65 		.ascii	"size\000"
+ 3420      00
+ 3421              	.LASF65:
+ 3422 059a 6C697474 		.ascii	"littleEndianValue\000"
+ 3422      6C65456E 
+ 3422      6469616E 
+ 3422      56616C75 
+ 3422      6500
+ 3423              	.LASF78:
+ 3424 05ac 61727261 		.ascii	"arrayCopy\000"
+ 3424      79436F70 
+ 3424      7900
+ 3425              	.LASF46:
+ 3426 05b6 46495253 		.ascii	"FIRST_SUBCHUNK_ID\000"
+ 3426      545F5355 
+ 3426      42434855 
+ 3426      4E4B5F49 
+ 3426      4400
+ 3427              	.LASF9:
+ 3428 05c8 5F5F696E 		.ascii	"__int32_t\000"
+ 3428      7433325F 
+ 3428      7400
+ 3429              	.LASF44:
+ 3430 05d2 57415645 		.ascii	"WAVE_CHUNK_SIZE\000"
+ 3430      5F434855 
+ 3430      4E4B5F53 
+ 3430      495A4500 
+ 3431              	.LASF38:
+ 3432 05e2 52454D41 		.ascii	"REMAIN_IN_VEHICLE\000"
+ 3432      494E5F49 
+ 3432      4E5F5645 
+ 3432      4849434C 
+ 3432      4500
+ 3433              	.LASF84:
+ 3434 05f4 62466972 		.ascii	"bFirstTime\000"
+ 3434      73745469 
+ 3434      6D6500
+ 3435              	.LASF77:
+ 3436 05ff 61727261 		.ascii	"arraySize\000"
+ 3436      7953697A 
+ 3436      6500
+ 3437              	.LASF68:
+ 3438 0609 62696745 		.ascii	"bigEndianValue\000"
+ 3438      6E646961 
+ 3438      6E56616C 
+ 3438      756500
+ 3439              	.LASF66:
+ 3440 0618 62797465 		.ascii	"byteCount\000"
+ 3440      436F756E 
+ 3440      7400
+ 3441              	.LASF101:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 77
+
+
+ 3442 0622 46697273 		.ascii	"FirstSubChunk\000"
+ 3442      74537562 
+ 3442      4368756E 
+ 3442      6B00
+ 3443              	.LASF45:
+ 3444 0630 57415645 		.ascii	"WAVE_CHUNK_FORMAT\000"
+ 3444      5F434855 
+ 3444      4E4B5F46 
+ 3444      4F524D41 
+ 3444      5400
+ 3445              	.LASF69:
+ 3446 0642 636F6E76 		.ascii	"convertToBigEndian\000"
+ 3446      65727454 
+ 3446      6F426967 
+ 3446      456E6469 
+ 3446      616E00
+ 3447              	.LASF15:
+ 3448 0655 646F7562 		.ascii	"double\000"
+ 3448      6C6500
+ 3449              	.LASF29:
+ 3450 065c 484F524E 		.ascii	"HORN_PHASER\000"
+ 3450      5F504841 
+ 3450      53455200 
+ 3451              	.LASF102:
+ 3452 0668 5365636F 		.ascii	"SecondSubChunk\000"
+ 3452      6E645375 
+ 3452      62436875 
+ 3452      6E6B00
+ 3453              	.LASF109:
+ 3454 0677 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 3454      52784275 
+ 3454      66666572 
+ 3454      00
+ 3455              	.LASF53:
+ 3456 0684 46495253 		.ascii	"FIRST_SUBCHUNK_BITS_PER_SAMPLE\000"
+ 3456      545F5355 
+ 3456      42434855 
+ 3456      4E4B5F42 
+ 3456      4954535F 
+ 3457              	.LASF60:
+ 3458 06a3 6368616E 		.ascii	"channelCount\000"
+ 3458      6E656C43 
+ 3458      6F756E74 
+ 3458      00
+ 3459              	.LASF54:
+ 3460 06b0 5345434F 		.ascii	"SECOND_SUBCHUNK_ID\000"
+ 3460      4E445F53 
+ 3460      55424348 
+ 3460      554E4B5F 
+ 3460      494400
+ 3461              	.LASF97:
+ 3462 06c3 48494748 		.ascii	"HIGHEST_DAC_VALUE\000"
+ 3462      4553545F 
+ 3462      4441435F 
+ 3462      56414C55 
+ 3462      4500
+ 3463              	.LASF43:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\ccOz6CyW.s 			page 78
+
+
+ 3464 06d5 57415645 		.ascii	"WAVE_CHUNK_ID\000"
+ 3464      5F434855 
+ 3464      4E4B5F49 
+ 3464      4400
+ 3465              	.LASF20:
+ 3466 06e3 534C4F57 		.ascii	"SLOW_YELP\000"
+ 3466      5F59454C 
+ 3466      5000
+ 3467              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br

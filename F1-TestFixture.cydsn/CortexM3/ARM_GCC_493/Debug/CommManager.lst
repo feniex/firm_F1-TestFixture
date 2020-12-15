@@ -1,0 +1,2983 @@
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 1
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.file	"CommManager.c"
+  15              		.text
+  16              	.Ltext0:
+  17              		.cfi_sections	.debug_frame
+  18              		.section	.text.startVoiceStreamMode,"ax",%progbits
+  19              		.align	2
+  20              		.thumb
+  21              		.thumb_func
+  22              		.type	startVoiceStreamMode, %function
+  23              	startVoiceStreamMode:
+  24              	.LFB67:
+  25              		.file 1 ".\\CommManager.c"
+   1:.\CommManager.c **** /* ========================================
+   2:.\CommManager.c ****  *
+   3:.\CommManager.c ****  * Copyright FENIEX INDUSTRIES, 2016
+   4:.\CommManager.c ****  * 200W SIREN
+   5:.\CommManager.c ****  *
+   6:.\CommManager.c ****  * All Rights Reserved
+   7:.\CommManager.c ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   8:.\CommManager.c ****  *
+   9:.\CommManager.c ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+  10:.\CommManager.c ****  * WHICH IS THE PROPERTY OF your company.
+  11:.\CommManager.c ****  *
+  12:.\CommManager.c ****  * ========================================
+  13:.\CommManager.c **** */
+  14:.\CommManager.c **** 
+  15:.\CommManager.c **** /**********CHANGE LOG**********/
+  16:.\CommManager.c **** 
+  17:.\CommManager.c **** 
+  18:.\CommManager.c **** /**********PREPROCESSOR DIRECTIVES**********/
+  19:.\CommManager.c **** #include "CommonVariables.h"
+  20:.\CommManager.c **** #include "SirenState.h"
+  21:.\CommManager.c **** #include "CommManager.h"
+  22:.\CommManager.c **** 
+  23:.\CommManager.c **** #define HEADER_BYTE_COUNT       2
+  24:.\CommManager.c **** #define EOP_BYTE_COUNT          2
+  25:.\CommManager.c **** 
+  26:.\CommManager.c **** #define HEADER_START_INDEX      0
+  27:.\CommManager.c **** #define PAYLOAD_START_INDEX     HEADER_BYTE_COUNT
+  28:.\CommManager.c **** 
+  29:.\CommManager.c **** #define MAX_PAYLOAD_BYTE_COUNT  7
+  30:.\CommManager.c **** #define PACKET_TYPE_COUNT       2
+  31:.\CommManager.c **** 
+  32:.\CommManager.c **** /**********DEFINED CONSTANTS**********/
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 2
+
+
+  33:.\CommManager.c **** enum DataType
+  34:.\CommManager.c **** {
+  35:.\CommManager.c ****     VOICE_DATA,
+  36:.\CommManager.c ****     SIREN_INPUTS,
+  37:.\CommManager.c **** };
+  38:.\CommManager.c **** 
+  39:.\CommManager.c **** enum PacketState
+  40:.\CommManager.c **** {
+  41:.\CommManager.c ****     HEADER_STATE,
+  42:.\CommManager.c ****     PAYLOAD_STATE,
+  43:.\CommManager.c ****     EOP_STATE
+  44:.\CommManager.c **** };
+  45:.\CommManager.c **** 
+  46:.\CommManager.c **** static const uint8 START_BYTE = 0xAA;
+  47:.\CommManager.c **** static const uint8 STOP_BYTE = 0x55;
+  48:.\CommManager.c **** static const uint8 INITIAL_DAC_VALUE = 128;
+  49:.\CommManager.c **** static const uint8 TIMER_LIMIT_IN_TEN_MILLISECONDS = 50;
+  50:.\CommManager.c **** 
+  51:.\CommManager.c **** /**********DATA STRUCTURES**********/
+  52:.\CommManager.c **** typedef struct
+  53:.\CommManager.c **** {
+  54:.\CommManager.c ****     const uint8 HEADER_BYTE;
+  55:.\CommManager.c ****     const uint8 PACKET_TYPE;
+  56:.\CommManager.c ****     const uint8 PAYLOAD_SIZE;
+  57:.\CommManager.c ****     const uint8 EOP_CARRIAGE_RETURN;
+  58:.\CommManager.c ****     const uint8 EOP_LINE_FEED;
+  59:.\CommManager.c **** }Packet;
+  60:.\CommManager.c **** 
+  61:.\CommManager.c **** static Packet PacketList[PACKET_TYPE_COUNT] = 
+  62:.\CommManager.c **** {
+  63:.\CommManager.c ****     {'~', 'V', 1, '\r', '\n'},
+  64:.\CommManager.c ****     {'~', 'S', 3, '\r', '\n'},
+  65:.\CommManager.c **** };
+  66:.\CommManager.c **** 
+  67:.\CommManager.c **** /**********GLOBAL VARIABLES**********/
+  68:.\CommManager.c **** static uint8 bVoiceStreamEnabled = false;
+  69:.\CommManager.c **** static uint8 tenMilliSecondsCount = 0;
+  70:.\CommManager.c **** 
+  71:.\CommManager.c **** /**********LOCAL FUNCTION PROTOTYPES**********/
+  72:.\CommManager.c **** static void detectPacket(uint8 dataByte);
+  73:.\CommManager.c **** static void startVoiceStreamMode(void);
+  74:.\CommManager.c **** static void stopVoiceStreamMode(void);
+  75:.\CommManager.c **** 
+  76:.\CommManager.c **** /**********DEFINED GLOBAL FUNCTIONS**********/
+  77:.\CommManager.c **** /*******************************************************************************
+  78:.\CommManager.c **** * Function Name: processByteReceivedHandler
+  79:.\CommManager.c **** ********************************************************************************
+  80:.\CommManager.c **** *
+  81:.\CommManager.c **** * Summary:
+  82:.\CommManager.c **** *  Triggers when a byte is received in UART, called in UART_ISR(). If in voice
+  83:.\CommManager.c **** *  stream mode, the byte is sent directly to the DAC.
+  84:.\CommManager.c **** *
+  85:.\CommManager.c **** * Parameters:
+  86:.\CommManager.c **** *  None.
+  87:.\CommManager.c **** *
+  88:.\CommManager.c **** * Return:
+  89:.\CommManager.c **** *  None.
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 3
+
+
+  90:.\CommManager.c **** *
+  91:.\CommManager.c **** *******************************************************************************/
+  92:.\CommManager.c **** void processByteReceivedHandler(void)
+  93:.\CommManager.c **** {
+  94:.\CommManager.c ****     uint8 dataByte = 0;
+  95:.\CommManager.c ****     
+  96:.\CommManager.c ****     UART_Timer_Stop();
+  97:.\CommManager.c ****     disableToneInputInterrupts();
+  98:.\CommManager.c ****     tenMilliSecondsCount = 0;
+  99:.\CommManager.c ****     
+ 100:.\CommManager.c ****     do
+ 101:.\CommManager.c ****     {
+ 102:.\CommManager.c ****         dataByte = UART_GetChar();
+ 103:.\CommManager.c ****         
+ 104:.\CommManager.c ****         if(bVoiceStreamEnabled)
+ 105:.\CommManager.c ****         {   
+ 106:.\CommManager.c ****             VDAC8_1_SetValue(dataByte);
+ 107:.\CommManager.c ****             VDAC8_2_SetValue(dataByte);
+ 108:.\CommManager.c ****         }
+ 109:.\CommManager.c ****         
+ 110:.\CommManager.c ****         detectPacket(dataByte);
+ 111:.\CommManager.c ****         
+ 112:.\CommManager.c ****     }while(UART_ReadRxStatus() & UART_RX_STS_FIFO_NOTEMPTY);
+ 113:.\CommManager.c ****     
+ 114:.\CommManager.c ****     UART_Timer_Start();
+ 115:.\CommManager.c **** }
+ 116:.\CommManager.c **** 
+ 117:.\CommManager.c **** /*******************************************************************************
+ 118:.\CommManager.c **** * Function Name: processLED_TimerRoutine
+ 119:.\CommManager.c **** ********************************************************************************
+ 120:.\CommManager.c **** *
+ 121:.\CommManager.c **** * Summary:
+ 122:.\CommManager.c **** *  Toggles the LED every second, called in LED_ISR().
+ 123:.\CommManager.c **** *
+ 124:.\CommManager.c **** * Parameters:
+ 125:.\CommManager.c **** *  None.
+ 126:.\CommManager.c **** *
+ 127:.\CommManager.c **** * Return:
+ 128:.\CommManager.c **** *  None.
+ 129:.\CommManager.c **** *
+ 130:.\CommManager.c **** *******************************************************************************/
+ 131:.\CommManager.c **** void processLED_TimerRoutine(void)
+ 132:.\CommManager.c **** {
+ 133:.\CommManager.c ****     static uint8 bSwitch = false;
+ 134:.\CommManager.c ****     
+ 135:.\CommManager.c ****     LED_Timer_ReadStatusRegister();
+ 136:.\CommManager.c ****     
+ 137:.\CommManager.c ****     bSwitch = !bSwitch;
+ 138:.\CommManager.c ****     LEDoutput_Write(bSwitch);
+ 139:.\CommManager.c **** }
+ 140:.\CommManager.c **** 
+ 141:.\CommManager.c **** /*******************************************************************************
+ 142:.\CommManager.c **** * Function Name: processCommTimeoutRoutine
+ 143:.\CommManager.c **** ********************************************************************************
+ 144:.\CommManager.c **** *
+ 145:.\CommManager.c **** * Summary:
+ 146:.\CommManager.c **** *  Starts to count when UART has not received data for more than a second. After
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 4
+
+
+ 147:.\CommManager.c **** *   reaching the timer limit, the routine reenables the siren inputs and stops
+ 148:.\CommManager.c **** *   the timer. Called in UART_TimerISR().
+ 149:.\CommManager.c **** *
+ 150:.\CommManager.c **** * Parameters:
+ 151:.\CommManager.c **** *  None.
+ 152:.\CommManager.c **** *
+ 153:.\CommManager.c **** * Return:
+ 154:.\CommManager.c **** *  None.
+ 155:.\CommManager.c **** *
+ 156:.\CommManager.c **** *******************************************************************************/
+ 157:.\CommManager.c **** void processCommTimeoutRoutine(void)
+ 158:.\CommManager.c **** {
+ 159:.\CommManager.c ****     UART_Timer_ReadStatusRegister();
+ 160:.\CommManager.c ****     
+ 161:.\CommManager.c ****     if(tenMilliSecondsCount < TIMER_LIMIT_IN_TEN_MILLISECONDS)
+ 162:.\CommManager.c ****         tenMilliSecondsCount++;
+ 163:.\CommManager.c ****     else
+ 164:.\CommManager.c ****     {
+ 165:.\CommManager.c ****         tenMilliSecondsCount = 0;
+ 166:.\CommManager.c ****         disableAudioAndPWM();
+ 167:.\CommManager.c ****         disableBothSpeakers();
+ 168:.\CommManager.c ****         enableToneInputInterrupts();
+ 169:.\CommManager.c ****         UART_Timer_Stop();
+ 170:.\CommManager.c ****     }
+ 171:.\CommManager.c **** }
+ 172:.\CommManager.c **** 
+ 173:.\CommManager.c **** /**********DEFINED LOCAL FUNCTIONS**********/
+ 174:.\CommManager.c **** /*******************************************************************************
+ 175:.\CommManager.c **** * Function Name: detectPacket
+ 176:.\CommManager.c **** ********************************************************************************
+ 177:.\CommManager.c **** *
+ 178:.\CommManager.c **** * Summary:
+ 179:.\CommManager.c **** *  Determines if the incoming byte belongs to a valid packet. If the packet is for
+ 180:.\CommManager.c **** *  for starting voice stream, voice stream mode will be activated.
+ 181:.\CommManager.c **** *
+ 182:.\CommManager.c **** * Parameters:
+ 183:.\CommManager.c **** *  dataByte: The byte to check
+ 184:.\CommManager.c **** *
+ 185:.\CommManager.c **** * Return:
+ 186:.\CommManager.c **** *  None.
+ 187:.\CommManager.c **** *
+ 188:.\CommManager.c **** *******************************************************************************/
+ 189:.\CommManager.c **** static void detectPacket(uint8 dataByte)
+ 190:.\CommManager.c **** {
+ 191:.\CommManager.c ****     static uint8 packet[MAX_PAYLOAD_BYTE_COUNT+HEADER_BYTE_COUNT+EOP_BYTE_COUNT];   
+ 192:.\CommManager.c ****     static enum PacketState currentState = HEADER_STATE;
+ 193:.\CommManager.c ****     static enum DataType currentType = SIREN_INPUTS;
+ 194:.\CommManager.c ****     static uint8 currentPacketIndex = HEADER_START_INDEX;
+ 195:.\CommManager.c ****     
+ 196:.\CommManager.c ****     switch(currentState)
+ 197:.\CommManager.c ****     {
+ 198:.\CommManager.c ****         case HEADER_STATE:
+ 199:.\CommManager.c ****             if((currentPacketIndex == HEADER_START_INDEX) && ((dataByte == PacketList[VOICE_DATA].H
+ 200:.\CommManager.c ****                 (dataByte == PacketList[SIREN_INPUTS].HEADER_BYTE)))
+ 201:.\CommManager.c ****             {
+ 202:.\CommManager.c ****                 packet[currentPacketIndex] = dataByte;
+ 203:.\CommManager.c ****                 currentPacketIndex++;
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 5
+
+
+ 204:.\CommManager.c ****             }
+ 205:.\CommManager.c ****             else if((currentPacketIndex == (HEADER_START_INDEX+1)) && ((dataByte == PacketList[VOIC
+ 206:.\CommManager.c ****                 (dataByte == PacketList[SIREN_INPUTS].PACKET_TYPE)))
+ 207:.\CommManager.c ****             {
+ 208:.\CommManager.c ****                 packet[currentPacketIndex] = dataByte;
+ 209:.\CommManager.c ****                 currentPacketIndex++;
+ 210:.\CommManager.c ****                 currentState = PAYLOAD_STATE;
+ 211:.\CommManager.c ****                 
+ 212:.\CommManager.c ****                 if(dataByte == PacketList[VOICE_DATA].PACKET_TYPE)
+ 213:.\CommManager.c ****                     currentType = VOICE_DATA;
+ 214:.\CommManager.c ****                 else
+ 215:.\CommManager.c ****                     currentType = SIREN_INPUTS;
+ 216:.\CommManager.c ****             }
+ 217:.\CommManager.c ****             else
+ 218:.\CommManager.c ****             {
+ 219:.\CommManager.c ****                 currentPacketIndex = HEADER_START_INDEX;
+ 220:.\CommManager.c ****                 currentType = SIREN_INPUTS;
+ 221:.\CommManager.c ****             }
+ 222:.\CommManager.c ****             break;
+ 223:.\CommManager.c ****             
+ 224:.\CommManager.c ****         case PAYLOAD_STATE:
+ 225:.\CommManager.c ****             packet[currentPacketIndex] = dataByte;
+ 226:.\CommManager.c ****             currentPacketIndex++;
+ 227:.\CommManager.c ****             
+ 228:.\CommManager.c ****             if(currentPacketIndex >= (PAYLOAD_START_INDEX + PacketList[currentType].PAYLOAD_SIZE))
+ 229:.\CommManager.c ****                 currentState = EOP_STATE;
+ 230:.\CommManager.c ****             break;   
+ 231:.\CommManager.c ****             
+ 232:.\CommManager.c ****         case EOP_STATE:
+ 233:.\CommManager.c ****             if((currentPacketIndex == (PAYLOAD_START_INDEX + PacketList[currentType].PAYLOAD_SIZE))
+ 234:.\CommManager.c ****                 (dataByte == PacketList[currentType].EOP_CARRIAGE_RETURN))
+ 235:.\CommManager.c ****             {
+ 236:.\CommManager.c ****                 packet[currentPacketIndex] = dataByte;
+ 237:.\CommManager.c ****                 currentPacketIndex++;
+ 238:.\CommManager.c ****             }
+ 239:.\CommManager.c ****             else if((currentPacketIndex == (PAYLOAD_START_INDEX + PacketList[currentType].PAYLOAD_S
+ 240:.\CommManager.c ****                 (dataByte == PacketList[currentType].EOP_LINE_FEED))
+ 241:.\CommManager.c ****             {
+ 242:.\CommManager.c ****                 packet[currentPacketIndex] = dataByte;
+ 243:.\CommManager.c ****                 
+ 244:.\CommManager.c ****                 if(currentType == VOICE_DATA)
+ 245:.\CommManager.c ****                 { 
+ 246:.\CommManager.c ****                     if(packet[PAYLOAD_START_INDEX] == START_BYTE)
+ 247:.\CommManager.c ****                     {
+ 248:.\CommManager.c ****                         bVoiceStreamEnabled = true;
+ 249:.\CommManager.c ****                         startVoiceStreamMode();
+ 250:.\CommManager.c ****                     }
+ 251:.\CommManager.c ****                     else
+ 252:.\CommManager.c ****                     {
+ 253:.\CommManager.c ****                         bVoiceStreamEnabled = false;
+ 254:.\CommManager.c ****                         stopVoiceStreamMode();
+ 255:.\CommManager.c ****                     }
+ 256:.\CommManager.c ****                 }
+ 257:.\CommManager.c ****                 else if(currentType == SIREN_INPUTS)
+ 258:.\CommManager.c ****                     setTonesWithCommunication(packet[PAYLOAD_START_INDEX], 
+ 259:.\CommManager.c ****                         packet[PAYLOAD_START_INDEX + 1], packet[PAYLOAD_START_INDEX + 2]);
+ 260:.\CommManager.c ****                 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 6
+
+
+ 261:.\CommManager.c ****                 currentPacketIndex = HEADER_START_INDEX;
+ 262:.\CommManager.c ****                 currentState = HEADER_STATE;
+ 263:.\CommManager.c ****                 currentType = SIREN_INPUTS;
+ 264:.\CommManager.c ****             }
+ 265:.\CommManager.c ****             else
+ 266:.\CommManager.c ****             {
+ 267:.\CommManager.c ****                 currentPacketIndex = HEADER_START_INDEX;
+ 268:.\CommManager.c ****                 currentState = HEADER_STATE;
+ 269:.\CommManager.c ****                 currentType = SIREN_INPUTS;
+ 270:.\CommManager.c ****             }
+ 271:.\CommManager.c ****             break;
+ 272:.\CommManager.c ****     }
+ 273:.\CommManager.c **** }
+ 274:.\CommManager.c **** 
+ 275:.\CommManager.c **** /*******************************************************************************
+ 276:.\CommManager.c **** * Function Name: startVoiceStreamMode
+ 277:.\CommManager.c **** ********************************************************************************
+ 278:.\CommManager.c **** *
+ 279:.\CommManager.c **** * Summary:
+ 280:.\CommManager.c **** *  Enables DACs and Power Amps for voice stream.
+ 281:.\CommManager.c **** *
+ 282:.\CommManager.c **** * Parameters:
+ 283:.\CommManager.c **** *  None.
+ 284:.\CommManager.c **** *
+ 285:.\CommManager.c **** * Return:
+ 286:.\CommManager.c **** *  None.
+ 287:.\CommManager.c **** *
+ 288:.\CommManager.c **** *******************************************************************************/
+ 289:.\CommManager.c **** static void startVoiceStreamMode(void)
+ 290:.\CommManager.c **** {
+  26              		.loc 1 290 0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30 0000 08B5     		push	{r3, lr}
+  31              		.cfi_def_cfa_offset 8
+  32              		.cfi_offset 3, -8
+  33              		.cfi_offset 14, -4
+ 291:.\CommManager.c ****     DACtimer1_Stop();
+  34              		.loc 1 291 0
+  35 0002 FFF7FEFF 		bl	DACtimer1_Stop
+  36              	.LVL0:
+ 292:.\CommManager.c ****     DACtimer2_Stop();
+  37              		.loc 1 292 0
+  38 0006 FFF7FEFF 		bl	DACtimer2_Stop
+  39              	.LVL1:
+ 293:.\CommManager.c ****     
+ 294:.\CommManager.c ****     AMux1_FastSelect(DAC_MODE);
+  40              		.loc 1 294 0
+  41 000a 0120     		movs	r0, #1
+  42 000c FFF7FEFF 		bl	AMux1_FastSelect
+  43              	.LVL2:
+ 295:.\CommManager.c ****     AMux2_FastSelect(DAC_MODE);
+  44              		.loc 1 295 0
+  45 0010 0120     		movs	r0, #1
+  46 0012 FFF7FEFF 		bl	AMux2_FastSelect
+  47              	.LVL3:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 7
+
+
+ 296:.\CommManager.c ****     
+ 297:.\CommManager.c ****     PGA_1_Start();   
+  48              		.loc 1 297 0
+  49 0016 FFF7FEFF 		bl	PGA_1_Start
+  50              	.LVL4:
+ 298:.\CommManager.c ****     VDAC8_1_Start();
+  51              		.loc 1 298 0
+  52 001a FFF7FEFF 		bl	VDAC8_1_Start
+  53              	.LVL5:
+ 299:.\CommManager.c ****     VDAC8_1_SetValue(INITIAL_DAC_VALUE);
+  54              		.loc 1 299 0
+  55 001e 8020     		movs	r0, #128
+  56 0020 FFF7FEFF 		bl	VDAC8_1_SetValue
+  57              	.LVL6:
+ 300:.\CommManager.c ****     
+ 301:.\CommManager.c ****     PGA_2_Start();   
+  58              		.loc 1 301 0
+  59 0024 FFF7FEFF 		bl	PGA_2_Start
+  60              	.LVL7:
+ 302:.\CommManager.c ****     VDAC8_2_Start();
+  61              		.loc 1 302 0
+  62 0028 FFF7FEFF 		bl	VDAC8_2_Start
+  63              	.LVL8:
+ 303:.\CommManager.c ****     VDAC8_2_SetValue(INITIAL_DAC_VALUE);
+  64              		.loc 1 303 0
+  65 002c 8020     		movs	r0, #128
+  66 002e FFF7FEFF 		bl	VDAC8_2_SetValue
+  67              	.LVL9:
+ 304:.\CommManager.c ****     
+ 305:.\CommManager.c ****     PowerAmpOutput1_Write(true);
+  68              		.loc 1 305 0
+  69 0032 0120     		movs	r0, #1
+  70 0034 FFF7FEFF 		bl	PowerAmpOutput1_Write
+  71              	.LVL10:
+ 306:.\CommManager.c ****     PowerAmpOutput2_Write(true);
+  72              		.loc 1 306 0
+  73 0038 0120     		movs	r0, #1
+  74 003a FFF7FEFF 		bl	PowerAmpOutput2_Write
+  75              	.LVL11:
+  76 003e 08BD     		pop	{r3, pc}
+  77              		.cfi_endproc
+  78              	.LFE67:
+  79              		.size	startVoiceStreamMode, .-startVoiceStreamMode
+  80              		.section	.text.stopVoiceStreamMode,"ax",%progbits
+  81              		.align	2
+  82              		.thumb
+  83              		.thumb_func
+  84              		.type	stopVoiceStreamMode, %function
+  85              	stopVoiceStreamMode:
+  86              	.LFB68:
+ 307:.\CommManager.c **** }
+ 308:.\CommManager.c **** 
+ 309:.\CommManager.c **** /*******************************************************************************
+ 310:.\CommManager.c **** * Function Name: stopVoiceStreamMode
+ 311:.\CommManager.c **** ********************************************************************************
+ 312:.\CommManager.c **** *
+ 313:.\CommManager.c **** * Summary:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 8
+
+
+ 314:.\CommManager.c **** *  Disables DACs and Power Amps for voice stream.
+ 315:.\CommManager.c **** *
+ 316:.\CommManager.c **** * Parameters:
+ 317:.\CommManager.c **** *  None.
+ 318:.\CommManager.c **** *
+ 319:.\CommManager.c **** * Return:
+ 320:.\CommManager.c **** *  None.
+ 321:.\CommManager.c **** *
+ 322:.\CommManager.c **** *******************************************************************************/
+ 323:.\CommManager.c **** static void stopVoiceStreamMode(void)
+ 324:.\CommManager.c **** {
+  87              		.loc 1 324 0
+  88              		.cfi_startproc
+  89              		@ args = 0, pretend = 0, frame = 0
+  90              		@ frame_needed = 0, uses_anonymous_args = 0
+  91 0000 08B5     		push	{r3, lr}
+  92              		.cfi_def_cfa_offset 8
+  93              		.cfi_offset 3, -8
+  94              		.cfi_offset 14, -4
+ 325:.\CommManager.c ****     PowerAmpOutput1_Write(false);
+  95              		.loc 1 325 0
+  96 0002 0020     		movs	r0, #0
+  97 0004 FFF7FEFF 		bl	PowerAmpOutput1_Write
+  98              	.LVL12:
+ 326:.\CommManager.c ****     PowerAmpOutput2_Write(false);
+  99              		.loc 1 326 0
+ 100 0008 0020     		movs	r0, #0
+ 101 000a FFF7FEFF 		bl	PowerAmpOutput2_Write
+ 102              	.LVL13:
+ 327:.\CommManager.c ****     
+ 328:.\CommManager.c ****     VDAC8_1_SetValue(INITIAL_DAC_VALUE);
+ 103              		.loc 1 328 0
+ 104 000e 8020     		movs	r0, #128
+ 105 0010 FFF7FEFF 		bl	VDAC8_1_SetValue
+ 106              	.LVL14:
+ 329:.\CommManager.c ****     VDAC8_1_Stop();
+ 107              		.loc 1 329 0
+ 108 0014 FFF7FEFF 		bl	VDAC8_1_Stop
+ 109              	.LVL15:
+ 330:.\CommManager.c ****     PGA_1_Stop();
+ 110              		.loc 1 330 0
+ 111 0018 FFF7FEFF 		bl	PGA_1_Stop
+ 112              	.LVL16:
+ 331:.\CommManager.c ****     
+ 332:.\CommManager.c ****     VDAC8_2_SetValue(INITIAL_DAC_VALUE);
+ 113              		.loc 1 332 0
+ 114 001c 8020     		movs	r0, #128
+ 115 001e FFF7FEFF 		bl	VDAC8_2_SetValue
+ 116              	.LVL17:
+ 333:.\CommManager.c ****     VDAC8_2_Stop();
+ 117              		.loc 1 333 0
+ 118 0022 FFF7FEFF 		bl	VDAC8_2_Stop
+ 119              	.LVL18:
+ 334:.\CommManager.c ****     PGA_2_Stop();
+ 120              		.loc 1 334 0
+ 121 0026 FFF7FEFF 		bl	PGA_2_Stop
+ 122              	.LVL19:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 9
+
+
+ 123 002a 08BD     		pop	{r3, pc}
+ 124              		.cfi_endproc
+ 125              	.LFE68:
+ 126              		.size	stopVoiceStreamMode, .-stopVoiceStreamMode
+ 127              		.section	.text.detectPacket,"ax",%progbits
+ 128              		.align	2
+ 129              		.thumb
+ 130              		.thumb_func
+ 131              		.type	detectPacket, %function
+ 132              	detectPacket:
+ 133              	.LFB66:
+ 190:.\CommManager.c ****     static uint8 packet[MAX_PAYLOAD_BYTE_COUNT+HEADER_BYTE_COUNT+EOP_BYTE_COUNT];   
+ 134              		.loc 1 190 0
+ 135              		.cfi_startproc
+ 136              		@ args = 0, pretend = 0, frame = 0
+ 137              		@ frame_needed = 0, uses_anonymous_args = 0
+ 138              	.LVL20:
+ 139 0000 38B5     		push	{r3, r4, r5, lr}
+ 140              		.cfi_def_cfa_offset 16
+ 141              		.cfi_offset 3, -16
+ 142              		.cfi_offset 4, -12
+ 143              		.cfi_offset 5, -8
+ 144              		.cfi_offset 14, -4
+ 196:.\CommManager.c ****     {
+ 145              		.loc 1 196 0
+ 146 0002 4A4B     		ldr	r3, .L21
+ 147 0004 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 148 0006 012B     		cmp	r3, #1
+ 149 0008 2DD0     		beq	.L7
+ 150 000a 13B1     		cbz	r3, .L8
+ 151 000c 022B     		cmp	r3, #2
+ 152 000e 3FD0     		beq	.L9
+ 153 0010 38BD     		pop	{r3, r4, r5, pc}
+ 154              	.L8:
+ 199:.\CommManager.c ****                 (dataByte == PacketList[SIREN_INPUTS].HEADER_BYTE)))
+ 155              		.loc 1 199 0
+ 156 0012 464B     		ldr	r3, .L21
+ 157 0014 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 158 0016 43B9     		cbnz	r3, .L10
+ 199:.\CommManager.c ****                 (dataByte == PacketList[SIREN_INPUTS].HEADER_BYTE)))
+ 159              		.loc 1 199 0 is_stmt 0 discriminator 1
+ 160 0018 7E28     		cmp	r0, #126
+ 161 001a 00D0     		beq	.L11
+ 199:.\CommManager.c ****                 (dataByte == PacketList[SIREN_INPUTS].HEADER_BYTE)))
+ 162              		.loc 1 199 0 discriminator 2
+ 163 001c 05D1     		bne	.L10
+ 164              	.L11:
+ 202:.\CommManager.c ****                 currentPacketIndex++;
+ 165              		.loc 1 202 0 is_stmt 1
+ 166 001e 434A     		ldr	r2, .L21
+ 167 0020 D118     		adds	r1, r2, r3
+ 168 0022 0871     		strb	r0, [r1, #4]
+ 203:.\CommManager.c ****             }
+ 169              		.loc 1 203 0
+ 170 0024 0133     		adds	r3, r3, #1
+ 171 0026 5370     		strb	r3, [r2, #1]
+ 172 0028 38BD     		pop	{r3, r4, r5, pc}
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 10
+
+
+ 173              	.L10:
+ 205:.\CommManager.c ****                 (dataByte == PacketList[SIREN_INPUTS].PACKET_TYPE)))
+ 174              		.loc 1 205 0
+ 175 002a 012B     		cmp	r3, #1
+ 176 002c 14D1     		bne	.L12
+ 205:.\CommManager.c ****                 (dataByte == PacketList[SIREN_INPUTS].PACKET_TYPE)))
+ 177              		.loc 1 205 0 is_stmt 0 discriminator 1
+ 178 002e 5628     		cmp	r0, #86
+ 179 0030 01D0     		beq	.L13
+ 205:.\CommManager.c ****                 (dataByte == PacketList[SIREN_INPUTS].PACKET_TYPE)))
+ 180              		.loc 1 205 0 discriminator 2
+ 181 0032 5328     		cmp	r0, #83
+ 182 0034 10D1     		bne	.L12
+ 183              	.L13:
+ 208:.\CommManager.c ****                 currentPacketIndex++;
+ 184              		.loc 1 208 0 is_stmt 1
+ 185 0036 3D4A     		ldr	r2, .L21
+ 186 0038 D118     		adds	r1, r2, r3
+ 187 003a 0871     		strb	r0, [r1, #4]
+ 209:.\CommManager.c ****                 currentState = PAYLOAD_STATE;
+ 188              		.loc 1 209 0
+ 189 003c 0133     		adds	r3, r3, #1
+ 190 003e 5370     		strb	r3, [r2, #1]
+ 210:.\CommManager.c ****                 
+ 191              		.loc 1 210 0
+ 192 0040 0123     		movs	r3, #1
+ 193 0042 1370     		strb	r3, [r2]
+ 212:.\CommManager.c ****                     currentType = VOICE_DATA;
+ 194              		.loc 1 212 0
+ 195 0044 5628     		cmp	r0, #86
+ 196 0046 03D1     		bne	.L14
+ 213:.\CommManager.c ****                 else
+ 197              		.loc 1 213 0
+ 198 0048 0022     		movs	r2, #0
+ 199 004a 394B     		ldr	r3, .L21+4
+ 200 004c 1A70     		strb	r2, [r3]
+ 201 004e 38BD     		pop	{r3, r4, r5, pc}
+ 202              	.L14:
+ 215:.\CommManager.c ****             }
+ 203              		.loc 1 215 0
+ 204 0050 0122     		movs	r2, #1
+ 205 0052 374B     		ldr	r3, .L21+4
+ 206 0054 1A70     		strb	r2, [r3]
+ 207 0056 38BD     		pop	{r3, r4, r5, pc}
+ 208              	.L12:
+ 219:.\CommManager.c ****                 currentType = SIREN_INPUTS;
+ 209              		.loc 1 219 0
+ 210 0058 0022     		movs	r2, #0
+ 211 005a 344B     		ldr	r3, .L21
+ 212 005c 5A70     		strb	r2, [r3, #1]
+ 220:.\CommManager.c ****             }
+ 213              		.loc 1 220 0
+ 214 005e 0122     		movs	r2, #1
+ 215 0060 334B     		ldr	r3, .L21+4
+ 216 0062 1A70     		strb	r2, [r3]
+ 217 0064 38BD     		pop	{r3, r4, r5, pc}
+ 218              	.L7:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 11
+
+
+ 225:.\CommManager.c ****             currentPacketIndex++;
+ 219              		.loc 1 225 0
+ 220 0066 314A     		ldr	r2, .L21
+ 221 0068 5378     		ldrb	r3, [r2, #1]	@ zero_extendqisi2
+ 222 006a D118     		adds	r1, r2, r3
+ 223 006c 0871     		strb	r0, [r1, #4]
+ 226:.\CommManager.c ****             
+ 224              		.loc 1 226 0
+ 225 006e 0133     		adds	r3, r3, #1
+ 226 0070 DBB2     		uxtb	r3, r3
+ 227 0072 5370     		strb	r3, [r2, #1]
+ 228:.\CommManager.c ****                 currentState = EOP_STATE;
+ 228              		.loc 1 228 0
+ 229 0074 2E4A     		ldr	r2, .L21+4
+ 230 0076 1278     		ldrb	r2, [r2]	@ zero_extendqisi2
+ 231 0078 02EB8202 		add	r2, r2, r2, lsl #2
+ 232 007c 2D49     		ldr	r1, .L21+8
+ 233 007e 0A44     		add	r2, r2, r1
+ 234 0080 9278     		ldrb	r2, [r2, #2]	@ zero_extendqisi2
+ 235 0082 0232     		adds	r2, r2, #2
+ 236 0084 9342     		cmp	r3, r2
+ 237 0086 50DB     		blt	.L5
+ 229:.\CommManager.c ****             break;   
+ 238              		.loc 1 229 0
+ 239 0088 0222     		movs	r2, #2
+ 240 008a 284B     		ldr	r3, .L21
+ 241 008c 1A70     		strb	r2, [r3]
+ 242 008e 38BD     		pop	{r3, r4, r5, pc}
+ 243              	.L9:
+ 233:.\CommManager.c ****                 (dataByte == PacketList[currentType].EOP_CARRIAGE_RETURN))
+ 244              		.loc 1 233 0
+ 245 0090 264B     		ldr	r3, .L21
+ 246 0092 5978     		ldrb	r1, [r3, #1]	@ zero_extendqisi2
+ 247 0094 264B     		ldr	r3, .L21+4
+ 248 0096 1A78     		ldrb	r2, [r3]	@ zero_extendqisi2
+ 249 0098 02EB8203 		add	r3, r2, r2, lsl #2
+ 250 009c 254C     		ldr	r4, .L21+8
+ 251 009e 2344     		add	r3, r3, r4
+ 252 00a0 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 253 00a2 9C1C     		adds	r4, r3, #2
+ 254 00a4 A142     		cmp	r1, r4
+ 255 00a6 0CD1     		bne	.L15
+ 234:.\CommManager.c ****             {
+ 256              		.loc 1 234 0 discriminator 1
+ 257 00a8 02EB8204 		add	r4, r2, r2, lsl #2
+ 258 00ac 214D     		ldr	r5, .L21+8
+ 259 00ae 2C44     		add	r4, r4, r5
+ 260 00b0 E478     		ldrb	r4, [r4, #3]	@ zero_extendqisi2
+ 233:.\CommManager.c ****                 (dataByte == PacketList[currentType].EOP_CARRIAGE_RETURN))
+ 261              		.loc 1 233 0 discriminator 1
+ 262 00b2 8442     		cmp	r4, r0
+ 263 00b4 05D1     		bne	.L15
+ 236:.\CommManager.c ****                 currentPacketIndex++;
+ 264              		.loc 1 236 0
+ 265 00b6 1D4B     		ldr	r3, .L21
+ 266 00b8 5A18     		adds	r2, r3, r1
+ 267 00ba 1071     		strb	r0, [r2, #4]
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 12
+
+
+ 237:.\CommManager.c ****             }
+ 268              		.loc 1 237 0
+ 269 00bc 0131     		adds	r1, r1, #1
+ 270 00be 5970     		strb	r1, [r3, #1]
+ 271 00c0 38BD     		pop	{r3, r4, r5, pc}
+ 272              	.L15:
+ 239:.\CommManager.c ****                 (dataByte == PacketList[currentType].EOP_LINE_FEED))
+ 273              		.loc 1 239 0
+ 274 00c2 0333     		adds	r3, r3, #3
+ 275 00c4 9942     		cmp	r1, r3
+ 276 00c6 29D1     		bne	.L16
+ 240:.\CommManager.c ****             {
+ 277              		.loc 1 240 0 discriminator 1
+ 278 00c8 02EB8203 		add	r3, r2, r2, lsl #2
+ 279 00cc 194C     		ldr	r4, .L21+8
+ 280 00ce 2344     		add	r3, r3, r4
+ 281 00d0 1B79     		ldrb	r3, [r3, #4]	@ zero_extendqisi2
+ 239:.\CommManager.c ****                 (dataByte == PacketList[currentType].EOP_LINE_FEED))
+ 282              		.loc 1 239 0 discriminator 1
+ 283 00d2 8342     		cmp	r3, r0
+ 284 00d4 22D1     		bne	.L16
+ 242:.\CommManager.c ****                 
+ 285              		.loc 1 242 0
+ 286 00d6 154B     		ldr	r3, .L21
+ 287 00d8 1944     		add	r1, r1, r3
+ 288 00da 0871     		strb	r0, [r1, #4]
+ 244:.\CommManager.c ****                 { 
+ 289              		.loc 1 244 0
+ 290 00dc 72B9     		cbnz	r2, .L17
+ 246:.\CommManager.c ****                     {
+ 291              		.loc 1 246 0
+ 292 00de 9B79     		ldrb	r3, [r3, #6]	@ zero_extendqisi2
+ 293 00e0 AA2B     		cmp	r3, #170
+ 294 00e2 05D1     		bne	.L18
+ 248:.\CommManager.c ****                         startVoiceStreamMode();
+ 295              		.loc 1 248 0
+ 296 00e4 0122     		movs	r2, #1
+ 297 00e6 114B     		ldr	r3, .L21
+ 298 00e8 DA73     		strb	r2, [r3, #15]
+ 249:.\CommManager.c ****                     }
+ 299              		.loc 1 249 0
+ 300 00ea FFF7FEFF 		bl	startVoiceStreamMode
+ 301              	.LVL21:
+ 302 00ee 0DE0     		b	.L19
+ 303              	.LVL22:
+ 304              	.L18:
+ 253:.\CommManager.c ****                         stopVoiceStreamMode();
+ 305              		.loc 1 253 0
+ 306 00f0 0022     		movs	r2, #0
+ 307 00f2 0E4B     		ldr	r3, .L21
+ 308 00f4 DA73     		strb	r2, [r3, #15]
+ 254:.\CommManager.c ****                     }
+ 309              		.loc 1 254 0
+ 310 00f6 FFF7FEFF 		bl	stopVoiceStreamMode
+ 311              	.LVL23:
+ 312 00fa 07E0     		b	.L19
+ 313              	.LVL24:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 13
+
+
+ 314              	.L17:
+ 257:.\CommManager.c ****                     setTonesWithCommunication(packet[PAYLOAD_START_INDEX], 
+ 315              		.loc 1 257 0
+ 316 00fc 012A     		cmp	r2, #1
+ 317 00fe 05D1     		bne	.L19
+ 258:.\CommManager.c ****                         packet[PAYLOAD_START_INDEX + 1], packet[PAYLOAD_START_INDEX + 2]);
+ 318              		.loc 1 258 0
+ 319 0100 0A4B     		ldr	r3, .L21
+ 320 0102 9879     		ldrb	r0, [r3, #6]	@ zero_extendqisi2
+ 321              	.LVL25:
+ 322 0104 D979     		ldrb	r1, [r3, #7]	@ zero_extendqisi2
+ 323              	.LVL26:
+ 324 0106 1A7A     		ldrb	r2, [r3, #8]	@ zero_extendqisi2
+ 325 0108 FFF7FEFF 		bl	setTonesWithCommunication
+ 326              	.LVL27:
+ 327              	.L19:
+ 261:.\CommManager.c ****                 currentState = HEADER_STATE;
+ 328              		.loc 1 261 0
+ 329 010c 074B     		ldr	r3, .L21
+ 330 010e 0022     		movs	r2, #0
+ 331 0110 5A70     		strb	r2, [r3, #1]
+ 262:.\CommManager.c ****                 currentType = SIREN_INPUTS;
+ 332              		.loc 1 262 0
+ 333 0112 1A70     		strb	r2, [r3]
+ 263:.\CommManager.c ****             }
+ 334              		.loc 1 263 0
+ 335 0114 0122     		movs	r2, #1
+ 336 0116 064B     		ldr	r3, .L21+4
+ 337 0118 1A70     		strb	r2, [r3]
+ 338 011a 38BD     		pop	{r3, r4, r5, pc}
+ 339              	.LVL28:
+ 340              	.L16:
+ 267:.\CommManager.c ****                 currentState = HEADER_STATE;
+ 341              		.loc 1 267 0
+ 342 011c 034B     		ldr	r3, .L21
+ 343 011e 0022     		movs	r2, #0
+ 344 0120 5A70     		strb	r2, [r3, #1]
+ 268:.\CommManager.c ****                 currentType = SIREN_INPUTS;
+ 345              		.loc 1 268 0
+ 346 0122 1A70     		strb	r2, [r3]
+ 269:.\CommManager.c ****             }
+ 347              		.loc 1 269 0
+ 348 0124 0122     		movs	r2, #1
+ 349 0126 024B     		ldr	r3, .L21+4
+ 350 0128 1A70     		strb	r2, [r3]
+ 351              	.L5:
+ 352 012a 38BD     		pop	{r3, r4, r5, pc}
+ 353              	.L22:
+ 354              		.align	2
+ 355              	.L21:
+ 356 012c 00000000 		.word	.LANCHOR0
+ 357 0130 00000000 		.word	.LANCHOR1
+ 358 0134 00000000 		.word	.LANCHOR2
+ 359              		.cfi_endproc
+ 360              	.LFE66:
+ 361              		.size	detectPacket, .-detectPacket
+ 362              		.section	.text.processByteReceivedHandler,"ax",%progbits
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 14
+
+
+ 363              		.align	2
+ 364              		.global	processByteReceivedHandler
+ 365              		.thumb
+ 366              		.thumb_func
+ 367              		.type	processByteReceivedHandler, %function
+ 368              	processByteReceivedHandler:
+ 369              	.LFB63:
+  93:.\CommManager.c ****     uint8 dataByte = 0;
+ 370              		.loc 1 93 0
+ 371              		.cfi_startproc
+ 372              		@ args = 0, pretend = 0, frame = 0
+ 373              		@ frame_needed = 0, uses_anonymous_args = 0
+ 374 0000 10B5     		push	{r4, lr}
+ 375              		.cfi_def_cfa_offset 8
+ 376              		.cfi_offset 4, -8
+ 377              		.cfi_offset 14, -4
+ 378              	.LVL29:
+  96:.\CommManager.c ****     disableToneInputInterrupts();
+ 379              		.loc 1 96 0
+ 380 0002 FFF7FEFF 		bl	UART_Timer_Stop
+ 381              	.LVL30:
+  97:.\CommManager.c ****     tenMilliSecondsCount = 0;
+ 382              		.loc 1 97 0
+ 383 0006 FFF7FEFF 		bl	disableToneInputInterrupts
+ 384              	.LVL31:
+  98:.\CommManager.c ****     
+ 385              		.loc 1 98 0
+ 386 000a 0022     		movs	r2, #0
+ 387 000c 0B4B     		ldr	r3, .L27
+ 388 000e 1A74     		strb	r2, [r3, #16]
+ 389              	.LVL32:
+ 390              	.L25:
+ 102:.\CommManager.c ****         
+ 391              		.loc 1 102 0
+ 392 0010 FFF7FEFF 		bl	UART_GetChar
+ 393              	.LVL33:
+ 394 0014 0446     		mov	r4, r0
+ 395              	.LVL34:
+ 104:.\CommManager.c ****         {   
+ 396              		.loc 1 104 0
+ 397 0016 094B     		ldr	r3, .L27
+ 398 0018 DB7B     		ldrb	r3, [r3, #15]	@ zero_extendqisi2
+ 399 001a 23B1     		cbz	r3, .L24
+ 106:.\CommManager.c ****             VDAC8_2_SetValue(dataByte);
+ 400              		.loc 1 106 0
+ 401 001c FFF7FEFF 		bl	VDAC8_1_SetValue
+ 402              	.LVL35:
+ 107:.\CommManager.c ****         }
+ 403              		.loc 1 107 0
+ 404 0020 2046     		mov	r0, r4
+ 405 0022 FFF7FEFF 		bl	VDAC8_2_SetValue
+ 406              	.LVL36:
+ 407              	.L24:
+ 110:.\CommManager.c ****         
+ 408              		.loc 1 110 0
+ 409 0026 2046     		mov	r0, r4
+ 410 0028 FFF7FEFF 		bl	detectPacket
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 15
+
+
+ 411              	.LVL37:
+ 112:.\CommManager.c ****     
+ 412              		.loc 1 112 0
+ 413 002c FFF7FEFF 		bl	UART_ReadRxStatus
+ 414              	.LVL38:
+ 415 0030 10F0200F 		tst	r0, #32
+ 416 0034 ECD1     		bne	.L25
+ 114:.\CommManager.c **** }
+ 417              		.loc 1 114 0
+ 418 0036 FFF7FEFF 		bl	UART_Timer_Start
+ 419              	.LVL39:
+ 420 003a 10BD     		pop	{r4, pc}
+ 421              	.L28:
+ 422              		.align	2
+ 423              	.L27:
+ 424 003c 00000000 		.word	.LANCHOR0
+ 425              		.cfi_endproc
+ 426              	.LFE63:
+ 427              		.size	processByteReceivedHandler, .-processByteReceivedHandler
+ 428              		.section	.text.processLED_TimerRoutine,"ax",%progbits
+ 429              		.align	2
+ 430              		.global	processLED_TimerRoutine
+ 431              		.thumb
+ 432              		.thumb_func
+ 433              		.type	processLED_TimerRoutine, %function
+ 434              	processLED_TimerRoutine:
+ 435              	.LFB64:
+ 132:.\CommManager.c ****     static uint8 bSwitch = false;
+ 436              		.loc 1 132 0
+ 437              		.cfi_startproc
+ 438              		@ args = 0, pretend = 0, frame = 0
+ 439              		@ frame_needed = 0, uses_anonymous_args = 0
+ 440 0000 08B5     		push	{r3, lr}
+ 441              		.cfi_def_cfa_offset 8
+ 442              		.cfi_offset 3, -8
+ 443              		.cfi_offset 14, -4
+ 135:.\CommManager.c ****     
+ 444              		.loc 1 135 0
+ 445 0002 FFF7FEFF 		bl	LED_Timer_ReadStatusRegister
+ 446              	.LVL40:
+ 137:.\CommManager.c ****     LEDoutput_Write(bSwitch);
+ 447              		.loc 1 137 0
+ 448 0006 044B     		ldr	r3, .L31
+ 449 0008 587C     		ldrb	r0, [r3, #17]	@ zero_extendqisi2
+ 450 000a B0FA80F0 		clz	r0, r0
+ 451 000e 4009     		lsrs	r0, r0, #5
+ 452 0010 5874     		strb	r0, [r3, #17]
+ 138:.\CommManager.c **** }
+ 453              		.loc 1 138 0
+ 454 0012 FFF7FEFF 		bl	LEDoutput_Write
+ 455              	.LVL41:
+ 456 0016 08BD     		pop	{r3, pc}
+ 457              	.L32:
+ 458              		.align	2
+ 459              	.L31:
+ 460 0018 00000000 		.word	.LANCHOR0
+ 461              		.cfi_endproc
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 16
+
+
+ 462              	.LFE64:
+ 463              		.size	processLED_TimerRoutine, .-processLED_TimerRoutine
+ 464              		.section	.text.processCommTimeoutRoutine,"ax",%progbits
+ 465              		.align	2
+ 466              		.global	processCommTimeoutRoutine
+ 467              		.thumb
+ 468              		.thumb_func
+ 469              		.type	processCommTimeoutRoutine, %function
+ 470              	processCommTimeoutRoutine:
+ 471              	.LFB65:
+ 158:.\CommManager.c ****     UART_Timer_ReadStatusRegister();
+ 472              		.loc 1 158 0
+ 473              		.cfi_startproc
+ 474              		@ args = 0, pretend = 0, frame = 0
+ 475              		@ frame_needed = 0, uses_anonymous_args = 0
+ 476 0000 08B5     		push	{r3, lr}
+ 477              		.cfi_def_cfa_offset 8
+ 478              		.cfi_offset 3, -8
+ 479              		.cfi_offset 14, -4
+ 159:.\CommManager.c ****     
+ 480              		.loc 1 159 0
+ 481 0002 FFF7FEFF 		bl	UART_Timer_ReadStatusRegister
+ 482              	.LVL42:
+ 161:.\CommManager.c ****         tenMilliSecondsCount++;
+ 483              		.loc 1 161 0
+ 484 0006 0A4B     		ldr	r3, .L37
+ 485 0008 1B7C     		ldrb	r3, [r3, #16]	@ zero_extendqisi2
+ 486 000a 312B     		cmp	r3, #49
+ 487 000c 03D8     		bhi	.L34
+ 162:.\CommManager.c ****     else
+ 488              		.loc 1 162 0
+ 489 000e 0133     		adds	r3, r3, #1
+ 490 0010 074A     		ldr	r2, .L37
+ 491 0012 1374     		strb	r3, [r2, #16]
+ 492 0014 08BD     		pop	{r3, pc}
+ 493              	.L34:
+ 165:.\CommManager.c ****         disableAudioAndPWM();
+ 494              		.loc 1 165 0
+ 495 0016 0022     		movs	r2, #0
+ 496 0018 054B     		ldr	r3, .L37
+ 497 001a 1A74     		strb	r2, [r3, #16]
+ 166:.\CommManager.c ****         disableBothSpeakers();
+ 498              		.loc 1 166 0
+ 499 001c FFF7FEFF 		bl	disableAudioAndPWM
+ 500              	.LVL43:
+ 167:.\CommManager.c ****         enableToneInputInterrupts();
+ 501              		.loc 1 167 0
+ 502 0020 FFF7FEFF 		bl	disableBothSpeakers
+ 503              	.LVL44:
+ 168:.\CommManager.c ****         UART_Timer_Stop();
+ 504              		.loc 1 168 0
+ 505 0024 FFF7FEFF 		bl	enableToneInputInterrupts
+ 506              	.LVL45:
+ 169:.\CommManager.c ****     }
+ 507              		.loc 1 169 0
+ 508 0028 FFF7FEFF 		bl	UART_Timer_Stop
+ 509              	.LVL46:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 17
+
+
+ 510 002c 08BD     		pop	{r3, pc}
+ 511              	.L38:
+ 512 002e 00BF     		.align	2
+ 513              	.L37:
+ 514 0030 00000000 		.word	.LANCHOR0
+ 515              		.cfi_endproc
+ 516              	.LFE65:
+ 517              		.size	processCommTimeoutRoutine, .-processCommTimeoutRoutine
+ 518              		.section	.rodata
+ 519              		.align	2
+ 520              		.set	.LANCHOR2,. + 0
+ 521              		.type	PacketList, %object
+ 522              		.size	PacketList, 10
+ 523              	PacketList:
+ 524 0000 7E       		.byte	126
+ 525 0001 56       		.byte	86
+ 526 0002 01       		.byte	1
+ 527 0003 0D       		.byte	13
+ 528 0004 0A       		.byte	10
+ 529 0005 7E       		.byte	126
+ 530 0006 53       		.byte	83
+ 531 0007 03       		.byte	3
+ 532 0008 0D       		.byte	13
+ 533 0009 0A       		.byte	10
+ 534 000a 0000     		.data
+ 535              		.set	.LANCHOR1,. + 0
+ 536              		.type	currentType.7247, %object
+ 537              		.size	currentType.7247, 1
+ 538              	currentType.7247:
+ 539 0000 01       		.byte	1
+ 540              		.bss
+ 541              		.align	2
+ 542              		.set	.LANCHOR0,. + 0
+ 543              		.type	currentState.7246, %object
+ 544              		.size	currentState.7246, 1
+ 545              	currentState.7246:
+ 546 0000 00       		.space	1
+ 547              		.type	currentPacketIndex.7248, %object
+ 548              		.size	currentPacketIndex.7248, 1
+ 549              	currentPacketIndex.7248:
+ 550 0001 00       		.space	1
+ 551 0002 0000     		.space	2
+ 552              		.type	packet.7245, %object
+ 553              		.size	packet.7245, 11
+ 554              	packet.7245:
+ 555 0004 00000000 		.space	11
+ 555      00000000 
+ 555      000000
+ 556              		.type	bVoiceStreamEnabled, %object
+ 557              		.size	bVoiceStreamEnabled, 1
+ 558              	bVoiceStreamEnabled:
+ 559 000f 00       		.space	1
+ 560              		.type	tenMilliSecondsCount, %object
+ 561              		.size	tenMilliSecondsCount, 1
+ 562              	tenMilliSecondsCount:
+ 563 0010 00       		.space	1
+ 564              		.type	bSwitch.7238, %object
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 18
+
+
+ 565              		.size	bSwitch.7238, 1
+ 566              	bSwitch.7238:
+ 567 0011 00       		.space	1
+ 568 0012 0000     		.text
+ 569              	.Letext0:
+ 570              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 571              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\3.3\\psoc creator\\import\\gnu\\arm\\4.9.
+ 572              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 573              		.file 5 ".\\CommonVariables.h"
+ 574              		.file 6 "Generated_Source\\PSoC5/DACtimer1.h"
+ 575              		.file 7 "Generated_Source\\PSoC5/DACtimer2.h"
+ 576              		.file 8 "Generated_Source\\PSoC5/AMux1.h"
+ 577              		.file 9 "Generated_Source\\PSoC5/AMux2.h"
+ 578              		.file 10 "Generated_Source\\PSoC5/PGA_1.h"
+ 579              		.file 11 "Generated_Source\\PSoC5/VDAC8_1.h"
+ 580              		.file 12 "Generated_Source\\PSoC5/PGA_2.h"
+ 581              		.file 13 "Generated_Source\\PSoC5/VDAC8_2.h"
+ 582              		.file 14 "Generated_Source\\PSoC5/PowerAmpOutput1.h"
+ 583              		.file 15 "Generated_Source\\PSoC5/PowerAmpOutput2.h"
+ 584              		.file 16 "Generated_Source\\PSoC5/UART_Timer.h"
+ 585              		.file 17 ".\\SirenState.h"
+ 586              		.file 18 "Generated_Source\\PSoC5/UART.h"
+ 587              		.file 19 "Generated_Source\\PSoC5/LED_Timer.h"
+ 588              		.file 20 "Generated_Source\\PSoC5/LEDoutput.h"
+ 589              		.file 21 "Generated_Source\\PSoC5/core_cm3.h"
+ 590              		.section	.debug_info,"",%progbits
+ 591              	.Ldebug_info0:
+ 592 0000 6A060000 		.4byte	0x66a
+ 593 0004 0400     		.2byte	0x4
+ 594 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 595 000a 04       		.byte	0x4
+ 596 000b 01       		.uleb128 0x1
+ 597 000c A9030000 		.4byte	.LASF99
+ 598 0010 01       		.byte	0x1
+ 599 0011 33020000 		.4byte	.LASF100
+ 600 0015 EB050000 		.4byte	.LASF101
+ 601 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 602 001d 00000000 		.4byte	0
+ 603 0021 00000000 		.4byte	.Ldebug_line0
+ 604 0025 02       		.uleb128 0x2
+ 605 0026 01       		.byte	0x1
+ 606 0027 06       		.byte	0x6
+ 607 0028 72010000 		.4byte	.LASF0
+ 608 002c 02       		.uleb128 0x2
+ 609 002d 01       		.byte	0x1
+ 610 002e 08       		.byte	0x8
+ 611 002f 60020000 		.4byte	.LASF1
+ 612 0033 02       		.uleb128 0x2
+ 613 0034 02       		.byte	0x2
+ 614 0035 05       		.byte	0x5
+ 615 0036 59000000 		.4byte	.LASF2
+ 616 003a 02       		.uleb128 0x2
+ 617 003b 02       		.byte	0x2
+ 618 003c 07       		.byte	0x7
+ 619 003d 67040000 		.4byte	.LASF3
+ 620 0041 03       		.uleb128 0x3
+ 621 0042 65050000 		.4byte	.LASF9
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 19
+
+
+ 622 0046 02       		.byte	0x2
+ 623 0047 3F       		.byte	0x3f
+ 624 0048 4C000000 		.4byte	0x4c
+ 625 004c 02       		.uleb128 0x2
+ 626 004d 04       		.byte	0x4
+ 627 004e 05       		.byte	0x5
+ 628 004f D5010000 		.4byte	.LASF4
+ 629 0053 02       		.uleb128 0x2
+ 630 0054 04       		.byte	0x4
+ 631 0055 07       		.byte	0x7
+ 632 0056 4A030000 		.4byte	.LASF5
+ 633 005a 02       		.uleb128 0x2
+ 634 005b 08       		.byte	0x8
+ 635 005c 05       		.byte	0x5
+ 636 005d 98010000 		.4byte	.LASF6
+ 637 0061 02       		.uleb128 0x2
+ 638 0062 08       		.byte	0x8
+ 639 0063 07       		.byte	0x7
+ 640 0064 F2020000 		.4byte	.LASF7
+ 641 0068 04       		.uleb128 0x4
+ 642 0069 04       		.byte	0x4
+ 643 006a 05       		.byte	0x5
+ 644 006b 696E7400 		.ascii	"int\000"
+ 645 006f 02       		.uleb128 0x2
+ 646 0070 04       		.byte	0x4
+ 647 0071 07       		.byte	0x7
+ 648 0072 27030000 		.4byte	.LASF8
+ 649 0076 03       		.uleb128 0x3
+ 650 0077 37040000 		.4byte	.LASF10
+ 651 007b 03       		.byte	0x3
+ 652 007c 2C       		.byte	0x2c
+ 653 007d 41000000 		.4byte	0x41
+ 654 0081 03       		.uleb128 0x3
+ 655 0082 21010000 		.4byte	.LASF11
+ 656 0086 04       		.byte	0x4
+ 657 0087 C2       		.byte	0xc2
+ 658 0088 2C000000 		.4byte	0x2c
+ 659 008c 02       		.uleb128 0x2
+ 660 008d 04       		.byte	0x4
+ 661 008e 04       		.byte	0x4
+ 662 008f 92010000 		.4byte	.LASF12
+ 663 0093 02       		.uleb128 0x2
+ 664 0094 08       		.byte	0x8
+ 665 0095 04       		.byte	0x4
+ 666 0096 15050000 		.4byte	.LASF13
+ 667 009a 02       		.uleb128 0x2
+ 668 009b 01       		.byte	0x1
+ 669 009c 08       		.byte	0x8
+ 670 009d A4030000 		.4byte	.LASF14
+ 671 00a1 02       		.uleb128 0x2
+ 672 00a2 04       		.byte	0x4
+ 673 00a3 07       		.byte	0x7
+ 674 00a4 AE050000 		.4byte	.LASF15
+ 675 00a8 05       		.uleb128 0x5
+ 676 00a9 0A000000 		.4byte	.LASF39
+ 677 00ad 01       		.byte	0x1
+ 678 00ae 05       		.byte	0x5
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 20
+
+
+ 679 00af 1D       		.byte	0x1d
+ 680 00b0 3F010000 		.4byte	0x13f
+ 681 00b4 06       		.uleb128 0x6
+ 682 00b5 A6010000 		.4byte	.LASF16
+ 683 00b9 00       		.sleb128 0
+ 684 00ba 06       		.uleb128 0x6
+ 685 00bb 76020000 		.4byte	.LASF17
+ 686 00bf 01       		.sleb128 1
+ 687 00c0 06       		.uleb128 0x6
+ 688 00c1 84060000 		.4byte	.LASF18
+ 689 00c5 02       		.sleb128 2
+ 690 00c6 06       		.uleb128 0x6
+ 691 00c7 29020000 		.4byte	.LASF19
+ 692 00cb 03       		.sleb128 3
+ 693 00cc 06       		.uleb128 0x6
+ 694 00cd 13000000 		.4byte	.LASF20
+ 695 00d1 04       		.sleb128 4
+ 696 00d2 06       		.uleb128 0x6
+ 697 00d3 E7010000 		.4byte	.LASF21
+ 698 00d7 05       		.sleb128 5
+ 699 00d8 06       		.uleb128 0x6
+ 700 00d9 55020000 		.4byte	.LASF22
+ 701 00dd 06       		.sleb128 6
+ 702 00de 06       		.uleb128 0x6
+ 703 00df B1040000 		.4byte	.LASF23
+ 704 00e3 07       		.sleb128 7
+ 705 00e4 06       		.uleb128 0x6
+ 706 00e5 26000000 		.4byte	.LASF24
+ 707 00e9 08       		.sleb128 8
+ 708 00ea 06       		.uleb128 0x6
+ 709 00eb 4E050000 		.4byte	.LASF25
+ 710 00ef 09       		.sleb128 9
+ 711 00f0 06       		.uleb128 0x6
+ 712 00f1 0A050000 		.4byte	.LASF26
+ 713 00f5 0A       		.sleb128 10
+ 714 00f6 06       		.uleb128 0x6
+ 715 00f7 B7050000 		.4byte	.LASF27
+ 716 00fb 0B       		.sleb128 11
+ 717 00fc 06       		.uleb128 0x6
+ 718 00fd 88010000 		.4byte	.LASF28
+ 719 0101 0C       		.sleb128 12
+ 720 0102 06       		.uleb128 0x6
+ 721 0103 5C030000 		.4byte	.LASF29
+ 722 0107 0D       		.sleb128 13
+ 723 0108 06       		.uleb128 0x6
+ 724 0109 1F020000 		.4byte	.LASF30
+ 725 010d 0E       		.sleb128 14
+ 726 010e 06       		.uleb128 0x6
+ 727 010f 7E010000 		.4byte	.LASF31
+ 728 0113 0F       		.sleb128 15
+ 729 0114 06       		.uleb128 0x6
+ 730 0115 63000000 		.4byte	.LASF32
+ 731 0119 10       		.sleb128 16
+ 732 011a 06       		.uleb128 0x6
+ 733 011b 00000000 		.4byte	.LASF33
+ 734 011f 11       		.sleb128 17
+ 735 0120 06       		.uleb128 0x6
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 21
+
+
+ 736 0121 B8010000 		.4byte	.LASF34
+ 737 0125 12       		.sleb128 18
+ 738 0126 06       		.uleb128 0x6
+ 739 0127 87000000 		.4byte	.LASF35
+ 740 012b 13       		.sleb128 19
+ 741 012c 06       		.uleb128 0x6
+ 742 012d 6F050000 		.4byte	.LASF36
+ 743 0131 14       		.sleb128 20
+ 744 0132 06       		.uleb128 0x6
+ 745 0133 9B050000 		.4byte	.LASF37
+ 746 0137 15       		.sleb128 21
+ 747 0138 06       		.uleb128 0x6
+ 748 0139 AE010000 		.4byte	.LASF38
+ 749 013d 16       		.sleb128 22
+ 750 013e 00       		.byte	0
+ 751 013f 05       		.uleb128 0x5
+ 752 0140 C1000000 		.4byte	.LASF40
+ 753 0144 01       		.byte	0x1
+ 754 0145 01       		.byte	0x1
+ 755 0146 21       		.byte	0x21
+ 756 0147 58010000 		.4byte	0x158
+ 757 014b 06       		.uleb128 0x6
+ 758 014c B6000000 		.4byte	.LASF41
+ 759 0150 00       		.sleb128 0
+ 760 0151 06       		.uleb128 0x6
+ 761 0152 81050000 		.4byte	.LASF42
+ 762 0156 01       		.sleb128 1
+ 763 0157 00       		.byte	0
+ 764 0158 05       		.uleb128 0x5
+ 765 0159 1A000000 		.4byte	.LASF43
+ 766 015d 01       		.byte	0x1
+ 767 015e 01       		.byte	0x1
+ 768 015f 27       		.byte	0x27
+ 769 0160 77010000 		.4byte	0x177
+ 770 0164 06       		.uleb128 0x6
+ 771 0165 14010000 		.4byte	.LASF44
+ 772 0169 00       		.sleb128 0
+ 773 016a 06       		.uleb128 0x6
+ 774 016b 79000000 		.4byte	.LASF45
+ 775 016f 01       		.sleb128 1
+ 776 0170 06       		.uleb128 0x6
+ 777 0171 34030000 		.4byte	.LASF46
+ 778 0175 02       		.sleb128 2
+ 779 0176 00       		.byte	0
+ 780 0177 07       		.uleb128 0x7
+ 781 0178 05       		.byte	0x5
+ 782 0179 01       		.byte	0x1
+ 783 017a 34       		.byte	0x34
+ 784 017b BC010000 		.4byte	0x1bc
+ 785 017f 08       		.uleb128 0x8
+ 786 0180 59050000 		.4byte	.LASF47
+ 787 0184 01       		.byte	0x1
+ 788 0185 36       		.byte	0x36
+ 789 0186 BC010000 		.4byte	0x1bc
+ 790 018a 00       		.byte	0
+ 791 018b 08       		.uleb128 0x8
+ 792 018c 82020000 		.4byte	.LASF48
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 22
+
+
+ 793 0190 01       		.byte	0x1
+ 794 0191 37       		.byte	0x37
+ 795 0192 BC010000 		.4byte	0x1bc
+ 796 0196 01       		.byte	0x1
+ 797 0197 08       		.uleb128 0x8
+ 798 0198 8E050000 		.4byte	.LASF49
+ 799 019c 01       		.byte	0x1
+ 800 019d 38       		.byte	0x38
+ 801 019e BC010000 		.4byte	0x1bc
+ 802 01a2 02       		.byte	0x2
+ 803 01a3 08       		.uleb128 0x8
+ 804 01a4 C1010000 		.4byte	.LASF50
+ 805 01a8 01       		.byte	0x1
+ 806 01a9 39       		.byte	0x39
+ 807 01aa BC010000 		.4byte	0x1bc
+ 808 01ae 03       		.byte	0x3
+ 809 01af 08       		.uleb128 0x8
+ 810 01b0 CC020000 		.4byte	.LASF51
+ 811 01b4 01       		.byte	0x1
+ 812 01b5 3A       		.byte	0x3a
+ 813 01b6 BC010000 		.4byte	0x1bc
+ 814 01ba 04       		.byte	0x4
+ 815 01bb 00       		.byte	0
+ 816 01bc 09       		.uleb128 0x9
+ 817 01bd 81000000 		.4byte	0x81
+ 818 01c1 03       		.uleb128 0x3
+ 819 01c2 7B020000 		.4byte	.LASF52
+ 820 01c6 01       		.byte	0x1
+ 821 01c7 3B       		.byte	0x3b
+ 822 01c8 77010000 		.4byte	0x177
+ 823 01cc 0A       		.uleb128 0xa
+ 824 01cd 27010000 		.4byte	.LASF53
+ 825 01d1 01       		.byte	0x1
+ 826 01d2 2101     		.2byte	0x121
+ 827 01d4 00000000 		.4byte	.LFB67
+ 828 01d8 40000000 		.4byte	.LFE67-.LFB67
+ 829 01dc 01       		.uleb128 0x1
+ 830 01dd 9C       		.byte	0x9c
+ 831 01de 89020000 		.4byte	0x289
+ 832 01e2 0B       		.uleb128 0xb
+ 833 01e3 06000000 		.4byte	.LVL0
+ 834 01e7 3B050000 		.4byte	0x53b
+ 835 01eb 0B       		.uleb128 0xb
+ 836 01ec 0A000000 		.4byte	.LVL1
+ 837 01f0 42050000 		.4byte	0x542
+ 838 01f4 0C       		.uleb128 0xc
+ 839 01f5 10000000 		.4byte	.LVL2
+ 840 01f9 49050000 		.4byte	0x549
+ 841 01fd 07020000 		.4byte	0x207
+ 842 0201 0D       		.uleb128 0xd
+ 843 0202 01       		.uleb128 0x1
+ 844 0203 50       		.byte	0x50
+ 845 0204 01       		.uleb128 0x1
+ 846 0205 31       		.byte	0x31
+ 847 0206 00       		.byte	0
+ 848 0207 0C       		.uleb128 0xc
+ 849 0208 16000000 		.4byte	.LVL3
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 23
+
+
+ 850 020c 5A050000 		.4byte	0x55a
+ 851 0210 1A020000 		.4byte	0x21a
+ 852 0214 0D       		.uleb128 0xd
+ 853 0215 01       		.uleb128 0x1
+ 854 0216 50       		.byte	0x50
+ 855 0217 01       		.uleb128 0x1
+ 856 0218 31       		.byte	0x31
+ 857 0219 00       		.byte	0
+ 858 021a 0B       		.uleb128 0xb
+ 859 021b 1A000000 		.4byte	.LVL4
+ 860 021f 6B050000 		.4byte	0x56b
+ 861 0223 0B       		.uleb128 0xb
+ 862 0224 1E000000 		.4byte	.LVL5
+ 863 0228 72050000 		.4byte	0x572
+ 864 022c 0C       		.uleb128 0xc
+ 865 022d 24000000 		.4byte	.LVL6
+ 866 0231 79050000 		.4byte	0x579
+ 867 0235 40020000 		.4byte	0x240
+ 868 0239 0D       		.uleb128 0xd
+ 869 023a 01       		.uleb128 0x1
+ 870 023b 50       		.byte	0x50
+ 871 023c 02       		.uleb128 0x2
+ 872 023d 09       		.byte	0x9
+ 873 023e 80       		.byte	0x80
+ 874 023f 00       		.byte	0
+ 875 0240 0B       		.uleb128 0xb
+ 876 0241 28000000 		.4byte	.LVL7
+ 877 0245 8A050000 		.4byte	0x58a
+ 878 0249 0B       		.uleb128 0xb
+ 879 024a 2C000000 		.4byte	.LVL8
+ 880 024e 91050000 		.4byte	0x591
+ 881 0252 0C       		.uleb128 0xc
+ 882 0253 32000000 		.4byte	.LVL9
+ 883 0257 98050000 		.4byte	0x598
+ 884 025b 66020000 		.4byte	0x266
+ 885 025f 0D       		.uleb128 0xd
+ 886 0260 01       		.uleb128 0x1
+ 887 0261 50       		.byte	0x50
+ 888 0262 02       		.uleb128 0x2
+ 889 0263 09       		.byte	0x9
+ 890 0264 80       		.byte	0x80
+ 891 0265 00       		.byte	0
+ 892 0266 0C       		.uleb128 0xc
+ 893 0267 38000000 		.4byte	.LVL10
+ 894 026b A9050000 		.4byte	0x5a9
+ 895 026f 79020000 		.4byte	0x279
+ 896 0273 0D       		.uleb128 0xd
+ 897 0274 01       		.uleb128 0x1
+ 898 0275 50       		.byte	0x50
+ 899 0276 01       		.uleb128 0x1
+ 900 0277 31       		.byte	0x31
+ 901 0278 00       		.byte	0
+ 902 0279 0E       		.uleb128 0xe
+ 903 027a 3E000000 		.4byte	.LVL11
+ 904 027e BA050000 		.4byte	0x5ba
+ 905 0282 0D       		.uleb128 0xd
+ 906 0283 01       		.uleb128 0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 24
+
+
+ 907 0284 50       		.byte	0x50
+ 908 0285 01       		.uleb128 0x1
+ 909 0286 31       		.byte	0x31
+ 910 0287 00       		.byte	0
+ 911 0288 00       		.byte	0
+ 912 0289 0A       		.uleb128 0xa
+ 913 028a 8E020000 		.4byte	.LASF54
+ 914 028e 01       		.byte	0x1
+ 915 028f 4301     		.2byte	0x143
+ 916 0291 00000000 		.4byte	.LFB68
+ 917 0295 2C000000 		.4byte	.LFE68-.LFB68
+ 918 0299 01       		.uleb128 0x1
+ 919 029a 9C       		.byte	0x9c
+ 920 029b 12030000 		.4byte	0x312
+ 921 029f 0C       		.uleb128 0xc
+ 922 02a0 08000000 		.4byte	.LVL12
+ 923 02a4 A9050000 		.4byte	0x5a9
+ 924 02a8 B2020000 		.4byte	0x2b2
+ 925 02ac 0D       		.uleb128 0xd
+ 926 02ad 01       		.uleb128 0x1
+ 927 02ae 50       		.byte	0x50
+ 928 02af 01       		.uleb128 0x1
+ 929 02b0 30       		.byte	0x30
+ 930 02b1 00       		.byte	0
+ 931 02b2 0C       		.uleb128 0xc
+ 932 02b3 0E000000 		.4byte	.LVL13
+ 933 02b7 BA050000 		.4byte	0x5ba
+ 934 02bb C5020000 		.4byte	0x2c5
+ 935 02bf 0D       		.uleb128 0xd
+ 936 02c0 01       		.uleb128 0x1
+ 937 02c1 50       		.byte	0x50
+ 938 02c2 01       		.uleb128 0x1
+ 939 02c3 30       		.byte	0x30
+ 940 02c4 00       		.byte	0
+ 941 02c5 0C       		.uleb128 0xc
+ 942 02c6 14000000 		.4byte	.LVL14
+ 943 02ca 79050000 		.4byte	0x579
+ 944 02ce D9020000 		.4byte	0x2d9
+ 945 02d2 0D       		.uleb128 0xd
+ 946 02d3 01       		.uleb128 0x1
+ 947 02d4 50       		.byte	0x50
+ 948 02d5 02       		.uleb128 0x2
+ 949 02d6 09       		.byte	0x9
+ 950 02d7 80       		.byte	0x80
+ 951 02d8 00       		.byte	0
+ 952 02d9 0B       		.uleb128 0xb
+ 953 02da 18000000 		.4byte	.LVL15
+ 954 02de CB050000 		.4byte	0x5cb
+ 955 02e2 0B       		.uleb128 0xb
+ 956 02e3 1C000000 		.4byte	.LVL16
+ 957 02e7 D2050000 		.4byte	0x5d2
+ 958 02eb 0C       		.uleb128 0xc
+ 959 02ec 22000000 		.4byte	.LVL17
+ 960 02f0 98050000 		.4byte	0x598
+ 961 02f4 FF020000 		.4byte	0x2ff
+ 962 02f8 0D       		.uleb128 0xd
+ 963 02f9 01       		.uleb128 0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 25
+
+
+ 964 02fa 50       		.byte	0x50
+ 965 02fb 02       		.uleb128 0x2
+ 966 02fc 09       		.byte	0x9
+ 967 02fd 80       		.byte	0x80
+ 968 02fe 00       		.byte	0
+ 969 02ff 0B       		.uleb128 0xb
+ 970 0300 26000000 		.4byte	.LVL18
+ 971 0304 D9050000 		.4byte	0x5d9
+ 972 0308 0B       		.uleb128 0xb
+ 973 0309 2A000000 		.4byte	.LVL19
+ 974 030d E0050000 		.4byte	0x5e0
+ 975 0311 00       		.byte	0
+ 976 0312 0F       		.uleb128 0xf
+ 977 0313 65010000 		.4byte	.LASF55
+ 978 0317 01       		.byte	0x1
+ 979 0318 BD       		.byte	0xbd
+ 980 0319 00000000 		.4byte	.LFB66
+ 981 031d 38010000 		.4byte	.LFE66-.LFB66
+ 982 0321 01       		.uleb128 0x1
+ 983 0322 9C       		.byte	0x9c
+ 984 0323 96030000 		.4byte	0x396
+ 985 0327 10       		.uleb128 0x10
+ 986 0328 DE010000 		.4byte	.LASF60
+ 987 032c 01       		.byte	0x1
+ 988 032d BD       		.byte	0xbd
+ 989 032e 81000000 		.4byte	0x81
+ 990 0332 00000000 		.4byte	.LLST0
+ 991 0336 11       		.uleb128 0x11
+ 992 0337 4D010000 		.4byte	.LASF56
+ 993 033b 01       		.byte	0x1
+ 994 033c BF       		.byte	0xbf
+ 995 033d 96030000 		.4byte	0x396
+ 996 0341 05       		.uleb128 0x5
+ 997 0342 03       		.byte	0x3
+ 998 0343 04000000 		.4byte	packet.7245
+ 999 0347 11       		.uleb128 0x11
+ 1000 0348 3F040000 		.4byte	.LASF57
+ 1001 034c 01       		.byte	0x1
+ 1002 034d C0       		.byte	0xc0
+ 1003 034e 58010000 		.4byte	0x158
+ 1004 0352 05       		.uleb128 0x5
+ 1005 0353 03       		.byte	0x3
+ 1006 0354 00000000 		.4byte	currentState.7246
+ 1007 0358 11       		.uleb128 0x11
+ 1008 0359 3E030000 		.4byte	.LASF58
+ 1009 035d 01       		.byte	0x1
+ 1010 035e C1       		.byte	0xc1
+ 1011 035f 3F010000 		.4byte	0x13f
+ 1012 0363 05       		.uleb128 0x5
+ 1013 0364 03       		.byte	0x3
+ 1014 0365 00000000 		.4byte	currentType.7247
+ 1015 0369 11       		.uleb128 0x11
+ 1016 036a F7040000 		.4byte	.LASF59
+ 1017 036e 01       		.byte	0x1
+ 1018 036f C2       		.byte	0xc2
+ 1019 0370 81000000 		.4byte	0x81
+ 1020 0374 05       		.uleb128 0x5
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 26
+
+
+ 1021 0375 03       		.byte	0x3
+ 1022 0376 01000000 		.4byte	currentPacketIndex.7248
+ 1023 037a 0B       		.uleb128 0xb
+ 1024 037b EE000000 		.4byte	.LVL21
+ 1025 037f CC010000 		.4byte	0x1cc
+ 1026 0383 0B       		.uleb128 0xb
+ 1027 0384 FA000000 		.4byte	.LVL23
+ 1028 0388 89020000 		.4byte	0x289
+ 1029 038c 0B       		.uleb128 0xb
+ 1030 038d 0C010000 		.4byte	.LVL27
+ 1031 0391 E7050000 		.4byte	0x5e7
+ 1032 0395 00       		.byte	0
+ 1033 0396 12       		.uleb128 0x12
+ 1034 0397 81000000 		.4byte	0x81
+ 1035 039b A6030000 		.4byte	0x3a6
+ 1036 039f 13       		.uleb128 0x13
+ 1037 03a0 A1000000 		.4byte	0xa1
+ 1038 03a4 0A       		.byte	0xa
+ 1039 03a5 00       		.byte	0
+ 1040 03a6 14       		.uleb128 0x14
+ 1041 03a7 2F000000 		.4byte	.LASF61
+ 1042 03ab 01       		.byte	0x1
+ 1043 03ac 5C       		.byte	0x5c
+ 1044 03ad 00000000 		.4byte	.LFB63
+ 1045 03b1 40000000 		.4byte	.LFE63-.LFB63
+ 1046 03b5 01       		.uleb128 0x1
+ 1047 03b6 9C       		.byte	0x9c
+ 1048 03b7 34040000 		.4byte	0x434
+ 1049 03bb 15       		.uleb128 0x15
+ 1050 03bc DE010000 		.4byte	.LASF60
+ 1051 03c0 01       		.byte	0x1
+ 1052 03c1 5E       		.byte	0x5e
+ 1053 03c2 81000000 		.4byte	0x81
+ 1054 03c6 83000000 		.4byte	.LLST1
+ 1055 03ca 0B       		.uleb128 0xb
+ 1056 03cb 06000000 		.4byte	.LVL30
+ 1057 03cf 06060000 		.4byte	0x606
+ 1058 03d3 0B       		.uleb128 0xb
+ 1059 03d4 0A000000 		.4byte	.LVL31
+ 1060 03d8 0D060000 		.4byte	0x60d
+ 1061 03dc 0B       		.uleb128 0xb
+ 1062 03dd 14000000 		.4byte	.LVL33
+ 1063 03e1 14060000 		.4byte	0x614
+ 1064 03e5 0C       		.uleb128 0xc
+ 1065 03e6 20000000 		.4byte	.LVL35
+ 1066 03ea 79050000 		.4byte	0x579
+ 1067 03ee F9030000 		.4byte	0x3f9
+ 1068 03f2 0D       		.uleb128 0xd
+ 1069 03f3 01       		.uleb128 0x1
+ 1070 03f4 50       		.byte	0x50
+ 1071 03f5 02       		.uleb128 0x2
+ 1072 03f6 74       		.byte	0x74
+ 1073 03f7 00       		.sleb128 0
+ 1074 03f8 00       		.byte	0
+ 1075 03f9 0C       		.uleb128 0xc
+ 1076 03fa 26000000 		.4byte	.LVL36
+ 1077 03fe 98050000 		.4byte	0x598
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 27
+
+
+ 1078 0402 0D040000 		.4byte	0x40d
+ 1079 0406 0D       		.uleb128 0xd
+ 1080 0407 01       		.uleb128 0x1
+ 1081 0408 50       		.byte	0x50
+ 1082 0409 02       		.uleb128 0x2
+ 1083 040a 74       		.byte	0x74
+ 1084 040b 00       		.sleb128 0
+ 1085 040c 00       		.byte	0
+ 1086 040d 0C       		.uleb128 0xc
+ 1087 040e 2C000000 		.4byte	.LVL37
+ 1088 0412 12030000 		.4byte	0x312
+ 1089 0416 21040000 		.4byte	0x421
+ 1090 041a 0D       		.uleb128 0xd
+ 1091 041b 01       		.uleb128 0x1
+ 1092 041c 50       		.byte	0x50
+ 1093 041d 02       		.uleb128 0x2
+ 1094 041e 74       		.byte	0x74
+ 1095 041f 00       		.sleb128 0
+ 1096 0420 00       		.byte	0
+ 1097 0421 0B       		.uleb128 0xb
+ 1098 0422 30000000 		.4byte	.LVL38
+ 1099 0426 1F060000 		.4byte	0x61f
+ 1100 042a 0B       		.uleb128 0xb
+ 1101 042b 3A000000 		.4byte	.LVL39
+ 1102 042f 2A060000 		.4byte	0x62a
+ 1103 0433 00       		.byte	0
+ 1104 0434 14       		.uleb128 0x14
+ 1105 0435 DA020000 		.4byte	.LASF62
+ 1106 0439 01       		.byte	0x1
+ 1107 043a 83       		.byte	0x83
+ 1108 043b 00000000 		.4byte	.LFB64
+ 1109 043f 1C000000 		.4byte	.LFE64-.LFB64
+ 1110 0443 01       		.uleb128 0x1
+ 1111 0444 9C       		.byte	0x9c
+ 1112 0445 6D040000 		.4byte	0x46d
+ 1113 0449 11       		.uleb128 0x11
+ 1114 044a 6E020000 		.4byte	.LASF63
+ 1115 044e 01       		.byte	0x1
+ 1116 044f 85       		.byte	0x85
+ 1117 0450 81000000 		.4byte	0x81
+ 1118 0454 05       		.uleb128 0x5
+ 1119 0455 03       		.byte	0x3
+ 1120 0456 11000000 		.4byte	bSwitch.7238
+ 1121 045a 0B       		.uleb128 0xb
+ 1122 045b 06000000 		.4byte	.LVL40
+ 1123 045f 31060000 		.4byte	0x631
+ 1124 0463 0B       		.uleb128 0xb
+ 1125 0464 16000000 		.4byte	.LVL41
+ 1126 0468 3C060000 		.4byte	0x63c
+ 1127 046c 00       		.byte	0
+ 1128 046d 14       		.uleb128 0x14
+ 1129 046e BD040000 		.4byte	.LASF64
+ 1130 0472 01       		.byte	0x1
+ 1131 0473 9D       		.byte	0x9d
+ 1132 0474 00000000 		.4byte	.LFB65
+ 1133 0478 34000000 		.4byte	.LFE65-.LFB65
+ 1134 047c 01       		.uleb128 0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 28
+
+
+ 1135 047d 9C       		.byte	0x9c
+ 1136 047e B0040000 		.4byte	0x4b0
+ 1137 0482 0B       		.uleb128 0xb
+ 1138 0483 06000000 		.4byte	.LVL42
+ 1139 0487 4D060000 		.4byte	0x64d
+ 1140 048b 0B       		.uleb128 0xb
+ 1141 048c 20000000 		.4byte	.LVL43
+ 1142 0490 58060000 		.4byte	0x658
+ 1143 0494 0B       		.uleb128 0xb
+ 1144 0495 24000000 		.4byte	.LVL44
+ 1145 0499 5F060000 		.4byte	0x65f
+ 1146 049d 0B       		.uleb128 0xb
+ 1147 049e 28000000 		.4byte	.LVL45
+ 1148 04a2 66060000 		.4byte	0x666
+ 1149 04a6 0B       		.uleb128 0xb
+ 1150 04a7 2C000000 		.4byte	.LVL46
+ 1151 04ab 06060000 		.4byte	0x606
+ 1152 04af 00       		.byte	0
+ 1153 04b0 16       		.uleb128 0x16
+ 1154 04b1 AB000000 		.4byte	.LASF65
+ 1155 04b5 01       		.byte	0x1
+ 1156 04b6 2E       		.byte	0x2e
+ 1157 04b7 BC010000 		.4byte	0x1bc
+ 1158 04bb AA7F     		.sleb128 -86
+ 1159 04bd 17       		.uleb128 0x17
+ 1160 04be 8F030000 		.4byte	.LASF66
+ 1161 04c2 01       		.byte	0x1
+ 1162 04c3 2F       		.byte	0x2f
+ 1163 04c4 BC010000 		.4byte	0x1bc
+ 1164 04c8 55       		.byte	0x55
+ 1165 04c9 16       		.uleb128 0x16
+ 1166 04ca 43020000 		.4byte	.LASF67
+ 1167 04ce 01       		.byte	0x1
+ 1168 04cf 30       		.byte	0x30
+ 1169 04d0 BC010000 		.4byte	0x1bc
+ 1170 04d4 807F     		.sleb128 -128
+ 1171 04d6 17       		.uleb128 0x17
+ 1172 04d7 D7040000 		.4byte	.LASF68
+ 1173 04db 01       		.byte	0x1
+ 1174 04dc 31       		.byte	0x31
+ 1175 04dd BC010000 		.4byte	0x1bc
+ 1176 04e1 32       		.byte	0x32
+ 1177 04e2 12       		.uleb128 0x12
+ 1178 04e3 C1010000 		.4byte	0x1c1
+ 1179 04e7 F2040000 		.4byte	0x4f2
+ 1180 04eb 13       		.uleb128 0x13
+ 1181 04ec A1000000 		.4byte	0xa1
+ 1182 04f0 01       		.byte	0x1
+ 1183 04f1 00       		.byte	0
+ 1184 04f2 11       		.uleb128 0x11
+ 1185 04f3 99030000 		.4byte	.LASF69
+ 1186 04f7 01       		.byte	0x1
+ 1187 04f8 3D       		.byte	0x3d
+ 1188 04f9 03050000 		.4byte	0x503
+ 1189 04fd 05       		.uleb128 0x5
+ 1190 04fe 03       		.byte	0x3
+ 1191 04ff 00000000 		.4byte	PacketList
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 29
+
+
+ 1192 0503 09       		.uleb128 0x9
+ 1193 0504 E2040000 		.4byte	0x4e2
+ 1194 0508 11       		.uleb128 0x11
+ 1195 0509 3A050000 		.4byte	.LASF70
+ 1196 050d 01       		.byte	0x1
+ 1197 050e 44       		.byte	0x44
+ 1198 050f 81000000 		.4byte	0x81
+ 1199 0513 05       		.uleb128 0x5
+ 1200 0514 03       		.byte	0x3
+ 1201 0515 0F000000 		.4byte	bVoiceStreamEnabled
+ 1202 0519 11       		.uleb128 0x11
+ 1203 051a CA000000 		.4byte	.LASF71
+ 1204 051e 01       		.byte	0x1
+ 1205 051f 45       		.byte	0x45
+ 1206 0520 81000000 		.4byte	0x81
+ 1207 0524 05       		.uleb128 0x5
+ 1208 0525 03       		.byte	0x3
+ 1209 0526 10000000 		.4byte	tenMilliSecondsCount
+ 1210 052a 18       		.uleb128 0x18
+ 1211 052b C3050000 		.4byte	.LASF102
+ 1212 052f 15       		.byte	0x15
+ 1213 0530 2A06     		.2byte	0x62a
+ 1214 0532 36050000 		.4byte	0x536
+ 1215 0536 19       		.uleb128 0x19
+ 1216 0537 76000000 		.4byte	0x76
+ 1217 053b 1A       		.uleb128 0x1a
+ 1218 053c EC010000 		.4byte	.LASF72
+ 1219 0540 06       		.byte	0x6
+ 1220 0541 5B       		.byte	0x5b
+ 1221 0542 1A       		.uleb128 0x1a
+ 1222 0543 4A000000 		.4byte	.LASF73
+ 1223 0547 07       		.byte	0x7
+ 1224 0548 5B       		.byte	0x5b
+ 1225 0549 1B       		.uleb128 0x1b
+ 1226 054a 94040000 		.4byte	.LASF74
+ 1227 054e 08       		.byte	0x8
+ 1228 054f 20       		.byte	0x20
+ 1229 0550 5A050000 		.4byte	0x55a
+ 1230 0554 1C       		.uleb128 0x1c
+ 1231 0555 81000000 		.4byte	0x81
+ 1232 0559 00       		.byte	0
+ 1233 055a 1B       		.uleb128 0x1b
+ 1234 055b DF000000 		.4byte	.LASF75
+ 1235 055f 09       		.byte	0x9
+ 1236 0560 20       		.byte	0x20
+ 1237 0561 6B050000 		.4byte	0x56b
+ 1238 0565 1C       		.uleb128 0x1c
+ 1239 0566 81000000 		.4byte	0x81
+ 1240 056a 00       		.byte	0
+ 1241 056b 1A       		.uleb128 0x1a
+ 1242 056c A5040000 		.4byte	.LASF76
+ 1243 0570 0A       		.byte	0xa
+ 1244 0571 3E       		.byte	0x3e
+ 1245 0572 1A       		.uleb128 0x1a
+ 1246 0573 AB060000 		.4byte	.LASF77
+ 1247 0577 0B       		.byte	0xb
+ 1248 0578 33       		.byte	0x33
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 30
+
+
+ 1249 0579 1B       		.uleb128 0x1b
+ 1250 057a FB010000 		.4byte	.LASF78
+ 1251 057e 0B       		.byte	0xb
+ 1252 057f 37       		.byte	0x37
+ 1253 0580 8A050000 		.4byte	0x58a
+ 1254 0584 1C       		.uleb128 0x1c
+ 1255 0585 81000000 		.4byte	0x81
+ 1256 0589 00       		.byte	0
+ 1257 058a 1A       		.uleb128 0x1a
+ 1258 058b 08010000 		.4byte	.LASF79
+ 1259 058f 0C       		.byte	0xc
+ 1260 0590 3E       		.byte	0x3e
+ 1261 0591 1A       		.uleb128 0x1a
+ 1262 0592 09030000 		.4byte	.LASF80
+ 1263 0596 0D       		.byte	0xd
+ 1264 0597 33       		.byte	0x33
+ 1265 0598 1B       		.uleb128 0x1b
+ 1266 0599 54010000 		.4byte	.LASF81
+ 1267 059d 0D       		.byte	0xd
+ 1268 059e 37       		.byte	0x37
+ 1269 059f A9050000 		.4byte	0x5a9
+ 1270 05a3 1C       		.uleb128 0x1c
+ 1271 05a4 81000000 		.4byte	0x81
+ 1272 05a8 00       		.byte	0
+ 1273 05a9 1B       		.uleb128 0x1b
+ 1274 05aa 6E060000 		.4byte	.LASF82
+ 1275 05ae 0E       		.byte	0xe
+ 1276 05af 28       		.byte	0x28
+ 1277 05b0 BA050000 		.4byte	0x5ba
+ 1278 05b4 1C       		.uleb128 0x1c
+ 1279 05b5 81000000 		.4byte	0x81
+ 1280 05b9 00       		.byte	0
+ 1281 05ba 1B       		.uleb128 0x1b
+ 1282 05bb A2020000 		.4byte	.LASF83
+ 1283 05bf 0F       		.byte	0xf
+ 1284 05c0 28       		.byte	0x28
+ 1285 05c1 CB050000 		.4byte	0x5cb
+ 1286 05c5 1C       		.uleb128 0x1c
+ 1287 05c6 81000000 		.4byte	0x81
+ 1288 05ca 00       		.byte	0
+ 1289 05cb 1A       		.uleb128 0x1a
+ 1290 05cc 6C000000 		.4byte	.LASF84
+ 1291 05d0 0B       		.byte	0xb
+ 1292 05d1 34       		.byte	0x34
+ 1293 05d2 1A       		.uleb128 0x1a
+ 1294 05d3 E0050000 		.4byte	.LASF85
+ 1295 05d7 0A       		.byte	0xa
+ 1296 05d8 3F       		.byte	0x3f
+ 1297 05d9 1A       		.uleb128 0x1a
+ 1298 05da 82030000 		.4byte	.LASF86
+ 1299 05de 0D       		.byte	0xd
+ 1300 05df 34       		.byte	0x34
+ 1301 05e0 1A       		.uleb128 0x1a
+ 1302 05e1 FD000000 		.4byte	.LASF87
+ 1303 05e5 0C       		.byte	0xc
+ 1304 05e6 3F       		.byte	0x3f
+ 1305 05e7 1D       		.uleb128 0x1d
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 31
+
+
+ 1306 05e8 68030000 		.4byte	.LASF103
+ 1307 05ec 11       		.byte	0x11
+ 1308 05ed 23       		.byte	0x23
+ 1309 05ee 81000000 		.4byte	0x81
+ 1310 05f2 06060000 		.4byte	0x606
+ 1311 05f6 1C       		.uleb128 0x1c
+ 1312 05f7 A8000000 		.4byte	0xa8
+ 1313 05fb 1C       		.uleb128 0x1c
+ 1314 05fc A8000000 		.4byte	0xa8
+ 1315 0600 1C       		.uleb128 0x1c
+ 1316 0601 81000000 		.4byte	0x81
+ 1317 0605 00       		.byte	0
+ 1318 0606 1A       		.uleb128 0x1a
+ 1319 0607 17030000 		.4byte	.LASF88
+ 1320 060b 10       		.byte	0x10
+ 1321 060c 5B       		.byte	0x5b
+ 1322 060d 1A       		.uleb128 0x1a
+ 1323 060e 4C040000 		.4byte	.LASF89
+ 1324 0612 11       		.byte	0x11
+ 1325 0613 1C       		.byte	0x1c
+ 1326 0614 1E       		.uleb128 0x1e
+ 1327 0615 F0000000 		.4byte	.LASF90
+ 1328 0619 12       		.byte	0x12
+ 1329 061a 71       		.byte	0x71
+ 1330 061b 81000000 		.4byte	0x81
+ 1331 061f 1E       		.uleb128 0x1e
+ 1332 0620 99000000 		.4byte	.LASF91
+ 1333 0624 12       		.byte	0x12
+ 1334 0625 70       		.byte	0x70
+ 1335 0626 81000000 		.4byte	0x81
+ 1336 062a 1A       		.uleb128 0x1a
+ 1337 062b 3C010000 		.4byte	.LASF92
+ 1338 062f 10       		.byte	0x10
+ 1339 0630 5A       		.byte	0x5a
+ 1340 0631 1E       		.uleb128 0x1e
+ 1341 0632 8E060000 		.4byte	.LASF93
+ 1342 0636 13       		.byte	0x13
+ 1343 0637 5E       		.byte	0x5e
+ 1344 0638 81000000 		.4byte	0x81
+ 1345 063c 1B       		.uleb128 0x1b
+ 1346 063d D0050000 		.4byte	.LASF94
+ 1347 0641 14       		.byte	0x14
+ 1348 0642 28       		.byte	0x28
+ 1349 0643 4D060000 		.4byte	0x64d
+ 1350 0647 1C       		.uleb128 0x1c
+ 1351 0648 81000000 		.4byte	0x81
+ 1352 064c 00       		.byte	0
+ 1353 064d 1E       		.uleb128 0x1e
+ 1354 064e 1C050000 		.4byte	.LASF95
+ 1355 0652 10       		.byte	0x10
+ 1356 0653 5E       		.byte	0x5e
+ 1357 0654 81000000 		.4byte	0x81
+ 1358 0658 1A       		.uleb128 0x1a
+ 1359 0659 0C020000 		.4byte	.LASF96
+ 1360 065d 11       		.byte	0x11
+ 1361 065e 24       		.byte	0x24
+ 1362 065f 1A       		.uleb128 0x1a
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 32
+
+
+ 1363 0660 B8020000 		.4byte	.LASF97
+ 1364 0664 11       		.byte	0x11
+ 1365 0665 25       		.byte	0x25
+ 1366 0666 1A       		.uleb128 0x1a
+ 1367 0667 7A040000 		.4byte	.LASF98
+ 1368 066b 11       		.byte	0x11
+ 1369 066c 1B       		.byte	0x1b
+ 1370 066d 00       		.byte	0
+ 1371              		.section	.debug_abbrev,"",%progbits
+ 1372              	.Ldebug_abbrev0:
+ 1373 0000 01       		.uleb128 0x1
+ 1374 0001 11       		.uleb128 0x11
+ 1375 0002 01       		.byte	0x1
+ 1376 0003 25       		.uleb128 0x25
+ 1377 0004 0E       		.uleb128 0xe
+ 1378 0005 13       		.uleb128 0x13
+ 1379 0006 0B       		.uleb128 0xb
+ 1380 0007 03       		.uleb128 0x3
+ 1381 0008 0E       		.uleb128 0xe
+ 1382 0009 1B       		.uleb128 0x1b
+ 1383 000a 0E       		.uleb128 0xe
+ 1384 000b 55       		.uleb128 0x55
+ 1385 000c 17       		.uleb128 0x17
+ 1386 000d 11       		.uleb128 0x11
+ 1387 000e 01       		.uleb128 0x1
+ 1388 000f 10       		.uleb128 0x10
+ 1389 0010 17       		.uleb128 0x17
+ 1390 0011 00       		.byte	0
+ 1391 0012 00       		.byte	0
+ 1392 0013 02       		.uleb128 0x2
+ 1393 0014 24       		.uleb128 0x24
+ 1394 0015 00       		.byte	0
+ 1395 0016 0B       		.uleb128 0xb
+ 1396 0017 0B       		.uleb128 0xb
+ 1397 0018 3E       		.uleb128 0x3e
+ 1398 0019 0B       		.uleb128 0xb
+ 1399 001a 03       		.uleb128 0x3
+ 1400 001b 0E       		.uleb128 0xe
+ 1401 001c 00       		.byte	0
+ 1402 001d 00       		.byte	0
+ 1403 001e 03       		.uleb128 0x3
+ 1404 001f 16       		.uleb128 0x16
+ 1405 0020 00       		.byte	0
+ 1406 0021 03       		.uleb128 0x3
+ 1407 0022 0E       		.uleb128 0xe
+ 1408 0023 3A       		.uleb128 0x3a
+ 1409 0024 0B       		.uleb128 0xb
+ 1410 0025 3B       		.uleb128 0x3b
+ 1411 0026 0B       		.uleb128 0xb
+ 1412 0027 49       		.uleb128 0x49
+ 1413 0028 13       		.uleb128 0x13
+ 1414 0029 00       		.byte	0
+ 1415 002a 00       		.byte	0
+ 1416 002b 04       		.uleb128 0x4
+ 1417 002c 24       		.uleb128 0x24
+ 1418 002d 00       		.byte	0
+ 1419 002e 0B       		.uleb128 0xb
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 33
+
+
+ 1420 002f 0B       		.uleb128 0xb
+ 1421 0030 3E       		.uleb128 0x3e
+ 1422 0031 0B       		.uleb128 0xb
+ 1423 0032 03       		.uleb128 0x3
+ 1424 0033 08       		.uleb128 0x8
+ 1425 0034 00       		.byte	0
+ 1426 0035 00       		.byte	0
+ 1427 0036 05       		.uleb128 0x5
+ 1428 0037 04       		.uleb128 0x4
+ 1429 0038 01       		.byte	0x1
+ 1430 0039 03       		.uleb128 0x3
+ 1431 003a 0E       		.uleb128 0xe
+ 1432 003b 0B       		.uleb128 0xb
+ 1433 003c 0B       		.uleb128 0xb
+ 1434 003d 3A       		.uleb128 0x3a
+ 1435 003e 0B       		.uleb128 0xb
+ 1436 003f 3B       		.uleb128 0x3b
+ 1437 0040 0B       		.uleb128 0xb
+ 1438 0041 01       		.uleb128 0x1
+ 1439 0042 13       		.uleb128 0x13
+ 1440 0043 00       		.byte	0
+ 1441 0044 00       		.byte	0
+ 1442 0045 06       		.uleb128 0x6
+ 1443 0046 28       		.uleb128 0x28
+ 1444 0047 00       		.byte	0
+ 1445 0048 03       		.uleb128 0x3
+ 1446 0049 0E       		.uleb128 0xe
+ 1447 004a 1C       		.uleb128 0x1c
+ 1448 004b 0D       		.uleb128 0xd
+ 1449 004c 00       		.byte	0
+ 1450 004d 00       		.byte	0
+ 1451 004e 07       		.uleb128 0x7
+ 1452 004f 13       		.uleb128 0x13
+ 1453 0050 01       		.byte	0x1
+ 1454 0051 0B       		.uleb128 0xb
+ 1455 0052 0B       		.uleb128 0xb
+ 1456 0053 3A       		.uleb128 0x3a
+ 1457 0054 0B       		.uleb128 0xb
+ 1458 0055 3B       		.uleb128 0x3b
+ 1459 0056 0B       		.uleb128 0xb
+ 1460 0057 01       		.uleb128 0x1
+ 1461 0058 13       		.uleb128 0x13
+ 1462 0059 00       		.byte	0
+ 1463 005a 00       		.byte	0
+ 1464 005b 08       		.uleb128 0x8
+ 1465 005c 0D       		.uleb128 0xd
+ 1466 005d 00       		.byte	0
+ 1467 005e 03       		.uleb128 0x3
+ 1468 005f 0E       		.uleb128 0xe
+ 1469 0060 3A       		.uleb128 0x3a
+ 1470 0061 0B       		.uleb128 0xb
+ 1471 0062 3B       		.uleb128 0x3b
+ 1472 0063 0B       		.uleb128 0xb
+ 1473 0064 49       		.uleb128 0x49
+ 1474 0065 13       		.uleb128 0x13
+ 1475 0066 38       		.uleb128 0x38
+ 1476 0067 0B       		.uleb128 0xb
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 34
+
+
+ 1477 0068 00       		.byte	0
+ 1478 0069 00       		.byte	0
+ 1479 006a 09       		.uleb128 0x9
+ 1480 006b 26       		.uleb128 0x26
+ 1481 006c 00       		.byte	0
+ 1482 006d 49       		.uleb128 0x49
+ 1483 006e 13       		.uleb128 0x13
+ 1484 006f 00       		.byte	0
+ 1485 0070 00       		.byte	0
+ 1486 0071 0A       		.uleb128 0xa
+ 1487 0072 2E       		.uleb128 0x2e
+ 1488 0073 01       		.byte	0x1
+ 1489 0074 03       		.uleb128 0x3
+ 1490 0075 0E       		.uleb128 0xe
+ 1491 0076 3A       		.uleb128 0x3a
+ 1492 0077 0B       		.uleb128 0xb
+ 1493 0078 3B       		.uleb128 0x3b
+ 1494 0079 05       		.uleb128 0x5
+ 1495 007a 27       		.uleb128 0x27
+ 1496 007b 19       		.uleb128 0x19
+ 1497 007c 11       		.uleb128 0x11
+ 1498 007d 01       		.uleb128 0x1
+ 1499 007e 12       		.uleb128 0x12
+ 1500 007f 06       		.uleb128 0x6
+ 1501 0080 40       		.uleb128 0x40
+ 1502 0081 18       		.uleb128 0x18
+ 1503 0082 9742     		.uleb128 0x2117
+ 1504 0084 19       		.uleb128 0x19
+ 1505 0085 01       		.uleb128 0x1
+ 1506 0086 13       		.uleb128 0x13
+ 1507 0087 00       		.byte	0
+ 1508 0088 00       		.byte	0
+ 1509 0089 0B       		.uleb128 0xb
+ 1510 008a 898201   		.uleb128 0x4109
+ 1511 008d 00       		.byte	0
+ 1512 008e 11       		.uleb128 0x11
+ 1513 008f 01       		.uleb128 0x1
+ 1514 0090 31       		.uleb128 0x31
+ 1515 0091 13       		.uleb128 0x13
+ 1516 0092 00       		.byte	0
+ 1517 0093 00       		.byte	0
+ 1518 0094 0C       		.uleb128 0xc
+ 1519 0095 898201   		.uleb128 0x4109
+ 1520 0098 01       		.byte	0x1
+ 1521 0099 11       		.uleb128 0x11
+ 1522 009a 01       		.uleb128 0x1
+ 1523 009b 31       		.uleb128 0x31
+ 1524 009c 13       		.uleb128 0x13
+ 1525 009d 01       		.uleb128 0x1
+ 1526 009e 13       		.uleb128 0x13
+ 1527 009f 00       		.byte	0
+ 1528 00a0 00       		.byte	0
+ 1529 00a1 0D       		.uleb128 0xd
+ 1530 00a2 8A8201   		.uleb128 0x410a
+ 1531 00a5 00       		.byte	0
+ 1532 00a6 02       		.uleb128 0x2
+ 1533 00a7 18       		.uleb128 0x18
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 35
+
+
+ 1534 00a8 9142     		.uleb128 0x2111
+ 1535 00aa 18       		.uleb128 0x18
+ 1536 00ab 00       		.byte	0
+ 1537 00ac 00       		.byte	0
+ 1538 00ad 0E       		.uleb128 0xe
+ 1539 00ae 898201   		.uleb128 0x4109
+ 1540 00b1 01       		.byte	0x1
+ 1541 00b2 11       		.uleb128 0x11
+ 1542 00b3 01       		.uleb128 0x1
+ 1543 00b4 31       		.uleb128 0x31
+ 1544 00b5 13       		.uleb128 0x13
+ 1545 00b6 00       		.byte	0
+ 1546 00b7 00       		.byte	0
+ 1547 00b8 0F       		.uleb128 0xf
+ 1548 00b9 2E       		.uleb128 0x2e
+ 1549 00ba 01       		.byte	0x1
+ 1550 00bb 03       		.uleb128 0x3
+ 1551 00bc 0E       		.uleb128 0xe
+ 1552 00bd 3A       		.uleb128 0x3a
+ 1553 00be 0B       		.uleb128 0xb
+ 1554 00bf 3B       		.uleb128 0x3b
+ 1555 00c0 0B       		.uleb128 0xb
+ 1556 00c1 27       		.uleb128 0x27
+ 1557 00c2 19       		.uleb128 0x19
+ 1558 00c3 11       		.uleb128 0x11
+ 1559 00c4 01       		.uleb128 0x1
+ 1560 00c5 12       		.uleb128 0x12
+ 1561 00c6 06       		.uleb128 0x6
+ 1562 00c7 40       		.uleb128 0x40
+ 1563 00c8 18       		.uleb128 0x18
+ 1564 00c9 9742     		.uleb128 0x2117
+ 1565 00cb 19       		.uleb128 0x19
+ 1566 00cc 01       		.uleb128 0x1
+ 1567 00cd 13       		.uleb128 0x13
+ 1568 00ce 00       		.byte	0
+ 1569 00cf 00       		.byte	0
+ 1570 00d0 10       		.uleb128 0x10
+ 1571 00d1 05       		.uleb128 0x5
+ 1572 00d2 00       		.byte	0
+ 1573 00d3 03       		.uleb128 0x3
+ 1574 00d4 0E       		.uleb128 0xe
+ 1575 00d5 3A       		.uleb128 0x3a
+ 1576 00d6 0B       		.uleb128 0xb
+ 1577 00d7 3B       		.uleb128 0x3b
+ 1578 00d8 0B       		.uleb128 0xb
+ 1579 00d9 49       		.uleb128 0x49
+ 1580 00da 13       		.uleb128 0x13
+ 1581 00db 02       		.uleb128 0x2
+ 1582 00dc 17       		.uleb128 0x17
+ 1583 00dd 00       		.byte	0
+ 1584 00de 00       		.byte	0
+ 1585 00df 11       		.uleb128 0x11
+ 1586 00e0 34       		.uleb128 0x34
+ 1587 00e1 00       		.byte	0
+ 1588 00e2 03       		.uleb128 0x3
+ 1589 00e3 0E       		.uleb128 0xe
+ 1590 00e4 3A       		.uleb128 0x3a
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 36
+
+
+ 1591 00e5 0B       		.uleb128 0xb
+ 1592 00e6 3B       		.uleb128 0x3b
+ 1593 00e7 0B       		.uleb128 0xb
+ 1594 00e8 49       		.uleb128 0x49
+ 1595 00e9 13       		.uleb128 0x13
+ 1596 00ea 02       		.uleb128 0x2
+ 1597 00eb 18       		.uleb128 0x18
+ 1598 00ec 00       		.byte	0
+ 1599 00ed 00       		.byte	0
+ 1600 00ee 12       		.uleb128 0x12
+ 1601 00ef 01       		.uleb128 0x1
+ 1602 00f0 01       		.byte	0x1
+ 1603 00f1 49       		.uleb128 0x49
+ 1604 00f2 13       		.uleb128 0x13
+ 1605 00f3 01       		.uleb128 0x1
+ 1606 00f4 13       		.uleb128 0x13
+ 1607 00f5 00       		.byte	0
+ 1608 00f6 00       		.byte	0
+ 1609 00f7 13       		.uleb128 0x13
+ 1610 00f8 21       		.uleb128 0x21
+ 1611 00f9 00       		.byte	0
+ 1612 00fa 49       		.uleb128 0x49
+ 1613 00fb 13       		.uleb128 0x13
+ 1614 00fc 2F       		.uleb128 0x2f
+ 1615 00fd 0B       		.uleb128 0xb
+ 1616 00fe 00       		.byte	0
+ 1617 00ff 00       		.byte	0
+ 1618 0100 14       		.uleb128 0x14
+ 1619 0101 2E       		.uleb128 0x2e
+ 1620 0102 01       		.byte	0x1
+ 1621 0103 3F       		.uleb128 0x3f
+ 1622 0104 19       		.uleb128 0x19
+ 1623 0105 03       		.uleb128 0x3
+ 1624 0106 0E       		.uleb128 0xe
+ 1625 0107 3A       		.uleb128 0x3a
+ 1626 0108 0B       		.uleb128 0xb
+ 1627 0109 3B       		.uleb128 0x3b
+ 1628 010a 0B       		.uleb128 0xb
+ 1629 010b 27       		.uleb128 0x27
+ 1630 010c 19       		.uleb128 0x19
+ 1631 010d 11       		.uleb128 0x11
+ 1632 010e 01       		.uleb128 0x1
+ 1633 010f 12       		.uleb128 0x12
+ 1634 0110 06       		.uleb128 0x6
+ 1635 0111 40       		.uleb128 0x40
+ 1636 0112 18       		.uleb128 0x18
+ 1637 0113 9742     		.uleb128 0x2117
+ 1638 0115 19       		.uleb128 0x19
+ 1639 0116 01       		.uleb128 0x1
+ 1640 0117 13       		.uleb128 0x13
+ 1641 0118 00       		.byte	0
+ 1642 0119 00       		.byte	0
+ 1643 011a 15       		.uleb128 0x15
+ 1644 011b 34       		.uleb128 0x34
+ 1645 011c 00       		.byte	0
+ 1646 011d 03       		.uleb128 0x3
+ 1647 011e 0E       		.uleb128 0xe
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 37
+
+
+ 1648 011f 3A       		.uleb128 0x3a
+ 1649 0120 0B       		.uleb128 0xb
+ 1650 0121 3B       		.uleb128 0x3b
+ 1651 0122 0B       		.uleb128 0xb
+ 1652 0123 49       		.uleb128 0x49
+ 1653 0124 13       		.uleb128 0x13
+ 1654 0125 02       		.uleb128 0x2
+ 1655 0126 17       		.uleb128 0x17
+ 1656 0127 00       		.byte	0
+ 1657 0128 00       		.byte	0
+ 1658 0129 16       		.uleb128 0x16
+ 1659 012a 34       		.uleb128 0x34
+ 1660 012b 00       		.byte	0
+ 1661 012c 03       		.uleb128 0x3
+ 1662 012d 0E       		.uleb128 0xe
+ 1663 012e 3A       		.uleb128 0x3a
+ 1664 012f 0B       		.uleb128 0xb
+ 1665 0130 3B       		.uleb128 0x3b
+ 1666 0131 0B       		.uleb128 0xb
+ 1667 0132 49       		.uleb128 0x49
+ 1668 0133 13       		.uleb128 0x13
+ 1669 0134 1C       		.uleb128 0x1c
+ 1670 0135 0D       		.uleb128 0xd
+ 1671 0136 00       		.byte	0
+ 1672 0137 00       		.byte	0
+ 1673 0138 17       		.uleb128 0x17
+ 1674 0139 34       		.uleb128 0x34
+ 1675 013a 00       		.byte	0
+ 1676 013b 03       		.uleb128 0x3
+ 1677 013c 0E       		.uleb128 0xe
+ 1678 013d 3A       		.uleb128 0x3a
+ 1679 013e 0B       		.uleb128 0xb
+ 1680 013f 3B       		.uleb128 0x3b
+ 1681 0140 0B       		.uleb128 0xb
+ 1682 0141 49       		.uleb128 0x49
+ 1683 0142 13       		.uleb128 0x13
+ 1684 0143 1C       		.uleb128 0x1c
+ 1685 0144 0B       		.uleb128 0xb
+ 1686 0145 00       		.byte	0
+ 1687 0146 00       		.byte	0
+ 1688 0147 18       		.uleb128 0x18
+ 1689 0148 34       		.uleb128 0x34
+ 1690 0149 00       		.byte	0
+ 1691 014a 03       		.uleb128 0x3
+ 1692 014b 0E       		.uleb128 0xe
+ 1693 014c 3A       		.uleb128 0x3a
+ 1694 014d 0B       		.uleb128 0xb
+ 1695 014e 3B       		.uleb128 0x3b
+ 1696 014f 05       		.uleb128 0x5
+ 1697 0150 49       		.uleb128 0x49
+ 1698 0151 13       		.uleb128 0x13
+ 1699 0152 3F       		.uleb128 0x3f
+ 1700 0153 19       		.uleb128 0x19
+ 1701 0154 3C       		.uleb128 0x3c
+ 1702 0155 19       		.uleb128 0x19
+ 1703 0156 00       		.byte	0
+ 1704 0157 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 38
+
+
+ 1705 0158 19       		.uleb128 0x19
+ 1706 0159 35       		.uleb128 0x35
+ 1707 015a 00       		.byte	0
+ 1708 015b 49       		.uleb128 0x49
+ 1709 015c 13       		.uleb128 0x13
+ 1710 015d 00       		.byte	0
+ 1711 015e 00       		.byte	0
+ 1712 015f 1A       		.uleb128 0x1a
+ 1713 0160 2E       		.uleb128 0x2e
+ 1714 0161 00       		.byte	0
+ 1715 0162 3F       		.uleb128 0x3f
+ 1716 0163 19       		.uleb128 0x19
+ 1717 0164 03       		.uleb128 0x3
+ 1718 0165 0E       		.uleb128 0xe
+ 1719 0166 3A       		.uleb128 0x3a
+ 1720 0167 0B       		.uleb128 0xb
+ 1721 0168 3B       		.uleb128 0x3b
+ 1722 0169 0B       		.uleb128 0xb
+ 1723 016a 27       		.uleb128 0x27
+ 1724 016b 19       		.uleb128 0x19
+ 1725 016c 3C       		.uleb128 0x3c
+ 1726 016d 19       		.uleb128 0x19
+ 1727 016e 00       		.byte	0
+ 1728 016f 00       		.byte	0
+ 1729 0170 1B       		.uleb128 0x1b
+ 1730 0171 2E       		.uleb128 0x2e
+ 1731 0172 01       		.byte	0x1
+ 1732 0173 3F       		.uleb128 0x3f
+ 1733 0174 19       		.uleb128 0x19
+ 1734 0175 03       		.uleb128 0x3
+ 1735 0176 0E       		.uleb128 0xe
+ 1736 0177 3A       		.uleb128 0x3a
+ 1737 0178 0B       		.uleb128 0xb
+ 1738 0179 3B       		.uleb128 0x3b
+ 1739 017a 0B       		.uleb128 0xb
+ 1740 017b 27       		.uleb128 0x27
+ 1741 017c 19       		.uleb128 0x19
+ 1742 017d 3C       		.uleb128 0x3c
+ 1743 017e 19       		.uleb128 0x19
+ 1744 017f 01       		.uleb128 0x1
+ 1745 0180 13       		.uleb128 0x13
+ 1746 0181 00       		.byte	0
+ 1747 0182 00       		.byte	0
+ 1748 0183 1C       		.uleb128 0x1c
+ 1749 0184 05       		.uleb128 0x5
+ 1750 0185 00       		.byte	0
+ 1751 0186 49       		.uleb128 0x49
+ 1752 0187 13       		.uleb128 0x13
+ 1753 0188 00       		.byte	0
+ 1754 0189 00       		.byte	0
+ 1755 018a 1D       		.uleb128 0x1d
+ 1756 018b 2E       		.uleb128 0x2e
+ 1757 018c 01       		.byte	0x1
+ 1758 018d 3F       		.uleb128 0x3f
+ 1759 018e 19       		.uleb128 0x19
+ 1760 018f 03       		.uleb128 0x3
+ 1761 0190 0E       		.uleb128 0xe
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 39
+
+
+ 1762 0191 3A       		.uleb128 0x3a
+ 1763 0192 0B       		.uleb128 0xb
+ 1764 0193 3B       		.uleb128 0x3b
+ 1765 0194 0B       		.uleb128 0xb
+ 1766 0195 27       		.uleb128 0x27
+ 1767 0196 19       		.uleb128 0x19
+ 1768 0197 49       		.uleb128 0x49
+ 1769 0198 13       		.uleb128 0x13
+ 1770 0199 3C       		.uleb128 0x3c
+ 1771 019a 19       		.uleb128 0x19
+ 1772 019b 01       		.uleb128 0x1
+ 1773 019c 13       		.uleb128 0x13
+ 1774 019d 00       		.byte	0
+ 1775 019e 00       		.byte	0
+ 1776 019f 1E       		.uleb128 0x1e
+ 1777 01a0 2E       		.uleb128 0x2e
+ 1778 01a1 00       		.byte	0
+ 1779 01a2 3F       		.uleb128 0x3f
+ 1780 01a3 19       		.uleb128 0x19
+ 1781 01a4 03       		.uleb128 0x3
+ 1782 01a5 0E       		.uleb128 0xe
+ 1783 01a6 3A       		.uleb128 0x3a
+ 1784 01a7 0B       		.uleb128 0xb
+ 1785 01a8 3B       		.uleb128 0x3b
+ 1786 01a9 0B       		.uleb128 0xb
+ 1787 01aa 27       		.uleb128 0x27
+ 1788 01ab 19       		.uleb128 0x19
+ 1789 01ac 49       		.uleb128 0x49
+ 1790 01ad 13       		.uleb128 0x13
+ 1791 01ae 3C       		.uleb128 0x3c
+ 1792 01af 19       		.uleb128 0x19
+ 1793 01b0 00       		.byte	0
+ 1794 01b1 00       		.byte	0
+ 1795 01b2 00       		.byte	0
+ 1796              		.section	.debug_loc,"",%progbits
+ 1797              	.Ldebug_loc0:
+ 1798              	.LLST0:
+ 1799 0000 00000000 		.4byte	.LVL20
+ 1800 0004 ED000000 		.4byte	.LVL21-1
+ 1801 0008 0100     		.2byte	0x1
+ 1802 000a 50       		.byte	0x50
+ 1803 000b ED000000 		.4byte	.LVL21-1
+ 1804 000f F0000000 		.4byte	.LVL22
+ 1805 0013 0400     		.2byte	0x4
+ 1806 0015 F3       		.byte	0xf3
+ 1807 0016 01       		.uleb128 0x1
+ 1808 0017 50       		.byte	0x50
+ 1809 0018 9F       		.byte	0x9f
+ 1810 0019 F0000000 		.4byte	.LVL22
+ 1811 001d F9000000 		.4byte	.LVL23-1
+ 1812 0021 0100     		.2byte	0x1
+ 1813 0023 50       		.byte	0x50
+ 1814 0024 F9000000 		.4byte	.LVL23-1
+ 1815 0028 FC000000 		.4byte	.LVL24
+ 1816 002c 0400     		.2byte	0x4
+ 1817 002e F3       		.byte	0xf3
+ 1818 002f 01       		.uleb128 0x1
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 40
+
+
+ 1819 0030 50       		.byte	0x50
+ 1820 0031 9F       		.byte	0x9f
+ 1821 0032 FC000000 		.4byte	.LVL24
+ 1822 0036 04010000 		.4byte	.LVL25
+ 1823 003a 0100     		.2byte	0x1
+ 1824 003c 50       		.byte	0x50
+ 1825 003d 04010000 		.4byte	.LVL25
+ 1826 0041 06010000 		.4byte	.LVL26
+ 1827 0045 0200     		.2byte	0x2
+ 1828 0047 71       		.byte	0x71
+ 1829 0048 04       		.sleb128 4
+ 1830 0049 06010000 		.4byte	.LVL26
+ 1831 004d 0B010000 		.4byte	.LVL27-1
+ 1832 0051 0F00     		.2byte	0xf
+ 1833 0053 03       		.byte	0x3
+ 1834 0054 01000000 		.4byte	currentPacketIndex.7248
+ 1835 0058 94       		.byte	0x94
+ 1836 0059 01       		.byte	0x1
+ 1837 005a 08       		.byte	0x8
+ 1838 005b FF       		.byte	0xff
+ 1839 005c 1A       		.byte	0x1a
+ 1840 005d 73       		.byte	0x73
+ 1841 005e 00       		.sleb128 0
+ 1842 005f 22       		.byte	0x22
+ 1843 0060 23       		.byte	0x23
+ 1844 0061 04       		.uleb128 0x4
+ 1845 0062 0B010000 		.4byte	.LVL27-1
+ 1846 0066 1C010000 		.4byte	.LVL28
+ 1847 006a 0400     		.2byte	0x4
+ 1848 006c F3       		.byte	0xf3
+ 1849 006d 01       		.uleb128 0x1
+ 1850 006e 50       		.byte	0x50
+ 1851 006f 9F       		.byte	0x9f
+ 1852 0070 1C010000 		.4byte	.LVL28
+ 1853 0074 38010000 		.4byte	.LFE66
+ 1854 0078 0100     		.2byte	0x1
+ 1855 007a 50       		.byte	0x50
+ 1856 007b 00000000 		.4byte	0
+ 1857 007f 00000000 		.4byte	0
+ 1858              	.LLST1:
+ 1859 0083 02000000 		.4byte	.LVL29
+ 1860 0087 10000000 		.4byte	.LVL32
+ 1861 008b 0200     		.2byte	0x2
+ 1862 008d 30       		.byte	0x30
+ 1863 008e 9F       		.byte	0x9f
+ 1864 008f 16000000 		.4byte	.LVL34
+ 1865 0093 1F000000 		.4byte	.LVL35-1
+ 1866 0097 0100     		.2byte	0x1
+ 1867 0099 50       		.byte	0x50
+ 1868 009a 00000000 		.4byte	0
+ 1869 009e 00000000 		.4byte	0
+ 1870              		.section	.debug_aranges,"",%progbits
+ 1871 0000 44000000 		.4byte	0x44
+ 1872 0004 0200     		.2byte	0x2
+ 1873 0006 00000000 		.4byte	.Ldebug_info0
+ 1874 000a 04       		.byte	0x4
+ 1875 000b 00       		.byte	0
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 41
+
+
+ 1876 000c 0000     		.2byte	0
+ 1877 000e 0000     		.2byte	0
+ 1878 0010 00000000 		.4byte	.LFB67
+ 1879 0014 40000000 		.4byte	.LFE67-.LFB67
+ 1880 0018 00000000 		.4byte	.LFB68
+ 1881 001c 2C000000 		.4byte	.LFE68-.LFB68
+ 1882 0020 00000000 		.4byte	.LFB66
+ 1883 0024 38010000 		.4byte	.LFE66-.LFB66
+ 1884 0028 00000000 		.4byte	.LFB63
+ 1885 002c 40000000 		.4byte	.LFE63-.LFB63
+ 1886 0030 00000000 		.4byte	.LFB64
+ 1887 0034 1C000000 		.4byte	.LFE64-.LFB64
+ 1888 0038 00000000 		.4byte	.LFB65
+ 1889 003c 34000000 		.4byte	.LFE65-.LFB65
+ 1890 0040 00000000 		.4byte	0
+ 1891 0044 00000000 		.4byte	0
+ 1892              		.section	.debug_ranges,"",%progbits
+ 1893              	.Ldebug_ranges0:
+ 1894 0000 00000000 		.4byte	.LFB67
+ 1895 0004 40000000 		.4byte	.LFE67
+ 1896 0008 00000000 		.4byte	.LFB68
+ 1897 000c 2C000000 		.4byte	.LFE68
+ 1898 0010 00000000 		.4byte	.LFB66
+ 1899 0014 38010000 		.4byte	.LFE66
+ 1900 0018 00000000 		.4byte	.LFB63
+ 1901 001c 40000000 		.4byte	.LFE63
+ 1902 0020 00000000 		.4byte	.LFB64
+ 1903 0024 1C000000 		.4byte	.LFE64
+ 1904 0028 00000000 		.4byte	.LFB65
+ 1905 002c 34000000 		.4byte	.LFE65
+ 1906 0030 00000000 		.4byte	0
+ 1907 0034 00000000 		.4byte	0
+ 1908              		.section	.debug_line,"",%progbits
+ 1909              	.Ldebug_line0:
+ 1910 0000 1E030000 		.section	.debug_str,"MS",%progbits,1
+ 1910      02003F02 
+ 1910      00000201 
+ 1910      FB0E0D00 
+ 1910      01010101 
+ 1911              	.LASF33:
+ 1912 0000 50554C4C 		.ascii	"PULL_OVER\000"
+ 1912      5F4F5645 
+ 1912      5200
+ 1913              	.LASF39:
+ 1914 000a 546F6E65 		.ascii	"ToneType\000"
+ 1914      54797065 
+ 1914      00
+ 1915              	.LASF20:
+ 1916 0013 50484153 		.ascii	"PHASER\000"
+ 1916      455200
+ 1917              	.LASF43:
+ 1918 001a 5061636B 		.ascii	"PacketState\000"
+ 1918      65745374 
+ 1918      61746500 
+ 1919              	.LASF24:
+ 1920 0026 48494748 		.ascii	"HIGH_LOW\000"
+ 1920      5F4C4F57 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 42
+
+
+ 1920      00
+ 1921              	.LASF61:
+ 1922 002f 70726F63 		.ascii	"processByteReceivedHandler\000"
+ 1922      65737342 
+ 1922      79746552 
+ 1922      65636569 
+ 1922      76656448 
+ 1923              	.LASF73:
+ 1924 004a 44414374 		.ascii	"DACtimer2_Stop\000"
+ 1924      696D6572 
+ 1924      325F5374 
+ 1924      6F7000
+ 1925              	.LASF2:
+ 1926 0059 73686F72 		.ascii	"short int\000"
+ 1926      7420696E 
+ 1926      7400
+ 1927              	.LASF32:
+ 1928 0063 4D4F5645 		.ascii	"MOVE_OUT\000"
+ 1928      5F4F5554 
+ 1928      00
+ 1929              	.LASF84:
+ 1930 006c 56444143 		.ascii	"VDAC8_1_Stop\000"
+ 1930      385F315F 
+ 1930      53746F70 
+ 1930      00
+ 1931              	.LASF45:
+ 1932 0079 5041594C 		.ascii	"PAYLOAD_STATE\000"
+ 1932      4F41445F 
+ 1932      53544154 
+ 1932      4500
+ 1933              	.LASF35:
+ 1934 0087 53544550 		.ascii	"STEP_OUT_HANDS_UP\000"
+ 1934      5F4F5554 
+ 1934      5F48414E 
+ 1934      44535F55 
+ 1934      5000
+ 1935              	.LASF91:
+ 1936 0099 55415254 		.ascii	"UART_ReadRxStatus\000"
+ 1936      5F526561 
+ 1936      64527853 
+ 1936      74617475 
+ 1936      7300
+ 1937              	.LASF65:
+ 1938 00ab 53544152 		.ascii	"START_BYTE\000"
+ 1938      545F4259 
+ 1938      544500
+ 1939              	.LASF41:
+ 1940 00b6 564F4943 		.ascii	"VOICE_DATA\000"
+ 1940      455F4441 
+ 1940      544100
+ 1941              	.LASF40:
+ 1942 00c1 44617461 		.ascii	"DataType\000"
+ 1942      54797065 
+ 1942      00
+ 1943              	.LASF71:
+ 1944 00ca 74656E4D 		.ascii	"tenMilliSecondsCount\000"
+ 1944      696C6C69 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 43
+
+
+ 1944      5365636F 
+ 1944      6E647343 
+ 1944      6F756E74 
+ 1945              	.LASF75:
+ 1946 00df 414D7578 		.ascii	"AMux2_FastSelect\000"
+ 1946      325F4661 
+ 1946      73745365 
+ 1946      6C656374 
+ 1946      00
+ 1947              	.LASF90:
+ 1948 00f0 55415254 		.ascii	"UART_GetChar\000"
+ 1948      5F476574 
+ 1948      43686172 
+ 1948      00
+ 1949              	.LASF87:
+ 1950 00fd 5047415F 		.ascii	"PGA_2_Stop\000"
+ 1950      325F5374 
+ 1950      6F7000
+ 1951              	.LASF79:
+ 1952 0108 5047415F 		.ascii	"PGA_2_Start\000"
+ 1952      325F5374 
+ 1952      61727400 
+ 1953              	.LASF44:
+ 1954 0114 48454144 		.ascii	"HEADER_STATE\000"
+ 1954      45525F53 
+ 1954      54415445 
+ 1954      00
+ 1955              	.LASF11:
+ 1956 0121 75696E74 		.ascii	"uint8\000"
+ 1956      3800
+ 1957              	.LASF53:
+ 1958 0127 73746172 		.ascii	"startVoiceStreamMode\000"
+ 1958      74566F69 
+ 1958      63655374 
+ 1958      7265616D 
+ 1958      4D6F6465 
+ 1959              	.LASF92:
+ 1960 013c 55415254 		.ascii	"UART_Timer_Start\000"
+ 1960      5F54696D 
+ 1960      65725F53 
+ 1960      74617274 
+ 1960      00
+ 1961              	.LASF56:
+ 1962 014d 7061636B 		.ascii	"packet\000"
+ 1962      657400
+ 1963              	.LASF81:
+ 1964 0154 56444143 		.ascii	"VDAC8_2_SetValue\000"
+ 1964      385F325F 
+ 1964      53657456 
+ 1964      616C7565 
+ 1964      00
+ 1965              	.LASF55:
+ 1966 0165 64657465 		.ascii	"detectPacket\000"
+ 1966      63745061 
+ 1966      636B6574 
+ 1966      00
+ 1967              	.LASF0:
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 44
+
+
+ 1968 0172 7369676E 		.ascii	"signed char\000"
+ 1968      65642063 
+ 1968      68617200 
+ 1969              	.LASF31:
+ 1970 017e 434F5053 		.ascii	"COPS_SONG\000"
+ 1970      5F534F4E 
+ 1970      4700
+ 1971              	.LASF28:
+ 1972 0188 484F524E 		.ascii	"HORN_YELP\000"
+ 1972      5F59454C 
+ 1972      5000
+ 1973              	.LASF12:
+ 1974 0192 666C6F61 		.ascii	"float\000"
+ 1974      7400
+ 1975              	.LASF6:
+ 1976 0198 6C6F6E67 		.ascii	"long long int\000"
+ 1976      206C6F6E 
+ 1976      6720696E 
+ 1976      7400
+ 1977              	.LASF16:
+ 1978 01a6 4E4F5F54 		.ascii	"NO_TONE\000"
+ 1978      4F4E4500 
+ 1979              	.LASF38:
+ 1980 01ae 54455354 		.ascii	"TEST_TONE\000"
+ 1980      5F544F4E 
+ 1980      4500
+ 1981              	.LASF34:
+ 1982 01b8 53544550 		.ascii	"STEP_OUT\000"
+ 1982      5F4F5554 
+ 1982      00
+ 1983              	.LASF50:
+ 1984 01c1 454F505F 		.ascii	"EOP_CARRIAGE_RETURN\000"
+ 1984      43415252 
+ 1984      49414745 
+ 1984      5F524554 
+ 1984      55524E00 
+ 1985              	.LASF4:
+ 1986 01d5 6C6F6E67 		.ascii	"long int\000"
+ 1986      20696E74 
+ 1986      00
+ 1987              	.LASF60:
+ 1988 01de 64617461 		.ascii	"dataByte\000"
+ 1988      42797465 
+ 1988      00
+ 1989              	.LASF21:
+ 1990 01e7 484F524E 		.ascii	"HORN\000"
+ 1990      00
+ 1991              	.LASF72:
+ 1992 01ec 44414374 		.ascii	"DACtimer1_Stop\000"
+ 1992      696D6572 
+ 1992      315F5374 
+ 1992      6F7000
+ 1993              	.LASF78:
+ 1994 01fb 56444143 		.ascii	"VDAC8_1_SetValue\000"
+ 1994      385F315F 
+ 1994      53657456 
+ 1994      616C7565 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 45
+
+
+ 1994      00
+ 1995              	.LASF96:
+ 1996 020c 64697361 		.ascii	"disableAudioAndPWM\000"
+ 1996      626C6541 
+ 1996      7564696F 
+ 1996      416E6450 
+ 1996      574D00
+ 1997              	.LASF30:
+ 1998 021f 4543544F 		.ascii	"ECTOSIREN\000"
+ 1998      53495245 
+ 1998      4E00
+ 1999              	.LASF19:
+ 2000 0229 46415354 		.ascii	"FAST_YELP\000"
+ 2000      5F59454C 
+ 2000      5000
+ 2001              	.LASF100:
+ 2002 0233 2E5C436F 		.ascii	".\\CommManager.c\000"
+ 2002      6D6D4D61 
+ 2002      6E616765 
+ 2002      722E6300 
+ 2003              	.LASF67:
+ 2004 0243 494E4954 		.ascii	"INITIAL_DAC_VALUE\000"
+ 2004      49414C5F 
+ 2004      4441435F 
+ 2004      56414C55 
+ 2004      4500
+ 2005              	.LASF22:
+ 2006 0255 4D454348 		.ascii	"MECHANICAL\000"
+ 2006      414E4943 
+ 2006      414C00
+ 2007              	.LASF1:
+ 2008 0260 756E7369 		.ascii	"unsigned char\000"
+ 2008      676E6564 
+ 2008      20636861 
+ 2008      7200
+ 2009              	.LASF63:
+ 2010 026e 62537769 		.ascii	"bSwitch\000"
+ 2010      74636800 
+ 2011              	.LASF17:
+ 2012 0276 5741494C 		.ascii	"WAIL\000"
+ 2012      00
+ 2013              	.LASF52:
+ 2014 027b 5061636B 		.ascii	"Packet\000"
+ 2014      657400
+ 2015              	.LASF48:
+ 2016 0282 5041434B 		.ascii	"PACKET_TYPE\000"
+ 2016      45545F54 
+ 2016      59504500 
+ 2017              	.LASF54:
+ 2018 028e 73746F70 		.ascii	"stopVoiceStreamMode\000"
+ 2018      566F6963 
+ 2018      65537472 
+ 2018      65616D4D 
+ 2018      6F646500 
+ 2019              	.LASF83:
+ 2020 02a2 506F7765 		.ascii	"PowerAmpOutput2_Write\000"
+ 2020      72416D70 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 46
+
+
+ 2020      4F757470 
+ 2020      7574325F 
+ 2020      57726974 
+ 2021              	.LASF97:
+ 2022 02b8 64697361 		.ascii	"disableBothSpeakers\000"
+ 2022      626C6542 
+ 2022      6F746853 
+ 2022      7065616B 
+ 2022      65727300 
+ 2023              	.LASF51:
+ 2024 02cc 454F505F 		.ascii	"EOP_LINE_FEED\000"
+ 2024      4C494E45 
+ 2024      5F464545 
+ 2024      4400
+ 2025              	.LASF62:
+ 2026 02da 70726F63 		.ascii	"processLED_TimerRoutine\000"
+ 2026      6573734C 
+ 2026      45445F54 
+ 2026      696D6572 
+ 2026      526F7574 
+ 2027              	.LASF7:
+ 2028 02f2 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2028      206C6F6E 
+ 2028      6720756E 
+ 2028      7369676E 
+ 2028      65642069 
+ 2029              	.LASF80:
+ 2030 0309 56444143 		.ascii	"VDAC8_2_Start\000"
+ 2030      385F325F 
+ 2030      53746172 
+ 2030      7400
+ 2031              	.LASF88:
+ 2032 0317 55415254 		.ascii	"UART_Timer_Stop\000"
+ 2032      5F54696D 
+ 2032      65725F53 
+ 2032      746F7000 
+ 2033              	.LASF8:
+ 2034 0327 756E7369 		.ascii	"unsigned int\000"
+ 2034      676E6564 
+ 2034      20696E74 
+ 2034      00
+ 2035              	.LASF46:
+ 2036 0334 454F505F 		.ascii	"EOP_STATE\000"
+ 2036      53544154 
+ 2036      4500
+ 2037              	.LASF58:
+ 2038 033e 63757272 		.ascii	"currentType\000"
+ 2038      656E7454 
+ 2038      79706500 
+ 2039              	.LASF5:
+ 2040 034a 6C6F6E67 		.ascii	"long unsigned int\000"
+ 2040      20756E73 
+ 2040      69676E65 
+ 2040      6420696E 
+ 2040      7400
+ 2041              	.LASF29:
+ 2042 035c 50484153 		.ascii	"PHASER_YELP\000"
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 47
+
+
+ 2042      45525F59 
+ 2042      454C5000 
+ 2043              	.LASF103:
+ 2044 0368 73657454 		.ascii	"setTonesWithCommunication\000"
+ 2044      6F6E6573 
+ 2044      57697468 
+ 2044      436F6D6D 
+ 2044      756E6963 
+ 2045              	.LASF86:
+ 2046 0382 56444143 		.ascii	"VDAC8_2_Stop\000"
+ 2046      385F325F 
+ 2046      53746F70 
+ 2046      00
+ 2047              	.LASF66:
+ 2048 038f 53544F50 		.ascii	"STOP_BYTE\000"
+ 2048      5F425954 
+ 2048      4500
+ 2049              	.LASF69:
+ 2050 0399 5061636B 		.ascii	"PacketList\000"
+ 2050      65744C69 
+ 2050      737400
+ 2051              	.LASF14:
+ 2052 03a4 63686172 		.ascii	"char\000"
+ 2052      00
+ 2053              	.LASF99:
+ 2054 03a9 474E5520 		.ascii	"GNU C 4.9.3 20150303 (release) [ARM/embedded-4_9-br"
+ 2054      4320342E 
+ 2054      392E3320 
+ 2054      32303135 
+ 2054      30333033 
+ 2055 03dc 616E6368 		.ascii	"anch revision 221220] -mcpu=cortex-m3 -mthumb -g -O"
+ 2055      20726576 
+ 2055      6973696F 
+ 2055      6E203232 
+ 2055      31323230 
+ 2056 040f 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 2056      66756E63 
+ 2056      74696F6E 
+ 2056      2D736563 
+ 2056      74696F6E 
+ 2057              	.LASF10:
+ 2058 0437 696E7433 		.ascii	"int32_t\000"
+ 2058      325F7400 
+ 2059              	.LASF57:
+ 2060 043f 63757272 		.ascii	"currentState\000"
+ 2060      656E7453 
+ 2060      74617465 
+ 2060      00
+ 2061              	.LASF89:
+ 2062 044c 64697361 		.ascii	"disableToneInputInterrupts\000"
+ 2062      626C6554 
+ 2062      6F6E6549 
+ 2062      6E707574 
+ 2062      496E7465 
+ 2063              	.LASF3:
+ 2064 0467 73686F72 		.ascii	"short unsigned int\000"
+ 2064      7420756E 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 48
+
+
+ 2064      7369676E 
+ 2064      65642069 
+ 2064      6E7400
+ 2065              	.LASF98:
+ 2066 047a 656E6162 		.ascii	"enableToneInputInterrupts\000"
+ 2066      6C65546F 
+ 2066      6E65496E 
+ 2066      70757449 
+ 2066      6E746572 
+ 2067              	.LASF74:
+ 2068 0494 414D7578 		.ascii	"AMux1_FastSelect\000"
+ 2068      315F4661 
+ 2068      73745365 
+ 2068      6C656374 
+ 2068      00
+ 2069              	.LASF76:
+ 2070 04a5 5047415F 		.ascii	"PGA_1_Start\000"
+ 2070      315F5374 
+ 2070      61727400 
+ 2071              	.LASF23:
+ 2072 04b1 4D414E55 		.ascii	"MANUAL_WAIL\000"
+ 2072      414C5F57 
+ 2072      41494C00 
+ 2073              	.LASF64:
+ 2074 04bd 70726F63 		.ascii	"processCommTimeoutRoutine\000"
+ 2074      65737343 
+ 2074      6F6D6D54 
+ 2074      696D656F 
+ 2074      7574526F 
+ 2075              	.LASF68:
+ 2076 04d7 54494D45 		.ascii	"TIMER_LIMIT_IN_TEN_MILLISECONDS\000"
+ 2076      525F4C49 
+ 2076      4D49545F 
+ 2076      494E5F54 
+ 2076      454E5F4D 
+ 2077              	.LASF59:
+ 2078 04f7 63757272 		.ascii	"currentPacketIndex\000"
+ 2078      656E7450 
+ 2078      61636B65 
+ 2078      74496E64 
+ 2078      657800
+ 2079              	.LASF26:
+ 2080 050a 5043414C 		.ascii	"PCALL_FAST\000"
+ 2080      4C5F4641 
+ 2080      535400
+ 2081              	.LASF13:
+ 2082 0515 646F7562 		.ascii	"double\000"
+ 2082      6C6500
+ 2083              	.LASF95:
+ 2084 051c 55415254 		.ascii	"UART_Timer_ReadStatusRegister\000"
+ 2084      5F54696D 
+ 2084      65725F52 
+ 2084      65616453 
+ 2084      74617475 
+ 2085              	.LASF70:
+ 2086 053a 62566F69 		.ascii	"bVoiceStreamEnabled\000"
+ 2086      63655374 
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 49
+
+
+ 2086      7265616D 
+ 2086      456E6162 
+ 2086      6C656400 
+ 2087              	.LASF25:
+ 2088 054e 5043414C 		.ascii	"PCALL_SLOW\000"
+ 2088      4C5F534C 
+ 2088      4F5700
+ 2089              	.LASF47:
+ 2090 0559 48454144 		.ascii	"HEADER_BYTE\000"
+ 2090      45525F42 
+ 2090      59544500 
+ 2091              	.LASF9:
+ 2092 0565 5F5F696E 		.ascii	"__int32_t\000"
+ 2092      7433325F 
+ 2092      7400
+ 2093              	.LASF36:
+ 2094 056f 52454D41 		.ascii	"REMAIN_IN_VEHICLE\000"
+ 2094      494E5F49 
+ 2094      4E5F5645 
+ 2094      4849434C 
+ 2094      4500
+ 2095              	.LASF42:
+ 2096 0581 53495245 		.ascii	"SIREN_INPUTS\000"
+ 2096      4E5F494E 
+ 2096      50555453 
+ 2096      00
+ 2097              	.LASF49:
+ 2098 058e 5041594C 		.ascii	"PAYLOAD_SIZE\000"
+ 2098      4F41445F 
+ 2098      53495A45 
+ 2098      00
+ 2099              	.LASF37:
+ 2100 059b 52454D41 		.ascii	"REMAIN_WINDOW_DOWN\000"
+ 2100      494E5F57 
+ 2100      494E444F 
+ 2100      575F444F 
+ 2100      574E00
+ 2101              	.LASF15:
+ 2102 05ae 73697A65 		.ascii	"sizetype\000"
+ 2102      74797065 
+ 2102      00
+ 2103              	.LASF27:
+ 2104 05b7 484F524E 		.ascii	"HORN_PHASER\000"
+ 2104      5F504841 
+ 2104      53455200 
+ 2105              	.LASF102:
+ 2106 05c3 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 2106      52784275 
+ 2106      66666572 
+ 2106      00
+ 2107              	.LASF94:
+ 2108 05d0 4C45446F 		.ascii	"LEDoutput_Write\000"
+ 2108      75747075 
+ 2108      745F5772 
+ 2108      69746500 
+ 2109              	.LASF85:
+ 2110 05e0 5047415F 		.ascii	"PGA_1_Stop\000"
+ARM GAS  C:\Users\faithc\AppData\Local\Temp\cc6V120r.s 			page 50
+
+
+ 2110      315F5374 
+ 2110      6F7000
+ 2111              	.LASF101:
+ 2112 05eb 5C5C4441 		.ascii	"\\\\DATA\\Folder Redirection\\faithc\\Desktop\\FAIT"
+ 2112      54415C46 
+ 2112      6F6C6465 
+ 2112      72205265 
+ 2112      64697265 
+ 2113 0618 48532052 		.ascii	"HS RELEASED FIRMWARE\\SirenProject200W_RevF\\SirenP"
+ 2113      454C4541 
+ 2113      53454420 
+ 2113      4649524D 
+ 2113      57415245 
+ 2114 0649 726F6A65 		.ascii	"roject200W_RevD\\ReleaseVersion.cydsn\000"
+ 2114      63743230 
+ 2114      30575F52 
+ 2114      6576445C 
+ 2114      52656C65 
+ 2115              	.LASF82:
+ 2116 066e 506F7765 		.ascii	"PowerAmpOutput1_Write\000"
+ 2116      72416D70 
+ 2116      4F757470 
+ 2116      7574315F 
+ 2116      57726974 
+ 2117              	.LASF18:
+ 2118 0684 534C4F57 		.ascii	"SLOW_YELP\000"
+ 2118      5F59454C 
+ 2118      5000
+ 2119              	.LASF93:
+ 2120 068e 4C45445F 		.ascii	"LED_Timer_ReadStatusRegister\000"
+ 2120      54696D65 
+ 2120      725F5265 
+ 2120      61645374 
+ 2120      61747573 
+ 2121              	.LASF77:
+ 2122 06ab 56444143 		.ascii	"VDAC8_1_Start\000"
+ 2122      385F315F 
+ 2122      53746172 
+ 2122      7400
+ 2123              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 4.9.3 20150303 (release) [ARM/embedded-4_9-br
