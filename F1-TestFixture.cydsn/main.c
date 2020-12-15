@@ -17,7 +17,7 @@
 *
 *   Started test fixture firmware on 11-4-20
 *
-*
+*   Initial commit to GitHub on 12-15-20
 *
 ***********************************************/
 
