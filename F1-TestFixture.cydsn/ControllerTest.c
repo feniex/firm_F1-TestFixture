@@ -14,25 +14,58 @@
 #include "ControllerTest.h"
 #include "UART_230400_Functions.h"
 
+#define NUMBER_TEST_STEPS 8
+//#define
+
 static RxPacket_Controller rxPacket_Controller;            
 static RxPacket_Controller * pRxPacket_Controller; 
 static TxPacket_Controller txPacket_Controller;            
 static TxPacket_Controller * pTxPacket_Controller;
 
-
-static uint8 TestState = 0;
-
 static uint8 testvalue = 0;
 static uint16 testvaluearray[200];
 static uint8 testindex = 0;
 
-enum DataType
+enum MUX_460800_CHANNEL
 { 
-    CONFIRM_BOOTUP, 
-    TEST_POWERMODES,
+    CTEST_QUAD,            
+    CTEST_QUADSERIAL,       
+    CTEST_AUDIO,
+    QTEST_QUAD              //***Not for F1 - detects Quad-Controller packets (type 'C')
+};
+enum DEMUX_460800_CHANNEL
+{ 
+    CTEST_OBDII_TX,       
+    RTEST_QUAD_TX,       
+    STEST_AUDIO_TX,
+};
+
+enum MUX_230400_CHANNEL              
+{ 
+    CTEST_RELAY, 
+    RTEST_CONT,
+    RTEST_SIREN,
+    STEST_RELAY            
+};
+
+// --------------Test steps---------------
+enum TestStep               // *** Need to get muxes setup permanently, 
+{ 
+    INITIALIZE_TEST, 
+    CONFIRM_BOOTUP,
+    DEBUG_PORT,                 //
+    TEST_POWERMODES,           // Tests Vbatt detect, USB_5V detect - (uses input ignition and OBDII ignition also)
+    QUAD_STREAM,               // (***115200 rx tested)
+    AUDIO_STREAM,             // (460800 rx_tested, with 'C' packet, need to test for 'Y' and 'L') - (460800 tx tested)
+    LEDS_RGB,             // (***230400 rx tested)   (230400 rx tested???)   - 
+    PUSHBUTTONS,                 // 230400 RX_TESTED     - 230400 TX TESTED      - (needs hardware)
+    //AUDIO_CITCUITRY???,     //                          - COMPLETE
     FAIL
 };
 
+static uint8 CTestStatus[NUMBER_TEST_STEPS];
+
+static uint8 TestState = INITIALIZE_TEST;
 
 // Should have SOM installed (maybe with test software embedded)
 // Controller should already be programmed with a test config file
@@ -52,6 +85,12 @@ void ControllerTest(void)
         //  - Send packet simulating ignition ON event
         //--------------------------------------------------------------
         
+        case INITIALIZE_TEST:
+        
+            TestState = CONFIRM_BOOTUP;
+        
+        break;
+        
         case CONFIRM_BOOTUP:
         
         //***CTest_SendIgnitionState(IGNITION_ON);                 // Simulate ignition ON
@@ -68,7 +107,7 @@ void ControllerTest(void)
             
         // Indicate this step has been passed and move to next step
 //            LED_EN_Write(1);                            
-            CyDelay(1000);
+            //CyDelay(1000);
 //            LED_EN_Write(0);
             
             TestState = TEST_POWERMODES;                // Move to the next test step
@@ -242,6 +281,41 @@ TxPacket_Controller * getTxPacket_Controller(void)
     return pTxPacket_Controller;
 }
 
+void CTest_sendDiagPacket(void)
+{
+
+    static uint8 CTestStatus_display[ (NUMBER_TEST_STEPS*2) ];
+    
+    for(uint8 i=0;i<NUMBER_TEST_STEPS;i++)
+    {
+        CTestStatus_display[i*2] = CTestStatus[i];
+        CTestStatus_display[(i*2) + 1] = ' ';
+    }
+    
+    //DEMUX_CTRL_230400_Write();
+    
+    UART_230400_PutArray(CTestStatus_display, (NUMBER_TEST_STEPS*2) );
+    
+    UART_230400_PutChar('\r');
+    UART_230400_PutChar('\n');
+
+    //LED_EN_Write(1);
+    
+    return;
+}
+
+void CTest_20ms_isr(void)
+{
+    
+    
+    
+}
+
+void CTest_50ms_isr(void)
+{
+    
+    
+}
 
 
 

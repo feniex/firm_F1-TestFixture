@@ -12,6 +12,8 @@
 
 #include <project.h>
 
+//extern uint16 _100ms_flag;
+extern uint16 isr_count;
 
 void RelayTest(void);
 
@@ -24,13 +26,15 @@ uint8 RTest_Test_Vbatt(void);
 uint8 RTest_Test_BlockCurrents(void);
 uint8 RTest_Test_GPS(void);
 
-void sendDiagPacket(void);
+void RTest_sendDiagPacket(void);
 void ProcessFailure(void);
 
 uint8 RTest_BlockCurrent(uint8);
 
+void RTest_10ms_isr(void);
 void RTest_20ms_isr(void);
-void RTest_20ms_isr_reset(void);
+void RTest_50ms_isr(void);
+//void RTest_20ms_isr_reset(void);
 
 void SetRelayOutputs(uint8 enable);
 

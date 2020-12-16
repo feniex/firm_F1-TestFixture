@@ -333,17 +333,18 @@ void sendPacketToRelay_Quad(void)
 {
     static uint16 iterator = 0;
 
-        UART_230400_WriteTxData(0x7E);                          // Send 'L' packet 
-        UART_230400_WriteTxData('L');
+        UART_460800_WriteTxData(0x7E);                          // Send 'L' packet 
+        UART_460800_WriteTxData('L');
         for(iterator = 0; iterator<111; iterator++)             
         {
-            UART_230400_WriteTxData(iterator);
+            UART_460800_WriteTxData(iterator);
         }
 
-        UART_230400_WriteTxData(0x0D);
-        UART_230400_WriteTxData(0x0A);
+        UART_460800_WriteTxData(0x0D);
+        UART_460800_WriteTxData(0x0A);
 
 }
+
 
 
 

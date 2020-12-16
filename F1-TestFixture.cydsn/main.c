@@ -111,7 +111,7 @@ int main()
 static void initializePeripherals(void)
 {
     
-//    RS485_RX_EN_Write(1);                       // *** for testing with siren board only
+    RS485_RX_EN_Write(1);                       // *** for testing with siren board only
     
     //----------Start UART_460800--------
     UART_460800_Start();    
@@ -128,11 +128,15 @@ static void initializePeripherals(void)
 
     
     //-----------------------------------
+    
+    Timer_50ms_Start();
+    isr_Timer_50ms_Start();
+    
     Timer_20ms_Start();
     isr_Timer_20ms_Start();
     
-    Timer_Quick_Start();
-    isr_Timer_Quick_Start();
+    Timer_10ms_Start();
+    isr_Timer_10ms_Start();
 
     return;
 }

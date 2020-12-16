@@ -207,9 +207,9 @@ CY_ISR(isr_Timer_Quick_Interrupt)
     
    
     
-    sendPacketToRelay_Quad();   // 460800 - TX
+    //sendPacketToRelay_Quad();   // 460800 - TX
     
-    sendPacketToRelaySiren();   // 230400 - TX
+    //sendPacketToRelaySiren();   // 230400 - TX
 
 
     /* `#END` */

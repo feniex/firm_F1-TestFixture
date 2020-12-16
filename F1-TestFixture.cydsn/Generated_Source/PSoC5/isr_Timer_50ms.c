@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: isr_Timer_Quick.c  
+* File Name: isr_Timer_50ms.c  
 * Version 1.70
 *
 *  Description:
@@ -18,53 +18,20 @@
 
 #include <cydevice_trm.h>
 #include <CyLib.h>
-#include <isr_Timer_Quick.h>
+#include <isr_Timer_50ms.h>
 #include "cyapicallbacks.h"
 
-#if !defined(isr_Timer_Quick__REMOVED) /* Check for removal by optimization */
+#if !defined(isr_Timer_50ms__REMOVED) /* Check for removal by optimization */
 
 /*******************************************************************************
 *  Place your includes, defines and code here 
 ********************************************************************************/
-/* `#START isr_Timer_Quick_intc` */
+/* `#START isr_Timer_50ms_intc` */
     
+    //#include "UART_230400_Functions.h"
+    #include "ControllerTest.h"
     #include "RelayTest.h"
-    #include "UART_230400_Functions.h"
-    #define TIMEOUT     100
-    
-//     #include "Custom.h"
-//    static uint8 Timer_Quick_INT_Flag;
-//    
-//    
-//    uint8 Timer_Quick_INT_GetFlag(void)
-//    {
-//    
-//    return(Timer_Quick_INT_Flag);    
-//    }
-//    
-//    
-//    void Timer_Quick_INT_ClearFlag(void)
-//    {
-//    
-//        Timer_Quick_INT_Flag = 0;
-//    
-//    return;    
-//    }
-    
-    //static uint8 timercount = 0;
-    
-//    void StartTimeout(void)
-//    {
-//        timercount = 0;     
-//        return;         
-//    }
-//    
-//    
-//    void StopTimeout(void)
-//    {
-////        timercount = 0;     
-//        return;         
-//    }
+    #include "SirenTest.h"
 
 /* `#END` */
 
@@ -80,7 +47,7 @@ CY_ISR_PROTO(IntDefaultHandler);
 
 
 /*******************************************************************************
-* Function Name: isr_Timer_Quick_Start
+* Function Name: isr_Timer_50ms_Start
 ********************************************************************************
 *
 * Summary:
@@ -96,24 +63,24 @@ CY_ISR_PROTO(IntDefaultHandler);
 *   None
 *
 *******************************************************************************/
-void isr_Timer_Quick_Start(void)
+void isr_Timer_50ms_Start(void)
 {
     /* For all we know the interrupt is active. */
-    isr_Timer_Quick_Disable();
+    isr_Timer_50ms_Disable();
 
-    /* Set the ISR to point to the isr_Timer_Quick Interrupt. */
-    isr_Timer_Quick_SetVector(&isr_Timer_Quick_Interrupt);
+    /* Set the ISR to point to the isr_Timer_50ms Interrupt. */
+    isr_Timer_50ms_SetVector(&isr_Timer_50ms_Interrupt);
 
     /* Set the priority. */
-    isr_Timer_Quick_SetPriority((uint8)isr_Timer_Quick_INTC_PRIOR_NUMBER);
+    isr_Timer_50ms_SetPriority((uint8)isr_Timer_50ms_INTC_PRIOR_NUMBER);
 
     /* Enable it. */
-    isr_Timer_Quick_Enable();
+    isr_Timer_50ms_Enable();
 }
 
 
 /*******************************************************************************
-* Function Name: isr_Timer_Quick_StartEx
+* Function Name: isr_Timer_50ms_StartEx
 ********************************************************************************
 *
 * Summary:
@@ -139,24 +106,24 @@ void isr_Timer_Quick_Start(void)
 *   None
 *
 *******************************************************************************/
-void isr_Timer_Quick_StartEx(cyisraddress address)
+void isr_Timer_50ms_StartEx(cyisraddress address)
 {
     /* For all we know the interrupt is active. */
-    isr_Timer_Quick_Disable();
+    isr_Timer_50ms_Disable();
 
-    /* Set the ISR to point to the isr_Timer_Quick Interrupt. */
-    isr_Timer_Quick_SetVector(address);
+    /* Set the ISR to point to the isr_Timer_50ms Interrupt. */
+    isr_Timer_50ms_SetVector(address);
 
     /* Set the priority. */
-    isr_Timer_Quick_SetPriority((uint8)isr_Timer_Quick_INTC_PRIOR_NUMBER);
+    isr_Timer_50ms_SetPriority((uint8)isr_Timer_50ms_INTC_PRIOR_NUMBER);
 
     /* Enable it. */
-    isr_Timer_Quick_Enable();
+    isr_Timer_50ms_Enable();
 }
 
 
 /*******************************************************************************
-* Function Name: isr_Timer_Quick_Stop
+* Function Name: isr_Timer_50ms_Stop
 ********************************************************************************
 *
 * Summary:
@@ -169,22 +136,22 @@ void isr_Timer_Quick_StartEx(cyisraddress address)
 *   None
 *
 *******************************************************************************/
-void isr_Timer_Quick_Stop(void)
+void isr_Timer_50ms_Stop(void)
 {
     /* Disable this interrupt. */
-    isr_Timer_Quick_Disable();
+    isr_Timer_50ms_Disable();
 
     /* Set the ISR to point to the passive one. */
-    isr_Timer_Quick_SetVector(&IntDefaultHandler);
+    isr_Timer_50ms_SetVector(&IntDefaultHandler);
 }
 
 
 /*******************************************************************************
-* Function Name: isr_Timer_Quick_Interrupt
+* Function Name: isr_Timer_50ms_Interrupt
 ********************************************************************************
 *
 * Summary:
-*   The default Interrupt Service Routine for isr_Timer_Quick.
+*   The default Interrupt Service Routine for isr_Timer_50ms.
 *
 *   Add custom code between the coments to keep the next version of this file
 *   from over writting your code.
@@ -195,29 +162,33 @@ void isr_Timer_Quick_Stop(void)
 *   None
 *
 *******************************************************************************/
-CY_ISR(isr_Timer_Quick_Interrupt)
+CY_ISR(isr_Timer_50ms_Interrupt)
 {
-    #ifdef isr_Timer_Quick_INTERRUPT_INTERRUPT_CALLBACK
-        isr_Timer_Quick_Interrupt_InterruptCallback();
-    #endif /* isr_Timer_Quick_INTERRUPT_INTERRUPT_CALLBACK */ 
+    #ifdef isr_Timer_50ms_INTERRUPT_INTERRUPT_CALLBACK
+        isr_Timer_50ms_Interrupt_InterruptCallback();
+    #endif /* isr_Timer_50ms_INTERRUPT_INTERRUPT_CALLBACK */ 
 
     /*  Place your Interrupt code here. */
-    /* `#START isr_Timer_Quick_Interrupt` */
+    /* `#START isr_Timer_50ms_Interrupt` */
     
-    sendPacketToRelaySiren();
+    //CTest_sendDiagPacket();
+    RTest_sendDiagPacket();
+    //STest_sendDiagPacket();
+    
+    //RTest_50ms_isr();
 
     /* `#END` */
 }
 
 
 /*******************************************************************************
-* Function Name: isr_Timer_Quick_SetVector
+* Function Name: isr_Timer_50ms_SetVector
 ********************************************************************************
 *
 * Summary:
-*   Change the ISR vector for the Interrupt. Note calling isr_Timer_Quick_Start
+*   Change the ISR vector for the Interrupt. Note calling isr_Timer_50ms_Start
 *   will override any effect this method would have had. To set the vector 
-*   before the component has been started use isr_Timer_Quick_StartEx instead.
+*   before the component has been started use isr_Timer_50ms_StartEx instead.
 * 
 *   When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
 *   used to provide consistent definition across compilers:
@@ -237,18 +208,18 @@ CY_ISR(isr_Timer_Quick_Interrupt)
 *   None
 *
 *******************************************************************************/
-void isr_Timer_Quick_SetVector(cyisraddress address)
+void isr_Timer_50ms_SetVector(cyisraddress address)
 {
     cyisraddress * ramVectorTable;
 
     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
 
-    ramVectorTable[CYINT_IRQ_BASE + (uint32)isr_Timer_Quick__INTC_NUMBER] = address;
+    ramVectorTable[CYINT_IRQ_BASE + (uint32)isr_Timer_50ms__INTC_NUMBER] = address;
 }
 
 
 /*******************************************************************************
-* Function Name: isr_Timer_Quick_GetVector
+* Function Name: isr_Timer_50ms_GetVector
 ********************************************************************************
 *
 * Summary:
@@ -261,26 +232,26 @@ void isr_Timer_Quick_SetVector(cyisraddress address)
 *   Address of the ISR in the interrupt vector table.
 *
 *******************************************************************************/
-cyisraddress isr_Timer_Quick_GetVector(void)
+cyisraddress isr_Timer_50ms_GetVector(void)
 {
     cyisraddress * ramVectorTable;
 
     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
 
-    return ramVectorTable[CYINT_IRQ_BASE + (uint32)isr_Timer_Quick__INTC_NUMBER];
+    return ramVectorTable[CYINT_IRQ_BASE + (uint32)isr_Timer_50ms__INTC_NUMBER];
 }
 
 
 /*******************************************************************************
-* Function Name: isr_Timer_Quick_SetPriority
+* Function Name: isr_Timer_50ms_SetPriority
 ********************************************************************************
 *
 * Summary:
 *   Sets the Priority of the Interrupt. 
 *
-*   Note calling isr_Timer_Quick_Start or isr_Timer_Quick_StartEx will 
+*   Note calling isr_Timer_50ms_Start or isr_Timer_50ms_StartEx will 
 *   override any effect this API would have had. This API should only be called
-*   after isr_Timer_Quick_Start or isr_Timer_Quick_StartEx has been called. 
+*   after isr_Timer_50ms_Start or isr_Timer_50ms_StartEx has been called. 
 *   To set the initial priority for the component, use the Design-Wide Resources
 *   Interrupt Editor.
 *
@@ -295,14 +266,14 @@ cyisraddress isr_Timer_Quick_GetVector(void)
 *   None
 *
 *******************************************************************************/
-void isr_Timer_Quick_SetPriority(uint8 priority)
+void isr_Timer_50ms_SetPriority(uint8 priority)
 {
-    *isr_Timer_Quick_INTC_PRIOR = priority << 5;
+    *isr_Timer_50ms_INTC_PRIOR = priority << 5;
 }
 
 
 /*******************************************************************************
-* Function Name: isr_Timer_Quick_GetPriority
+* Function Name: isr_Timer_50ms_GetPriority
 ********************************************************************************
 *
 * Summary:
@@ -317,19 +288,19 @@ void isr_Timer_Quick_SetPriority(uint8 priority)
 *    PSoC 4: Priority is from 0 to 3.
 *
 *******************************************************************************/
-uint8 isr_Timer_Quick_GetPriority(void)
+uint8 isr_Timer_50ms_GetPriority(void)
 {
     uint8 priority;
 
 
-    priority = *isr_Timer_Quick_INTC_PRIOR >> 5;
+    priority = *isr_Timer_50ms_INTC_PRIOR >> 5;
 
     return priority;
 }
 
 
 /*******************************************************************************
-* Function Name: isr_Timer_Quick_Enable
+* Function Name: isr_Timer_50ms_Enable
 ********************************************************************************
 *
 * Summary:
@@ -344,15 +315,15 @@ uint8 isr_Timer_Quick_GetPriority(void)
 *   None
 *
 *******************************************************************************/
-void isr_Timer_Quick_Enable(void)
+void isr_Timer_50ms_Enable(void)
 {
     /* Enable the general interrupt. */
-    *isr_Timer_Quick_INTC_SET_EN = isr_Timer_Quick__INTC_MASK;
+    *isr_Timer_50ms_INTC_SET_EN = isr_Timer_50ms__INTC_MASK;
 }
 
 
 /*******************************************************************************
-* Function Name: isr_Timer_Quick_GetState
+* Function Name: isr_Timer_50ms_GetState
 ********************************************************************************
 *
 * Summary:
@@ -365,15 +336,15 @@ void isr_Timer_Quick_Enable(void)
 *   1 if enabled, 0 if disabled.
 *
 *******************************************************************************/
-uint8 isr_Timer_Quick_GetState(void)
+uint8 isr_Timer_50ms_GetState(void)
 {
     /* Get the state of the general interrupt. */
-    return ((*isr_Timer_Quick_INTC_SET_EN & (uint32)isr_Timer_Quick__INTC_MASK) != 0u) ? 1u:0u;
+    return ((*isr_Timer_50ms_INTC_SET_EN & (uint32)isr_Timer_50ms__INTC_MASK) != 0u) ? 1u:0u;
 }
 
 
 /*******************************************************************************
-* Function Name: isr_Timer_Quick_Disable
+* Function Name: isr_Timer_50ms_Disable
 ********************************************************************************
 *
 * Summary:
@@ -386,15 +357,15 @@ uint8 isr_Timer_Quick_GetState(void)
 *   None
 *
 *******************************************************************************/
-void isr_Timer_Quick_Disable(void)
+void isr_Timer_50ms_Disable(void)
 {
     /* Disable the general interrupt. */
-    *isr_Timer_Quick_INTC_CLR_EN = isr_Timer_Quick__INTC_MASK;
+    *isr_Timer_50ms_INTC_CLR_EN = isr_Timer_50ms__INTC_MASK;
 }
 
 
 /*******************************************************************************
-* Function Name: isr_Timer_Quick_SetPending
+* Function Name: isr_Timer_50ms_SetPending
 ********************************************************************************
 *
 * Summary:
@@ -413,14 +384,14 @@ void isr_Timer_Quick_Disable(void)
 *   interrupts).
 *
 *******************************************************************************/
-void isr_Timer_Quick_SetPending(void)
+void isr_Timer_50ms_SetPending(void)
 {
-    *isr_Timer_Quick_INTC_SET_PD = isr_Timer_Quick__INTC_MASK;
+    *isr_Timer_50ms_INTC_SET_PD = isr_Timer_50ms__INTC_MASK;
 }
 
 
 /*******************************************************************************
-* Function Name: isr_Timer_Quick_ClearPending
+* Function Name: isr_Timer_50ms_ClearPending
 ********************************************************************************
 *
 * Summary:
@@ -438,9 +409,9 @@ void isr_Timer_Quick_SetPending(void)
 *   None
 *
 *******************************************************************************/
-void isr_Timer_Quick_ClearPending(void)
+void isr_Timer_50ms_ClearPending(void)
 {
-    *isr_Timer_Quick_INTC_CLR_PD = isr_Timer_Quick__INTC_MASK;
+    *isr_Timer_50ms_INTC_CLR_PD = isr_Timer_50ms__INTC_MASK;
 }
 
 #endif /* End check for removal by optimization */

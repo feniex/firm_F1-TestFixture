@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: Timer_Quick.c
+* File Name: Timer_10ms.c
 * Version 2.80
 *
 * Description:
@@ -21,13 +21,13 @@
 * the software package with which this file was provided.
 ********************************************************************************/
 
-#include "Timer_Quick.h"
+#include "Timer_10ms.h"
 
-uint8 Timer_Quick_initVar = 0u;
+uint8 Timer_10ms_initVar = 0u;
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_Init
+* Function Name: Timer_10ms_Init
 ********************************************************************************
 *
 * Summary:
@@ -40,131 +40,131 @@ uint8 Timer_Quick_initVar = 0u;
 *  void
 *
 *******************************************************************************/
-void Timer_Quick_Init(void) 
+void Timer_10ms_Init(void) 
 {
-    #if(!Timer_Quick_UsingFixedFunction)
+    #if(!Timer_10ms_UsingFixedFunction)
             /* Interrupt State Backup for Critical Region*/
-            uint8 Timer_Quick_interruptState;
+            uint8 Timer_10ms_interruptState;
     #endif /* Interrupt state back up for Fixed Function only */
 
-    #if (Timer_Quick_UsingFixedFunction)
+    #if (Timer_10ms_UsingFixedFunction)
         /* Clear all bits but the enable bit (if it's already set) for Timer operation */
-        Timer_Quick_CONTROL &= Timer_Quick_CTRL_ENABLE;
+        Timer_10ms_CONTROL &= Timer_10ms_CTRL_ENABLE;
 
         /* Clear the mode bits for continuous run mode */
         #if (CY_PSOC5A)
-            Timer_Quick_CONTROL2 &= ((uint8)(~Timer_Quick_CTRL_MODE_MASK));
+            Timer_10ms_CONTROL2 &= ((uint8)(~Timer_10ms_CTRL_MODE_MASK));
         #endif /* Clear bits in CONTROL2 only in PSOC5A */
 
         #if (CY_PSOC3 || CY_PSOC5LP)
-            Timer_Quick_CONTROL3 &= ((uint8)(~Timer_Quick_CTRL_MODE_MASK));
+            Timer_10ms_CONTROL3 &= ((uint8)(~Timer_10ms_CTRL_MODE_MASK));
         #endif /* CONTROL3 register exists only in PSoC3 OR PSoC5LP */
 
         /* Check if One Shot mode is enabled i.e. RunMode !=0*/
-        #if (Timer_Quick_RunModeUsed != 0x0u)
+        #if (Timer_10ms_RunModeUsed != 0x0u)
             /* Set 3rd bit of Control register to enable one shot mode */
-            Timer_Quick_CONTROL |= 0x04u;
+            Timer_10ms_CONTROL |= 0x04u;
         #endif /* One Shot enabled only when RunModeUsed is not Continuous*/
 
-        #if (Timer_Quick_RunModeUsed == 2)
+        #if (Timer_10ms_RunModeUsed == 2)
             #if (CY_PSOC5A)
                 /* Set last 2 bits of control2 register if one shot(halt on
                 interrupt) is enabled*/
-                Timer_Quick_CONTROL2 |= 0x03u;
+                Timer_10ms_CONTROL2 |= 0x03u;
             #endif /* Set One-Shot Halt on Interrupt bit in CONTROL2 for PSoC5A */
 
             #if (CY_PSOC3 || CY_PSOC5LP)
                 /* Set last 2 bits of control3 register if one shot(halt on
                 interrupt) is enabled*/
-                Timer_Quick_CONTROL3 |= 0x03u;
+                Timer_10ms_CONTROL3 |= 0x03u;
             #endif /* Set One-Shot Halt on Interrupt bit in CONTROL3 for PSoC3 or PSoC5LP */
 
         #endif /* Remove section if One Shot Halt on Interrupt is not enabled */
 
-        #if (Timer_Quick_UsingHWEnable != 0)
+        #if (Timer_10ms_UsingHWEnable != 0)
             #if (CY_PSOC5A)
                 /* Set the default Run Mode of the Timer to Continuous */
-                Timer_Quick_CONTROL2 |= Timer_Quick_CTRL_MODE_PULSEWIDTH;
+                Timer_10ms_CONTROL2 |= Timer_10ms_CTRL_MODE_PULSEWIDTH;
             #endif /* Set Continuous Run Mode in CONTROL2 for PSoC5A */
 
             #if (CY_PSOC3 || CY_PSOC5LP)
                 /* Clear and Set ROD and COD bits of CFG2 register */
-                Timer_Quick_CONTROL3 &= ((uint8)(~Timer_Quick_CTRL_RCOD_MASK));
-                Timer_Quick_CONTROL3 |= Timer_Quick_CTRL_RCOD;
+                Timer_10ms_CONTROL3 &= ((uint8)(~Timer_10ms_CTRL_RCOD_MASK));
+                Timer_10ms_CONTROL3 |= Timer_10ms_CTRL_RCOD;
 
                 /* Clear and Enable the HW enable bit in CFG2 register */
-                Timer_Quick_CONTROL3 &= ((uint8)(~Timer_Quick_CTRL_ENBL_MASK));
-                Timer_Quick_CONTROL3 |= Timer_Quick_CTRL_ENBL;
+                Timer_10ms_CONTROL3 &= ((uint8)(~Timer_10ms_CTRL_ENBL_MASK));
+                Timer_10ms_CONTROL3 |= Timer_10ms_CTRL_ENBL;
 
                 /* Set the default Run Mode of the Timer to Continuous */
-                Timer_Quick_CONTROL3 |= Timer_Quick_CTRL_MODE_CONTINUOUS;
+                Timer_10ms_CONTROL3 |= Timer_10ms_CTRL_MODE_CONTINUOUS;
             #endif /* Set Continuous Run Mode in CONTROL3 for PSoC3ES3 or PSoC5A */
 
         #endif /* Configure Run Mode with hardware enable */
 
         /* Clear and Set SYNCTC and SYNCCMP bits of RT1 register */
-        Timer_Quick_RT1 &= ((uint8)(~Timer_Quick_RT1_MASK));
-        Timer_Quick_RT1 |= Timer_Quick_SYNC;
+        Timer_10ms_RT1 &= ((uint8)(~Timer_10ms_RT1_MASK));
+        Timer_10ms_RT1 |= Timer_10ms_SYNC;
 
         /*Enable DSI Sync all all inputs of the Timer*/
-        Timer_Quick_RT1 &= ((uint8)(~Timer_Quick_SYNCDSI_MASK));
-        Timer_Quick_RT1 |= Timer_Quick_SYNCDSI_EN;
+        Timer_10ms_RT1 &= ((uint8)(~Timer_10ms_SYNCDSI_MASK));
+        Timer_10ms_RT1 |= Timer_10ms_SYNCDSI_EN;
 
         /* Set the IRQ to use the status register interrupts */
-        Timer_Quick_CONTROL2 |= Timer_Quick_CTRL2_IRQ_SEL;
+        Timer_10ms_CONTROL2 |= Timer_10ms_CTRL2_IRQ_SEL;
     #endif /* Configuring registers of fixed function implementation */
 
     /* Set Initial values from Configuration */
-    Timer_Quick_WritePeriod(Timer_Quick_INIT_PERIOD);
-    Timer_Quick_WriteCounter(Timer_Quick_INIT_PERIOD);
+    Timer_10ms_WritePeriod(Timer_10ms_INIT_PERIOD);
+    Timer_10ms_WriteCounter(Timer_10ms_INIT_PERIOD);
 
-    #if (Timer_Quick_UsingHWCaptureCounter)/* Capture counter is enabled */
-        Timer_Quick_CAPTURE_COUNT_CTRL |= Timer_Quick_CNTR_ENABLE;
-        Timer_Quick_SetCaptureCount(Timer_Quick_INIT_CAPTURE_COUNT);
+    #if (Timer_10ms_UsingHWCaptureCounter)/* Capture counter is enabled */
+        Timer_10ms_CAPTURE_COUNT_CTRL |= Timer_10ms_CNTR_ENABLE;
+        Timer_10ms_SetCaptureCount(Timer_10ms_INIT_CAPTURE_COUNT);
     #endif /* Configure capture counter value */
 
-    #if (!Timer_Quick_UsingFixedFunction)
-        #if (Timer_Quick_SoftwareCaptureMode)
-            Timer_Quick_SetCaptureMode(Timer_Quick_INIT_CAPTURE_MODE);
+    #if (!Timer_10ms_UsingFixedFunction)
+        #if (Timer_10ms_SoftwareCaptureMode)
+            Timer_10ms_SetCaptureMode(Timer_10ms_INIT_CAPTURE_MODE);
         #endif /* Set Capture Mode for UDB implementation if capture mode is software controlled */
 
-        #if (Timer_Quick_SoftwareTriggerMode)
-            #if (!Timer_Quick_UDB_CONTROL_REG_REMOVED)
-                if (0u == (Timer_Quick_CONTROL & Timer_Quick__B_TIMER__TM_SOFTWARE))
+        #if (Timer_10ms_SoftwareTriggerMode)
+            #if (!Timer_10ms_UDB_CONTROL_REG_REMOVED)
+                if (0u == (Timer_10ms_CONTROL & Timer_10ms__B_TIMER__TM_SOFTWARE))
                 {
-                    Timer_Quick_SetTriggerMode(Timer_Quick_INIT_TRIGGER_MODE);
+                    Timer_10ms_SetTriggerMode(Timer_10ms_INIT_TRIGGER_MODE);
                 }
-            #endif /* (!Timer_Quick_UDB_CONTROL_REG_REMOVED) */
+            #endif /* (!Timer_10ms_UDB_CONTROL_REG_REMOVED) */
         #endif /* Set trigger mode for UDB Implementation if trigger mode is software controlled */
 
         /* CyEnterCriticalRegion and CyExitCriticalRegion are used to mark following region critical*/
         /* Enter Critical Region*/
-        Timer_Quick_interruptState = CyEnterCriticalSection();
+        Timer_10ms_interruptState = CyEnterCriticalSection();
 
         /* Use the interrupt output of the status register for IRQ output */
-        Timer_Quick_STATUS_AUX_CTRL |= Timer_Quick_STATUS_ACTL_INT_EN_MASK;
+        Timer_10ms_STATUS_AUX_CTRL |= Timer_10ms_STATUS_ACTL_INT_EN_MASK;
 
         /* Exit Critical Region*/
-        CyExitCriticalSection(Timer_Quick_interruptState);
+        CyExitCriticalSection(Timer_10ms_interruptState);
 
-        #if (Timer_Quick_EnableTriggerMode)
-            Timer_Quick_EnableTrigger();
+        #if (Timer_10ms_EnableTriggerMode)
+            Timer_10ms_EnableTrigger();
         #endif /* Set Trigger enable bit for UDB implementation in the control register*/
 		
 		
-        #if (Timer_Quick_InterruptOnCaptureCount && !Timer_Quick_UDB_CONTROL_REG_REMOVED)
-            Timer_Quick_SetInterruptCount(Timer_Quick_INIT_INT_CAPTURE_COUNT);
+        #if (Timer_10ms_InterruptOnCaptureCount && !Timer_10ms_UDB_CONTROL_REG_REMOVED)
+            Timer_10ms_SetInterruptCount(Timer_10ms_INIT_INT_CAPTURE_COUNT);
         #endif /* Set interrupt count in UDB implementation if interrupt count feature is checked.*/
 
-        Timer_Quick_ClearFIFO();
+        Timer_10ms_ClearFIFO();
     #endif /* Configure additional features of UDB implementation */
 
-    Timer_Quick_SetInterruptMode(Timer_Quick_INIT_INTERRUPT_MODE);
+    Timer_10ms_SetInterruptMode(Timer_10ms_INIT_INTERRUPT_MODE);
 }
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_Enable
+* Function Name: Timer_10ms_Enable
 ********************************************************************************
 *
 * Summary:
@@ -177,23 +177,23 @@ void Timer_Quick_Init(void)
 *  void
 *
 *******************************************************************************/
-void Timer_Quick_Enable(void) 
+void Timer_10ms_Enable(void) 
 {
     /* Globally Enable the Fixed Function Block chosen */
-    #if (Timer_Quick_UsingFixedFunction)
-        Timer_Quick_GLOBAL_ENABLE |= Timer_Quick_BLOCK_EN_MASK;
-        Timer_Quick_GLOBAL_STBY_ENABLE |= Timer_Quick_BLOCK_STBY_EN_MASK;
+    #if (Timer_10ms_UsingFixedFunction)
+        Timer_10ms_GLOBAL_ENABLE |= Timer_10ms_BLOCK_EN_MASK;
+        Timer_10ms_GLOBAL_STBY_ENABLE |= Timer_10ms_BLOCK_STBY_EN_MASK;
     #endif /* Set Enable bit for enabling Fixed function timer*/
 
     /* Remove assignment if control register is removed */
-    #if (!Timer_Quick_UDB_CONTROL_REG_REMOVED || Timer_Quick_UsingFixedFunction)
-        Timer_Quick_CONTROL |= Timer_Quick_CTRL_ENABLE;
+    #if (!Timer_10ms_UDB_CONTROL_REG_REMOVED || Timer_10ms_UsingFixedFunction)
+        Timer_10ms_CONTROL |= Timer_10ms_CTRL_ENABLE;
     #endif /* Remove assignment if control register is removed */
 }
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_Start
+* Function Name: Timer_10ms_Start
 ********************************************************************************
 *
 * Summary:
@@ -208,26 +208,26 @@ void Timer_Quick_Enable(void)
 *  void
 *
 * Global variables:
-*  Timer_Quick_initVar: Is modified when this function is called for the
+*  Timer_10ms_initVar: Is modified when this function is called for the
 *   first time. Is used to ensure that initialization happens only once.
 *
 *******************************************************************************/
-void Timer_Quick_Start(void) 
+void Timer_10ms_Start(void) 
 {
-    if(Timer_Quick_initVar == 0u)
+    if(Timer_10ms_initVar == 0u)
     {
-        Timer_Quick_Init();
+        Timer_10ms_Init();
 
-        Timer_Quick_initVar = 1u;   /* Clear this bit for Initialization */
+        Timer_10ms_initVar = 1u;   /* Clear this bit for Initialization */
     }
 
     /* Enable the Timer */
-    Timer_Quick_Enable();
+    Timer_10ms_Enable();
 }
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_Stop
+* Function Name: Timer_10ms_Stop
 ********************************************************************************
 *
 * Summary:
@@ -244,23 +244,23 @@ void Timer_Quick_Start(void)
 *               has no effect on the operation of the timer.
 *
 *******************************************************************************/
-void Timer_Quick_Stop(void) 
+void Timer_10ms_Stop(void) 
 {
     /* Disable Timer */
-    #if(!Timer_Quick_UDB_CONTROL_REG_REMOVED || Timer_Quick_UsingFixedFunction)
-        Timer_Quick_CONTROL &= ((uint8)(~Timer_Quick_CTRL_ENABLE));
+    #if(!Timer_10ms_UDB_CONTROL_REG_REMOVED || Timer_10ms_UsingFixedFunction)
+        Timer_10ms_CONTROL &= ((uint8)(~Timer_10ms_CTRL_ENABLE));
     #endif /* Remove assignment if control register is removed */
 
     /* Globally disable the Fixed Function Block chosen */
-    #if (Timer_Quick_UsingFixedFunction)
-        Timer_Quick_GLOBAL_ENABLE &= ((uint8)(~Timer_Quick_BLOCK_EN_MASK));
-        Timer_Quick_GLOBAL_STBY_ENABLE &= ((uint8)(~Timer_Quick_BLOCK_STBY_EN_MASK));
+    #if (Timer_10ms_UsingFixedFunction)
+        Timer_10ms_GLOBAL_ENABLE &= ((uint8)(~Timer_10ms_BLOCK_EN_MASK));
+        Timer_10ms_GLOBAL_STBY_ENABLE &= ((uint8)(~Timer_10ms_BLOCK_STBY_EN_MASK));
     #endif /* Disable global enable for the Timer Fixed function block to stop the Timer*/
 }
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_SetInterruptMode
+* Function Name: Timer_10ms_SetInterruptMode
 ********************************************************************************
 *
 * Summary:
@@ -276,14 +276,14 @@ void Timer_Quick_Stop(void)
 *  void
 *
 *******************************************************************************/
-void Timer_Quick_SetInterruptMode(uint8 interruptMode) 
+void Timer_10ms_SetInterruptMode(uint8 interruptMode) 
 {
-    Timer_Quick_STATUS_MASK = interruptMode;
+    Timer_10ms_STATUS_MASK = interruptMode;
 }
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_SoftwareCapture
+* Function Name: Timer_10ms_SoftwareCapture
 ********************************************************************************
 *
 * Summary:
@@ -299,20 +299,20 @@ void Timer_Quick_SetInterruptMode(uint8 interruptMode)
 *  An existing hardware capture could be overwritten.
 *
 *******************************************************************************/
-void Timer_Quick_SoftwareCapture(void) 
+void Timer_10ms_SoftwareCapture(void) 
 {
     /* Generate a software capture by reading the counter register */
-    #if(Timer_Quick_UsingFixedFunction)
-        (void)CY_GET_REG16(Timer_Quick_COUNTER_LSB_PTR);
+    #if(Timer_10ms_UsingFixedFunction)
+        (void)CY_GET_REG16(Timer_10ms_COUNTER_LSB_PTR);
     #else
-        (void)CY_GET_REG8(Timer_Quick_COUNTER_LSB_PTR_8BIT);
-    #endif/* (Timer_Quick_UsingFixedFunction) */
+        (void)CY_GET_REG8(Timer_10ms_COUNTER_LSB_PTR_8BIT);
+    #endif/* (Timer_10ms_UsingFixedFunction) */
     /* Capture Data is now in the FIFO */
 }
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_ReadStatusRegister
+* Function Name: Timer_10ms_ReadStatusRegister
 ********************************************************************************
 *
 * Summary:
@@ -330,17 +330,17 @@ void Timer_Quick_SoftwareCapture(void)
 *  Status register bits may be clear on read.
 *
 *******************************************************************************/
-uint8   Timer_Quick_ReadStatusRegister(void) 
+uint8   Timer_10ms_ReadStatusRegister(void) 
 {
-    return (Timer_Quick_STATUS);
+    return (Timer_10ms_STATUS);
 }
 
 
-#if (!Timer_Quick_UDB_CONTROL_REG_REMOVED) /* Remove API if control register is unused */
+#if (!Timer_10ms_UDB_CONTROL_REG_REMOVED) /* Remove API if control register is unused */
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_ReadControlRegister
+* Function Name: Timer_10ms_ReadControlRegister
 ********************************************************************************
 *
 * Summary:
@@ -353,18 +353,18 @@ uint8   Timer_Quick_ReadStatusRegister(void)
 *  The contents of the control register
 *
 *******************************************************************************/
-uint8 Timer_Quick_ReadControlRegister(void) 
+uint8 Timer_10ms_ReadControlRegister(void) 
 {
-    #if (!Timer_Quick_UDB_CONTROL_REG_REMOVED) 
-        return ((uint8)Timer_Quick_CONTROL);
+    #if (!Timer_10ms_UDB_CONTROL_REG_REMOVED) 
+        return ((uint8)Timer_10ms_CONTROL);
     #else
         return (0);
-    #endif /* (!Timer_Quick_UDB_CONTROL_REG_REMOVED) */
+    #endif /* (!Timer_10ms_UDB_CONTROL_REG_REMOVED) */
 }
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_WriteControlRegister
+* Function Name: Timer_10ms_WriteControlRegister
 ********************************************************************************
 *
 * Summary:
@@ -376,20 +376,20 @@ uint8 Timer_Quick_ReadControlRegister(void)
 * Return:
 *
 *******************************************************************************/
-void Timer_Quick_WriteControlRegister(uint8 control) 
+void Timer_10ms_WriteControlRegister(uint8 control) 
 {
-    #if (!Timer_Quick_UDB_CONTROL_REG_REMOVED) 
-        Timer_Quick_CONTROL = control;
+    #if (!Timer_10ms_UDB_CONTROL_REG_REMOVED) 
+        Timer_10ms_CONTROL = control;
     #else
         control = 0u;
-    #endif /* (!Timer_Quick_UDB_CONTROL_REG_REMOVED) */
+    #endif /* (!Timer_10ms_UDB_CONTROL_REG_REMOVED) */
 }
 
 #endif /* Remove API if control register is unused */
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_ReadPeriod
+* Function Name: Timer_10ms_ReadPeriod
 ********************************************************************************
 *
 * Summary:
@@ -402,18 +402,18 @@ void Timer_Quick_WriteControlRegister(uint8 control)
 *  The present value of the counter.
 *
 *******************************************************************************/
-uint16 Timer_Quick_ReadPeriod(void) 
+uint16 Timer_10ms_ReadPeriod(void) 
 {
-   #if(Timer_Quick_UsingFixedFunction)
-       return ((uint16)CY_GET_REG16(Timer_Quick_PERIOD_LSB_PTR));
+   #if(Timer_10ms_UsingFixedFunction)
+       return ((uint16)CY_GET_REG16(Timer_10ms_PERIOD_LSB_PTR));
    #else
-       return (CY_GET_REG16(Timer_Quick_PERIOD_LSB_PTR));
-   #endif /* (Timer_Quick_UsingFixedFunction) */
+       return (CY_GET_REG16(Timer_10ms_PERIOD_LSB_PTR));
+   #endif /* (Timer_10ms_UsingFixedFunction) */
 }
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_WritePeriod
+* Function Name: Timer_10ms_WritePeriod
 ********************************************************************************
 *
 * Summary:
@@ -428,19 +428,19 @@ uint16 Timer_Quick_ReadPeriod(void)
 *  void
 *
 *******************************************************************************/
-void Timer_Quick_WritePeriod(uint16 period) 
+void Timer_10ms_WritePeriod(uint16 period) 
 {
-    #if(Timer_Quick_UsingFixedFunction)
+    #if(Timer_10ms_UsingFixedFunction)
         uint16 period_temp = (uint16)period;
-        CY_SET_REG16(Timer_Quick_PERIOD_LSB_PTR, period_temp);
+        CY_SET_REG16(Timer_10ms_PERIOD_LSB_PTR, period_temp);
     #else
-        CY_SET_REG16(Timer_Quick_PERIOD_LSB_PTR, period);
+        CY_SET_REG16(Timer_10ms_PERIOD_LSB_PTR, period);
     #endif /*Write Period value with appropriate resolution suffix depending on UDB or fixed function implementation */
 }
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_ReadCapture
+* Function Name: Timer_10ms_ReadCapture
 ********************************************************************************
 *
 * Summary:
@@ -453,18 +453,18 @@ void Timer_Quick_WritePeriod(uint16 period)
 *  Present Capture value.
 *
 *******************************************************************************/
-uint16 Timer_Quick_ReadCapture(void) 
+uint16 Timer_10ms_ReadCapture(void) 
 {
-   #if(Timer_Quick_UsingFixedFunction)
-       return ((uint16)CY_GET_REG16(Timer_Quick_CAPTURE_LSB_PTR));
+   #if(Timer_10ms_UsingFixedFunction)
+       return ((uint16)CY_GET_REG16(Timer_10ms_CAPTURE_LSB_PTR));
    #else
-       return (CY_GET_REG16(Timer_Quick_CAPTURE_LSB_PTR));
-   #endif /* (Timer_Quick_UsingFixedFunction) */
+       return (CY_GET_REG16(Timer_10ms_CAPTURE_LSB_PTR));
+   #endif /* (Timer_10ms_UsingFixedFunction) */
 }
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_WriteCounter
+* Function Name: Timer_10ms_WriteCounter
 ********************************************************************************
 *
 * Summary:
@@ -477,22 +477,22 @@ uint16 Timer_Quick_ReadCapture(void)
 *  void
 *
 *******************************************************************************/
-void Timer_Quick_WriteCounter(uint16 counter) 
+void Timer_10ms_WriteCounter(uint16 counter) 
 {
-   #if(Timer_Quick_UsingFixedFunction)
+   #if(Timer_10ms_UsingFixedFunction)
         /* This functionality is removed until a FixedFunction HW update to
          * allow this register to be written
          */
-        CY_SET_REG16(Timer_Quick_COUNTER_LSB_PTR, (uint16)counter);
+        CY_SET_REG16(Timer_10ms_COUNTER_LSB_PTR, (uint16)counter);
         
     #else
-        CY_SET_REG16(Timer_Quick_COUNTER_LSB_PTR, counter);
+        CY_SET_REG16(Timer_10ms_COUNTER_LSB_PTR, counter);
     #endif /* Set Write Counter only for the UDB implementation (Write Counter not available in fixed function Timer */
 }
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_ReadCounter
+* Function Name: Timer_10ms_ReadCounter
 ********************************************************************************
 *
 * Summary:
@@ -505,27 +505,27 @@ void Timer_Quick_WriteCounter(uint16 counter)
 *  Present compare value.
 *
 *******************************************************************************/
-uint16 Timer_Quick_ReadCounter(void) 
+uint16 Timer_10ms_ReadCounter(void) 
 {
     /* Force capture by reading Accumulator */
     /* Must first do a software capture to be able to read the counter */
     /* It is up to the user code to make sure there isn't already captured data in the FIFO */
-    #if(Timer_Quick_UsingFixedFunction)
-        (void)CY_GET_REG16(Timer_Quick_COUNTER_LSB_PTR);
+    #if(Timer_10ms_UsingFixedFunction)
+        (void)CY_GET_REG16(Timer_10ms_COUNTER_LSB_PTR);
     #else
-        (void)CY_GET_REG8(Timer_Quick_COUNTER_LSB_PTR_8BIT);
-    #endif/* (Timer_Quick_UsingFixedFunction) */
+        (void)CY_GET_REG8(Timer_10ms_COUNTER_LSB_PTR_8BIT);
+    #endif/* (Timer_10ms_UsingFixedFunction) */
 
     /* Read the data from the FIFO (or capture register for Fixed Function)*/
-    #if(Timer_Quick_UsingFixedFunction)
-        return ((uint16)CY_GET_REG16(Timer_Quick_CAPTURE_LSB_PTR));
+    #if(Timer_10ms_UsingFixedFunction)
+        return ((uint16)CY_GET_REG16(Timer_10ms_CAPTURE_LSB_PTR));
     #else
-        return (CY_GET_REG16(Timer_Quick_CAPTURE_LSB_PTR));
-    #endif /* (Timer_Quick_UsingFixedFunction) */
+        return (CY_GET_REG16(Timer_10ms_CAPTURE_LSB_PTR));
+    #endif /* (Timer_10ms_UsingFixedFunction) */
 }
 
 
-#if(!Timer_Quick_UsingFixedFunction) /* UDB Specific Functions */
+#if(!Timer_10ms_UsingFixedFunction) /* UDB Specific Functions */
 
     
 /*******************************************************************************
@@ -534,11 +534,11 @@ uint16 Timer_Quick_ReadCounter(void)
  ******************************************************************************/
 
 
-#if (Timer_Quick_SoftwareCaptureMode)
+#if (Timer_10ms_SoftwareCaptureMode)
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_SetCaptureMode
+* Function Name: Timer_10ms_SetCaptureMode
 ********************************************************************************
 *
 * Summary:
@@ -547,44 +547,44 @@ uint16 Timer_Quick_ReadCounter(void)
 * Parameters:
 *  captureMode: This parameter sets the capture mode of the UDB capture feature
 *  The parameter values are defined using the
-*  #define Timer_Quick__B_TIMER__CM_NONE 0
-#define Timer_Quick__B_TIMER__CM_RISINGEDGE 1
-#define Timer_Quick__B_TIMER__CM_FALLINGEDGE 2
-#define Timer_Quick__B_TIMER__CM_EITHEREDGE 3
-#define Timer_Quick__B_TIMER__CM_SOFTWARE 4
+*  #define Timer_10ms__B_TIMER__CM_NONE 0
+#define Timer_10ms__B_TIMER__CM_RISINGEDGE 1
+#define Timer_10ms__B_TIMER__CM_FALLINGEDGE 2
+#define Timer_10ms__B_TIMER__CM_EITHEREDGE 3
+#define Timer_10ms__B_TIMER__CM_SOFTWARE 4
  identifiers
 *  The following are the possible values of the parameter
-*  Timer_Quick__B_TIMER__CM_NONE        - Set Capture mode to None
-*  Timer_Quick__B_TIMER__CM_RISINGEDGE  - Rising edge of Capture input
-*  Timer_Quick__B_TIMER__CM_FALLINGEDGE - Falling edge of Capture input
-*  Timer_Quick__B_TIMER__CM_EITHEREDGE  - Either edge of Capture input
+*  Timer_10ms__B_TIMER__CM_NONE        - Set Capture mode to None
+*  Timer_10ms__B_TIMER__CM_RISINGEDGE  - Rising edge of Capture input
+*  Timer_10ms__B_TIMER__CM_FALLINGEDGE - Falling edge of Capture input
+*  Timer_10ms__B_TIMER__CM_EITHEREDGE  - Either edge of Capture input
 *
 * Return:
 *  void
 *
 *******************************************************************************/
-void Timer_Quick_SetCaptureMode(uint8 captureMode) 
+void Timer_10ms_SetCaptureMode(uint8 captureMode) 
 {
     /* This must only set to two bits of the control register associated */
-    captureMode = ((uint8)((uint8)captureMode << Timer_Quick_CTRL_CAP_MODE_SHIFT));
-    captureMode &= (Timer_Quick_CTRL_CAP_MODE_MASK);
+    captureMode = ((uint8)((uint8)captureMode << Timer_10ms_CTRL_CAP_MODE_SHIFT));
+    captureMode &= (Timer_10ms_CTRL_CAP_MODE_MASK);
 
-    #if (!Timer_Quick_UDB_CONTROL_REG_REMOVED)
+    #if (!Timer_10ms_UDB_CONTROL_REG_REMOVED)
         /* Clear the Current Setting */
-        Timer_Quick_CONTROL &= ((uint8)(~Timer_Quick_CTRL_CAP_MODE_MASK));
+        Timer_10ms_CONTROL &= ((uint8)(~Timer_10ms_CTRL_CAP_MODE_MASK));
 
         /* Write The New Setting */
-        Timer_Quick_CONTROL |= captureMode;
-    #endif /* (!Timer_Quick_UDB_CONTROL_REG_REMOVED) */
+        Timer_10ms_CONTROL |= captureMode;
+    #endif /* (!Timer_10ms_UDB_CONTROL_REG_REMOVED) */
 }
 #endif /* Remove API if Capture Mode is not Software Controlled */
 
 
-#if (Timer_Quick_SoftwareTriggerMode)
+#if (Timer_10ms_SoftwareTriggerMode)
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_SetTriggerMode
+* Function Name: Timer_10ms_SetTriggerMode
 ********************************************************************************
 *
 * Summary:
@@ -592,37 +592,37 @@ void Timer_Quick_SetCaptureMode(uint8 captureMode)
 *
 * Parameters:
 *  triggerMode: Pass one of the pre-defined Trigger Modes (except Software)
-    #define Timer_Quick__B_TIMER__TM_NONE 0x00u
-    #define Timer_Quick__B_TIMER__TM_RISINGEDGE 0x04u
-    #define Timer_Quick__B_TIMER__TM_FALLINGEDGE 0x08u
-    #define Timer_Quick__B_TIMER__TM_EITHEREDGE 0x0Cu
-    #define Timer_Quick__B_TIMER__TM_SOFTWARE 0x10u
+    #define Timer_10ms__B_TIMER__TM_NONE 0x00u
+    #define Timer_10ms__B_TIMER__TM_RISINGEDGE 0x04u
+    #define Timer_10ms__B_TIMER__TM_FALLINGEDGE 0x08u
+    #define Timer_10ms__B_TIMER__TM_EITHEREDGE 0x0Cu
+    #define Timer_10ms__B_TIMER__TM_SOFTWARE 0x10u
 *
 * Return:
 *  void
 *
 *******************************************************************************/
-void Timer_Quick_SetTriggerMode(uint8 triggerMode) 
+void Timer_10ms_SetTriggerMode(uint8 triggerMode) 
 {
     /* This must only set to two bits of the control register associated */
-    triggerMode &= Timer_Quick_CTRL_TRIG_MODE_MASK;
+    triggerMode &= Timer_10ms_CTRL_TRIG_MODE_MASK;
 
-    #if (!Timer_Quick_UDB_CONTROL_REG_REMOVED)   /* Remove assignment if control register is removed */
+    #if (!Timer_10ms_UDB_CONTROL_REG_REMOVED)   /* Remove assignment if control register is removed */
     
         /* Clear the Current Setting */
-        Timer_Quick_CONTROL &= ((uint8)(~Timer_Quick_CTRL_TRIG_MODE_MASK));
+        Timer_10ms_CONTROL &= ((uint8)(~Timer_10ms_CTRL_TRIG_MODE_MASK));
 
         /* Write The New Setting */
-        Timer_Quick_CONTROL |= (triggerMode | Timer_Quick__B_TIMER__TM_SOFTWARE);
+        Timer_10ms_CONTROL |= (triggerMode | Timer_10ms__B_TIMER__TM_SOFTWARE);
     #endif /* Remove code section if control register is not used */
 }
 #endif /* Remove API if Trigger Mode is not Software Controlled */
 
-#if (Timer_Quick_EnableTriggerMode)
+#if (Timer_10ms_EnableTriggerMode)
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_EnableTrigger
+* Function Name: Timer_10ms_EnableTrigger
 ********************************************************************************
 *
 * Summary:
@@ -635,16 +635,16 @@ void Timer_Quick_SetTriggerMode(uint8 triggerMode)
 *  void
 *
 *******************************************************************************/
-void Timer_Quick_EnableTrigger(void) 
+void Timer_10ms_EnableTrigger(void) 
 {
-    #if (!Timer_Quick_UDB_CONTROL_REG_REMOVED)   /* Remove assignment if control register is removed */
-        Timer_Quick_CONTROL |= Timer_Quick_CTRL_TRIG_EN;
+    #if (!Timer_10ms_UDB_CONTROL_REG_REMOVED)   /* Remove assignment if control register is removed */
+        Timer_10ms_CONTROL |= Timer_10ms_CTRL_TRIG_EN;
     #endif /* Remove code section if control register is not used */
 }
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_DisableTrigger
+* Function Name: Timer_10ms_DisableTrigger
 ********************************************************************************
 *
 * Summary:
@@ -657,19 +657,19 @@ void Timer_Quick_EnableTrigger(void)
 *  void
 *
 *******************************************************************************/
-void Timer_Quick_DisableTrigger(void) 
+void Timer_10ms_DisableTrigger(void) 
 {
-    #if (!Timer_Quick_UDB_CONTROL_REG_REMOVED )   /* Remove assignment if control register is removed */
-        Timer_Quick_CONTROL &= ((uint8)(~Timer_Quick_CTRL_TRIG_EN));
+    #if (!Timer_10ms_UDB_CONTROL_REG_REMOVED )   /* Remove assignment if control register is removed */
+        Timer_10ms_CONTROL &= ((uint8)(~Timer_10ms_CTRL_TRIG_EN));
     #endif /* Remove code section if control register is not used */
 }
 #endif /* Remove API is Trigger Mode is set to None */
 
-#if(Timer_Quick_InterruptOnCaptureCount)
+#if(Timer_10ms_InterruptOnCaptureCount)
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_SetInterruptCount
+* Function Name: Timer_10ms_SetInterruptCount
 ********************************************************************************
 *
 * Summary:
@@ -685,26 +685,26 @@ void Timer_Quick_DisableTrigger(void)
 *  void
 *
 *******************************************************************************/
-void Timer_Quick_SetInterruptCount(uint8 interruptCount) 
+void Timer_10ms_SetInterruptCount(uint8 interruptCount) 
 {
     /* This must only set to two bits of the control register associated */
-    interruptCount &= Timer_Quick_CTRL_INTCNT_MASK;
+    interruptCount &= Timer_10ms_CTRL_INTCNT_MASK;
 
-    #if (!Timer_Quick_UDB_CONTROL_REG_REMOVED)
+    #if (!Timer_10ms_UDB_CONTROL_REG_REMOVED)
         /* Clear the Current Setting */
-        Timer_Quick_CONTROL &= ((uint8)(~Timer_Quick_CTRL_INTCNT_MASK));
+        Timer_10ms_CONTROL &= ((uint8)(~Timer_10ms_CTRL_INTCNT_MASK));
         /* Write The New Setting */
-        Timer_Quick_CONTROL |= interruptCount;
-    #endif /* (!Timer_Quick_UDB_CONTROL_REG_REMOVED) */
+        Timer_10ms_CONTROL |= interruptCount;
+    #endif /* (!Timer_10ms_UDB_CONTROL_REG_REMOVED) */
 }
-#endif /* Timer_Quick_InterruptOnCaptureCount */
+#endif /* Timer_10ms_InterruptOnCaptureCount */
 
 
-#if (Timer_Quick_UsingHWCaptureCounter)
+#if (Timer_10ms_UsingHWCaptureCounter)
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_SetCaptureCount
+* Function Name: Timer_10ms_SetCaptureCount
 ********************************************************************************
 *
 * Summary:
@@ -719,14 +719,14 @@ void Timer_Quick_SetInterruptCount(uint8 interruptCount)
 *  void
 *
 *******************************************************************************/
-void Timer_Quick_SetCaptureCount(uint8 captureCount) 
+void Timer_10ms_SetCaptureCount(uint8 captureCount) 
 {
-    Timer_Quick_CAP_COUNT = captureCount;
+    Timer_10ms_CAP_COUNT = captureCount;
 }
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_ReadCaptureCount
+* Function Name: Timer_10ms_ReadCaptureCount
 ********************************************************************************
 *
 * Summary:
@@ -739,15 +739,15 @@ void Timer_Quick_SetCaptureCount(uint8 captureCount)
 *  Returns the Capture Count Setting
 *
 *******************************************************************************/
-uint8 Timer_Quick_ReadCaptureCount(void) 
+uint8 Timer_10ms_ReadCaptureCount(void) 
 {
-    return ((uint8)Timer_Quick_CAP_COUNT);
+    return ((uint8)Timer_10ms_CAP_COUNT);
 }
-#endif /* Timer_Quick_UsingHWCaptureCounter */
+#endif /* Timer_10ms_UsingHWCaptureCounter */
 
 
 /*******************************************************************************
-* Function Name: Timer_Quick_ClearFIFO
+* Function Name: Timer_10ms_ClearFIFO
 ********************************************************************************
 *
 * Summary:
@@ -760,11 +760,11 @@ uint8 Timer_Quick_ReadCaptureCount(void)
 *  void
 *
 *******************************************************************************/
-void Timer_Quick_ClearFIFO(void) 
+void Timer_10ms_ClearFIFO(void) 
 {
-    while(0u != (Timer_Quick_ReadStatusRegister() & Timer_Quick_STATUS_FIFONEMP))
+    while(0u != (Timer_10ms_ReadStatusRegister() & Timer_10ms_STATUS_FIFONEMP))
     {
-        (void)Timer_Quick_ReadCapture();
+        (void)Timer_10ms_ReadCapture();
     }
 }
 

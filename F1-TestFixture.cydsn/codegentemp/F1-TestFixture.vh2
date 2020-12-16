@@ -2,7 +2,7 @@
 --	Conversion of F1-TestFixture.v to vh2:
 --
 --	Cypress Semiconductor - WARP Version 6.3 IR 41
---	Tue Dec 15 14:36:27 2020
+--	Wed Dec 16 14:47:16 2020
 --
 
 USE cypress.cypress.all;
@@ -131,6 +131,7 @@ SIGNAL \UART_230400:BUART:rx_state_1\ : bit;
 SIGNAL \UART_230400:BUART:rx_state_0\ : bit;
 SIGNAL \UART_230400:BUART:rx_bitclk_enable\ : bit;
 SIGNAL \UART_230400:BUART:rx_postpoll\ : bit;
+ATTRIBUTE soft of \UART_230400:BUART:rx_postpoll\:SIGNAL IS '1';
 SIGNAL \UART_230400:BUART:rx_load_fifo\ : bit;
 SIGNAL \UART_230400:BUART:sRX:RxShifter:cl0\ : bit;
 ATTRIBUTE port_state_att of \UART_230400:BUART:sRX:RxShifter:cl0\:SIGNAL IS 2;
@@ -426,6 +427,12 @@ SIGNAL \MUX_CTRL_230400:control_2\ : bit;
 SIGNAL \MUX_CTRL_230400:control_1\ : bit;
 SIGNAL \MUX_CTRL_230400:control_0\ : bit;
 SIGNAL \MUX_230400:tmp__MUX_230400_reg\ : bit;
+SIGNAL Net_6230 : bit;
+SIGNAL tmpOE__RS485_RX_EN_net_0 : bit;
+SIGNAL tmpFB_0__RS485_RX_EN_net_0 : bit;
+SIGNAL tmpIO_0__RS485_RX_EN_net_0 : bit;
+TERMINAL tmpSIOVREF__RS485_RX_EN_net_0 : bit;
+SIGNAL tmpINTERRUPT_0__RS485_RX_EN_net_0 : bit;
 SIGNAL Net_10 : bit;
 SIGNAL Net_12 : bit;
 SIGNAL \Timer_20ms:Net_260\ : bit;
@@ -441,14 +448,18 @@ SIGNAL tmpFB_0__LED_EN_net_0 : bit;
 SIGNAL tmpIO_0__LED_EN_net_0 : bit;
 TERMINAL tmpSIOVREF__LED_EN_net_0 : bit;
 SIGNAL tmpINTERRUPT_0__LED_EN_net_0 : bit;
-SIGNAL \Timer_Quick:Net_260\ : bit;
-SIGNAL \Timer_Quick:Net_266\ : bit;
-SIGNAL \Timer_Quick:Net_51\ : bit;
-SIGNAL \Timer_Quick:Net_261\ : bit;
-SIGNAL \Timer_Quick:Net_57\ : bit;
+SIGNAL \Timer_10ms:Net_260\ : bit;
+SIGNAL \Timer_10ms:Net_266\ : bit;
+SIGNAL \Timer_10ms:Net_51\ : bit;
+SIGNAL \Timer_10ms:Net_261\ : bit;
+SIGNAL \Timer_10ms:Net_57\ : bit;
 SIGNAL Net_6150 : bit;
 SIGNAL Net_6155 : bit;
-SIGNAL \Timer_Quick:Net_102\ : bit;
+SIGNAL \Timer_10ms:Net_102\ : bit;
+SIGNAL tmpOE__DIAG_UART_RX_net_0 : bit;
+SIGNAL tmpIO_0__DIAG_UART_RX_net_0 : bit;
+TERMINAL tmpSIOVREF__DIAG_UART_RX_net_0 : bit;
+SIGNAL tmpINTERRUPT_0__DIAG_UART_RX_net_0 : bit;
 SIGNAL tmpOE__DIAG_UART_TX_net_0 : bit;
 SIGNAL tmpFB_0__DIAG_UART_TX_net_0 : bit;
 SIGNAL tmpIO_0__DIAG_UART_TX_net_0 : bit;
@@ -865,6 +876,14 @@ SIGNAL \DEMUX_CTRL_460800:control_3\ : bit;
 SIGNAL \DEMUX_CTRL_460800:control_2\ : bit;
 SIGNAL \DEMUX_CTRL_460800:control_1\ : bit;
 SIGNAL \DEMUX_CTRL_460800:control_0\ : bit;
+SIGNAL \Timer_50ms:Net_260\ : bit;
+SIGNAL \Timer_50ms:Net_266\ : bit;
+SIGNAL \Timer_50ms:Net_51\ : bit;
+SIGNAL \Timer_50ms:Net_261\ : bit;
+SIGNAL \Timer_50ms:Net_57\ : bit;
+SIGNAL Net_6266 : bit;
+SIGNAL Net_6271 : bit;
+SIGNAL \Timer_50ms:Net_102\ : bit;
 SIGNAL \UART_230400:BUART:reset_reg\\D\ : bit;
 SIGNAL \UART_230400:BUART:txn\\D\ : bit;
 SIGNAL \UART_230400:BUART:tx_state_1\\D\ : bit;
@@ -979,15 +998,25 @@ one <=  ('1') ;
 	OR \UART_230400:BUART:rx_state_0\
 	OR \UART_230400:BUART:rx_state_1\);
 
-\UART_230400:BUART:pollcount_1\\D\ <= ((not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_count_2\ and not \UART_230400:BUART:rx_count_1\ and MODIN1_1));
+\UART_230400:BUART:pollcount_1\\D\ <= ((not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_count_2\ and not \UART_230400:BUART:rx_count_1\ and not MODIN1_1 and not Net_5974_1 and MODIN1_0 and Net_5974_0 and Net_6230)
+	OR (not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_count_2\ and not \UART_230400:BUART:rx_count_1\ and not Net_6230 and MODIN1_1)
+	OR (not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_count_2\ and not \UART_230400:BUART:rx_count_1\ and not Net_5974_0 and MODIN1_1)
+	OR (not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_count_2\ and not \UART_230400:BUART:rx_count_1\ and MODIN1_1 and Net_5974_1)
+	OR (not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_count_2\ and not \UART_230400:BUART:rx_count_1\ and not MODIN1_0 and MODIN1_1));
 
-\UART_230400:BUART:pollcount_0\\D\ <= ((not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_count_2\ and not \UART_230400:BUART:rx_count_1\ and MODIN1_0));
+\UART_230400:BUART:pollcount_0\\D\ <= ((not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_count_2\ and not \UART_230400:BUART:rx_count_1\ and not MODIN1_0 and not Net_5974_1 and Net_5974_0 and Net_6230)
+	OR (not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_count_2\ and not \UART_230400:BUART:rx_count_1\ and not Net_6230 and MODIN1_0)
+	OR (not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_count_2\ and not \UART_230400:BUART:rx_count_1\ and not Net_5974_0 and MODIN1_0)
+	OR (not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_count_2\ and not \UART_230400:BUART:rx_count_1\ and MODIN1_0 and Net_5974_1));
+
+\UART_230400:BUART:rx_postpoll\ <= ((not Net_5974_1 and MODIN1_0 and Net_5974_0 and Net_6230)
+	OR MODIN1_1);
 
 \UART_230400:BUART:rx_status_4\ <= ((\UART_230400:BUART:rx_load_fifo\ and \UART_230400:BUART:rx_fifofull\));
 
 \UART_230400:BUART:rx_status_5\ <= ((\UART_230400:BUART:rx_fifonotempty\ and \UART_230400:BUART:rx_state_stop1_reg\));
 
-\UART_230400:BUART:rx_stop_bit_error\\D\ <= ((not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_state_1\ and not \UART_230400:BUART:rx_state_0\ and not MODIN1_1 and \UART_230400:BUART:rx_bitclk_enable\ and \UART_230400:BUART:rx_state_3\ and \UART_230400:BUART:rx_state_2\));
+\UART_230400:BUART:rx_stop_bit_error\\D\ <= ((not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_state_1\ and not \UART_230400:BUART:rx_state_0\ and not \UART_230400:BUART:rx_postpoll\ and \UART_230400:BUART:rx_bitclk_enable\ and \UART_230400:BUART:rx_state_3\ and \UART_230400:BUART:rx_state_2\));
 
 \UART_230400:BUART:rx_load_fifo\\D\ <= ((not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_state_1\ and not \UART_230400:BUART:rx_state_0\ and not \UART_230400:BUART:rx_state_2\ and \UART_230400:BUART:rx_bitclk_enable\ and \UART_230400:BUART:rx_state_3\)
 	OR (not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_state_1\ and not \UART_230400:BUART:rx_state_3\ and not \UART_230400:BUART:rx_state_2\ and not MODIN4_6 and not MODIN4_4 and \UART_230400:BUART:rx_state_0\)
@@ -1000,7 +1029,9 @@ one <=  ('1') ;
 	OR (not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_state_2\ and \UART_230400:BUART:rx_state_3\)
 	OR (not \UART_230400:BUART:reset_reg\ and \UART_230400:BUART:rx_state_0\ and \UART_230400:BUART:rx_state_3\));
 
-\UART_230400:BUART:rx_state_2\\D\ <= ((not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_state_1\ and not \UART_230400:BUART:rx_state_0\ and not \UART_230400:BUART:rx_state_3\ and not \UART_230400:BUART:rx_state_2\ and \UART_230400:BUART:rx_last\)
+\UART_230400:BUART:rx_state_2\\D\ <= ((not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_state_1\ and not \UART_230400:BUART:rx_state_0\ and not \UART_230400:BUART:rx_state_3\ and not \UART_230400:BUART:rx_state_2\ and \UART_230400:BUART:rx_last\ and Net_5974_1)
+	OR (not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_state_1\ and not \UART_230400:BUART:rx_state_0\ and not \UART_230400:BUART:rx_state_3\ and not \UART_230400:BUART:rx_state_2\ and not Net_5974_0 and \UART_230400:BUART:rx_last\)
+	OR (not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_state_1\ and not \UART_230400:BUART:rx_state_0\ and not \UART_230400:BUART:rx_state_3\ and not \UART_230400:BUART:rx_state_2\ and not Net_6230 and \UART_230400:BUART:rx_last\)
 	OR (not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_state_1\ and not \UART_230400:BUART:rx_state_0\ and not \UART_230400:BUART:rx_state_2\ and \UART_230400:BUART:rx_bitclk_enable\ and \UART_230400:BUART:rx_state_3\)
 	OR (not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_state_1\ and not \UART_230400:BUART:rx_state_3\ and not MODIN4_6 and not MODIN4_4 and \UART_230400:BUART:rx_state_0\)
 	OR (not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_state_1\ and not \UART_230400:BUART:rx_state_3\ and not MODIN4_6 and not MODIN4_5 and \UART_230400:BUART:rx_state_0\)
@@ -1010,18 +1041,25 @@ one <=  ('1') ;
 
 \UART_230400:BUART:rx_state_1\\D\ <= ((not \UART_230400:BUART:reset_reg\ and \UART_230400:BUART:rx_state_1\));
 
-\UART_230400:BUART:rx_state_0\\D\ <= ((not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_state_1\ and not \UART_230400:BUART:rx_state_3\ and not MODIN1_1 and \UART_230400:BUART:rx_bitclk_enable\ and \UART_230400:BUART:rx_state_2\)
+\UART_230400:BUART:rx_state_0\\D\ <= ((not \UART_230400:BUART:reset_reg\ and not \UART_230400:BUART:rx_state_1\ and not \UART_230400:BUART:rx_postpoll\ and not \UART_230400:BUART:rx_state_3\ and \UART_230400:BUART:rx_bitclk_enable\ and \UART_230400:BUART:rx_state_2\)
 	OR (not \UART_230400:BUART:reset_reg\ and \UART_230400:BUART:rx_state_0\ and MODIN4_5 and MODIN4_4)
 	OR (not \UART_230400:BUART:reset_reg\ and \UART_230400:BUART:rx_state_0\ and MODIN4_6)
 	OR (not \UART_230400:BUART:reset_reg\ and \UART_230400:BUART:rx_state_0\ and \UART_230400:BUART:rx_state_3\)
 	OR (not \UART_230400:BUART:reset_reg\ and \UART_230400:BUART:rx_state_1\ and \UART_230400:BUART:rx_state_0\)
 	OR (not \UART_230400:BUART:reset_reg\ and \UART_230400:BUART:rx_state_0\ and \UART_230400:BUART:rx_state_2\));
 
+\UART_230400:BUART:rx_last\\D\ <= ((not \UART_230400:BUART:reset_reg\ and not Net_5974_1 and Net_5974_0 and Net_6230));
+
 \UART_230400:BUART:rx_address_detected\\D\ <= ((not \UART_230400:BUART:reset_reg\ and \UART_230400:BUART:rx_address_detected\));
+
+\UART_230400:BUART:rx_parity_bit\\D\ <= ((not \UART_230400:BUART:rx_state_0\ and not \UART_230400:BUART:rx_state_2\ and \UART_230400:BUART:rx_parity_bit\)
+	OR (\UART_230400:BUART:rx_postpoll\ and \UART_230400:BUART:rx_state_2\ and \UART_230400:BUART:rx_parity_bit\)
+	OR (not \UART_230400:BUART:rx_postpoll\ and \UART_230400:BUART:rx_state_0\ and \UART_230400:BUART:rx_parity_bit\)
+	OR \UART_230400:BUART:rx_parity_bit\);
 
 Net_5741 <=  ('0') ;
 
-Net_6001 <= ((not \UART_230400:BUART:txn\ and not Net_5977_1 and Net_5977_0));
+Net_6000 <= ((not \UART_230400:BUART:txn\ and not Net_5977_0 and Net_5977_1));
 
 \UART_460800:BUART:counter_load_not\ <= ((not \UART_460800:BUART:tx_bitclk_enable_pre\ and \UART_460800:BUART:tx_state_2\)
 	OR \UART_460800:BUART:tx_state_0\
@@ -1349,7 +1387,7 @@ isr_UART_230400:cy_isr_v1_0
 	PORT MAP(reset=>\UART_230400:BUART:reset_reg\,
 		clk=>\UART_230400:BUART:clock_op\,
 		cs_addr=>(\UART_230400:BUART:rx_state_1\, \UART_230400:BUART:rx_state_0\, \UART_230400:BUART:rx_bitclk_enable\),
-		route_si=>MODIN1_1,
+		route_si=>\UART_230400:BUART:rx_postpoll\,
 		route_ci=>Net_5741,
 		f0_load=>\UART_230400:BUART:rx_load_fifo\,
 		f1_load=>Net_5741,
@@ -1451,7 +1489,77 @@ isr_UART_230400:cy_isr_v1_0
 	PORT MAP(reset=>Net_5741,
 		clock=>Net_5741,
 		control=>(\MUX_CTRL_230400:control_7\, \MUX_CTRL_230400:control_6\, \MUX_CTRL_230400:control_5\, \MUX_CTRL_230400:control_4\,
-			\MUX_CTRL_230400:control_3\, \MUX_CTRL_230400:control_2\, \MUX_CTRL_230400:control_1\, \MUX_CTRL_230400:control_0\));
+			\MUX_CTRL_230400:control_3\, \MUX_CTRL_230400:control_2\, Net_5974_1, Net_5974_0));
+RS485_RX_EN:cy_psoc3_pins_v1_10
+	GENERIC MAP(id=>"e851a3b9-efb8-48be-bbb8-b303b216c393",
+		drive_mode=>"110",
+		ibuf_enabled=>"1",
+		init_dr_st=>"0",
+		input_sync=>"1",
+		input_clk_en=>'0',
+		input_sync_mode=>"0",
+		intr_mode=>"00",
+		invert_in_clock=>'0',
+		invert_in_clock_en=>'0',
+		invert_in_reset=>'0',
+		invert_out_clock=>'0',
+		invert_out_clock_en=>'0',
+		invert_out_reset=>'0',
+		io_voltage=>"",
+		layout_mode=>"CONTIGUOUS",
+		output_conn=>"0",
+		output_sync=>"0",
+		output_clk_en=>'0',
+		output_mode=>"0",
+		output_reset=>'0',
+		output_clock_mode=>"0",
+		oe_sync=>"0",
+		oe_conn=>"0",
+		oe_reset=>'0',
+		pin_aliases=>"",
+		pin_mode=>"O",
+		por_state=>4,
+		sio_group_cnt=>0,
+		sio_hifreq=>"00000000",
+		sio_hyst=>"1",
+		sio_ibuf=>"00000000",
+		sio_info=>"00",
+		sio_obuf=>"00000000",
+		sio_refsel=>"00000000",
+		sio_vtrip=>"00000000",
+		sio_vohsel=>"00000000",
+		slew_rate=>"0",
+		spanning=>'0',
+		sw_only=>'0',
+		vtrip=>"10",
+		width=>1,
+		port_alias_required=>'0',
+		port_alias_group=>"",
+		use_annotation=>"0",
+		pa_in_clock=>-1,
+		pa_in_clock_en=>-1,
+		pa_in_reset=>-1,
+		pa_out_clock=>-1,
+		pa_out_clock_en=>-1,
+		pa_out_reset=>-1,
+		ovt_needed=>"0",
+		ovt_slew_control=>"00",
+		ovt_hyst_trim=>"0",
+		input_buffer_sel=>"00")
+	PORT MAP(oe=>(one),
+		y=>(Net_5741),
+		fb=>(tmpFB_0__RS485_RX_EN_net_0),
+		analog=>(open),
+		io=>(tmpIO_0__RS485_RX_EN_net_0),
+		siovref=>(tmpSIOVREF__RS485_RX_EN_net_0),
+		annotation=>(open),
+		in_clock=>Net_5741,
+		in_clock_en=>one,
+		in_reset=>Net_5741,
+		out_clock=>Net_5741,
+		out_clock_en=>one,
+		out_reset=>Net_5741,
+		interrupt=>tmpINTERRUPT_0__RS485_RX_EN_net_0);
 timer_clock:cy_clock_v1_0
 	GENERIC MAP(cy_registers=>"",
 		id=>"c0fb34bd-1044-4931-9788-16b01ce89812",
@@ -1546,7 +1654,7 @@ isr_Timer_20ms:cy_isr_v1_0
 	GENERIC MAP(int_type=>"10",
 		is_nmi=>'0')
 	PORT MAP(int_signal=>Net_6134);
-\Timer_Quick:TimerHW\:cy_psoc3_timer_v1_0
+\Timer_10ms:TimerHW\:cy_psoc3_timer_v1_0
 	GENERIC MAP(cy_registers=>"")
 	PORT MAP(clock=>Net_10,
 		kill=>Net_5741,
@@ -1554,12 +1662,82 @@ isr_Timer_20ms:cy_isr_v1_0
 		capture=>Net_5741,
 		timer_reset=>Net_5741,
 		tc=>Net_6155,
-		compare=>\Timer_Quick:Net_261\,
-		interrupt=>\Timer_Quick:Net_57\);
-isr_Timer_Quick:cy_isr_v1_0
+		compare=>\Timer_10ms:Net_261\,
+		interrupt=>\Timer_10ms:Net_57\);
+isr_Timer_10ms:cy_isr_v1_0
 	GENERIC MAP(int_type=>"10",
 		is_nmi=>'0')
 	PORT MAP(int_signal=>Net_6155);
+DIAG_UART_RX:cy_psoc3_pins_v1_10
+	GENERIC MAP(id=>"8d318d8b-cf7b-4b6b-b02c-ab1c5c49d0ba",
+		drive_mode=>"001",
+		ibuf_enabled=>"1",
+		init_dr_st=>"0",
+		input_sync=>"0",
+		input_clk_en=>'0',
+		input_sync_mode=>"0",
+		intr_mode=>"00",
+		invert_in_clock=>'0',
+		invert_in_clock_en=>'0',
+		invert_in_reset=>'0',
+		invert_out_clock=>'0',
+		invert_out_clock_en=>'0',
+		invert_out_reset=>'0',
+		io_voltage=>"",
+		layout_mode=>"CONTIGUOUS",
+		output_conn=>"0",
+		output_sync=>"0",
+		output_clk_en=>'0',
+		output_mode=>"0",
+		output_reset=>'0',
+		output_clock_mode=>"0",
+		oe_sync=>"0",
+		oe_conn=>"0",
+		oe_reset=>'0',
+		pin_aliases=>"",
+		pin_mode=>"I",
+		por_state=>4,
+		sio_group_cnt=>0,
+		sio_hifreq=>"00000000",
+		sio_hyst=>"1",
+		sio_ibuf=>"00000000",
+		sio_info=>"00",
+		sio_obuf=>"00000000",
+		sio_refsel=>"00000000",
+		sio_vtrip=>"00000000",
+		sio_vohsel=>"00000000",
+		slew_rate=>"0",
+		spanning=>'0',
+		sw_only=>'0',
+		vtrip=>"00",
+		width=>1,
+		port_alias_required=>'0',
+		port_alias_group=>"",
+		use_annotation=>"0",
+		pa_in_clock=>-1,
+		pa_in_clock_en=>-1,
+		pa_in_reset=>-1,
+		pa_out_clock=>-1,
+		pa_out_clock_en=>-1,
+		pa_out_reset=>-1,
+		ovt_needed=>"0",
+		ovt_slew_control=>"00",
+		ovt_hyst_trim=>"0",
+		input_buffer_sel=>"00")
+	PORT MAP(oe=>(one),
+		y=>(Net_5741),
+		fb=>Net_6230,
+		analog=>(open),
+		io=>(tmpIO_0__DIAG_UART_RX_net_0),
+		siovref=>(tmpSIOVREF__DIAG_UART_RX_net_0),
+		annotation=>(open),
+		in_clock=>Net_5741,
+		in_clock_en=>one,
+		in_reset=>Net_5741,
+		out_clock=>Net_5741,
+		out_clock_en=>one,
+		out_reset=>Net_5741,
+		interrupt=>tmpINTERRUPT_0__DIAG_UART_RX_net_0);
 DIAG_UART_TX:cy_psoc3_pins_v1_10
 	GENERIC MAP(id=>"2ea4b42a-7f67-4d70-a186-5b62b51aed18",
 		drive_mode=>"110",
@@ -1617,7 +1795,7 @@ DIAG_UART_TX:cy_psoc3_pins_v1_10
 		ovt_hyst_trim=>"0",
 		input_buffer_sel=>"00")
 	PORT MAP(oe=>(one),
-		y=>Net_6001,
+		y=>Net_6000,
 		fb=>(tmpFB_0__DIAG_UART_TX_net_0),
 		analog=>(open),
 		io=>(tmpIO_0__DIAG_UART_TX_net_0),
@@ -1959,6 +2137,20 @@ isr_UART_460800:cy_isr_v1_0
 		clock=>Net_5741,
 		control=>(\DEMUX_CTRL_460800:control_7\, \DEMUX_CTRL_460800:control_6\, \DEMUX_CTRL_460800:control_5\, \DEMUX_CTRL_460800:control_4\,
 			\DEMUX_CTRL_460800:control_3\, \DEMUX_CTRL_460800:control_2\, \DEMUX_CTRL_460800:control_1\, \DEMUX_CTRL_460800:control_0\));
+\Timer_50ms:TimerHW\:cy_psoc3_timer_v1_0
+	GENERIC MAP(cy_registers=>"")
+	PORT MAP(clock=>Net_10,
+		kill=>Net_5741,
+		enable=>one,
+		capture=>Net_5741,
+		timer_reset=>Net_5741,
+		tc=>Net_6271,
+		compare=>\Timer_50ms:Net_261\,
+		interrupt=>\Timer_50ms:Net_57\);
+isr_Timer_50ms:cy_isr_v1_0
+	GENERIC MAP(int_type=>"10",
+		is_nmi=>'0')
+	PORT MAP(int_signal=>Net_6271);
 \UART_230400:BUART:reset_reg\:cy_dff
 	PORT MAP(d=>Net_5741,
 		clk=>\UART_230400:BUART:clock_op\,
@@ -2068,11 +2260,11 @@ Net_5739:cy_dff
 		clk=>\UART_230400:BUART:clock_op\,
 		q=>\UART_230400:BUART:rx_address_detected\);
 \UART_230400:BUART:rx_last\:cy_dff
-	PORT MAP(d=>Net_5741,
+	PORT MAP(d=>\UART_230400:BUART:rx_last\\D\,
 		clk=>\UART_230400:BUART:clock_op\,
 		q=>\UART_230400:BUART:rx_last\);
 \UART_230400:BUART:rx_parity_bit\:cy_dff
-	PORT MAP(d=>\UART_230400:BUART:rx_parity_bit\,
+	PORT MAP(d=>\UART_230400:BUART:rx_parity_bit\\D\,
 		clk=>\UART_230400:BUART:clock_op\,
 		q=>\UART_230400:BUART:rx_parity_bit\);
 \UART_460800:BUART:reset_reg\:cy_dff

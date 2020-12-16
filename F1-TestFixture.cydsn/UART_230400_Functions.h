@@ -241,6 +241,20 @@ typedef union rxPacket_RelaySiren
         }Payload;
     }TxPacket_Relay;
     
+    //RTest Rx packet from Relay(to Siren) - 'S' packet
+    typedef union rxPacket_Siren                                     
+    {
+        uint8 bytes[3];    
+    
+        struct rxData_Siren
+        {
+            uint8 Siren1Tone;
+            uint8 Siren2Tone;
+            uint8 DualDelay;
+
+        }Payload;
+    }RxPacket_Siren;
+    
 //    //STest Tx to Siren - (functionality not yet added on the SOM side)
 //    typedef union rxPacket_Controller                                         
 //    {
@@ -264,6 +278,8 @@ void sendPacketToRelaySiren(void);
 void ResetPacketSuccess(void);
 uint8 VerifyPacket_230400(uint8 PacketType);
 
+uint8 findpacket(uint8 dataByte);
+
 //void CTest_SendIgnitionState(uint8 ignition_state);
 
 RxPacket_Controller * getRxPacket_Controller(void);
@@ -272,7 +288,10 @@ TxPacket_Controller * getTxPacket_Controller(void);
 RxPacket_RelaySiren * getRxPacket_Relay(void);
 TxPacket_RelaySiren * getTxPacket_RelaySiren(void);
 
+
 TxPacket_Relay * getTxPacket_Relay(void);
+
+RxPacket_Siren * getRxPacket_Siren(void);
 
 // -----------------------------
 //enum MUX_230400_CHANNEL              

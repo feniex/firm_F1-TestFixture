@@ -15,6 +15,13 @@
 
 void SirenTest(void);
 
+void STest_sendDiagPacket(void);
+
+
+//void STest_10ms_isr(void);
+void STest_20ms_isr(void);
+void STest_50ms_isr(void);
+
 
 
 

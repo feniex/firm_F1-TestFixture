@@ -137,6 +137,9 @@ void processByteReceivedHandler(void)
         
         detectPacket(dataByte);
         
+        if(findpacket(dataByte))
+            LED_EN_Write(0);
+        
     }while(UART_230400_ReadRxStatus() & UART_230400_RX_STS_FIFO_NOTEMPTY);
     
     //UART_Timer_Start();
@@ -281,18 +284,12 @@ void sendPacketToRelaySiren(void)                   //*** This part needs some w
     
     pTxPacket_RelaySiren = getTxPacket_RelaySiren();              // Tx - Get pointers to packet 
     
-    
-    
-    
-
 //    checkSumRelay = 0;
 //    for(checkSumRelayIterator = 0; checkSumRelayIterator<PacketList[CTEST_RELAY].PAYLOAD_SIZE; checkSumRelayIterator++)     // Calculate and load checksum
 //    {
 //        checkSumRelay ^= pTxPacket_Controller->bytes[checkSumRelayIterator];
 //    }
     
-    
-
         // Specific code for Controller to Relay/Siren packet 
         UART_230400_WriteTxData(0x7E);
         UART_230400_WriteTxData('I');
@@ -306,6 +303,7 @@ void sendPacketToRelaySiren(void)                   //*** This part needs some w
         UART_230400_WriteTxData(0x0A);
 
 }
+
 
 void ResetPacketSuccess(void)           //*** This can be improved
 {
@@ -336,6 +334,29 @@ uint8 VerifyPacket_230400(uint8 PacketType)
     else
         return(0);
        
+}
+
+uint8 findpacket(uint8 dataByte)
+{
+    static uint8 targetstring[6] = {'$','G','P','M','R','C'};
+    static uint8 index = 0;
+    
+    if(dataByte == targetstring[0])         // Detect the first byte of the string and reset index
+        index = 0;
+
+    if(dataByte != targetstring[index])     // If any sequential byte in the string is missed, then return fail       
+        index = 0;
+
+    index++;
+    
+    if(index > 6)                           // If entire string was read without missing a byte, then return pass
+    {
+        index = 0;
+        return(1);
+    }
+    
+    return(0);
+        
 }
 
 

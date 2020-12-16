@@ -1,0 +1,2020 @@
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"isr_Timer_10ms.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.isr_Timer_10ms_Start,"ax",%progbits
+  20              		.align	2
+  21              		.global	isr_Timer_10ms_Start
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	isr_Timer_10ms_Start, %function
+  25              	isr_Timer_10ms_Start:
+  26              	.LFB63:
+  27              		.file 1 "Generated_Source\\PSoC5\\isr_Timer_10ms.c"
+   1:Generated_Source\PSoC5/isr_Timer_10ms.c **** /*******************************************************************************
+   2:Generated_Source\PSoC5/isr_Timer_10ms.c **** * File Name: isr_Timer_10ms.c  
+   3:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Version 1.70
+   4:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+   5:Generated_Source\PSoC5/isr_Timer_10ms.c **** *  Description:
+   6:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   API for controlling the state of an interrupt.
+   7:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+   8:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+   9:Generated_Source\PSoC5/isr_Timer_10ms.c **** *  Note:
+  10:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+  11:Generated_Source\PSoC5/isr_Timer_10ms.c **** ********************************************************************************
+  12:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  13:Generated_Source\PSoC5/isr_Timer_10ms.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  14:Generated_Source\PSoC5/isr_Timer_10ms.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  15:Generated_Source\PSoC5/isr_Timer_10ms.c **** * the software package with which this file was provided.
+  16:Generated_Source\PSoC5/isr_Timer_10ms.c **** *******************************************************************************/
+  17:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+  18:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+  19:Generated_Source\PSoC5/isr_Timer_10ms.c **** #include <cydevice_trm.h>
+  20:Generated_Source\PSoC5/isr_Timer_10ms.c **** #include <CyLib.h>
+  21:Generated_Source\PSoC5/isr_Timer_10ms.c **** #include <isr_Timer_10ms.h>
+  22:Generated_Source\PSoC5/isr_Timer_10ms.c **** #include "cyapicallbacks.h"
+  23:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+  24:Generated_Source\PSoC5/isr_Timer_10ms.c **** #if !defined(isr_Timer_10ms__REMOVED) /* Check for removal by optimization */
+  25:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+  26:Generated_Source\PSoC5/isr_Timer_10ms.c **** /*******************************************************************************
+  27:Generated_Source\PSoC5/isr_Timer_10ms.c **** *  Place your includes, defines and code here 
+  28:Generated_Source\PSoC5/isr_Timer_10ms.c **** ********************************************************************************/
+  29:Generated_Source\PSoC5/isr_Timer_10ms.c **** /* `#START isr_Timer_10ms_intc` */
+  30:Generated_Source\PSoC5/isr_Timer_10ms.c ****     
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 2
+
+
+  31:Generated_Source\PSoC5/isr_Timer_10ms.c ****     //#include "UART_230400_Functions.h"
+  32:Generated_Source\PSoC5/isr_Timer_10ms.c ****     #include "RelayTest.h"
+  33:Generated_Source\PSoC5/isr_Timer_10ms.c ****     
+  34:Generated_Source\PSoC5/isr_Timer_10ms.c ****     //uint8 isr_count = 0;
+  35:Generated_Source\PSoC5/isr_Timer_10ms.c ****     
+  36:Generated_Source\PSoC5/isr_Timer_10ms.c **** /* `#END` */
+  37:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+  38:Generated_Source\PSoC5/isr_Timer_10ms.c **** #ifndef CYINT_IRQ_BASE
+  39:Generated_Source\PSoC5/isr_Timer_10ms.c **** #define CYINT_IRQ_BASE      16
+  40:Generated_Source\PSoC5/isr_Timer_10ms.c **** #endif /* CYINT_IRQ_BASE */
+  41:Generated_Source\PSoC5/isr_Timer_10ms.c **** #ifndef CYINT_VECT_TABLE
+  42:Generated_Source\PSoC5/isr_Timer_10ms.c **** #define CYINT_VECT_TABLE    ((cyisraddress **) CYREG_NVIC_VECT_OFFSET)
+  43:Generated_Source\PSoC5/isr_Timer_10ms.c **** #endif /* CYINT_VECT_TABLE */
+  44:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+  45:Generated_Source\PSoC5/isr_Timer_10ms.c **** /* Declared in startup, used to set unused interrupts to. */
+  46:Generated_Source\PSoC5/isr_Timer_10ms.c **** CY_ISR_PROTO(IntDefaultHandler);
+  47:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+  48:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+  49:Generated_Source\PSoC5/isr_Timer_10ms.c **** /*******************************************************************************
+  50:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Function Name: isr_Timer_10ms_Start
+  51:Generated_Source\PSoC5/isr_Timer_10ms.c **** ********************************************************************************
+  52:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+  53:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Summary:
+  54:Generated_Source\PSoC5/isr_Timer_10ms.c **** *  Set up the interrupt and enable it. This function disables the interrupt, 
+  55:Generated_Source\PSoC5/isr_Timer_10ms.c **** *  sets the default interrupt vector, sets the priority from the value in the
+  56:Generated_Source\PSoC5/isr_Timer_10ms.c **** *  Design Wide Resources Interrupt Editor, then enables the interrupt to the 
+  57:Generated_Source\PSoC5/isr_Timer_10ms.c **** *  interrupt controller.
+  58:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+  59:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Parameters:  
+  60:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+  61:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+  62:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Return:
+  63:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+  64:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+  65:Generated_Source\PSoC5/isr_Timer_10ms.c **** *******************************************************************************/
+  66:Generated_Source\PSoC5/isr_Timer_10ms.c **** void isr_Timer_10ms_Start(void)
+  67:Generated_Source\PSoC5/isr_Timer_10ms.c **** {
+  28              		.loc 1 67 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 1, uses_anonymous_args = 0
+  32 0000 80B5     		push	{r7, lr}
+  33              		.cfi_def_cfa_offset 8
+  34              		.cfi_offset 7, -8
+  35              		.cfi_offset 14, -4
+  36 0002 00AF     		add	r7, sp, #0
+  37              		.cfi_def_cfa_register 7
+  68:Generated_Source\PSoC5/isr_Timer_10ms.c ****     /* For all we know the interrupt is active. */
+  69:Generated_Source\PSoC5/isr_Timer_10ms.c ****     isr_Timer_10ms_Disable();
+  38              		.loc 1 69 0
+  39 0004 FFF7FEFF 		bl	isr_Timer_10ms_Disable
+  70:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+  71:Generated_Source\PSoC5/isr_Timer_10ms.c ****     /* Set the ISR to point to the isr_Timer_10ms Interrupt. */
+  72:Generated_Source\PSoC5/isr_Timer_10ms.c ****     isr_Timer_10ms_SetVector(&isr_Timer_10ms_Interrupt);
+  40              		.loc 1 72 0
+  41 0008 0448     		ldr	r0, .L2
+  42 000a FFF7FEFF 		bl	isr_Timer_10ms_SetVector
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 3
+
+
+  73:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+  74:Generated_Source\PSoC5/isr_Timer_10ms.c ****     /* Set the priority. */
+  75:Generated_Source\PSoC5/isr_Timer_10ms.c ****     isr_Timer_10ms_SetPriority((uint8)isr_Timer_10ms_INTC_PRIOR_NUMBER);
+  43              		.loc 1 75 0
+  44 000e 0420     		movs	r0, #4
+  45 0010 FFF7FEFF 		bl	isr_Timer_10ms_SetPriority
+  76:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+  77:Generated_Source\PSoC5/isr_Timer_10ms.c ****     /* Enable it. */
+  78:Generated_Source\PSoC5/isr_Timer_10ms.c ****     isr_Timer_10ms_Enable();
+  46              		.loc 1 78 0
+  47 0014 FFF7FEFF 		bl	isr_Timer_10ms_Enable
+  79:Generated_Source\PSoC5/isr_Timer_10ms.c **** }
+  48              		.loc 1 79 0
+  49 0018 00BF     		nop
+  50 001a 80BD     		pop	{r7, pc}
+  51              	.L3:
+  52              		.align	2
+  53              	.L2:
+  54 001c 00000000 		.word	isr_Timer_10ms_Interrupt
+  55              		.cfi_endproc
+  56              	.LFE63:
+  57              		.size	isr_Timer_10ms_Start, .-isr_Timer_10ms_Start
+  58              		.section	.text.isr_Timer_10ms_StartEx,"ax",%progbits
+  59              		.align	2
+  60              		.global	isr_Timer_10ms_StartEx
+  61              		.thumb
+  62              		.thumb_func
+  63              		.type	isr_Timer_10ms_StartEx, %function
+  64              	isr_Timer_10ms_StartEx:
+  65              	.LFB64:
+  80:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+  81:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+  82:Generated_Source\PSoC5/isr_Timer_10ms.c **** /*******************************************************************************
+  83:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Function Name: isr_Timer_10ms_StartEx
+  84:Generated_Source\PSoC5/isr_Timer_10ms.c **** ********************************************************************************
+  85:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+  86:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Summary:
+  87:Generated_Source\PSoC5/isr_Timer_10ms.c **** *  Sets up the interrupt and enables it. This function disables the interrupt,
+  88:Generated_Source\PSoC5/isr_Timer_10ms.c **** *  sets the interrupt vector based on the address passed in, sets the priority 
+  89:Generated_Source\PSoC5/isr_Timer_10ms.c **** *  from the value in the Design Wide Resources Interrupt Editor, then enables 
+  90:Generated_Source\PSoC5/isr_Timer_10ms.c **** *  the interrupt to the interrupt controller.
+  91:Generated_Source\PSoC5/isr_Timer_10ms.c **** *  
+  92:Generated_Source\PSoC5/isr_Timer_10ms.c **** *  When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
+  93:Generated_Source\PSoC5/isr_Timer_10ms.c **** *  used to provide consistent definition across compilers:
+  94:Generated_Source\PSoC5/isr_Timer_10ms.c **** *  
+  95:Generated_Source\PSoC5/isr_Timer_10ms.c **** *  Function definition example:
+  96:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   CY_ISR(MyISR)
+  97:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   {
+  98:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   }
+  99:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Function prototype example:
+ 100:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   CY_ISR_PROTO(MyISR);
+ 101:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 102:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Parameters:  
+ 103:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   address: Address of the ISR to set in the interrupt vector table.
+ 104:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 105:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Return:
+ 106:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 4
+
+
+ 107:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 108:Generated_Source\PSoC5/isr_Timer_10ms.c **** *******************************************************************************/
+ 109:Generated_Source\PSoC5/isr_Timer_10ms.c **** void isr_Timer_10ms_StartEx(cyisraddress address)
+ 110:Generated_Source\PSoC5/isr_Timer_10ms.c **** {
+  66              		.loc 1 110 0
+  67              		.cfi_startproc
+  68              		@ args = 0, pretend = 0, frame = 8
+  69              		@ frame_needed = 1, uses_anonymous_args = 0
+  70 0000 80B5     		push	{r7, lr}
+  71              		.cfi_def_cfa_offset 8
+  72              		.cfi_offset 7, -8
+  73              		.cfi_offset 14, -4
+  74 0002 82B0     		sub	sp, sp, #8
+  75              		.cfi_def_cfa_offset 16
+  76 0004 00AF     		add	r7, sp, #0
+  77              		.cfi_def_cfa_register 7
+  78 0006 7860     		str	r0, [r7, #4]
+ 111:Generated_Source\PSoC5/isr_Timer_10ms.c ****     /* For all we know the interrupt is active. */
+ 112:Generated_Source\PSoC5/isr_Timer_10ms.c ****     isr_Timer_10ms_Disable();
+  79              		.loc 1 112 0
+  80 0008 FFF7FEFF 		bl	isr_Timer_10ms_Disable
+ 113:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 114:Generated_Source\PSoC5/isr_Timer_10ms.c ****     /* Set the ISR to point to the isr_Timer_10ms Interrupt. */
+ 115:Generated_Source\PSoC5/isr_Timer_10ms.c ****     isr_Timer_10ms_SetVector(address);
+  81              		.loc 1 115 0
+  82 000c 7868     		ldr	r0, [r7, #4]
+  83 000e FFF7FEFF 		bl	isr_Timer_10ms_SetVector
+ 116:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 117:Generated_Source\PSoC5/isr_Timer_10ms.c ****     /* Set the priority. */
+ 118:Generated_Source\PSoC5/isr_Timer_10ms.c ****     isr_Timer_10ms_SetPriority((uint8)isr_Timer_10ms_INTC_PRIOR_NUMBER);
+  84              		.loc 1 118 0
+  85 0012 0420     		movs	r0, #4
+  86 0014 FFF7FEFF 		bl	isr_Timer_10ms_SetPriority
+ 119:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 120:Generated_Source\PSoC5/isr_Timer_10ms.c ****     /* Enable it. */
+ 121:Generated_Source\PSoC5/isr_Timer_10ms.c ****     isr_Timer_10ms_Enable();
+  87              		.loc 1 121 0
+  88 0018 FFF7FEFF 		bl	isr_Timer_10ms_Enable
+ 122:Generated_Source\PSoC5/isr_Timer_10ms.c **** }
+  89              		.loc 1 122 0
+  90 001c 00BF     		nop
+  91 001e 0837     		adds	r7, r7, #8
+  92              		.cfi_def_cfa_offset 8
+  93 0020 BD46     		mov	sp, r7
+  94              		.cfi_def_cfa_register 13
+  95              		@ sp needed
+  96 0022 80BD     		pop	{r7, pc}
+  97              		.cfi_endproc
+  98              	.LFE64:
+  99              		.size	isr_Timer_10ms_StartEx, .-isr_Timer_10ms_StartEx
+ 100              		.section	.text.isr_Timer_10ms_Stop,"ax",%progbits
+ 101              		.align	2
+ 102              		.global	isr_Timer_10ms_Stop
+ 103              		.thumb
+ 104              		.thumb_func
+ 105              		.type	isr_Timer_10ms_Stop, %function
+ 106              	isr_Timer_10ms_Stop:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 5
+
+
+ 107              	.LFB65:
+ 123:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 124:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 125:Generated_Source\PSoC5/isr_Timer_10ms.c **** /*******************************************************************************
+ 126:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Function Name: isr_Timer_10ms_Stop
+ 127:Generated_Source\PSoC5/isr_Timer_10ms.c **** ********************************************************************************
+ 128:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 129:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Summary:
+ 130:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Disables and removes the interrupt.
+ 131:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 132:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Parameters:  
+ 133:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ 134:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 135:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Return:
+ 136:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ 137:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 138:Generated_Source\PSoC5/isr_Timer_10ms.c **** *******************************************************************************/
+ 139:Generated_Source\PSoC5/isr_Timer_10ms.c **** void isr_Timer_10ms_Stop(void)
+ 140:Generated_Source\PSoC5/isr_Timer_10ms.c **** {
+ 108              		.loc 1 140 0
+ 109              		.cfi_startproc
+ 110              		@ args = 0, pretend = 0, frame = 0
+ 111              		@ frame_needed = 1, uses_anonymous_args = 0
+ 112 0000 80B5     		push	{r7, lr}
+ 113              		.cfi_def_cfa_offset 8
+ 114              		.cfi_offset 7, -8
+ 115              		.cfi_offset 14, -4
+ 116 0002 00AF     		add	r7, sp, #0
+ 117              		.cfi_def_cfa_register 7
+ 141:Generated_Source\PSoC5/isr_Timer_10ms.c ****     /* Disable this interrupt. */
+ 142:Generated_Source\PSoC5/isr_Timer_10ms.c ****     isr_Timer_10ms_Disable();
+ 118              		.loc 1 142 0
+ 119 0004 FFF7FEFF 		bl	isr_Timer_10ms_Disable
+ 143:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 144:Generated_Source\PSoC5/isr_Timer_10ms.c ****     /* Set the ISR to point to the passive one. */
+ 145:Generated_Source\PSoC5/isr_Timer_10ms.c ****     isr_Timer_10ms_SetVector(&IntDefaultHandler);
+ 120              		.loc 1 145 0
+ 121 0008 0248     		ldr	r0, .L6
+ 122 000a FFF7FEFF 		bl	isr_Timer_10ms_SetVector
+ 146:Generated_Source\PSoC5/isr_Timer_10ms.c **** }
+ 123              		.loc 1 146 0
+ 124 000e 00BF     		nop
+ 125 0010 80BD     		pop	{r7, pc}
+ 126              	.L7:
+ 127 0012 00BF     		.align	2
+ 128              	.L6:
+ 129 0014 00000000 		.word	IntDefaultHandler
+ 130              		.cfi_endproc
+ 131              	.LFE65:
+ 132              		.size	isr_Timer_10ms_Stop, .-isr_Timer_10ms_Stop
+ 133              		.section	.text.isr_Timer_10ms_Interrupt,"ax",%progbits
+ 134              		.align	2
+ 135              		.global	isr_Timer_10ms_Interrupt
+ 136              		.thumb
+ 137              		.thumb_func
+ 138              		.type	isr_Timer_10ms_Interrupt, %function
+ 139              	isr_Timer_10ms_Interrupt:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 6
+
+
+ 140              	.LFB66:
+ 147:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 148:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 149:Generated_Source\PSoC5/isr_Timer_10ms.c **** /*******************************************************************************
+ 150:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Function Name: isr_Timer_10ms_Interrupt
+ 151:Generated_Source\PSoC5/isr_Timer_10ms.c **** ********************************************************************************
+ 152:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 153:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Summary:
+ 154:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   The default Interrupt Service Routine for isr_Timer_10ms.
+ 155:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 156:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Add custom code between the coments to keep the next version of this file
+ 157:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   from over writting your code.
+ 158:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 159:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Parameters:  
+ 160:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 161:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Return:
+ 162:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ 163:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 164:Generated_Source\PSoC5/isr_Timer_10ms.c **** *******************************************************************************/
+ 165:Generated_Source\PSoC5/isr_Timer_10ms.c **** CY_ISR(isr_Timer_10ms_Interrupt)
+ 166:Generated_Source\PSoC5/isr_Timer_10ms.c **** {
+ 141              		.loc 1 166 0
+ 142              		.cfi_startproc
+ 143              		@ args = 0, pretend = 0, frame = 0
+ 144              		@ frame_needed = 1, uses_anonymous_args = 0
+ 145 0000 80B5     		push	{r7, lr}
+ 146              		.cfi_def_cfa_offset 8
+ 147              		.cfi_offset 7, -8
+ 148              		.cfi_offset 14, -4
+ 149 0002 00AF     		add	r7, sp, #0
+ 150              		.cfi_def_cfa_register 7
+ 167:Generated_Source\PSoC5/isr_Timer_10ms.c ****     #ifdef isr_Timer_10ms_INTERRUPT_INTERRUPT_CALLBACK
+ 168:Generated_Source\PSoC5/isr_Timer_10ms.c ****         isr_Timer_10ms_Interrupt_InterruptCallback();
+ 169:Generated_Source\PSoC5/isr_Timer_10ms.c ****     #endif /* isr_Timer_10ms_INTERRUPT_INTERRUPT_CALLBACK */ 
+ 170:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 171:Generated_Source\PSoC5/isr_Timer_10ms.c ****     /*  Place your Interrupt code here. */
+ 172:Generated_Source\PSoC5/isr_Timer_10ms.c ****     /* `#START isr_Timer_10ms_Interrupt` */
+ 173:Generated_Source\PSoC5/isr_Timer_10ms.c ****     
+ 174:Generated_Source\PSoC5/isr_Timer_10ms.c ****     //static uint8 isr_count = 0;
+ 175:Generated_Source\PSoC5/isr_Timer_10ms.c ****     //extern uint16 isr_count;
+ 176:Generated_Source\PSoC5/isr_Timer_10ms.c ****     //uint16 isr_count;
+ 177:Generated_Source\PSoC5/isr_Timer_10ms.c ****     //extern uint16 _100ms_flag;
+ 178:Generated_Source\PSoC5/isr_Timer_10ms.c ****         
+ 179:Generated_Source\PSoC5/isr_Timer_10ms.c ****         //sendDiagPacket();
+ 180:Generated_Source\PSoC5/isr_Timer_10ms.c ****         
+ 181:Generated_Source\PSoC5/isr_Timer_10ms.c ****         //CTest_20ms_isr();
+ 182:Generated_Source\PSoC5/isr_Timer_10ms.c ****         //STest_20ms_isr();
+ 183:Generated_Source\PSoC5/isr_Timer_10ms.c ****     
+ 184:Generated_Source\PSoC5/isr_Timer_10ms.c ****         //sendPacketToRelay_Quad();   // 460800 - TX
+ 185:Generated_Source\PSoC5/isr_Timer_10ms.c ****         //sendPacketToRelaySiren();   // 230400 - TX
+ 186:Generated_Source\PSoC5/isr_Timer_10ms.c ****         
+ 187:Generated_Source\PSoC5/isr_Timer_10ms.c **** //        isr_count++;
+ 188:Generated_Source\PSoC5/isr_Timer_10ms.c ****     
+ 189:Generated_Source\PSoC5/isr_Timer_10ms.c ****         RTest_10ms_isr();
+ 151              		.loc 1 189 0
+ 152 0004 FFF7FEFF 		bl	RTest_10ms_isr
+ 190:Generated_Source\PSoC5/isr_Timer_10ms.c ****     
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 7
+
+
+ 191:Generated_Source\PSoC5/isr_Timer_10ms.c **** //        if( (isr_count % 5) == 0 )
+ 192:Generated_Source\PSoC5/isr_Timer_10ms.c **** //        {
+ 193:Generated_Source\PSoC5/isr_Timer_10ms.c **** //            RTest_50ms_isr();
+ 194:Generated_Source\PSoC5/isr_Timer_10ms.c **** //            //isr_count = 0;
+ 195:Generated_Source\PSoC5/isr_Timer_10ms.c **** //        }
+ 196:Generated_Source\PSoC5/isr_Timer_10ms.c ****         
+ 197:Generated_Source\PSoC5/isr_Timer_10ms.c **** //        if( (isr_count % 2) == 0 )
+ 198:Generated_Source\PSoC5/isr_Timer_10ms.c **** //        {
+ 199:Generated_Source\PSoC5/isr_Timer_10ms.c **** //            RTest_20ms_isr();
+ 200:Generated_Source\PSoC5/isr_Timer_10ms.c **** //            //isr_count = 0;
+ 201:Generated_Source\PSoC5/isr_Timer_10ms.c **** //        }
+ 202:Generated_Source\PSoC5/isr_Timer_10ms.c ****         
+ 203:Generated_Source\PSoC5/isr_Timer_10ms.c **** //        if(isr_count >= 65000)
+ 204:Generated_Source\PSoC5/isr_Timer_10ms.c **** //        {
+ 205:Generated_Source\PSoC5/isr_Timer_10ms.c **** //            isr_count = 0;
+ 206:Generated_Source\PSoC5/isr_Timer_10ms.c **** //        }
+ 207:Generated_Source\PSoC5/isr_Timer_10ms.c ****         
+ 208:Generated_Source\PSoC5/isr_Timer_10ms.c ****         
+ 209:Generated_Source\PSoC5/isr_Timer_10ms.c ****         
+ 210:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 211:Generated_Source\PSoC5/isr_Timer_10ms.c ****     /* `#END` */
+ 212:Generated_Source\PSoC5/isr_Timer_10ms.c **** }
+ 153              		.loc 1 212 0
+ 154 0008 00BF     		nop
+ 155 000a 80BD     		pop	{r7, pc}
+ 156              		.cfi_endproc
+ 157              	.LFE66:
+ 158              		.size	isr_Timer_10ms_Interrupt, .-isr_Timer_10ms_Interrupt
+ 159              		.section	.text.isr_Timer_10ms_SetVector,"ax",%progbits
+ 160              		.align	2
+ 161              		.global	isr_Timer_10ms_SetVector
+ 162              		.thumb
+ 163              		.thumb_func
+ 164              		.type	isr_Timer_10ms_SetVector, %function
+ 165              	isr_Timer_10ms_SetVector:
+ 166              	.LFB67:
+ 213:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 214:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 215:Generated_Source\PSoC5/isr_Timer_10ms.c **** /*******************************************************************************
+ 216:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Function Name: isr_Timer_10ms_SetVector
+ 217:Generated_Source\PSoC5/isr_Timer_10ms.c **** ********************************************************************************
+ 218:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 219:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Summary:
+ 220:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Change the ISR vector for the Interrupt. Note calling isr_Timer_10ms_Start
+ 221:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   will override any effect this method would have had. To set the vector 
+ 222:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   before the component has been started use isr_Timer_10ms_StartEx instead.
+ 223:Generated_Source\PSoC5/isr_Timer_10ms.c **** * 
+ 224:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
+ 225:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   used to provide consistent definition across compilers:
+ 226:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 227:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Function definition example:
+ 228:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   CY_ISR(MyISR)
+ 229:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   {
+ 230:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   }
+ 231:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 232:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Function prototype example:
+ 233:Generated_Source\PSoC5/isr_Timer_10ms.c **** *     CY_ISR_PROTO(MyISR);
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 8
+
+
+ 234:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 235:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Parameters:
+ 236:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   address: Address of the ISR to set in the interrupt vector table.
+ 237:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 238:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Return:
+ 239:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ 240:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 241:Generated_Source\PSoC5/isr_Timer_10ms.c **** *******************************************************************************/
+ 242:Generated_Source\PSoC5/isr_Timer_10ms.c **** void isr_Timer_10ms_SetVector(cyisraddress address)
+ 243:Generated_Source\PSoC5/isr_Timer_10ms.c **** {
+ 167              		.loc 1 243 0
+ 168              		.cfi_startproc
+ 169              		@ args = 0, pretend = 0, frame = 16
+ 170              		@ frame_needed = 1, uses_anonymous_args = 0
+ 171              		@ link register save eliminated.
+ 172 0000 80B4     		push	{r7}
+ 173              		.cfi_def_cfa_offset 4
+ 174              		.cfi_offset 7, -4
+ 175 0002 85B0     		sub	sp, sp, #20
+ 176              		.cfi_def_cfa_offset 24
+ 177 0004 00AF     		add	r7, sp, #0
+ 178              		.cfi_def_cfa_register 7
+ 179 0006 7860     		str	r0, [r7, #4]
+ 244:Generated_Source\PSoC5/isr_Timer_10ms.c ****     cyisraddress * ramVectorTable;
+ 245:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 246:Generated_Source\PSoC5/isr_Timer_10ms.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
+ 180              		.loc 1 246 0
+ 181 0008 054B     		ldr	r3, .L10
+ 182 000a 1B68     		ldr	r3, [r3]
+ 183 000c FB60     		str	r3, [r7, #12]
+ 247:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 248:Generated_Source\PSoC5/isr_Timer_10ms.c ****     ramVectorTable[CYINT_IRQ_BASE + (uint32)isr_Timer_10ms__INTC_NUMBER] = address;
+ 184              		.loc 1 248 0
+ 185 000e FB68     		ldr	r3, [r7, #12]
+ 186 0010 4433     		adds	r3, r3, #68
+ 187 0012 7A68     		ldr	r2, [r7, #4]
+ 188 0014 1A60     		str	r2, [r3]
+ 249:Generated_Source\PSoC5/isr_Timer_10ms.c **** }
+ 189              		.loc 1 249 0
+ 190 0016 00BF     		nop
+ 191 0018 1437     		adds	r7, r7, #20
+ 192              		.cfi_def_cfa_offset 4
+ 193 001a BD46     		mov	sp, r7
+ 194              		.cfi_def_cfa_register 13
+ 195              		@ sp needed
+ 196 001c 80BC     		pop	{r7}
+ 197              		.cfi_restore 7
+ 198              		.cfi_def_cfa_offset 0
+ 199 001e 7047     		bx	lr
+ 200              	.L11:
+ 201              		.align	2
+ 202              	.L10:
+ 203 0020 08ED00E0 		.word	-536810232
+ 204              		.cfi_endproc
+ 205              	.LFE67:
+ 206              		.size	isr_Timer_10ms_SetVector, .-isr_Timer_10ms_SetVector
+ 207              		.section	.text.isr_Timer_10ms_GetVector,"ax",%progbits
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 9
+
+
+ 208              		.align	2
+ 209              		.global	isr_Timer_10ms_GetVector
+ 210              		.thumb
+ 211              		.thumb_func
+ 212              		.type	isr_Timer_10ms_GetVector, %function
+ 213              	isr_Timer_10ms_GetVector:
+ 214              	.LFB68:
+ 250:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 251:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 252:Generated_Source\PSoC5/isr_Timer_10ms.c **** /*******************************************************************************
+ 253:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Function Name: isr_Timer_10ms_GetVector
+ 254:Generated_Source\PSoC5/isr_Timer_10ms.c **** ********************************************************************************
+ 255:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 256:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Summary:
+ 257:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Gets the "address" of the current ISR vector for the Interrupt.
+ 258:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 259:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Parameters:
+ 260:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ 261:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 262:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Return:
+ 263:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Address of the ISR in the interrupt vector table.
+ 264:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 265:Generated_Source\PSoC5/isr_Timer_10ms.c **** *******************************************************************************/
+ 266:Generated_Source\PSoC5/isr_Timer_10ms.c **** cyisraddress isr_Timer_10ms_GetVector(void)
+ 267:Generated_Source\PSoC5/isr_Timer_10ms.c **** {
+ 215              		.loc 1 267 0
+ 216              		.cfi_startproc
+ 217              		@ args = 0, pretend = 0, frame = 8
+ 218              		@ frame_needed = 1, uses_anonymous_args = 0
+ 219              		@ link register save eliminated.
+ 220 0000 80B4     		push	{r7}
+ 221              		.cfi_def_cfa_offset 4
+ 222              		.cfi_offset 7, -4
+ 223 0002 83B0     		sub	sp, sp, #12
+ 224              		.cfi_def_cfa_offset 16
+ 225 0004 00AF     		add	r7, sp, #0
+ 226              		.cfi_def_cfa_register 7
+ 268:Generated_Source\PSoC5/isr_Timer_10ms.c ****     cyisraddress * ramVectorTable;
+ 269:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 270:Generated_Source\PSoC5/isr_Timer_10ms.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
+ 227              		.loc 1 270 0
+ 228 0006 054B     		ldr	r3, .L14
+ 229 0008 1B68     		ldr	r3, [r3]
+ 230 000a 7B60     		str	r3, [r7, #4]
+ 271:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 272:Generated_Source\PSoC5/isr_Timer_10ms.c ****     return ramVectorTable[CYINT_IRQ_BASE + (uint32)isr_Timer_10ms__INTC_NUMBER];
+ 231              		.loc 1 272 0
+ 232 000c 7B68     		ldr	r3, [r7, #4]
+ 233 000e 5B6C     		ldr	r3, [r3, #68]
+ 273:Generated_Source\PSoC5/isr_Timer_10ms.c **** }
+ 234              		.loc 1 273 0
+ 235 0010 1846     		mov	r0, r3
+ 236 0012 0C37     		adds	r7, r7, #12
+ 237              		.cfi_def_cfa_offset 4
+ 238 0014 BD46     		mov	sp, r7
+ 239              		.cfi_def_cfa_register 13
+ 240              		@ sp needed
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 10
+
+
+ 241 0016 80BC     		pop	{r7}
+ 242              		.cfi_restore 7
+ 243              		.cfi_def_cfa_offset 0
+ 244 0018 7047     		bx	lr
+ 245              	.L15:
+ 246 001a 00BF     		.align	2
+ 247              	.L14:
+ 248 001c 08ED00E0 		.word	-536810232
+ 249              		.cfi_endproc
+ 250              	.LFE68:
+ 251              		.size	isr_Timer_10ms_GetVector, .-isr_Timer_10ms_GetVector
+ 252              		.section	.text.isr_Timer_10ms_SetPriority,"ax",%progbits
+ 253              		.align	2
+ 254              		.global	isr_Timer_10ms_SetPriority
+ 255              		.thumb
+ 256              		.thumb_func
+ 257              		.type	isr_Timer_10ms_SetPriority, %function
+ 258              	isr_Timer_10ms_SetPriority:
+ 259              	.LFB69:
+ 274:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 275:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 276:Generated_Source\PSoC5/isr_Timer_10ms.c **** /*******************************************************************************
+ 277:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Function Name: isr_Timer_10ms_SetPriority
+ 278:Generated_Source\PSoC5/isr_Timer_10ms.c **** ********************************************************************************
+ 279:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 280:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Summary:
+ 281:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Sets the Priority of the Interrupt. 
+ 282:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 283:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Note calling isr_Timer_10ms_Start or isr_Timer_10ms_StartEx will 
+ 284:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   override any effect this API would have had. This API should only be called
+ 285:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   after isr_Timer_10ms_Start or isr_Timer_10ms_StartEx has been called. 
+ 286:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   To set the initial priority for the component, use the Design-Wide Resources
+ 287:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Interrupt Editor.
+ 288:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 289:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Note This API has no effect on Non-maskable interrupt NMI).
+ 290:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 291:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Parameters:
+ 292:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   priority: Priority of the interrupt, 0 being the highest priority
+ 293:Generated_Source\PSoC5/isr_Timer_10ms.c **** *             PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
+ 294:Generated_Source\PSoC5/isr_Timer_10ms.c **** *             PSoC 4: Priority is from 0 to 3.
+ 295:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 296:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Return:
+ 297:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ 298:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 299:Generated_Source\PSoC5/isr_Timer_10ms.c **** *******************************************************************************/
+ 300:Generated_Source\PSoC5/isr_Timer_10ms.c **** void isr_Timer_10ms_SetPriority(uint8 priority)
+ 301:Generated_Source\PSoC5/isr_Timer_10ms.c **** {
+ 260              		.loc 1 301 0
+ 261              		.cfi_startproc
+ 262              		@ args = 0, pretend = 0, frame = 8
+ 263              		@ frame_needed = 1, uses_anonymous_args = 0
+ 264              		@ link register save eliminated.
+ 265 0000 80B4     		push	{r7}
+ 266              		.cfi_def_cfa_offset 4
+ 267              		.cfi_offset 7, -4
+ 268 0002 83B0     		sub	sp, sp, #12
+ 269              		.cfi_def_cfa_offset 16
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 11
+
+
+ 270 0004 00AF     		add	r7, sp, #0
+ 271              		.cfi_def_cfa_register 7
+ 272 0006 0346     		mov	r3, r0
+ 273 0008 FB71     		strb	r3, [r7, #7]
+ 302:Generated_Source\PSoC5/isr_Timer_10ms.c ****     *isr_Timer_10ms_INTC_PRIOR = priority << 5;
+ 274              		.loc 1 302 0
+ 275 000a 054A     		ldr	r2, .L17
+ 276 000c FB79     		ldrb	r3, [r7, #7]
+ 277 000e 5B01     		lsls	r3, r3, #5
+ 278 0010 DBB2     		uxtb	r3, r3
+ 279 0012 1370     		strb	r3, [r2]
+ 303:Generated_Source\PSoC5/isr_Timer_10ms.c **** }
+ 280              		.loc 1 303 0
+ 281 0014 00BF     		nop
+ 282 0016 0C37     		adds	r7, r7, #12
+ 283              		.cfi_def_cfa_offset 4
+ 284 0018 BD46     		mov	sp, r7
+ 285              		.cfi_def_cfa_register 13
+ 286              		@ sp needed
+ 287 001a 80BC     		pop	{r7}
+ 288              		.cfi_restore 7
+ 289              		.cfi_def_cfa_offset 0
+ 290 001c 7047     		bx	lr
+ 291              	.L18:
+ 292 001e 00BF     		.align	2
+ 293              	.L17:
+ 294 0020 01E400E0 		.word	-536812543
+ 295              		.cfi_endproc
+ 296              	.LFE69:
+ 297              		.size	isr_Timer_10ms_SetPriority, .-isr_Timer_10ms_SetPriority
+ 298              		.section	.text.isr_Timer_10ms_GetPriority,"ax",%progbits
+ 299              		.align	2
+ 300              		.global	isr_Timer_10ms_GetPriority
+ 301              		.thumb
+ 302              		.thumb_func
+ 303              		.type	isr_Timer_10ms_GetPriority, %function
+ 304              	isr_Timer_10ms_GetPriority:
+ 305              	.LFB70:
+ 304:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 305:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 306:Generated_Source\PSoC5/isr_Timer_10ms.c **** /*******************************************************************************
+ 307:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Function Name: isr_Timer_10ms_GetPriority
+ 308:Generated_Source\PSoC5/isr_Timer_10ms.c **** ********************************************************************************
+ 309:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 310:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Summary:
+ 311:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Gets the Priority of the Interrupt.
+ 312:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 313:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Parameters:
+ 314:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ 315:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 316:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Return:
+ 317:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Priority of the interrupt, 0 being the highest priority
+ 318:Generated_Source\PSoC5/isr_Timer_10ms.c **** *    PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
+ 319:Generated_Source\PSoC5/isr_Timer_10ms.c **** *    PSoC 4: Priority is from 0 to 3.
+ 320:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 321:Generated_Source\PSoC5/isr_Timer_10ms.c **** *******************************************************************************/
+ 322:Generated_Source\PSoC5/isr_Timer_10ms.c **** uint8 isr_Timer_10ms_GetPriority(void)
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 12
+
+
+ 323:Generated_Source\PSoC5/isr_Timer_10ms.c **** {
+ 306              		.loc 1 323 0
+ 307              		.cfi_startproc
+ 308              		@ args = 0, pretend = 0, frame = 8
+ 309              		@ frame_needed = 1, uses_anonymous_args = 0
+ 310              		@ link register save eliminated.
+ 311 0000 80B4     		push	{r7}
+ 312              		.cfi_def_cfa_offset 4
+ 313              		.cfi_offset 7, -4
+ 314 0002 83B0     		sub	sp, sp, #12
+ 315              		.cfi_def_cfa_offset 16
+ 316 0004 00AF     		add	r7, sp, #0
+ 317              		.cfi_def_cfa_register 7
+ 324:Generated_Source\PSoC5/isr_Timer_10ms.c ****     uint8 priority;
+ 325:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 326:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 327:Generated_Source\PSoC5/isr_Timer_10ms.c ****     priority = *isr_Timer_10ms_INTC_PRIOR >> 5;
+ 318              		.loc 1 327 0
+ 319 0006 054B     		ldr	r3, .L21
+ 320 0008 1B78     		ldrb	r3, [r3]
+ 321 000a DBB2     		uxtb	r3, r3
+ 322 000c 5B09     		lsrs	r3, r3, #5
+ 323 000e FB71     		strb	r3, [r7, #7]
+ 328:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 329:Generated_Source\PSoC5/isr_Timer_10ms.c ****     return priority;
+ 324              		.loc 1 329 0
+ 325 0010 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 330:Generated_Source\PSoC5/isr_Timer_10ms.c **** }
+ 326              		.loc 1 330 0
+ 327 0012 1846     		mov	r0, r3
+ 328 0014 0C37     		adds	r7, r7, #12
+ 329              		.cfi_def_cfa_offset 4
+ 330 0016 BD46     		mov	sp, r7
+ 331              		.cfi_def_cfa_register 13
+ 332              		@ sp needed
+ 333 0018 80BC     		pop	{r7}
+ 334              		.cfi_restore 7
+ 335              		.cfi_def_cfa_offset 0
+ 336 001a 7047     		bx	lr
+ 337              	.L22:
+ 338              		.align	2
+ 339              	.L21:
+ 340 001c 01E400E0 		.word	-536812543
+ 341              		.cfi_endproc
+ 342              	.LFE70:
+ 343              		.size	isr_Timer_10ms_GetPriority, .-isr_Timer_10ms_GetPriority
+ 344              		.section	.text.isr_Timer_10ms_Enable,"ax",%progbits
+ 345              		.align	2
+ 346              		.global	isr_Timer_10ms_Enable
+ 347              		.thumb
+ 348              		.thumb_func
+ 349              		.type	isr_Timer_10ms_Enable, %function
+ 350              	isr_Timer_10ms_Enable:
+ 351              	.LFB71:
+ 331:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 332:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 333:Generated_Source\PSoC5/isr_Timer_10ms.c **** /*******************************************************************************
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 13
+
+
+ 334:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Function Name: isr_Timer_10ms_Enable
+ 335:Generated_Source\PSoC5/isr_Timer_10ms.c **** ********************************************************************************
+ 336:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 337:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Summary:
+ 338:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Enables the interrupt to the interrupt controller. Do not call this function
+ 339:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   unless ISR_Start() has been called or the functionality of the ISR_Start() 
+ 340:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   function, which sets the vector and the priority, has been called.
+ 341:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 342:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Parameters:
+ 343:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ 344:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 345:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Return:
+ 346:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ 347:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 348:Generated_Source\PSoC5/isr_Timer_10ms.c **** *******************************************************************************/
+ 349:Generated_Source\PSoC5/isr_Timer_10ms.c **** void isr_Timer_10ms_Enable(void)
+ 350:Generated_Source\PSoC5/isr_Timer_10ms.c **** {
+ 352              		.loc 1 350 0
+ 353              		.cfi_startproc
+ 354              		@ args = 0, pretend = 0, frame = 0
+ 355              		@ frame_needed = 1, uses_anonymous_args = 0
+ 356              		@ link register save eliminated.
+ 357 0000 80B4     		push	{r7}
+ 358              		.cfi_def_cfa_offset 4
+ 359              		.cfi_offset 7, -4
+ 360 0002 00AF     		add	r7, sp, #0
+ 361              		.cfi_def_cfa_register 7
+ 351:Generated_Source\PSoC5/isr_Timer_10ms.c ****     /* Enable the general interrupt. */
+ 352:Generated_Source\PSoC5/isr_Timer_10ms.c ****     *isr_Timer_10ms_INTC_SET_EN = isr_Timer_10ms__INTC_MASK;
+ 362              		.loc 1 352 0
+ 363 0004 034B     		ldr	r3, .L24
+ 364 0006 0222     		movs	r2, #2
+ 365 0008 1A60     		str	r2, [r3]
+ 353:Generated_Source\PSoC5/isr_Timer_10ms.c **** }
+ 366              		.loc 1 353 0
+ 367 000a 00BF     		nop
+ 368 000c BD46     		mov	sp, r7
+ 369              		.cfi_def_cfa_register 13
+ 370              		@ sp needed
+ 371 000e 80BC     		pop	{r7}
+ 372              		.cfi_restore 7
+ 373              		.cfi_def_cfa_offset 0
+ 374 0010 7047     		bx	lr
+ 375              	.L25:
+ 376 0012 00BF     		.align	2
+ 377              	.L24:
+ 378 0014 00E100E0 		.word	-536813312
+ 379              		.cfi_endproc
+ 380              	.LFE71:
+ 381              		.size	isr_Timer_10ms_Enable, .-isr_Timer_10ms_Enable
+ 382              		.section	.text.isr_Timer_10ms_GetState,"ax",%progbits
+ 383              		.align	2
+ 384              		.global	isr_Timer_10ms_GetState
+ 385              		.thumb
+ 386              		.thumb_func
+ 387              		.type	isr_Timer_10ms_GetState, %function
+ 388              	isr_Timer_10ms_GetState:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 14
+
+
+ 389              	.LFB72:
+ 354:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 355:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 356:Generated_Source\PSoC5/isr_Timer_10ms.c **** /*******************************************************************************
+ 357:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Function Name: isr_Timer_10ms_GetState
+ 358:Generated_Source\PSoC5/isr_Timer_10ms.c **** ********************************************************************************
+ 359:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 360:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Summary:
+ 361:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Gets the state (enabled, disabled) of the Interrupt.
+ 362:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 363:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Parameters:
+ 364:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ 365:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 366:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Return:
+ 367:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   1 if enabled, 0 if disabled.
+ 368:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 369:Generated_Source\PSoC5/isr_Timer_10ms.c **** *******************************************************************************/
+ 370:Generated_Source\PSoC5/isr_Timer_10ms.c **** uint8 isr_Timer_10ms_GetState(void)
+ 371:Generated_Source\PSoC5/isr_Timer_10ms.c **** {
+ 390              		.loc 1 371 0
+ 391              		.cfi_startproc
+ 392              		@ args = 0, pretend = 0, frame = 0
+ 393              		@ frame_needed = 1, uses_anonymous_args = 0
+ 394              		@ link register save eliminated.
+ 395 0000 80B4     		push	{r7}
+ 396              		.cfi_def_cfa_offset 4
+ 397              		.cfi_offset 7, -4
+ 398 0002 00AF     		add	r7, sp, #0
+ 399              		.cfi_def_cfa_register 7
+ 372:Generated_Source\PSoC5/isr_Timer_10ms.c ****     /* Get the state of the general interrupt. */
+ 373:Generated_Source\PSoC5/isr_Timer_10ms.c ****     return ((*isr_Timer_10ms_INTC_SET_EN & (uint32)isr_Timer_10ms__INTC_MASK) != 0u) ? 1u:0u;
+ 400              		.loc 1 373 0
+ 401 0004 064B     		ldr	r3, .L30
+ 402 0006 1B68     		ldr	r3, [r3]
+ 403 0008 03F00203 		and	r3, r3, #2
+ 404 000c 002B     		cmp	r3, #0
+ 405 000e 01D0     		beq	.L27
+ 406              		.loc 1 373 0 is_stmt 0 discriminator 1
+ 407 0010 0123     		movs	r3, #1
+ 408 0012 00E0     		b	.L28
+ 409              	.L27:
+ 410              		.loc 1 373 0 discriminator 2
+ 411 0014 0023     		movs	r3, #0
+ 412              	.L28:
+ 374:Generated_Source\PSoC5/isr_Timer_10ms.c **** }
+ 413              		.loc 1 374 0 is_stmt 1 discriminator 4
+ 414 0016 1846     		mov	r0, r3
+ 415 0018 BD46     		mov	sp, r7
+ 416              		.cfi_def_cfa_register 13
+ 417              		@ sp needed
+ 418 001a 80BC     		pop	{r7}
+ 419              		.cfi_restore 7
+ 420              		.cfi_def_cfa_offset 0
+ 421 001c 7047     		bx	lr
+ 422              	.L31:
+ 423 001e 00BF     		.align	2
+ 424              	.L30:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 15
+
+
+ 425 0020 00E100E0 		.word	-536813312
+ 426              		.cfi_endproc
+ 427              	.LFE72:
+ 428              		.size	isr_Timer_10ms_GetState, .-isr_Timer_10ms_GetState
+ 429              		.section	.text.isr_Timer_10ms_Disable,"ax",%progbits
+ 430              		.align	2
+ 431              		.global	isr_Timer_10ms_Disable
+ 432              		.thumb
+ 433              		.thumb_func
+ 434              		.type	isr_Timer_10ms_Disable, %function
+ 435              	isr_Timer_10ms_Disable:
+ 436              	.LFB73:
+ 375:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 376:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 377:Generated_Source\PSoC5/isr_Timer_10ms.c **** /*******************************************************************************
+ 378:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Function Name: isr_Timer_10ms_Disable
+ 379:Generated_Source\PSoC5/isr_Timer_10ms.c **** ********************************************************************************
+ 380:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 381:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Summary:
+ 382:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Disables the Interrupt in the interrupt controller.
+ 383:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 384:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Parameters:
+ 385:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ 386:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 387:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Return:
+ 388:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ 389:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 390:Generated_Source\PSoC5/isr_Timer_10ms.c **** *******************************************************************************/
+ 391:Generated_Source\PSoC5/isr_Timer_10ms.c **** void isr_Timer_10ms_Disable(void)
+ 392:Generated_Source\PSoC5/isr_Timer_10ms.c **** {
+ 437              		.loc 1 392 0
+ 438              		.cfi_startproc
+ 439              		@ args = 0, pretend = 0, frame = 0
+ 440              		@ frame_needed = 1, uses_anonymous_args = 0
+ 441              		@ link register save eliminated.
+ 442 0000 80B4     		push	{r7}
+ 443              		.cfi_def_cfa_offset 4
+ 444              		.cfi_offset 7, -4
+ 445 0002 00AF     		add	r7, sp, #0
+ 446              		.cfi_def_cfa_register 7
+ 393:Generated_Source\PSoC5/isr_Timer_10ms.c ****     /* Disable the general interrupt. */
+ 394:Generated_Source\PSoC5/isr_Timer_10ms.c ****     *isr_Timer_10ms_INTC_CLR_EN = isr_Timer_10ms__INTC_MASK;
+ 447              		.loc 1 394 0
+ 448 0004 034B     		ldr	r3, .L33
+ 449 0006 0222     		movs	r2, #2
+ 450 0008 1A60     		str	r2, [r3]
+ 395:Generated_Source\PSoC5/isr_Timer_10ms.c **** }
+ 451              		.loc 1 395 0
+ 452 000a 00BF     		nop
+ 453 000c BD46     		mov	sp, r7
+ 454              		.cfi_def_cfa_register 13
+ 455              		@ sp needed
+ 456 000e 80BC     		pop	{r7}
+ 457              		.cfi_restore 7
+ 458              		.cfi_def_cfa_offset 0
+ 459 0010 7047     		bx	lr
+ 460              	.L34:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 16
+
+
+ 461 0012 00BF     		.align	2
+ 462              	.L33:
+ 463 0014 80E100E0 		.word	-536813184
+ 464              		.cfi_endproc
+ 465              	.LFE73:
+ 466              		.size	isr_Timer_10ms_Disable, .-isr_Timer_10ms_Disable
+ 467              		.section	.text.isr_Timer_10ms_SetPending,"ax",%progbits
+ 468              		.align	2
+ 469              		.global	isr_Timer_10ms_SetPending
+ 470              		.thumb
+ 471              		.thumb_func
+ 472              		.type	isr_Timer_10ms_SetPending, %function
+ 473              	isr_Timer_10ms_SetPending:
+ 474              	.LFB74:
+ 396:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 397:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 398:Generated_Source\PSoC5/isr_Timer_10ms.c **** /*******************************************************************************
+ 399:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Function Name: isr_Timer_10ms_SetPending
+ 400:Generated_Source\PSoC5/isr_Timer_10ms.c **** ********************************************************************************
+ 401:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 402:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Summary:
+ 403:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Causes the Interrupt to enter the pending state, a software method of
+ 404:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   generating the interrupt.
+ 405:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 406:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Parameters:
+ 407:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ 408:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 409:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Return:
+ 410:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ 411:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 412:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Side Effects:
+ 413:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   If interrupts are enabled and the interrupt is set up properly, the ISR is
+ 414:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   entered (depending on the priority of this interrupt and other pending 
+ 415:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   interrupts).
+ 416:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 417:Generated_Source\PSoC5/isr_Timer_10ms.c **** *******************************************************************************/
+ 418:Generated_Source\PSoC5/isr_Timer_10ms.c **** void isr_Timer_10ms_SetPending(void)
+ 419:Generated_Source\PSoC5/isr_Timer_10ms.c **** {
+ 475              		.loc 1 419 0
+ 476              		.cfi_startproc
+ 477              		@ args = 0, pretend = 0, frame = 0
+ 478              		@ frame_needed = 1, uses_anonymous_args = 0
+ 479              		@ link register save eliminated.
+ 480 0000 80B4     		push	{r7}
+ 481              		.cfi_def_cfa_offset 4
+ 482              		.cfi_offset 7, -4
+ 483 0002 00AF     		add	r7, sp, #0
+ 484              		.cfi_def_cfa_register 7
+ 420:Generated_Source\PSoC5/isr_Timer_10ms.c ****     *isr_Timer_10ms_INTC_SET_PD = isr_Timer_10ms__INTC_MASK;
+ 485              		.loc 1 420 0
+ 486 0004 034B     		ldr	r3, .L36
+ 487 0006 0222     		movs	r2, #2
+ 488 0008 1A60     		str	r2, [r3]
+ 421:Generated_Source\PSoC5/isr_Timer_10ms.c **** }
+ 489              		.loc 1 421 0
+ 490 000a 00BF     		nop
+ 491 000c BD46     		mov	sp, r7
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 17
+
+
+ 492              		.cfi_def_cfa_register 13
+ 493              		@ sp needed
+ 494 000e 80BC     		pop	{r7}
+ 495              		.cfi_restore 7
+ 496              		.cfi_def_cfa_offset 0
+ 497 0010 7047     		bx	lr
+ 498              	.L37:
+ 499 0012 00BF     		.align	2
+ 500              	.L36:
+ 501 0014 00E200E0 		.word	-536813056
+ 502              		.cfi_endproc
+ 503              	.LFE74:
+ 504              		.size	isr_Timer_10ms_SetPending, .-isr_Timer_10ms_SetPending
+ 505              		.section	.text.isr_Timer_10ms_ClearPending,"ax",%progbits
+ 506              		.align	2
+ 507              		.global	isr_Timer_10ms_ClearPending
+ 508              		.thumb
+ 509              		.thumb_func
+ 510              		.type	isr_Timer_10ms_ClearPending, %function
+ 511              	isr_Timer_10ms_ClearPending:
+ 512              	.LFB75:
+ 422:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 423:Generated_Source\PSoC5/isr_Timer_10ms.c **** 
+ 424:Generated_Source\PSoC5/isr_Timer_10ms.c **** /*******************************************************************************
+ 425:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Function Name: isr_Timer_10ms_ClearPending
+ 426:Generated_Source\PSoC5/isr_Timer_10ms.c **** ********************************************************************************
+ 427:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 428:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Summary:
+ 429:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Clears a pending interrupt in the interrupt controller.
+ 430:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 431:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   Note Some interrupt sources are clear-on-read and require the block 
+ 432:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   interrupt/status register to be read/cleared with the appropriate block API 
+ 433:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   (GPIO, UART, and so on). Otherwise the ISR will continue to remain in 
+ 434:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   pending state even though the interrupt itself is cleared using this API.
+ 435:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 436:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Parameters:
+ 437:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ 438:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 439:Generated_Source\PSoC5/isr_Timer_10ms.c **** * Return:
+ 440:Generated_Source\PSoC5/isr_Timer_10ms.c **** *   None
+ 441:Generated_Source\PSoC5/isr_Timer_10ms.c **** *
+ 442:Generated_Source\PSoC5/isr_Timer_10ms.c **** *******************************************************************************/
+ 443:Generated_Source\PSoC5/isr_Timer_10ms.c **** void isr_Timer_10ms_ClearPending(void)
+ 444:Generated_Source\PSoC5/isr_Timer_10ms.c **** {
+ 513              		.loc 1 444 0
+ 514              		.cfi_startproc
+ 515              		@ args = 0, pretend = 0, frame = 0
+ 516              		@ frame_needed = 1, uses_anonymous_args = 0
+ 517              		@ link register save eliminated.
+ 518 0000 80B4     		push	{r7}
+ 519              		.cfi_def_cfa_offset 4
+ 520              		.cfi_offset 7, -4
+ 521 0002 00AF     		add	r7, sp, #0
+ 522              		.cfi_def_cfa_register 7
+ 445:Generated_Source\PSoC5/isr_Timer_10ms.c ****     *isr_Timer_10ms_INTC_CLR_PD = isr_Timer_10ms__INTC_MASK;
+ 523              		.loc 1 445 0
+ 524 0004 034B     		ldr	r3, .L39
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 18
+
+
+ 525 0006 0222     		movs	r2, #2
+ 526 0008 1A60     		str	r2, [r3]
+ 446:Generated_Source\PSoC5/isr_Timer_10ms.c **** }
+ 527              		.loc 1 446 0
+ 528 000a 00BF     		nop
+ 529 000c BD46     		mov	sp, r7
+ 530              		.cfi_def_cfa_register 13
+ 531              		@ sp needed
+ 532 000e 80BC     		pop	{r7}
+ 533              		.cfi_restore 7
+ 534              		.cfi_def_cfa_offset 0
+ 535 0010 7047     		bx	lr
+ 536              	.L40:
+ 537 0012 00BF     		.align	2
+ 538              	.L39:
+ 539 0014 80E200E0 		.word	-536812928
+ 540              		.cfi_endproc
+ 541              	.LFE75:
+ 542              		.size	isr_Timer_10ms_ClearPending, .-isr_Timer_10ms_ClearPending
+ 543              		.text
+ 544              	.Letext0:
+ 545              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 546              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 547              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 548              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 549              		.section	.debug_info,"",%progbits
+ 550              	.Ldebug_info0:
+ 551 0000 66020000 		.4byte	0x266
+ 552 0004 0400     		.2byte	0x4
+ 553 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 554 000a 04       		.byte	0x4
+ 555 000b 01       		.uleb128 0x1
+ 556 000c 06000000 		.4byte	.LASF36
+ 557 0010 0C       		.byte	0xc
+ 558 0011 A9010000 		.4byte	.LASF37
+ 559 0015 58010000 		.4byte	.LASF38
+ 560 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 561 001d 00000000 		.4byte	0
+ 562 0021 00000000 		.4byte	.Ldebug_line0
+ 563 0025 02       		.uleb128 0x2
+ 564 0026 04       		.byte	0x4
+ 565 0027 05       		.byte	0x5
+ 566 0028 696E7400 		.ascii	"int\000"
+ 567 002c 03       		.uleb128 0x3
+ 568 002d 04       		.byte	0x4
+ 569 002e 07       		.byte	0x7
+ 570 002f 3D020000 		.4byte	.LASF0
+ 571 0033 03       		.uleb128 0x3
+ 572 0034 08       		.byte	0x8
+ 573 0035 05       		.byte	0x5
+ 574 0036 A9020000 		.4byte	.LASF1
+ 575 003a 03       		.uleb128 0x3
+ 576 003b 08       		.byte	0x8
+ 577 003c 04       		.byte	0x4
+ 578 003d 2D030000 		.4byte	.LASF2
+ 579 0041 03       		.uleb128 0x3
+ 580 0042 01       		.byte	0x1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 19
+
+
+ 581 0043 06       		.byte	0x6
+ 582 0044 39030000 		.4byte	.LASF3
+ 583 0048 03       		.uleb128 0x3
+ 584 0049 01       		.byte	0x1
+ 585 004a 08       		.byte	0x8
+ 586 004b 08010000 		.4byte	.LASF4
+ 587 004f 03       		.uleb128 0x3
+ 588 0050 02       		.byte	0x2
+ 589 0051 05       		.byte	0x5
+ 590 0052 F9020000 		.4byte	.LASF5
+ 591 0056 03       		.uleb128 0x3
+ 592 0057 02       		.byte	0x2
+ 593 0058 07       		.byte	0x7
+ 594 0059 45010000 		.4byte	.LASF6
+ 595 005d 04       		.uleb128 0x4
+ 596 005e AF000000 		.4byte	.LASF12
+ 597 0062 02       		.byte	0x2
+ 598 0063 3F       		.byte	0x3f
+ 599 0064 68000000 		.4byte	0x68
+ 600 0068 03       		.uleb128 0x3
+ 601 0069 04       		.byte	0x4
+ 602 006a 05       		.byte	0x5
+ 603 006b 24030000 		.4byte	.LASF7
+ 604 006f 03       		.uleb128 0x3
+ 605 0070 04       		.byte	0x4
+ 606 0071 07       		.byte	0x7
+ 607 0072 33010000 		.4byte	.LASF8
+ 608 0076 03       		.uleb128 0x3
+ 609 0077 08       		.byte	0x8
+ 610 0078 07       		.byte	0x7
+ 611 0079 52020000 		.4byte	.LASF9
+ 612 007d 03       		.uleb128 0x3
+ 613 007e 04       		.byte	0x4
+ 614 007f 07       		.byte	0x7
+ 615 0080 A0020000 		.4byte	.LASF10
+ 616 0084 03       		.uleb128 0x3
+ 617 0085 01       		.byte	0x1
+ 618 0086 08       		.byte	0x8
+ 619 0087 CC020000 		.4byte	.LASF11
+ 620 008b 05       		.uleb128 0x5
+ 621 008c 04       		.byte	0x4
+ 622 008d 91000000 		.4byte	0x91
+ 623 0091 06       		.uleb128 0x6
+ 624 0092 04       		.uleb128 0x4
+ 625 0093 8F020000 		.4byte	.LASF13
+ 626 0097 03       		.byte	0x3
+ 627 0098 2C       		.byte	0x2c
+ 628 0099 5D000000 		.4byte	0x5d
+ 629 009d 07       		.uleb128 0x7
+ 630 009e 1E030000 		.4byte	.LASF14
+ 631 00a2 04       		.byte	0x4
+ 632 00a3 E401     		.2byte	0x1e4
+ 633 00a5 48000000 		.4byte	0x48
+ 634 00a9 07       		.uleb128 0x7
+ 635 00aa 36020000 		.4byte	.LASF15
+ 636 00ae 04       		.byte	0x4
+ 637 00af E601     		.2byte	0x1e6
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 20
+
+
+ 638 00b1 6F000000 		.4byte	0x6f
+ 639 00b5 03       		.uleb128 0x3
+ 640 00b6 04       		.byte	0x4
+ 641 00b7 04       		.byte	0x4
+ 642 00b8 D7000000 		.4byte	.LASF16
+ 643 00bc 03       		.uleb128 0x3
+ 644 00bd 08       		.byte	0x8
+ 645 00be 04       		.byte	0x4
+ 646 00bf D0000000 		.4byte	.LASF17
+ 647 00c3 07       		.uleb128 0x7
+ 648 00c4 2E010000 		.4byte	.LASF18
+ 649 00c8 04       		.byte	0x4
+ 650 00c9 8E02     		.2byte	0x28e
+ 651 00cb CF000000 		.4byte	0xcf
+ 652 00cf 08       		.uleb128 0x8
+ 653 00d0 9D000000 		.4byte	0x9d
+ 654 00d4 07       		.uleb128 0x7
+ 655 00d5 00000000 		.4byte	.LASF19
+ 656 00d9 04       		.byte	0x4
+ 657 00da 9002     		.2byte	0x290
+ 658 00dc E0000000 		.4byte	0xe0
+ 659 00e0 08       		.uleb128 0x8
+ 660 00e1 A9000000 		.4byte	0xa9
+ 661 00e5 07       		.uleb128 0x7
+ 662 00e6 82020000 		.4byte	.LASF20
+ 663 00ea 04       		.byte	0x4
+ 664 00eb A002     		.2byte	0x2a0
+ 665 00ed 8B000000 		.4byte	0x8b
+ 666 00f1 09       		.uleb128 0x9
+ 667 00f2 B7020000 		.4byte	.LASF21
+ 668 00f6 01       		.byte	0x1
+ 669 00f7 42       		.byte	0x42
+ 670 00f8 00000000 		.4byte	.LFB63
+ 671 00fc 20000000 		.4byte	.LFE63-.LFB63
+ 672 0100 01       		.uleb128 0x1
+ 673 0101 9C       		.byte	0x9c
+ 674 0102 0A       		.uleb128 0xa
+ 675 0103 B9000000 		.4byte	.LASF24
+ 676 0107 01       		.byte	0x1
+ 677 0108 6D       		.byte	0x6d
+ 678 0109 00000000 		.4byte	.LFB64
+ 679 010d 24000000 		.4byte	.LFE64-.LFB64
+ 680 0111 01       		.uleb128 0x1
+ 681 0112 9C       		.byte	0x9c
+ 682 0113 26010000 		.4byte	0x126
+ 683 0117 0B       		.uleb128 0xb
+ 684 0118 4A020000 		.4byte	.LASF26
+ 685 011c 01       		.byte	0x1
+ 686 011d 6D       		.byte	0x6d
+ 687 011e E5000000 		.4byte	0xe5
+ 688 0122 02       		.uleb128 0x2
+ 689 0123 91       		.byte	0x91
+ 690 0124 74       		.sleb128 -12
+ 691 0125 00       		.byte	0
+ 692 0126 09       		.uleb128 0x9
+ 693 0127 F4000000 		.4byte	.LASF22
+ 694 012b 01       		.byte	0x1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 21
+
+
+ 695 012c 8B       		.byte	0x8b
+ 696 012d 00000000 		.4byte	.LFB65
+ 697 0131 18000000 		.4byte	.LFE65-.LFB65
+ 698 0135 01       		.uleb128 0x1
+ 699 0136 9C       		.byte	0x9c
+ 700 0137 09       		.uleb128 0x9
+ 701 0138 69020000 		.4byte	.LASF23
+ 702 013c 01       		.byte	0x1
+ 703 013d A5       		.byte	0xa5
+ 704 013e 00000000 		.4byte	.LFB66
+ 705 0142 0C000000 		.4byte	.LFE66-.LFB66
+ 706 0146 01       		.uleb128 0x1
+ 707 0147 9C       		.byte	0x9c
+ 708 0148 0C       		.uleb128 0xc
+ 709 0149 E0020000 		.4byte	.LASF25
+ 710 014d 01       		.byte	0x1
+ 711 014e F2       		.byte	0xf2
+ 712 014f 00000000 		.4byte	.LFB67
+ 713 0153 24000000 		.4byte	.LFE67-.LFB67
+ 714 0157 01       		.uleb128 0x1
+ 715 0158 9C       		.byte	0x9c
+ 716 0159 7A010000 		.4byte	0x17a
+ 717 015d 0B       		.uleb128 0xb
+ 718 015e 4A020000 		.4byte	.LASF26
+ 719 0162 01       		.byte	0x1
+ 720 0163 F2       		.byte	0xf2
+ 721 0164 E5000000 		.4byte	0xe5
+ 722 0168 02       		.uleb128 0x2
+ 723 0169 91       		.byte	0x91
+ 724 016a 6C       		.sleb128 -20
+ 725 016b 0D       		.uleb128 0xd
+ 726 016c D1020000 		.4byte	.LASF27
+ 727 0170 01       		.byte	0x1
+ 728 0171 F4       		.byte	0xf4
+ 729 0172 7A010000 		.4byte	0x17a
+ 730 0176 02       		.uleb128 0x2
+ 731 0177 91       		.byte	0x91
+ 732 0178 74       		.sleb128 -12
+ 733 0179 00       		.byte	0
+ 734 017a 05       		.uleb128 0x5
+ 735 017b 04       		.byte	0x4
+ 736 017c E5000000 		.4byte	0xe5
+ 737 0180 0E       		.uleb128 0xe
+ 738 0181 07020000 		.4byte	.LASF30
+ 739 0185 01       		.byte	0x1
+ 740 0186 0A01     		.2byte	0x10a
+ 741 0188 E5000000 		.4byte	0xe5
+ 742 018c 00000000 		.4byte	.LFB68
+ 743 0190 20000000 		.4byte	.LFE68-.LFB68
+ 744 0194 01       		.uleb128 0x1
+ 745 0195 9C       		.byte	0x9c
+ 746 0196 AA010000 		.4byte	0x1aa
+ 747 019a 0F       		.uleb128 0xf
+ 748 019b D1020000 		.4byte	.LASF27
+ 749 019f 01       		.byte	0x1
+ 750 01a0 0C01     		.2byte	0x10c
+ 751 01a2 7A010000 		.4byte	0x17a
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 22
+
+
+ 752 01a6 02       		.uleb128 0x2
+ 753 01a7 91       		.byte	0x91
+ 754 01a8 74       		.sleb128 -12
+ 755 01a9 00       		.byte	0
+ 756 01aa 10       		.uleb128 0x10
+ 757 01ab 94000000 		.4byte	.LASF28
+ 758 01af 01       		.byte	0x1
+ 759 01b0 2C01     		.2byte	0x12c
+ 760 01b2 00000000 		.4byte	.LFB69
+ 761 01b6 24000000 		.4byte	.LFE69-.LFB69
+ 762 01ba 01       		.uleb128 0x1
+ 763 01bb 9C       		.byte	0x9c
+ 764 01bc D0010000 		.4byte	0x1d0
+ 765 01c0 11       		.uleb128 0x11
+ 766 01c1 97020000 		.4byte	.LASF29
+ 767 01c5 01       		.byte	0x1
+ 768 01c6 2C01     		.2byte	0x12c
+ 769 01c8 9D000000 		.4byte	0x9d
+ 770 01cc 02       		.uleb128 0x2
+ 771 01cd 91       		.byte	0x91
+ 772 01ce 77       		.sleb128 -9
+ 773 01cf 00       		.byte	0
+ 774 01d0 0E       		.uleb128 0xe
+ 775 01d1 03030000 		.4byte	.LASF31
+ 776 01d5 01       		.byte	0x1
+ 777 01d6 4201     		.2byte	0x142
+ 778 01d8 9D000000 		.4byte	0x9d
+ 779 01dc 00000000 		.4byte	.LFB70
+ 780 01e0 20000000 		.4byte	.LFE70-.LFB70
+ 781 01e4 01       		.uleb128 0x1
+ 782 01e5 9C       		.byte	0x9c
+ 783 01e6 FA010000 		.4byte	0x1fa
+ 784 01ea 0F       		.uleb128 0xf
+ 785 01eb 97020000 		.4byte	.LASF29
+ 786 01ef 01       		.byte	0x1
+ 787 01f0 4401     		.2byte	0x144
+ 788 01f2 9D000000 		.4byte	0x9d
+ 789 01f6 02       		.uleb128 0x2
+ 790 01f7 91       		.byte	0x91
+ 791 01f8 77       		.sleb128 -9
+ 792 01f9 00       		.byte	0
+ 793 01fa 12       		.uleb128 0x12
+ 794 01fb 20020000 		.4byte	.LASF32
+ 795 01ff 01       		.byte	0x1
+ 796 0200 5D01     		.2byte	0x15d
+ 797 0202 00000000 		.4byte	.LFB71
+ 798 0206 18000000 		.4byte	.LFE71-.LFB71
+ 799 020a 01       		.uleb128 0x1
+ 800 020b 9C       		.byte	0x9c
+ 801 020c 13       		.uleb128 0x13
+ 802 020d 16010000 		.4byte	.LASF39
+ 803 0211 01       		.byte	0x1
+ 804 0212 7201     		.2byte	0x172
+ 805 0214 9D000000 		.4byte	0x9d
+ 806 0218 00000000 		.4byte	.LFB72
+ 807 021c 24000000 		.4byte	.LFE72-.LFB72
+ 808 0220 01       		.uleb128 0x1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 23
+
+
+ 809 0221 9C       		.byte	0x9c
+ 810 0222 12       		.uleb128 0x12
+ 811 0223 DD000000 		.4byte	.LASF33
+ 812 0227 01       		.byte	0x1
+ 813 0228 8701     		.2byte	0x187
+ 814 022a 00000000 		.4byte	.LFB73
+ 815 022e 18000000 		.4byte	.LFE73-.LFB73
+ 816 0232 01       		.uleb128 0x1
+ 817 0233 9C       		.byte	0x9c
+ 818 0234 12       		.uleb128 0x12
+ 819 0235 D1010000 		.4byte	.LASF34
+ 820 0239 01       		.byte	0x1
+ 821 023a A201     		.2byte	0x1a2
+ 822 023c 00000000 		.4byte	.LFB74
+ 823 0240 18000000 		.4byte	.LFE74-.LFB74
+ 824 0244 01       		.uleb128 0x1
+ 825 0245 9C       		.byte	0x9c
+ 826 0246 12       		.uleb128 0x12
+ 827 0247 EB010000 		.4byte	.LASF35
+ 828 024b 01       		.byte	0x1
+ 829 024c BB01     		.2byte	0x1bb
+ 830 024e 00000000 		.4byte	.LFB75
+ 831 0252 18000000 		.4byte	.LFE75-.LFB75
+ 832 0256 01       		.uleb128 0x1
+ 833 0257 9C       		.byte	0x9c
+ 834 0258 14       		.uleb128 0x14
+ 835 0259 9C010000 		.4byte	.LASF40
+ 836 025d 05       		.byte	0x5
+ 837 025e 1207     		.2byte	0x712
+ 838 0260 64020000 		.4byte	0x264
+ 839 0264 08       		.uleb128 0x8
+ 840 0265 92000000 		.4byte	0x92
+ 841 0269 00       		.byte	0
+ 842              		.section	.debug_abbrev,"",%progbits
+ 843              	.Ldebug_abbrev0:
+ 844 0000 01       		.uleb128 0x1
+ 845 0001 11       		.uleb128 0x11
+ 846 0002 01       		.byte	0x1
+ 847 0003 25       		.uleb128 0x25
+ 848 0004 0E       		.uleb128 0xe
+ 849 0005 13       		.uleb128 0x13
+ 850 0006 0B       		.uleb128 0xb
+ 851 0007 03       		.uleb128 0x3
+ 852 0008 0E       		.uleb128 0xe
+ 853 0009 1B       		.uleb128 0x1b
+ 854 000a 0E       		.uleb128 0xe
+ 855 000b 55       		.uleb128 0x55
+ 856 000c 17       		.uleb128 0x17
+ 857 000d 11       		.uleb128 0x11
+ 858 000e 01       		.uleb128 0x1
+ 859 000f 10       		.uleb128 0x10
+ 860 0010 17       		.uleb128 0x17
+ 861 0011 00       		.byte	0
+ 862 0012 00       		.byte	0
+ 863 0013 02       		.uleb128 0x2
+ 864 0014 24       		.uleb128 0x24
+ 865 0015 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 24
+
+
+ 866 0016 0B       		.uleb128 0xb
+ 867 0017 0B       		.uleb128 0xb
+ 868 0018 3E       		.uleb128 0x3e
+ 869 0019 0B       		.uleb128 0xb
+ 870 001a 03       		.uleb128 0x3
+ 871 001b 08       		.uleb128 0x8
+ 872 001c 00       		.byte	0
+ 873 001d 00       		.byte	0
+ 874 001e 03       		.uleb128 0x3
+ 875 001f 24       		.uleb128 0x24
+ 876 0020 00       		.byte	0
+ 877 0021 0B       		.uleb128 0xb
+ 878 0022 0B       		.uleb128 0xb
+ 879 0023 3E       		.uleb128 0x3e
+ 880 0024 0B       		.uleb128 0xb
+ 881 0025 03       		.uleb128 0x3
+ 882 0026 0E       		.uleb128 0xe
+ 883 0027 00       		.byte	0
+ 884 0028 00       		.byte	0
+ 885 0029 04       		.uleb128 0x4
+ 886 002a 16       		.uleb128 0x16
+ 887 002b 00       		.byte	0
+ 888 002c 03       		.uleb128 0x3
+ 889 002d 0E       		.uleb128 0xe
+ 890 002e 3A       		.uleb128 0x3a
+ 891 002f 0B       		.uleb128 0xb
+ 892 0030 3B       		.uleb128 0x3b
+ 893 0031 0B       		.uleb128 0xb
+ 894 0032 49       		.uleb128 0x49
+ 895 0033 13       		.uleb128 0x13
+ 896 0034 00       		.byte	0
+ 897 0035 00       		.byte	0
+ 898 0036 05       		.uleb128 0x5
+ 899 0037 0F       		.uleb128 0xf
+ 900 0038 00       		.byte	0
+ 901 0039 0B       		.uleb128 0xb
+ 902 003a 0B       		.uleb128 0xb
+ 903 003b 49       		.uleb128 0x49
+ 904 003c 13       		.uleb128 0x13
+ 905 003d 00       		.byte	0
+ 906 003e 00       		.byte	0
+ 907 003f 06       		.uleb128 0x6
+ 908 0040 15       		.uleb128 0x15
+ 909 0041 00       		.byte	0
+ 910 0042 27       		.uleb128 0x27
+ 911 0043 19       		.uleb128 0x19
+ 912 0044 00       		.byte	0
+ 913 0045 00       		.byte	0
+ 914 0046 07       		.uleb128 0x7
+ 915 0047 16       		.uleb128 0x16
+ 916 0048 00       		.byte	0
+ 917 0049 03       		.uleb128 0x3
+ 918 004a 0E       		.uleb128 0xe
+ 919 004b 3A       		.uleb128 0x3a
+ 920 004c 0B       		.uleb128 0xb
+ 921 004d 3B       		.uleb128 0x3b
+ 922 004e 05       		.uleb128 0x5
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 25
+
+
+ 923 004f 49       		.uleb128 0x49
+ 924 0050 13       		.uleb128 0x13
+ 925 0051 00       		.byte	0
+ 926 0052 00       		.byte	0
+ 927 0053 08       		.uleb128 0x8
+ 928 0054 35       		.uleb128 0x35
+ 929 0055 00       		.byte	0
+ 930 0056 49       		.uleb128 0x49
+ 931 0057 13       		.uleb128 0x13
+ 932 0058 00       		.byte	0
+ 933 0059 00       		.byte	0
+ 934 005a 09       		.uleb128 0x9
+ 935 005b 2E       		.uleb128 0x2e
+ 936 005c 00       		.byte	0
+ 937 005d 3F       		.uleb128 0x3f
+ 938 005e 19       		.uleb128 0x19
+ 939 005f 03       		.uleb128 0x3
+ 940 0060 0E       		.uleb128 0xe
+ 941 0061 3A       		.uleb128 0x3a
+ 942 0062 0B       		.uleb128 0xb
+ 943 0063 3B       		.uleb128 0x3b
+ 944 0064 0B       		.uleb128 0xb
+ 945 0065 27       		.uleb128 0x27
+ 946 0066 19       		.uleb128 0x19
+ 947 0067 11       		.uleb128 0x11
+ 948 0068 01       		.uleb128 0x1
+ 949 0069 12       		.uleb128 0x12
+ 950 006a 06       		.uleb128 0x6
+ 951 006b 40       		.uleb128 0x40
+ 952 006c 18       		.uleb128 0x18
+ 953 006d 9642     		.uleb128 0x2116
+ 954 006f 19       		.uleb128 0x19
+ 955 0070 00       		.byte	0
+ 956 0071 00       		.byte	0
+ 957 0072 0A       		.uleb128 0xa
+ 958 0073 2E       		.uleb128 0x2e
+ 959 0074 01       		.byte	0x1
+ 960 0075 3F       		.uleb128 0x3f
+ 961 0076 19       		.uleb128 0x19
+ 962 0077 03       		.uleb128 0x3
+ 963 0078 0E       		.uleb128 0xe
+ 964 0079 3A       		.uleb128 0x3a
+ 965 007a 0B       		.uleb128 0xb
+ 966 007b 3B       		.uleb128 0x3b
+ 967 007c 0B       		.uleb128 0xb
+ 968 007d 27       		.uleb128 0x27
+ 969 007e 19       		.uleb128 0x19
+ 970 007f 11       		.uleb128 0x11
+ 971 0080 01       		.uleb128 0x1
+ 972 0081 12       		.uleb128 0x12
+ 973 0082 06       		.uleb128 0x6
+ 974 0083 40       		.uleb128 0x40
+ 975 0084 18       		.uleb128 0x18
+ 976 0085 9642     		.uleb128 0x2116
+ 977 0087 19       		.uleb128 0x19
+ 978 0088 01       		.uleb128 0x1
+ 979 0089 13       		.uleb128 0x13
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 26
+
+
+ 980 008a 00       		.byte	0
+ 981 008b 00       		.byte	0
+ 982 008c 0B       		.uleb128 0xb
+ 983 008d 05       		.uleb128 0x5
+ 984 008e 00       		.byte	0
+ 985 008f 03       		.uleb128 0x3
+ 986 0090 0E       		.uleb128 0xe
+ 987 0091 3A       		.uleb128 0x3a
+ 988 0092 0B       		.uleb128 0xb
+ 989 0093 3B       		.uleb128 0x3b
+ 990 0094 0B       		.uleb128 0xb
+ 991 0095 49       		.uleb128 0x49
+ 992 0096 13       		.uleb128 0x13
+ 993 0097 02       		.uleb128 0x2
+ 994 0098 18       		.uleb128 0x18
+ 995 0099 00       		.byte	0
+ 996 009a 00       		.byte	0
+ 997 009b 0C       		.uleb128 0xc
+ 998 009c 2E       		.uleb128 0x2e
+ 999 009d 01       		.byte	0x1
+ 1000 009e 3F       		.uleb128 0x3f
+ 1001 009f 19       		.uleb128 0x19
+ 1002 00a0 03       		.uleb128 0x3
+ 1003 00a1 0E       		.uleb128 0xe
+ 1004 00a2 3A       		.uleb128 0x3a
+ 1005 00a3 0B       		.uleb128 0xb
+ 1006 00a4 3B       		.uleb128 0x3b
+ 1007 00a5 0B       		.uleb128 0xb
+ 1008 00a6 27       		.uleb128 0x27
+ 1009 00a7 19       		.uleb128 0x19
+ 1010 00a8 11       		.uleb128 0x11
+ 1011 00a9 01       		.uleb128 0x1
+ 1012 00aa 12       		.uleb128 0x12
+ 1013 00ab 06       		.uleb128 0x6
+ 1014 00ac 40       		.uleb128 0x40
+ 1015 00ad 18       		.uleb128 0x18
+ 1016 00ae 9742     		.uleb128 0x2117
+ 1017 00b0 19       		.uleb128 0x19
+ 1018 00b1 01       		.uleb128 0x1
+ 1019 00b2 13       		.uleb128 0x13
+ 1020 00b3 00       		.byte	0
+ 1021 00b4 00       		.byte	0
+ 1022 00b5 0D       		.uleb128 0xd
+ 1023 00b6 34       		.uleb128 0x34
+ 1024 00b7 00       		.byte	0
+ 1025 00b8 03       		.uleb128 0x3
+ 1026 00b9 0E       		.uleb128 0xe
+ 1027 00ba 3A       		.uleb128 0x3a
+ 1028 00bb 0B       		.uleb128 0xb
+ 1029 00bc 3B       		.uleb128 0x3b
+ 1030 00bd 0B       		.uleb128 0xb
+ 1031 00be 49       		.uleb128 0x49
+ 1032 00bf 13       		.uleb128 0x13
+ 1033 00c0 02       		.uleb128 0x2
+ 1034 00c1 18       		.uleb128 0x18
+ 1035 00c2 00       		.byte	0
+ 1036 00c3 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 27
+
+
+ 1037 00c4 0E       		.uleb128 0xe
+ 1038 00c5 2E       		.uleb128 0x2e
+ 1039 00c6 01       		.byte	0x1
+ 1040 00c7 3F       		.uleb128 0x3f
+ 1041 00c8 19       		.uleb128 0x19
+ 1042 00c9 03       		.uleb128 0x3
+ 1043 00ca 0E       		.uleb128 0xe
+ 1044 00cb 3A       		.uleb128 0x3a
+ 1045 00cc 0B       		.uleb128 0xb
+ 1046 00cd 3B       		.uleb128 0x3b
+ 1047 00ce 05       		.uleb128 0x5
+ 1048 00cf 27       		.uleb128 0x27
+ 1049 00d0 19       		.uleb128 0x19
+ 1050 00d1 49       		.uleb128 0x49
+ 1051 00d2 13       		.uleb128 0x13
+ 1052 00d3 11       		.uleb128 0x11
+ 1053 00d4 01       		.uleb128 0x1
+ 1054 00d5 12       		.uleb128 0x12
+ 1055 00d6 06       		.uleb128 0x6
+ 1056 00d7 40       		.uleb128 0x40
+ 1057 00d8 18       		.uleb128 0x18
+ 1058 00d9 9742     		.uleb128 0x2117
+ 1059 00db 19       		.uleb128 0x19
+ 1060 00dc 01       		.uleb128 0x1
+ 1061 00dd 13       		.uleb128 0x13
+ 1062 00de 00       		.byte	0
+ 1063 00df 00       		.byte	0
+ 1064 00e0 0F       		.uleb128 0xf
+ 1065 00e1 34       		.uleb128 0x34
+ 1066 00e2 00       		.byte	0
+ 1067 00e3 03       		.uleb128 0x3
+ 1068 00e4 0E       		.uleb128 0xe
+ 1069 00e5 3A       		.uleb128 0x3a
+ 1070 00e6 0B       		.uleb128 0xb
+ 1071 00e7 3B       		.uleb128 0x3b
+ 1072 00e8 05       		.uleb128 0x5
+ 1073 00e9 49       		.uleb128 0x49
+ 1074 00ea 13       		.uleb128 0x13
+ 1075 00eb 02       		.uleb128 0x2
+ 1076 00ec 18       		.uleb128 0x18
+ 1077 00ed 00       		.byte	0
+ 1078 00ee 00       		.byte	0
+ 1079 00ef 10       		.uleb128 0x10
+ 1080 00f0 2E       		.uleb128 0x2e
+ 1081 00f1 01       		.byte	0x1
+ 1082 00f2 3F       		.uleb128 0x3f
+ 1083 00f3 19       		.uleb128 0x19
+ 1084 00f4 03       		.uleb128 0x3
+ 1085 00f5 0E       		.uleb128 0xe
+ 1086 00f6 3A       		.uleb128 0x3a
+ 1087 00f7 0B       		.uleb128 0xb
+ 1088 00f8 3B       		.uleb128 0x3b
+ 1089 00f9 05       		.uleb128 0x5
+ 1090 00fa 27       		.uleb128 0x27
+ 1091 00fb 19       		.uleb128 0x19
+ 1092 00fc 11       		.uleb128 0x11
+ 1093 00fd 01       		.uleb128 0x1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 28
+
+
+ 1094 00fe 12       		.uleb128 0x12
+ 1095 00ff 06       		.uleb128 0x6
+ 1096 0100 40       		.uleb128 0x40
+ 1097 0101 18       		.uleb128 0x18
+ 1098 0102 9742     		.uleb128 0x2117
+ 1099 0104 19       		.uleb128 0x19
+ 1100 0105 01       		.uleb128 0x1
+ 1101 0106 13       		.uleb128 0x13
+ 1102 0107 00       		.byte	0
+ 1103 0108 00       		.byte	0
+ 1104 0109 11       		.uleb128 0x11
+ 1105 010a 05       		.uleb128 0x5
+ 1106 010b 00       		.byte	0
+ 1107 010c 03       		.uleb128 0x3
+ 1108 010d 0E       		.uleb128 0xe
+ 1109 010e 3A       		.uleb128 0x3a
+ 1110 010f 0B       		.uleb128 0xb
+ 1111 0110 3B       		.uleb128 0x3b
+ 1112 0111 05       		.uleb128 0x5
+ 1113 0112 49       		.uleb128 0x49
+ 1114 0113 13       		.uleb128 0x13
+ 1115 0114 02       		.uleb128 0x2
+ 1116 0115 18       		.uleb128 0x18
+ 1117 0116 00       		.byte	0
+ 1118 0117 00       		.byte	0
+ 1119 0118 12       		.uleb128 0x12
+ 1120 0119 2E       		.uleb128 0x2e
+ 1121 011a 00       		.byte	0
+ 1122 011b 3F       		.uleb128 0x3f
+ 1123 011c 19       		.uleb128 0x19
+ 1124 011d 03       		.uleb128 0x3
+ 1125 011e 0E       		.uleb128 0xe
+ 1126 011f 3A       		.uleb128 0x3a
+ 1127 0120 0B       		.uleb128 0xb
+ 1128 0121 3B       		.uleb128 0x3b
+ 1129 0122 05       		.uleb128 0x5
+ 1130 0123 27       		.uleb128 0x27
+ 1131 0124 19       		.uleb128 0x19
+ 1132 0125 11       		.uleb128 0x11
+ 1133 0126 01       		.uleb128 0x1
+ 1134 0127 12       		.uleb128 0x12
+ 1135 0128 06       		.uleb128 0x6
+ 1136 0129 40       		.uleb128 0x40
+ 1137 012a 18       		.uleb128 0x18
+ 1138 012b 9742     		.uleb128 0x2117
+ 1139 012d 19       		.uleb128 0x19
+ 1140 012e 00       		.byte	0
+ 1141 012f 00       		.byte	0
+ 1142 0130 13       		.uleb128 0x13
+ 1143 0131 2E       		.uleb128 0x2e
+ 1144 0132 00       		.byte	0
+ 1145 0133 3F       		.uleb128 0x3f
+ 1146 0134 19       		.uleb128 0x19
+ 1147 0135 03       		.uleb128 0x3
+ 1148 0136 0E       		.uleb128 0xe
+ 1149 0137 3A       		.uleb128 0x3a
+ 1150 0138 0B       		.uleb128 0xb
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 29
+
+
+ 1151 0139 3B       		.uleb128 0x3b
+ 1152 013a 05       		.uleb128 0x5
+ 1153 013b 27       		.uleb128 0x27
+ 1154 013c 19       		.uleb128 0x19
+ 1155 013d 49       		.uleb128 0x49
+ 1156 013e 13       		.uleb128 0x13
+ 1157 013f 11       		.uleb128 0x11
+ 1158 0140 01       		.uleb128 0x1
+ 1159 0141 12       		.uleb128 0x12
+ 1160 0142 06       		.uleb128 0x6
+ 1161 0143 40       		.uleb128 0x40
+ 1162 0144 18       		.uleb128 0x18
+ 1163 0145 9742     		.uleb128 0x2117
+ 1164 0147 19       		.uleb128 0x19
+ 1165 0148 00       		.byte	0
+ 1166 0149 00       		.byte	0
+ 1167 014a 14       		.uleb128 0x14
+ 1168 014b 34       		.uleb128 0x34
+ 1169 014c 00       		.byte	0
+ 1170 014d 03       		.uleb128 0x3
+ 1171 014e 0E       		.uleb128 0xe
+ 1172 014f 3A       		.uleb128 0x3a
+ 1173 0150 0B       		.uleb128 0xb
+ 1174 0151 3B       		.uleb128 0x3b
+ 1175 0152 05       		.uleb128 0x5
+ 1176 0153 49       		.uleb128 0x49
+ 1177 0154 13       		.uleb128 0x13
+ 1178 0155 3F       		.uleb128 0x3f
+ 1179 0156 19       		.uleb128 0x19
+ 1180 0157 3C       		.uleb128 0x3c
+ 1181 0158 19       		.uleb128 0x19
+ 1182 0159 00       		.byte	0
+ 1183 015a 00       		.byte	0
+ 1184 015b 00       		.byte	0
+ 1185              		.section	.debug_aranges,"",%progbits
+ 1186 0000 7C000000 		.4byte	0x7c
+ 1187 0004 0200     		.2byte	0x2
+ 1188 0006 00000000 		.4byte	.Ldebug_info0
+ 1189 000a 04       		.byte	0x4
+ 1190 000b 00       		.byte	0
+ 1191 000c 0000     		.2byte	0
+ 1192 000e 0000     		.2byte	0
+ 1193 0010 00000000 		.4byte	.LFB63
+ 1194 0014 20000000 		.4byte	.LFE63-.LFB63
+ 1195 0018 00000000 		.4byte	.LFB64
+ 1196 001c 24000000 		.4byte	.LFE64-.LFB64
+ 1197 0020 00000000 		.4byte	.LFB65
+ 1198 0024 18000000 		.4byte	.LFE65-.LFB65
+ 1199 0028 00000000 		.4byte	.LFB66
+ 1200 002c 0C000000 		.4byte	.LFE66-.LFB66
+ 1201 0030 00000000 		.4byte	.LFB67
+ 1202 0034 24000000 		.4byte	.LFE67-.LFB67
+ 1203 0038 00000000 		.4byte	.LFB68
+ 1204 003c 20000000 		.4byte	.LFE68-.LFB68
+ 1205 0040 00000000 		.4byte	.LFB69
+ 1206 0044 24000000 		.4byte	.LFE69-.LFB69
+ 1207 0048 00000000 		.4byte	.LFB70
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 30
+
+
+ 1208 004c 20000000 		.4byte	.LFE70-.LFB70
+ 1209 0050 00000000 		.4byte	.LFB71
+ 1210 0054 18000000 		.4byte	.LFE71-.LFB71
+ 1211 0058 00000000 		.4byte	.LFB72
+ 1212 005c 24000000 		.4byte	.LFE72-.LFB72
+ 1213 0060 00000000 		.4byte	.LFB73
+ 1214 0064 18000000 		.4byte	.LFE73-.LFB73
+ 1215 0068 00000000 		.4byte	.LFB74
+ 1216 006c 18000000 		.4byte	.LFE74-.LFB74
+ 1217 0070 00000000 		.4byte	.LFB75
+ 1218 0074 18000000 		.4byte	.LFE75-.LFB75
+ 1219 0078 00000000 		.4byte	0
+ 1220 007c 00000000 		.4byte	0
+ 1221              		.section	.debug_ranges,"",%progbits
+ 1222              	.Ldebug_ranges0:
+ 1223 0000 00000000 		.4byte	.LFB63
+ 1224 0004 20000000 		.4byte	.LFE63
+ 1225 0008 00000000 		.4byte	.LFB64
+ 1226 000c 24000000 		.4byte	.LFE64
+ 1227 0010 00000000 		.4byte	.LFB65
+ 1228 0014 18000000 		.4byte	.LFE65
+ 1229 0018 00000000 		.4byte	.LFB66
+ 1230 001c 0C000000 		.4byte	.LFE66
+ 1231 0020 00000000 		.4byte	.LFB67
+ 1232 0024 24000000 		.4byte	.LFE67
+ 1233 0028 00000000 		.4byte	.LFB68
+ 1234 002c 20000000 		.4byte	.LFE68
+ 1235 0030 00000000 		.4byte	.LFB69
+ 1236 0034 24000000 		.4byte	.LFE69
+ 1237 0038 00000000 		.4byte	.LFB70
+ 1238 003c 20000000 		.4byte	.LFE70
+ 1239 0040 00000000 		.4byte	.LFB71
+ 1240 0044 18000000 		.4byte	.LFE71
+ 1241 0048 00000000 		.4byte	.LFB72
+ 1242 004c 24000000 		.4byte	.LFE72
+ 1243 0050 00000000 		.4byte	.LFB73
+ 1244 0054 18000000 		.4byte	.LFE73
+ 1245 0058 00000000 		.4byte	.LFB74
+ 1246 005c 18000000 		.4byte	.LFE74
+ 1247 0060 00000000 		.4byte	.LFB75
+ 1248 0064 18000000 		.4byte	.LFE75
+ 1249 0068 00000000 		.4byte	0
+ 1250 006c 00000000 		.4byte	0
+ 1251              		.section	.debug_line,"",%progbits
+ 1252              	.Ldebug_line0:
+ 1253 0000 64020000 		.section	.debug_str,"MS",%progbits,1
+ 1253      02005601 
+ 1253      00000201 
+ 1253      FB0E0D00 
+ 1253      01010101 
+ 1254              	.LASF19:
+ 1255 0000 72656733 		.ascii	"reg32\000"
+ 1255      3200
+ 1256              	.LASF36:
+ 1257 0006 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1257      43313120 
+ 1257      352E342E 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 31
+
+
+ 1257      31203230 
+ 1257      31363036 
+ 1258 0039 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1258      20726576 
+ 1258      6973696F 
+ 1258      6E203233 
+ 1258      37373135 
+ 1259 006c 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1259      66756E63 
+ 1259      74696F6E 
+ 1259      2D736563 
+ 1259      74696F6E 
+ 1260              	.LASF28:
+ 1261 0094 6973725F 		.ascii	"isr_Timer_10ms_SetPriority\000"
+ 1261      54696D65 
+ 1261      725F3130 
+ 1261      6D735F53 
+ 1261      65745072 
+ 1262              	.LASF12:
+ 1263 00af 5F5F696E 		.ascii	"__int32_t\000"
+ 1263      7433325F 
+ 1263      7400
+ 1264              	.LASF24:
+ 1265 00b9 6973725F 		.ascii	"isr_Timer_10ms_StartEx\000"
+ 1265      54696D65 
+ 1265      725F3130 
+ 1265      6D735F53 
+ 1265      74617274 
+ 1266              	.LASF17:
+ 1267 00d0 646F7562 		.ascii	"double\000"
+ 1267      6C6500
+ 1268              	.LASF16:
+ 1269 00d7 666C6F61 		.ascii	"float\000"
+ 1269      7400
+ 1270              	.LASF33:
+ 1271 00dd 6973725F 		.ascii	"isr_Timer_10ms_Disable\000"
+ 1271      54696D65 
+ 1271      725F3130 
+ 1271      6D735F44 
+ 1271      69736162 
+ 1272              	.LASF22:
+ 1273 00f4 6973725F 		.ascii	"isr_Timer_10ms_Stop\000"
+ 1273      54696D65 
+ 1273      725F3130 
+ 1273      6D735F53 
+ 1273      746F7000 
+ 1274              	.LASF4:
+ 1275 0108 756E7369 		.ascii	"unsigned char\000"
+ 1275      676E6564 
+ 1275      20636861 
+ 1275      7200
+ 1276              	.LASF39:
+ 1277 0116 6973725F 		.ascii	"isr_Timer_10ms_GetState\000"
+ 1277      54696D65 
+ 1277      725F3130 
+ 1277      6D735F47 
+ 1277      65745374 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 32
+
+
+ 1278              	.LASF18:
+ 1279 012e 72656738 		.ascii	"reg8\000"
+ 1279      00
+ 1280              	.LASF8:
+ 1281 0133 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1281      20756E73 
+ 1281      69676E65 
+ 1281      6420696E 
+ 1281      7400
+ 1282              	.LASF6:
+ 1283 0145 73686F72 		.ascii	"short unsigned int\000"
+ 1283      7420756E 
+ 1283      7369676E 
+ 1283      65642069 
+ 1283      6E7400
+ 1284              	.LASF38:
+ 1285 0158 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\firm_F1-TestFixture\\"
+ 1285      73657273 
+ 1285      5C6D6172 
+ 1285      74686E69 
+ 1285      636B5C44 
+ 1286 0187 46312D54 		.ascii	"F1-TestFixture.cydsn\000"
+ 1286      65737446 
+ 1286      69787475 
+ 1286      72652E63 
+ 1286      7964736E 
+ 1287              	.LASF40:
+ 1288 019c 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1288      52784275 
+ 1288      66666572 
+ 1288      00
+ 1289              	.LASF37:
+ 1290 01a9 47656E65 		.ascii	"Generated_Source\\PSoC5\\isr_Timer_10ms.c\000"
+ 1290      72617465 
+ 1290      645F536F 
+ 1290      75726365 
+ 1290      5C50536F 
+ 1291              	.LASF34:
+ 1292 01d1 6973725F 		.ascii	"isr_Timer_10ms_SetPending\000"
+ 1292      54696D65 
+ 1292      725F3130 
+ 1292      6D735F53 
+ 1292      65745065 
+ 1293              	.LASF35:
+ 1294 01eb 6973725F 		.ascii	"isr_Timer_10ms_ClearPending\000"
+ 1294      54696D65 
+ 1294      725F3130 
+ 1294      6D735F43 
+ 1294      6C656172 
+ 1295              	.LASF30:
+ 1296 0207 6973725F 		.ascii	"isr_Timer_10ms_GetVector\000"
+ 1296      54696D65 
+ 1296      725F3130 
+ 1296      6D735F47 
+ 1296      65745665 
+ 1297              	.LASF32:
+ 1298 0220 6973725F 		.ascii	"isr_Timer_10ms_Enable\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 33
+
+
+ 1298      54696D65 
+ 1298      725F3130 
+ 1298      6D735F45 
+ 1298      6E61626C 
+ 1299              	.LASF15:
+ 1300 0236 75696E74 		.ascii	"uint32\000"
+ 1300      333200
+ 1301              	.LASF0:
+ 1302 023d 756E7369 		.ascii	"unsigned int\000"
+ 1302      676E6564 
+ 1302      20696E74 
+ 1302      00
+ 1303              	.LASF26:
+ 1304 024a 61646472 		.ascii	"address\000"
+ 1304      65737300 
+ 1305              	.LASF9:
+ 1306 0252 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1306      206C6F6E 
+ 1306      6720756E 
+ 1306      7369676E 
+ 1306      65642069 
+ 1307              	.LASF23:
+ 1308 0269 6973725F 		.ascii	"isr_Timer_10ms_Interrupt\000"
+ 1308      54696D65 
+ 1308      725F3130 
+ 1308      6D735F49 
+ 1308      6E746572 
+ 1309              	.LASF20:
+ 1310 0282 63796973 		.ascii	"cyisraddress\000"
+ 1310      72616464 
+ 1310      72657373 
+ 1310      00
+ 1311              	.LASF13:
+ 1312 028f 696E7433 		.ascii	"int32_t\000"
+ 1312      325F7400 
+ 1313              	.LASF29:
+ 1314 0297 7072696F 		.ascii	"priority\000"
+ 1314      72697479 
+ 1314      00
+ 1315              	.LASF10:
+ 1316 02a0 73697A65 		.ascii	"sizetype\000"
+ 1316      74797065 
+ 1316      00
+ 1317              	.LASF1:
+ 1318 02a9 6C6F6E67 		.ascii	"long long int\000"
+ 1318      206C6F6E 
+ 1318      6720696E 
+ 1318      7400
+ 1319              	.LASF21:
+ 1320 02b7 6973725F 		.ascii	"isr_Timer_10ms_Start\000"
+ 1320      54696D65 
+ 1320      725F3130 
+ 1320      6D735F53 
+ 1320      74617274 
+ 1321              	.LASF11:
+ 1322 02cc 63686172 		.ascii	"char\000"
+ 1322      00
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccdR3Hud.s 			page 34
+
+
+ 1323              	.LASF27:
+ 1324 02d1 72616D56 		.ascii	"ramVectorTable\000"
+ 1324      6563746F 
+ 1324      72546162 
+ 1324      6C6500
+ 1325              	.LASF25:
+ 1326 02e0 6973725F 		.ascii	"isr_Timer_10ms_SetVector\000"
+ 1326      54696D65 
+ 1326      725F3130 
+ 1326      6D735F53 
+ 1326      65745665 
+ 1327              	.LASF5:
+ 1328 02f9 73686F72 		.ascii	"short int\000"
+ 1328      7420696E 
+ 1328      7400
+ 1329              	.LASF31:
+ 1330 0303 6973725F 		.ascii	"isr_Timer_10ms_GetPriority\000"
+ 1330      54696D65 
+ 1330      725F3130 
+ 1330      6D735F47 
+ 1330      65745072 
+ 1331              	.LASF14:
+ 1332 031e 75696E74 		.ascii	"uint8\000"
+ 1332      3800
+ 1333              	.LASF7:
+ 1334 0324 6C6F6E67 		.ascii	"long int\000"
+ 1334      20696E74 
+ 1334      00
+ 1335              	.LASF2:
+ 1336 032d 6C6F6E67 		.ascii	"long double\000"
+ 1336      20646F75 
+ 1336      626C6500 
+ 1337              	.LASF3:
+ 1338 0339 7369676E 		.ascii	"signed char\000"
+ 1338      65642063 
+ 1338      68617200 
+ 1339              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

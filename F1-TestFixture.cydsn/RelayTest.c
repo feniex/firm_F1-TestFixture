@@ -17,6 +17,8 @@
 #include "UART_460800_Functions.h"
 #include "CD4051BPW_Driver.h"
 
+#define NUMBER_TEST_STEPS   10
+
 #define VOLTAGE_SYSTEM      120             // (Voltage * 10)
 #define TOLERANCE_VOLTAGE   5  
 #define CURRENT_LOAD        9              // (ohms)
@@ -32,11 +34,19 @@ static TxPacket_RelaySiren * pTxPacket_RelaySiren;
 static TxPacket_Relay txPacket_Relay;            
 static TxPacket_Relay * pTxPacket_Relay;
 
+static RxPacket_Siren rxPacket_Siren;
+static RxPacket_Siren * pRxPacket_Siren;  
+
 static RxPacket_Quad txPacket_Quad;          //*** 
 static RxPacket_Quad * pTxPacket_Quad;      //***
 //RxPacket_Quad * getRxPacket_Quad(void);
 
 //------------GLOABAL variables--------------------
+
+//extern uint16 _100ms_flag;
+//uint16 _100ms_flag = 0;
+uint16 isr_count;
+
 static uint16 RTest_20ms_isr_count = 0;
 static uint16 RTest_20ms_isr_EN = 0;
 
@@ -78,18 +88,18 @@ enum TestStep               // *** Need to get muxes setup permanently,
 { 
     INITIALIZE_TEST, 
     SIREN_EN,               // (Implemented - need hardware to test)
-    TEST_OUTPUTS,           // (rx tested) -  TX TESTED - (***needs hardware) - (hardware drivers tested)
-    DATALINK,               // (rx tested *** needs to test 115200)
-    QUAD_PORTS,             // (rx_tested - with 'C' packet, ***need to test for 'Y' and 'L') - (tx tested)
-    UART_SIREN,             // (rx tested - *** (IMPLEMENT NEXT)
-    INPUTS,                 // RX_TESTED -  ***needs tx, ***needs hardware
-    VBATT,                  // RX_TESTED - COMPLETE
-    BLOCK_CURRENTS,         // RX_TESTED - TX TESTED - COMPLETE
-    GPS,                    // *** needs 9600, needs hardware drivers
+    TEST_OUTPUTS,           //                      - 230400 TX TESTED      - (needs hardware)
+    DATALINK,               // (***115200 rx tested)
+    QUAD_PORTS,             // (460800 rx_tested, with 'C' packet, need to test for 'Y' and 'L') - (460800 tx tested)
+    UART_SIREN,             // (***230400 rx tested)   (230400 rx tested???)   - 
+    INPUTS,                 // 230400 RX_TESTED     - 230400 TX TESTED      - (needs hardware)
+    VBATT,                  // 230400 RX_TESTED                             - COMPLETE
+    BLOCK_CURRENTS,         // 230400 RX_TESTED     - 230400 TX TESTED      - COMPLETE
+    GPS,                    // (230400 rx tested)
     FAIL
 };
 
-static uint8 RelayTestStatus[10];
+static uint8 RelayTestStatus[NUMBER_TEST_STEPS];
 
 static uint8 TestState = INITIALIZE_TEST;
 
@@ -105,7 +115,15 @@ void RelayTest(void)
                
         case INITIALIZE_TEST:
         
-            CyDelay(1000);                      // Pause before next test
+            isr_count = 0;
+        
+//            if(_100ms_flag == 1)
+//                LED_EN_Write(0);
+//        
+//            else if(_100ms_flag == 0)
+//                LED_EN_Write(0);
+                
+            //CyDelay(1000);                      // Pause before next test
         
             for (uint8 i=0;i<10;i++)            // Reset Status of aall test steps to 0
                 RelayTestStatus[i] = '_';
@@ -140,8 +158,12 @@ void RelayTest(void)
             // RTest_HSide7_Write(0);
             // RTest_HSide8_Write(0);
             
-            TestState = BLOCK_CURRENTS;  
-            //TestState = SIREN_EN;        
+            TestState = SIREN_EN; 
+            //TestState = QUAD_PORTS;
+            //TestState = UART_SIREN;
+            //TestState = INPUTS;  
+            //TestState = BLOCK_CURRENTS;  
+                   
         break;
              
         case SIREN_EN:
@@ -217,7 +239,8 @@ void RelayTest(void)
             
             if(RelayTestStatus[TestState] != 'F')                                   // If not failed, then pass
                 RelayTestStatus[TestState] = 'P';
-                   
+                  
+            //TestState = QUAD_PORTS;
             TestState = UART_SIREN;        
         break;  
                 
@@ -236,6 +259,7 @@ void RelayTest(void)
             if(RelayTestStatus[TestState] != 'F')                                   // If not failed, then pass
                 RelayTestStatus[TestState] = 'P';
                 
+            //TestState = INITIALIZE_TEST;  
             TestState = INPUTS;                
         break;  
               
@@ -294,8 +318,8 @@ void RelayTest(void)
             if(RelayTestStatus[TestState] != 'F')       // If not failed, then pass
                 RelayTestStatus[TestState] = 'P';
                 
-            TestState = INITIALIZE_TEST;
-            //TestState = GPS;  
+            //TestState = INITIALIZE_TEST;
+            TestState = GPS;  
         break; 
     //---------------------------------------------------------------------------------------------------           
         case GPS:         
@@ -333,7 +357,7 @@ void RelayTest(void)
 uint8 RTest_Test_Outputs(void)
 {
 
-    DEMUX_CTRL_230400_Write(RTEST_CONT);                // Tx - Select the demux channel
+    //DEMUX_CTRL_230400_Write(RTEST_CONT);                // Tx - Select the demux channel
     pTxPacket_RelaySiren = getTxPacket_RelaySiren();              // Tx - Get pointers to packet   
     
     pTxPacket_RelaySiren->Payload.Outputs_1to8 = 0xFF;       // Turn on all outputs
@@ -397,16 +421,16 @@ uint8 RTest_Test_DataLink(void)
 *********************************************************************************************/
 uint8 RTest_Test_QuadPorts(void)
 {
+    //*** Next Steps
+    //  1 - Place new micro and get rev02 siren up and running
+    //  2 - Setup hardware to read in RS-485 from quad port 1 on the relay, and send quad data through UART to relay
+    //  3 - Setup relay to receive UART quad data through correct channel
+    
+    
+    
     //DEMUX_CTRL_460800_Write(RTEST_QUAD_TX);             // Tx - Select Quad_Tx demux channel
     
-    // Need to stop sending other 460800 packets
-    // Need to chnge rate of sending - which is ????
-    
-    //pTxPacket_Quad = getTxPacket_Quad();              // Tx - Get pointers to packet
-    //pTxPacket_Quad->Payload.Arrow_Module1 = 0;
-    
-    
-    // Select the mux channel to test - need to do all of them sequentially
+    //*** Select the mux channel to test - need to do all of them sequentially
     for(uint8 muxchannel = 0; muxchannel < 8; muxchannel++)
     {
         //MUX_CTRL_460800_Write(muxchannel);
@@ -414,20 +438,42 @@ uint8 RTest_Test_QuadPorts(void)
         // verify that channel
     }
     
-    
     return( VerifyPacket_460800(QTEST_QUAD) );
 }
 
+//*** This needs some work
 /* 230400bps ********************************************************************************
-*  Send 'H' packet   (siren to relay)
-*  Read 'D' packet   (relay to controller)   - verify successful packet reception
+*  ***Send 'H' packet   (siren to relay)
+*  ***Read 'D' packet   (relay to controller)   - verify successful packet reception
 *  Return: Pass/Fail
 *********************************************************************************************/
-
 uint8 RTest_Test_UART_Siren(void)
 {
-//    MUX_CTRL_230400_Write(RTEST_CONT);                  // Rx - Select the mux channel
+// We need to send a Siren packet (through relay to controller) - ***passes through the micro
+// Then check the packet going from the relay to the controller    
+   
+    DEMUX_CTRL_230400_Write(RTEST_SIREN);                  // Rx - Select the demux channel
+    
+//    pTxPacket_RelaySiren = getTxPacket_RelaySiren();        // Tx - Get pointers to packet
+//        pTxPacket_RelaySiren->Payload.Siren1Tone = 0;       // Load the packet with data
+//        pTxPacket_RelaySiren->Payload.Siren2Tone = 0;
+//        pTxPacket_RelaySiren->Payload.SirenEnable = 0;
+    
+    MUX_CTRL_230400_Write(RTEST_CONT);                  // Rx - Select the mux channel
+    
+//        pRxPacket_Siren = getRxPacket_Siren();        // Tx - Get pointers to packet
+//        pRxPacket_Siren
         
+    //while( !VerifyPacket_230400(RTEST_SIREN) )          // Wait for the packet to be verified
+    {}
+          
+      
+//----------------------------------------------------------------------------------------------
+    
+// ***We need to detect a packet going (from the relay to the siren)
+// Send a 'S' packet (from controller to relay/siren)
+// Read and verify 'S' packets (from relay to siren)
+    
     //DEMUX_CTRL_230400_Write(RTEST_CONT);                // Tx - Select the demux channel
     pTxPacket_Relay = getTxPacket_Relay();              // Tx - Get pointers to packet
     
@@ -438,7 +484,9 @@ uint8 RTest_Test_UART_Siren(void)
     pTxPacket_Relay->Payload.Speaker2_Overcurrent = 1;
     
     //***
-    return( VerifyPacket_230400(RTEST_CONT) );          // Rx - When packet has been verified, return 'pass'
+    //return( VerifyPacket_230400(RTEST_CONT) );          // Rx - When packet has been verified, return 'pass'
+
+    return(0);
 }
 
 
@@ -450,7 +498,7 @@ uint8 RTest_Test_UART_Siren(void)
 uint8 RTest_Test_Inputs(void)
 {
     
-//    MUX_CTRL_230400_Write(RTEST_CONT);                  // Rx - Select the mux channel
+    //MUX_CTRL_230400_Write(RTEST_CONT);                  // Rx - Select the mux channel
     pRxPacket_Relay = getRxPacket_Relay();              // Rx - Get pointers to packet
     
     DEMUX_CTRL_230400_Write(RTEST_CONT);                // Tx - Select the demux channel
@@ -467,10 +515,14 @@ uint8 RTest_Test_Inputs(void)
     
     pTxPacket_RelaySiren->Payload.HiLoInputLogic = 0x00;     // Set the input logic to be all low
     
+    //while(1);
+    
 //    if(pRxPacket_Relay->Payload.RelayInputs != 0x00)    // Verify all inputs are deactivated, if not then fail
 //        return(0);
     
     pTxPacket_RelaySiren->Payload.HiLoInputLogic = 0xFF;     // Set the input logic to be all hi
+    
+    
     
 //    if(pRxPacket_Relay->Payload.RelayInputs != 0x00)    // Verify all inputs are deactivated, if not then fail
 //        return(0);
@@ -524,7 +576,7 @@ uint8 RTest_Test_BlockCurrents(void)
 //    MUX_CTRL_230400_Write(RTEST_CONT);                  // Rx - Select the mux channel 
     pRxPacket_Relay = getRxPacket_Relay();              // Rx - Get pointers to packet
     
-    DEMUX_CTRL_230400_Write(RTEST_CONT);                // Tx - Select the demux channel
+    //DEMUX_CTRL_230400_Write(RTEST_CONT);                // Tx - Select the demux channel
     pTxPacket_RelaySiren = getTxPacket_RelaySiren();              // Tx - Get pointers to packet
     
     for(uint8 i=0;i<4;i++)                              // Save pass/fail for each block channel
@@ -540,14 +592,19 @@ uint8 RTest_Test_BlockCurrents(void)
 
 }
 
+/* 230400bps ****************************************************
+*   (wait for the GPS hardware to acquire a signal)
+*   Read the GPS packet - search for the GPS formated data
+*****************************************************************/
 uint8 RTest_Test_GPS(void)
 {
     
-//    // 9600bps - Read packet coming in
-//    // Wait to see the GPS formated data
+    static uint8 targetstring[6] = {'$','G','P','M','R','C'};
+
+    //uint8 findpacket(uint8 dataByte) - this should pass the target string
+    //processByteReceivedHandler_230400(&targetstring);
+
     
-    // 230400bps - Search for the GPS packet
-    uint8 targetstring[6] = {'$','G','P','M','R','C'};
     
     return(0);
 }
@@ -566,12 +623,12 @@ TxPacket_Relay * getTxPacket_Relay()
     return pTxPacket_Relay;
 }
 
-//TxPacket_Siren * getTxPacket_Siren()
-//{
-//    pTxPacket_Siren = &txPacket_Siren;
-//    
-//    return pTxPacket_Siren;
-//}
+RxPacket_Siren * getRxPacket_Siren()
+{
+    pRxPacket_Siren = &rxPacket_Siren;
+    
+    return pRxPacket_Siren;
+}
 
 TxPacket_RelaySiren * getTxPacket_RelaySiren()
 {
@@ -587,21 +644,23 @@ TxPacket_RelaySiren * getTxPacket_RelaySiren()
 //    return pTxPacket_Quad;
 //}
 
-void sendDiagPacket(void)
+void RTest_sendDiagPacket(void)
 {
 
-//    static uint8 RelayTestStatus_display[20];
-//    
-//    for(uint8 i=0;i<10;i++)
-//    {
-//        RelayTestStatus_display[i*2] = RelayTestStatus[i];
-//        RelayTestStatus_display[(i*2) + 1] = ' ';
-//    }
-//    
-//    UART_115200_PutArray(RelayTestStatus_display,20);
-//    
-//    UART_115200_PutChar('\r');
-//    UART_115200_PutChar('\n');
+    static uint8 RelayTestStatus_display[ (NUMBER_TEST_STEPS*2) ];
+    
+    for(uint8 i=0;i<NUMBER_TEST_STEPS;i++)
+    {
+        RelayTestStatus_display[i*2] = RelayTestStatus[i];
+        RelayTestStatus_display[(i*2) + 1] = ' ';
+    }
+    
+    DEMUX_CTRL_230400_Write(RTEST_SIREN);
+    
+    UART_230400_PutArray(RelayTestStatus_display, (NUMBER_TEST_STEPS*2) );
+    
+    UART_230400_PutChar('\r');
+    UART_230400_PutChar('\n');
 
     //LED_EN_Write(1);
     
@@ -654,6 +713,16 @@ uint8 RTest_BlockCurrent(uint8 block)
         
 }
 
+void RTest_10ms_isr(void)
+{
+
+    if(TestState == QUAD_PORTS)    
+        sendPacketToRelay_Quad();
+
+    return;
+    
+}
+
 void RTest_20ms_isr(void)
 {
     
@@ -670,6 +739,29 @@ void RTest_20ms_isr(void)
     
     if(RTest_20ms_isr_count > 65000)
         RTest_20ms_isr_count = 0;
+    
+    return;
+    
+}
+
+void RTest_50ms_isr(void)
+{
+    
+    //sendPacketToRelaySiren();
+    
+    //if(isr_count > 5)
+        
+//    if( (isr_count % 5) == 0 )
+//    {
+        if( (TestState == TEST_OUTPUTS) ||
+            (TestState == DATALINK) ||
+            (TestState == UART_SIREN) ||
+            (TestState == INPUTS) ||
+            (TestState == BLOCK_CURRENTS) )
+        {      
+            //sendPacketToRelaySiren();
+        }
+//    }
     
     return;
     
