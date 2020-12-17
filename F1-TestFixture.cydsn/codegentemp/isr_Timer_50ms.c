@@ -28,8 +28,15 @@
 ********************************************************************************/
 /* `#START isr_Timer_50ms_intc` */
     
+    #include "CommonVariables.h"
     //#include "UART_230400_Functions.h"
+    #include "ControllerTest.h"
     #include "RelayTest.h"
+     
+    //uint8 SelectedTest;
+    //struct structTestInfo CurrentTest;
+    
+    StructTestInfo CurrentTest;
 
 /* `#END` */
 
@@ -169,7 +176,23 @@ CY_ISR(isr_Timer_50ms_Interrupt)
     /*  Place your Interrupt code here. */
     /* `#START isr_Timer_50ms_Interrupt` */
     
-    RTest_50ms_isr();
+    
+    
+//    if(CurrentTest.SelectedTest == 0)
+//        CTest_sendDiagPacket();
+//    else if(CurrentTest.SelectedTest == 1)
+//        RTest_sendDiagPacket();
+//    else if(CurrentTest.SelectedTest == 2)
+//        STest_sendDiagPacket();
+        
+    if(CurrentTest.SelectedTest == 0)
+        CTest_50ms_isr();
+    else if(CurrentTest.SelectedTest == 1)
+        RTest_50ms_isr();
+    else if(CurrentTest.SelectedTest == 2)
+        STest_50ms_isr();
+    
+    //RTest_50ms_isr();
 
     /* `#END` */
 }

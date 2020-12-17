@@ -14,7 +14,9 @@
 #include "ControllerTest.h"
 #include "UART_230400_Functions.h"
 
-#define NUMBER_TEST_STEPS 8
+#define TIMEOUT_FAIL        50          // Number of 20msec counts before failure timeout
+
+
 //#define
 
 static RxPacket_Controller rxPacket_Controller;            
@@ -25,6 +27,9 @@ static TxPacket_Controller * pTxPacket_Controller;
 static uint8 testvalue = 0;
 static uint16 testvaluearray[200];
 static uint8 testindex = 0;
+
+static uint16 CTest_20ms_isr_count = 0;         // Test step timeout variables
+static uint16 CTest_20ms_isr_EN = 0;
 
 enum MUX_460800_CHANNEL
 { 
@@ -40,7 +45,7 @@ enum DEMUX_460800_CHANNEL
     STEST_AUDIO_TX,
 };
 
-enum MUX_230400_CHANNEL              
+enum MUX_DEMUX_230400_CHANNEL              
 { 
     CTEST_RELAY, 
     RTEST_CONT,
@@ -49,6 +54,7 @@ enum MUX_230400_CHANNEL
 };
 
 // --------------Test steps---------------
+#define NUMBER_TEST_STEPS       8
 enum TestStep               // *** Need to get muxes setup permanently, 
 { 
     INITIALIZE_TEST, 
@@ -59,7 +65,7 @@ enum TestStep               // *** Need to get muxes setup permanently,
     AUDIO_STREAM,             // (460800 rx_tested, with 'C' packet, need to test for 'Y' and 'L') - (460800 tx tested)
     LEDS_RGB,             // (***230400 rx tested)   (230400 rx tested???)   - 
     PUSHBUTTONS,                 // 230400 RX_TESTED     - 230400 TX TESTED      - (needs hardware)
-    //AUDIO_CITCUITRY???,     //                          - COMPLETE
+    //AUDIO_CIRCUITRY???,     //                          - COMPLETE
     FAIL
 };
 
@@ -72,7 +78,7 @@ static uint8 TestState = INITIALIZE_TEST;
 
 
 
-void ControllerTest(void)
+uint8 ControllerTest(void)
 {
     
     switch(TestState)
@@ -206,7 +212,7 @@ void ControllerTest(void)
 
     }
     
-    return;
+    return(0);
 }
 
 
@@ -307,6 +313,22 @@ void CTest_sendDiagPacket(void)
 void CTest_20ms_isr(void)
 {
     
+    CTest_20ms_isr_count++;
+    if(CTest_20ms_isr_count > TIMEOUT_FAIL)
+    {
+        CTest_20ms_isr_count = 0;
+        
+        if(CTest_20ms_isr_EN == 1)
+            CTestStatus[TestState] = 'F';
+            
+        return;
+    }
+    
+    if(CTest_20ms_isr_count > 65000)
+        CTest_20ms_isr_count = 0;
+    
+    return;
+    
     
     
 }
@@ -314,6 +336,18 @@ void CTest_20ms_isr(void)
 void CTest_50ms_isr(void)
 {
     
+    CTest_sendDiagPacket();
+
+//        if( (TestState == TEST_OUTPUTS) ||
+//            (TestState == DATALINK) ||
+//            (TestState == UART_SIREN) ||
+//            (TestState == INPUTS) ||
+//            (TestState == BLOCK_CURRENTS) )
+//        {      
+//            //sendPacketToRelaySiren();
+//        }
+    
+    return;    
     
 }
 

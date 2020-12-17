@@ -15,7 +15,7 @@
 //extern uint16 _100ms_flag;
 extern uint16 isr_count;
 
-void RelayTest(void);
+uint8 RelayTest(void);
 
 uint8 RTest_Test_Outputs(void);
 uint8 RTest_Test_DataLink(void);

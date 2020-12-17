@@ -11,7 +11,7 @@
 */
 #include <project.h>
 
-void ControllerTest(void);
+uint8 ControllerTest(void);
 
 uint8 CTest_VerifyPacket_QUAD(void);
 

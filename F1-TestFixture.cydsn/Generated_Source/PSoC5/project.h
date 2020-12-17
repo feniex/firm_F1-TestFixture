@@ -43,6 +43,8 @@
 #include "DEMUX_CTRL_460800.h"
 #include "Timer_50ms.h"
 #include "isr_Timer_50ms.h"
+#include "PB_NextAction_aliases.h"
+#include "PB_NextAction.h"
 #include "UART_230400_IntClock.h"
 #include "UART_460800_IntClock.h"
 #include "core_cm3_psoc5.h"

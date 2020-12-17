@@ -29,8 +29,10 @@
 /* `#START isr_Timer_20ms_intc` */
     
 //    //#include "ControllerTest.h"
-//    #include "UART_230400_Functions.h"
-//    #include "RelayTest.h"
+    #include "UART_230400_Functions.h"
+    #include "ControllerTest.h"
+    #include "RelayTest.h"
+    #include "SirenTest.h"
     
        // extern uint16 _100ms_flag;
 
@@ -171,16 +173,14 @@ CY_ISR(isr_Timer_20ms_Interrupt)
 
     /*  Place your Interrupt code here. */
     /* `#START isr_Timer_20ms_Interrupt` */
-
-//    static uint8 isr_count = 0;
-//    extern uint16 _100ms_flag;
-//        
-//        //sendDiagPacket();
-//        
-//        //CTest_20ms_isr();
-//        RTest_20ms_isr();
-//        //STest_20ms_isr();
-//        
+        
+        CTest_20ms_isr();
+        RTest_20ms_isr();
+        STest_20ms_isr();
+        
+        if( PB_NextAction_Read() )
+            STest_isr_PB();
+        
 //       isr_count++;
 //        if(isr_count > 5)
 //        {
@@ -188,9 +188,8 @@ CY_ISR(isr_Timer_20ms_Interrupt)
 ////            sendPacketToRelaySiren();
 //            isr_count = 0;
 //        }
-//        
+     
 //            //sendPacketToRelay_Quad();   // 460800 - TX
-//    
 //    //sendPacketToRelaySiren();   // 230400 - TX
 
     /* `#END` */

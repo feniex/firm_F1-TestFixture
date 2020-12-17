@@ -224,12 +224,29 @@ typedef union rxPacket_RelaySiren
         }Payload;
     }TxPacket_RelaySiren;
     
-    //RTest Tx to Relay (from Siren) - 'H' packet
-    typedef union txPacket_Relay                                       
+//    //RTest/STest Tx to Relay (from Siren) - 'H' packet
+//    typedef union txPacket_Relay                                       
+//    {
+//        uint8 bytes[5];    
+//    
+//        struct txData_Siren
+//        {
+//            
+//            uint8 SirenFirm_0;
+//            uint8 SirenFirm_1;
+//            uint8 SirenFirm_2;
+//            uint8 Speaker1_Overcurrent;
+//            uint8 Speaker2_Overcurrent;
+//
+//        }Payload;
+//    }TxPacket_Relay;
+    
+    //RTest/STest Tx to Relay (from Siren) - 'H' packet
+    typedef union packet_H                                      
     {
         uint8 bytes[5];    
     
-        struct txData_Siren
+        struct Data_H
         {
             
             uint8 SirenFirm_0;
@@ -239,7 +256,7 @@ typedef union rxPacket_RelaySiren
             uint8 Speaker2_Overcurrent;
 
         }Payload;
-    }TxPacket_Relay;
+    }Packet_H;
     
     //RTest Rx packet from Relay(to Siren) - 'S' packet
     typedef union rxPacket_Siren                                     
@@ -280,18 +297,24 @@ uint8 VerifyPacket_230400(uint8 PacketType);
 
 uint8 findpacket(uint8 dataByte);
 
+void sendPacket_SirenToRelay(void);
+void sendPacket_RelayToSiren(void);
+
 //void CTest_SendIgnitionState(uint8 ignition_state);
 
 RxPacket_Controller * getRxPacket_Controller(void);
 TxPacket_Controller * getTxPacket_Controller(void);
 
-RxPacket_RelaySiren * getRxPacket_Relay(void);
+Packet_H * getTxPacket_H(void);
+Packet_H * getRxPacket_H(void);
+
 TxPacket_RelaySiren * getTxPacket_RelaySiren(void);
+RxPacket_RelaySiren * getRxPacket_Relay(void);
 
 
-TxPacket_Relay * getTxPacket_Relay(void);
+//TxPacket_Relay * getTxPacket_Relay(void);
 
-RxPacket_Siren * getRxPacket_Siren(void);
+//RxPacket_Siren * getRxPacket_Siren(void);
 
 // -----------------------------
 //enum MUX_230400_CHANNEL              

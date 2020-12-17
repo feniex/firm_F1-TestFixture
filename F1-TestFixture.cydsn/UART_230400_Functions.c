@@ -60,7 +60,7 @@ static Packet PacketList[PACKET_TYPE_COUNT] =
 {
     {'~', 'P', 8, '\r', '\n'},          // CTest - RelayPacket(from Controller)
     {'~', 'D', 15, '\r', '\n'},         // RTest - RelayPacket(to Controller)
-    {'~', 'H', 3, '\r', '\n'},          // RTest - RelayPacket(from Siren)
+    {'~', 'H', 5, '\r', '\n'},          // RTest - RelayPacket(from Siren)
     {'~', 'S', 3, '\r', '\n'},          // STest - SirenPacket(from Relay)
 };
 
@@ -81,7 +81,12 @@ static RxPacket_Controller * pRxPacket_Controller;
 static RxPacket_RelaySiren rxPacket_Relay;            
 static RxPacket_RelaySiren * pRxPacket_Relay;  
 
-static TxPacket_Relay txPacket_Relay;            
+static Packet_H rxPacket_H; 
+static Packet_H * pRxPacket_H;
+
+static Packet_H txPacket_H; 
+static Packet_H * pTxPacket_H;
+
 static TxPacket_Controller * pTxPacket_Controller; 
 
 
@@ -238,9 +243,17 @@ static void detectPacket(uint8 dataByte)
                    packetsuccess[RTEST_CONTROLLER]++;   
                 }
                 else if(currentType == RTEST_SIREN)
-                   packetsuccess[RTEST_SIREN]++;
-                else if(currentType == STEST_RELAY)
-                   packetsuccess[STEST_RELAY]++;
+                {
+                    pRxPacket_H = getRxPacket_H();
+                    memcpy(&pRxPacket_H->bytes[0], &packet[2], PacketList[RTEST_SIREN].PAYLOAD_SIZE);
+                    packetsuccess[RTEST_SIREN]++;
+                }
+                else if(currentType == STEST_RELAY)        
+                {  
+                    pRxPacket_H = getRxPacket_H();
+                    memcpy(&pRxPacket_H->bytes[0], &packet[2], PacketList[STEST_RELAY].PAYLOAD_SIZE);
+                    packetsuccess[STEST_RELAY]++;
+                }
 
 
 //                if(packetsuccess[0] > 1000)
@@ -267,42 +280,7 @@ static void detectPacket(uint8 dataByte)
     }
 }
 
-void sendPacketToRelaySiren(void)                   //*** This part needs some work
-{
-    static uint16 iterator = 0;
-//    static uint8 checkSumRelay = 0;
-//    static uint8 checkSumRelayIterator = 0;
-//    static uint8 toggleSend = 0;
-    
-//    static TxPacket_Controller txPacket_Controller;            
-//    static TxPacket_Controller * pTxPacket_Controller;
-//    
-//    pRxPacket_Controller = getRxPacket_Controller();
-    
-    static TxPacket_RelaySiren txPacket_RelaySiren;            
-    static TxPacket_RelaySiren * pTxPacket_RelaySiren;
-    
-    pTxPacket_RelaySiren = getTxPacket_RelaySiren();              // Tx - Get pointers to packet 
-    
-//    checkSumRelay = 0;
-//    for(checkSumRelayIterator = 0; checkSumRelayIterator<PacketList[CTEST_RELAY].PAYLOAD_SIZE; checkSumRelayIterator++)     // Calculate and load checksum
-//    {
-//        checkSumRelay ^= pTxPacket_Controller->bytes[checkSumRelayIterator];
-//    }
-    
-        // Specific code for Controller to Relay/Siren packet 
-        UART_230400_WriteTxData(0x7E);
-        UART_230400_WriteTxData('I');
-        for(iterator = 0; iterator<79; iterator++)              // Send entire payload every other send
-        {
-            UART_230400_WriteTxData(pTxPacket_RelaySiren->bytes[iterator]);
-        }
-//       
-//        UART_230400_WriteTxData(checkSumRelay);
-        UART_230400_WriteTxData(0x0D);
-        UART_230400_WriteTxData(0x0A);
 
-}
 
 
 void ResetPacketSuccess(void)           //*** This can be improved
@@ -357,6 +335,102 @@ uint8 findpacket(uint8 dataByte)
     
     return(0);
         
+}
+
+//-----------------------------------TX FUNCTIONS----------------------------------------------
+void sendPacketToRelaySiren(void)                   //*** This part needs some work
+{
+    static uint16 iterator = 0;
+//    static uint8 checkSumRelay = 0;
+//    static uint8 checkSumRelayIterator = 0;
+//    static uint8 toggleSend = 0;
+    
+//    static TxPacket_Controller txPacket_Controller;            
+//    static TxPacket_Controller * pTxPacket_Controller;
+//    
+//    pRxPacket_Controller = getRxPacket_Controller();
+    
+    static TxPacket_RelaySiren txPacket_RelaySiren;            
+    static TxPacket_RelaySiren * pTxPacket_RelaySiren;
+    
+    pTxPacket_RelaySiren = getTxPacket_RelaySiren();              // Tx - Get pointers to packet 
+    
+//    checkSumRelay = 0;
+//    for(checkSumRelayIterator = 0; checkSumRelayIterator<PacketList[CTEST_RELAY].PAYLOAD_SIZE; checkSumRelayIterator++)     // Calculate and load checksum
+//    {
+//        checkSumRelay ^= pTxPacket_Controller->bytes[checkSumRelayIterator];
+//    }
+    
+        // Specific code for Controller to Relay/Siren packet 
+        UART_230400_WriteTxData(0x7E);
+        UART_230400_WriteTxData('I');
+        for(iterator = 0; iterator<79; iterator++)              // Send entire payload every other send
+        {
+            UART_230400_WriteTxData(pTxPacket_RelaySiren->bytes[iterator]);
+        }
+//       
+//        UART_230400_WriteTxData(checkSumRelay);
+        UART_230400_WriteTxData(0x0D);
+        UART_230400_WriteTxData(0x0A);
+
+}
+
+void sendPacket_SirenToRelay(void)               
+{
+    static uint16 iterator = 0;
+    
+    static TxPacket_RelaySiren txPacket_RelaySiren;            
+    static TxPacket_RelaySiren * pTxPacket_RelaySiren;
+    
+    pTxPacket_H = getTxPacket_H();
+    
+    pTxPacket_H->Payload.SirenFirm_0 = 1;
+    pTxPacket_H->Payload.SirenFirm_1 = 1;
+    pTxPacket_H->Payload.SirenFirm_2 = 1;
+    pTxPacket_H->Payload.Speaker1_Overcurrent = 1;
+    pTxPacket_H->Payload.Speaker2_Overcurrent = 1;
+
+//    // Specific code for Controller to Relay/Siren packet 
+    UART_230400_WriteTxData(0x7E);
+    UART_230400_WriteTxData('H');
+    for(iterator = 0; iterator<5; iterator++)             
+    {
+        UART_230400_WriteTxData(pTxPacket_H->bytes[iterator]);
+    }
+    UART_230400_WriteTxData(0x0D);
+    UART_230400_WriteTxData(0x0A);
+        
+      return;  
+
+}
+
+void sendPacket_RelayToSiren(void)               
+{
+    static uint16 iterator = 0;
+    
+//    static TxPacket_RelaySiren txPacket_RelaySiren;            
+//    static TxPacket_RelaySiren * pTxPacket_RelaySiren;
+//    
+//    pTxPacket_H = getTxPacket_H();
+//    
+//    pTxPacket_H->Payload.SirenFirm_0 = 1;
+//    pTxPacket_H->Payload.SirenFirm_1 = 1;
+//    pTxPacket_H->Payload.SirenFirm_2 = 1;
+//    pTxPacket_H->Payload.Speaker1_Overcurrent = 1;
+//    pTxPacket_H->Payload.Speaker2_Overcurrent = 1;
+//
+////    // Specific code for Controller to Relay/Siren packet 
+//    UART_230400_WriteTxData(0x7E);
+//    UART_230400_WriteTxData('H');
+//    for(iterator = 0; iterator<5; iterator++)             
+//    {
+//        UART_230400_WriteTxData(pTxPacket_H->bytes[iterator]);
+//    }
+//    UART_230400_WriteTxData(0x0D);
+//    UART_230400_WriteTxData(0x0A);
+        
+      return;  
+
 }
 
 

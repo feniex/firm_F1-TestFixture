@@ -23,15 +23,17 @@
 
 /**********PREPROCESSOR DIRECTIVES**********/
 #include <project.h>
+#include "CommonVariables.h"
 
-#include "UART_230400.h"
+//#include "UART_230400.h"
 #include "ControllerTest.h"
 #include "RelayTest.h"
 #include "SirenTest.h"
 
-#include "isr_Timer_Quick.h"
+//#include "isr_Timer_Quick.h"
 
 //#define TIMEOUT 100
+#define INITIALIZE_TEST     0;
 
 
 
@@ -48,7 +50,18 @@ enum DataType
 /**********DATA STRUCTURES**********/
 
 /**********GLOBAL VARIABLES**********/
-static uint8 SelectedTest = 0;
+//extern uint8 SelectedTest;
+//extern struct structTestInfo
+//struct structTestInfo
+//{
+//    uint8 SelectedTest;
+//    uint8 TestStep;
+//    uint8 Failures;
+//}Test;
+//
+//typedef struct structTestInfo StructTestInfo;
+//
+//extern StructTestInfo CurrentTest;
 
 /**********FUNCTION PROTOTYPES**********/
 static void initializePeripherals(void);
@@ -64,30 +77,40 @@ void ProcessFailure(void);
 int main()
 {
     initializePeripherals();
-    CyGlobalIntEnable; /* Enable global interrupts. */
+    CyGlobalIntEnable; /* Enable global interrupts. */ 
     
-//    MUX_CTRL_230400_Write(1);
-//    while(1);
-
+    
     for(;;)
     {     
-        SelectedTest = RTEST;
+        //CurrentTest.SelectedTest = CTEST;
+        CurrentTest.SelectedTest = RTEST;
+        //CurrentTest.SelectedTest = STEST;
         
-        //sendDiagPacket();
-        
-        switch(SelectedTest)
+        switch(CurrentTest.SelectedTest)
         {
-            case 0:
+            case CTEST:
             
-                ControllerTest();
+                CurrentTest.TestStep = INITIALIZE_TEST;
+                while(!ControllerTest())
+                {}
 
             break;
                 
             case RTEST:
             
-                RelayTest();
+                CurrentTest.TestStep = INITIALIZE_TEST;
+                while(!RelayTest())
+                {}
 
-            break;         
+            break;    
+                
+            case STEST:
+            
+                CurrentTest.TestStep = INITIALIZE_TEST;
+                while(!SirenTest())
+                {}
+
+            break;   
         }
             
     }
@@ -112,6 +135,9 @@ static void initializePeripherals(void)
 {
     
     RS485_RX_EN_Write(1);                       // *** for testing with siren board only
+    
+    //Debouncer_PB
+    //isr_PB_Start();
     
     //----------Start UART_460800--------
     UART_460800_Start();    

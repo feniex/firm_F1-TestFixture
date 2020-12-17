@@ -13,11 +13,13 @@
 #include <project.h>
 
 
-void SirenTest(void);
+uint8 SirenTest(void);
 
 void STest_sendDiagPacket(void);
 
+uint8 STest_Test_Amp1(void);
 
+void STest_isr_PB(void);
 //void STest_10ms_isr(void);
 void STest_20ms_isr(void);
 void STest_50ms_isr(void);
