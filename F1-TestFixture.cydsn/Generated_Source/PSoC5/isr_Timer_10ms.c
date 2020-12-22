@@ -30,6 +30,7 @@
     
     //#include "UART_230400_Functions.h"
     #include "RelayTest.h"
+    #include "SirenTest.h"
     
     //uint8 isr_count = 0;
     
@@ -178,15 +179,16 @@ CY_ISR(isr_Timer_10ms_Interrupt)
         
         //sendDiagPacket();
         
-        //CTest_20ms_isr();
-        //STest_20ms_isr();
+        //CTest_10ms_isr();
+        RTest_10ms_isr();
+        STest_10ms_isr();
     
         //sendPacketToRelay_Quad();   // 460800 - TX
         //sendPacketToRelaySiren();   // 230400 - TX
         
 //        isr_count++;
     
-        RTest_10ms_isr();
+        //RTest_10ms_isr();
     
 //        if( (isr_count % 5) == 0 )
 //        {

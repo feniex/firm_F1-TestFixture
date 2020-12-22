@@ -186,6 +186,7 @@ void processByteReceivedHandler_460800(void);
 void ResetPacketSuccess_460800(void);
 uint8 VerifyPacket_460800(uint8 PacketType);
 void sendPacketToRelay_Quad(void);
+void sendPacketToSiren_Audio(void);
 
 //void CTest_SendIgnitionState(uint8 ignition_state);
 

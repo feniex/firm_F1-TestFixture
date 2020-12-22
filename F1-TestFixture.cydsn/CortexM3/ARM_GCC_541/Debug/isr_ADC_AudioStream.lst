@@ -1,0 +1,2123 @@
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"isr_ADC_AudioStream.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.bss
+  20              		.align	1
+  21              	iterator:
+  22 0000 0000     		.space	2
+  23 0002 0000     		.align	2
+  24              	ADCReading:
+  25 0004 00000000 		.space	200
+  25      00000000 
+  25      00000000 
+  25      00000000 
+  25      00000000 
+  26              		.section	.text.isr_ADC_AudioStream_Start,"ax",%progbits
+  27              		.align	2
+  28              		.global	isr_ADC_AudioStream_Start
+  29              		.thumb
+  30              		.thumb_func
+  31              		.type	isr_ADC_AudioStream_Start, %function
+  32              	isr_ADC_AudioStream_Start:
+  33              	.LFB63:
+  34              		.file 1 "Generated_Source\\PSoC5\\isr_ADC_AudioStream.c"
+   1:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /*******************************************************************************
+   2:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * File Name: isr_ADC_AudioStream.c  
+   3:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Version 1.70
+   4:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+   5:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *  Description:
+   6:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   API for controlling the state of an interrupt.
+   7:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+   8:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+   9:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *  Note:
+  10:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+  11:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** ********************************************************************************
+  12:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  13:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * You may use this file only in accordance with the license, terms, conditions, 
+  14:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * disclaimers, and limitations in the end user license agreement accompanying 
+  15:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * the software package with which this file was provided.
+  16:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *******************************************************************************/
+  17:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+  18:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+  19:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** #include <cydevice_trm.h>
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 2
+
+
+  20:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** #include <CyLib.h>
+  21:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** #include <isr_ADC_AudioStream.h>
+  22:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** #include "cyapicallbacks.h"
+  23:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+  24:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** #if !defined(isr_ADC_AudioStream__REMOVED) /* Check for removal by optimization */
+  25:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+  26:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /*******************************************************************************
+  27:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *  Place your includes, defines and code here 
+  28:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** ********************************************************************************/
+  29:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /* `#START isr_ADC_AudioStream_intc` */
+  30:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     
+  31:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     #include <project.h>
+  32:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     static uint16 iterator = 0;
+  33:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     static uint16 ADCReading[100];
+  34:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****         
+  35:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+  36:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /* `#END` */
+  37:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+  38:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** #ifndef CYINT_IRQ_BASE
+  39:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** #define CYINT_IRQ_BASE      16
+  40:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** #endif /* CYINT_IRQ_BASE */
+  41:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** #ifndef CYINT_VECT_TABLE
+  42:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** #define CYINT_VECT_TABLE    ((cyisraddress **) CYREG_NVIC_VECT_OFFSET)
+  43:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** #endif /* CYINT_VECT_TABLE */
+  44:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+  45:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /* Declared in startup, used to set unused interrupts to. */
+  46:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** CY_ISR_PROTO(IntDefaultHandler);
+  47:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+  48:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+  49:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /*******************************************************************************
+  50:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Function Name: isr_ADC_AudioStream_Start
+  51:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** ********************************************************************************
+  52:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+  53:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Summary:
+  54:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *  Set up the interrupt and enable it. This function disables the interrupt, 
+  55:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *  sets the default interrupt vector, sets the priority from the value in the
+  56:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *  Design Wide Resources Interrupt Editor, then enables the interrupt to the 
+  57:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *  interrupt controller.
+  58:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+  59:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Parameters:  
+  60:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+  61:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+  62:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Return:
+  63:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+  64:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+  65:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *******************************************************************************/
+  66:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** void isr_ADC_AudioStream_Start(void)
+  67:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** {
+  35              		.loc 1 67 0
+  36              		.cfi_startproc
+  37              		@ args = 0, pretend = 0, frame = 0
+  38              		@ frame_needed = 1, uses_anonymous_args = 0
+  39 0000 80B5     		push	{r7, lr}
+  40              		.cfi_def_cfa_offset 8
+  41              		.cfi_offset 7, -8
+  42              		.cfi_offset 14, -4
+  43 0002 00AF     		add	r7, sp, #0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 3
+
+
+  44              		.cfi_def_cfa_register 7
+  68:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     /* For all we know the interrupt is active. */
+  69:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     isr_ADC_AudioStream_Disable();
+  45              		.loc 1 69 0
+  46 0004 FFF7FEFF 		bl	isr_ADC_AudioStream_Disable
+  70:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+  71:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     /* Set the ISR to point to the isr_ADC_AudioStream Interrupt. */
+  72:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     isr_ADC_AudioStream_SetVector(&isr_ADC_AudioStream_Interrupt);
+  47              		.loc 1 72 0
+  48 0008 0448     		ldr	r0, .L2
+  49 000a FFF7FEFF 		bl	isr_ADC_AudioStream_SetVector
+  73:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+  74:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     /* Set the priority. */
+  75:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     isr_ADC_AudioStream_SetPriority((uint8)isr_ADC_AudioStream_INTC_PRIOR_NUMBER);
+  50              		.loc 1 75 0
+  51 000e 0720     		movs	r0, #7
+  52 0010 FFF7FEFF 		bl	isr_ADC_AudioStream_SetPriority
+  76:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+  77:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     /* Enable it. */
+  78:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     isr_ADC_AudioStream_Enable();
+  53              		.loc 1 78 0
+  54 0014 FFF7FEFF 		bl	isr_ADC_AudioStream_Enable
+  79:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** }
+  55              		.loc 1 79 0
+  56 0018 00BF     		nop
+  57 001a 80BD     		pop	{r7, pc}
+  58              	.L3:
+  59              		.align	2
+  60              	.L2:
+  61 001c 00000000 		.word	isr_ADC_AudioStream_Interrupt
+  62              		.cfi_endproc
+  63              	.LFE63:
+  64              		.size	isr_ADC_AudioStream_Start, .-isr_ADC_AudioStream_Start
+  65              		.section	.text.isr_ADC_AudioStream_StartEx,"ax",%progbits
+  66              		.align	2
+  67              		.global	isr_ADC_AudioStream_StartEx
+  68              		.thumb
+  69              		.thumb_func
+  70              		.type	isr_ADC_AudioStream_StartEx, %function
+  71              	isr_ADC_AudioStream_StartEx:
+  72              	.LFB64:
+  80:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+  81:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+  82:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /*******************************************************************************
+  83:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Function Name: isr_ADC_AudioStream_StartEx
+  84:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** ********************************************************************************
+  85:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+  86:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Summary:
+  87:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *  Sets up the interrupt and enables it. This function disables the interrupt,
+  88:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *  sets the interrupt vector based on the address passed in, sets the priority 
+  89:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *  from the value in the Design Wide Resources Interrupt Editor, then enables 
+  90:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *  the interrupt to the interrupt controller.
+  91:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *  
+  92:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *  When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
+  93:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *  used to provide consistent definition across compilers:
+  94:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *  
+  95:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *  Function definition example:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 4
+
+
+  96:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   CY_ISR(MyISR)
+  97:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   {
+  98:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   }
+  99:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Function prototype example:
+ 100:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   CY_ISR_PROTO(MyISR);
+ 101:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 102:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Parameters:  
+ 103:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   address: Address of the ISR to set in the interrupt vector table.
+ 104:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 105:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Return:
+ 106:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 107:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 108:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *******************************************************************************/
+ 109:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** void isr_ADC_AudioStream_StartEx(cyisraddress address)
+ 110:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** {
+  73              		.loc 1 110 0
+  74              		.cfi_startproc
+  75              		@ args = 0, pretend = 0, frame = 8
+  76              		@ frame_needed = 1, uses_anonymous_args = 0
+  77 0000 80B5     		push	{r7, lr}
+  78              		.cfi_def_cfa_offset 8
+  79              		.cfi_offset 7, -8
+  80              		.cfi_offset 14, -4
+  81 0002 82B0     		sub	sp, sp, #8
+  82              		.cfi_def_cfa_offset 16
+  83 0004 00AF     		add	r7, sp, #0
+  84              		.cfi_def_cfa_register 7
+  85 0006 7860     		str	r0, [r7, #4]
+ 111:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     /* For all we know the interrupt is active. */
+ 112:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     isr_ADC_AudioStream_Disable();
+  86              		.loc 1 112 0
+  87 0008 FFF7FEFF 		bl	isr_ADC_AudioStream_Disable
+ 113:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 114:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     /* Set the ISR to point to the isr_ADC_AudioStream Interrupt. */
+ 115:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     isr_ADC_AudioStream_SetVector(address);
+  88              		.loc 1 115 0
+  89 000c 7868     		ldr	r0, [r7, #4]
+  90 000e FFF7FEFF 		bl	isr_ADC_AudioStream_SetVector
+ 116:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 117:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     /* Set the priority. */
+ 118:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     isr_ADC_AudioStream_SetPriority((uint8)isr_ADC_AudioStream_INTC_PRIOR_NUMBER);
+  91              		.loc 1 118 0
+  92 0012 0720     		movs	r0, #7
+  93 0014 FFF7FEFF 		bl	isr_ADC_AudioStream_SetPriority
+ 119:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 120:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     /* Enable it. */
+ 121:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     isr_ADC_AudioStream_Enable();
+  94              		.loc 1 121 0
+  95 0018 FFF7FEFF 		bl	isr_ADC_AudioStream_Enable
+ 122:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** }
+  96              		.loc 1 122 0
+  97 001c 00BF     		nop
+  98 001e 0837     		adds	r7, r7, #8
+  99              		.cfi_def_cfa_offset 8
+ 100 0020 BD46     		mov	sp, r7
+ 101              		.cfi_def_cfa_register 13
+ 102              		@ sp needed
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 5
+
+
+ 103 0022 80BD     		pop	{r7, pc}
+ 104              		.cfi_endproc
+ 105              	.LFE64:
+ 106              		.size	isr_ADC_AudioStream_StartEx, .-isr_ADC_AudioStream_StartEx
+ 107              		.section	.text.isr_ADC_AudioStream_Stop,"ax",%progbits
+ 108              		.align	2
+ 109              		.global	isr_ADC_AudioStream_Stop
+ 110              		.thumb
+ 111              		.thumb_func
+ 112              		.type	isr_ADC_AudioStream_Stop, %function
+ 113              	isr_ADC_AudioStream_Stop:
+ 114              	.LFB65:
+ 123:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 124:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 125:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /*******************************************************************************
+ 126:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Function Name: isr_ADC_AudioStream_Stop
+ 127:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** ********************************************************************************
+ 128:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 129:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Summary:
+ 130:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Disables and removes the interrupt.
+ 131:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 132:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Parameters:  
+ 133:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 134:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 135:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Return:
+ 136:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 137:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 138:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *******************************************************************************/
+ 139:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** void isr_ADC_AudioStream_Stop(void)
+ 140:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** {
+ 115              		.loc 1 140 0
+ 116              		.cfi_startproc
+ 117              		@ args = 0, pretend = 0, frame = 0
+ 118              		@ frame_needed = 1, uses_anonymous_args = 0
+ 119 0000 80B5     		push	{r7, lr}
+ 120              		.cfi_def_cfa_offset 8
+ 121              		.cfi_offset 7, -8
+ 122              		.cfi_offset 14, -4
+ 123 0002 00AF     		add	r7, sp, #0
+ 124              		.cfi_def_cfa_register 7
+ 141:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     /* Disable this interrupt. */
+ 142:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     isr_ADC_AudioStream_Disable();
+ 125              		.loc 1 142 0
+ 126 0004 FFF7FEFF 		bl	isr_ADC_AudioStream_Disable
+ 143:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 144:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     /* Set the ISR to point to the passive one. */
+ 145:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     isr_ADC_AudioStream_SetVector(&IntDefaultHandler);
+ 127              		.loc 1 145 0
+ 128 0008 0248     		ldr	r0, .L6
+ 129 000a FFF7FEFF 		bl	isr_ADC_AudioStream_SetVector
+ 146:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** }
+ 130              		.loc 1 146 0
+ 131 000e 00BF     		nop
+ 132 0010 80BD     		pop	{r7, pc}
+ 133              	.L7:
+ 134 0012 00BF     		.align	2
+ 135              	.L6:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 6
+
+
+ 136 0014 00000000 		.word	IntDefaultHandler
+ 137              		.cfi_endproc
+ 138              	.LFE65:
+ 139              		.size	isr_ADC_AudioStream_Stop, .-isr_ADC_AudioStream_Stop
+ 140              		.section	.text.isr_ADC_AudioStream_Interrupt,"ax",%progbits
+ 141              		.align	2
+ 142              		.global	isr_ADC_AudioStream_Interrupt
+ 143              		.thumb
+ 144              		.thumb_func
+ 145              		.type	isr_ADC_AudioStream_Interrupt, %function
+ 146              	isr_ADC_AudioStream_Interrupt:
+ 147              	.LFB66:
+ 147:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 148:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 149:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /*******************************************************************************
+ 150:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Function Name: isr_ADC_AudioStream_Interrupt
+ 151:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** ********************************************************************************
+ 152:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 153:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Summary:
+ 154:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   The default Interrupt Service Routine for isr_ADC_AudioStream.
+ 155:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 156:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Add custom code between the coments to keep the next version of this file
+ 157:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   from over writting your code.
+ 158:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 159:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Parameters:  
+ 160:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 161:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Return:
+ 162:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 163:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 164:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *******************************************************************************/
+ 165:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** CY_ISR(isr_ADC_AudioStream_Interrupt)
+ 166:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** {
+ 148              		.loc 1 166 0
+ 149              		.cfi_startproc
+ 150              		@ args = 0, pretend = 0, frame = 0
+ 151              		@ frame_needed = 1, uses_anonymous_args = 0
+ 152 0000 98B5     		push	{r3, r4, r7, lr}
+ 153              		.cfi_def_cfa_offset 16
+ 154              		.cfi_offset 3, -16
+ 155              		.cfi_offset 4, -12
+ 156              		.cfi_offset 7, -8
+ 157              		.cfi_offset 14, -4
+ 158 0002 00AF     		add	r7, sp, #0
+ 159              		.cfi_def_cfa_register 7
+ 167:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     #ifdef isr_ADC_AudioStream_INTERRUPT_INTERRUPT_CALLBACK
+ 168:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****         isr_ADC_AudioStream_Interrupt_InterruptCallback();
+ 169:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     #endif /* isr_ADC_AudioStream_INTERRUPT_INTERRUPT_CALLBACK */ 
+ 170:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 171:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     /*  Place your Interrupt code here. */
+ 172:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     /* `#START isr_ADC_AudioStream_Interrupt` */
+ 173:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 174:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     
+ 175:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     ADCReading[iterator] = ADC_AudioStream_GetResult16();
+ 160              		.loc 1 175 0
+ 161 0004 0C4B     		ldr	r3, .L11
+ 162 0006 1B88     		ldrh	r3, [r3]
+ 163 0008 1C46     		mov	r4, r3
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 7
+
+
+ 164 000a FFF7FEFF 		bl	ADC_AudioStream_GetResult16
+ 165 000e 0346     		mov	r3, r0
+ 166 0010 9AB2     		uxth	r2, r3
+ 167 0012 0A4B     		ldr	r3, .L11+4
+ 168 0014 23F81420 		strh	r2, [r3, r4, lsl #1]	@ movhi
+ 176:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     //UART_460800_WriteTxData( ADCReading[iterator] );
+ 177:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     
+ 178:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     iterator++;
+ 169              		.loc 1 178 0
+ 170 0018 074B     		ldr	r3, .L11
+ 171 001a 1B88     		ldrh	r3, [r3]
+ 172 001c 0133     		adds	r3, r3, #1
+ 173 001e 9AB2     		uxth	r2, r3
+ 174 0020 054B     		ldr	r3, .L11
+ 175 0022 1A80     		strh	r2, [r3]	@ movhi
+ 179:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     if(iterator > 100)
+ 176              		.loc 1 179 0
+ 177 0024 044B     		ldr	r3, .L11
+ 178 0026 1B88     		ldrh	r3, [r3]
+ 179 0028 642B     		cmp	r3, #100
+ 180 002a 02D9     		bls	.L10
+ 180:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****         iterator = 0;
+ 181              		.loc 1 180 0
+ 182 002c 024B     		ldr	r3, .L11
+ 183 002e 0022     		movs	r2, #0
+ 184 0030 1A80     		strh	r2, [r3]	@ movhi
+ 185              	.L10:
+ 181:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     
+ 182:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     /* `#END` */
+ 183:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** }
+ 186              		.loc 1 183 0
+ 187 0032 00BF     		nop
+ 188 0034 98BD     		pop	{r3, r4, r7, pc}
+ 189              	.L12:
+ 190 0036 00BF     		.align	2
+ 191              	.L11:
+ 192 0038 00000000 		.word	iterator
+ 193 003c 04000000 		.word	ADCReading
+ 194              		.cfi_endproc
+ 195              	.LFE66:
+ 196              		.size	isr_ADC_AudioStream_Interrupt, .-isr_ADC_AudioStream_Interrupt
+ 197              		.section	.text.isr_ADC_AudioStream_SetVector,"ax",%progbits
+ 198              		.align	2
+ 199              		.global	isr_ADC_AudioStream_SetVector
+ 200              		.thumb
+ 201              		.thumb_func
+ 202              		.type	isr_ADC_AudioStream_SetVector, %function
+ 203              	isr_ADC_AudioStream_SetVector:
+ 204              	.LFB67:
+ 184:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 185:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 186:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /*******************************************************************************
+ 187:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Function Name: isr_ADC_AudioStream_SetVector
+ 188:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** ********************************************************************************
+ 189:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 190:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Summary:
+ 191:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Change the ISR vector for the Interrupt. Note calling isr_ADC_AudioStream_Start
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 8
+
+
+ 192:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   will override any effect this method would have had. To set the vector 
+ 193:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   before the component has been started use isr_ADC_AudioStream_StartEx instead.
+ 194:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * 
+ 195:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
+ 196:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   used to provide consistent definition across compilers:
+ 197:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 198:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Function definition example:
+ 199:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   CY_ISR(MyISR)
+ 200:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   {
+ 201:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   }
+ 202:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 203:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Function prototype example:
+ 204:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *     CY_ISR_PROTO(MyISR);
+ 205:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 206:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Parameters:
+ 207:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   address: Address of the ISR to set in the interrupt vector table.
+ 208:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 209:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Return:
+ 210:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 211:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 212:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *******************************************************************************/
+ 213:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** void isr_ADC_AudioStream_SetVector(cyisraddress address)
+ 214:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** {
+ 205              		.loc 1 214 0
+ 206              		.cfi_startproc
+ 207              		@ args = 0, pretend = 0, frame = 16
+ 208              		@ frame_needed = 1, uses_anonymous_args = 0
+ 209              		@ link register save eliminated.
+ 210 0000 80B4     		push	{r7}
+ 211              		.cfi_def_cfa_offset 4
+ 212              		.cfi_offset 7, -4
+ 213 0002 85B0     		sub	sp, sp, #20
+ 214              		.cfi_def_cfa_offset 24
+ 215 0004 00AF     		add	r7, sp, #0
+ 216              		.cfi_def_cfa_register 7
+ 217 0006 7860     		str	r0, [r7, #4]
+ 215:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     cyisraddress * ramVectorTable;
+ 216:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 217:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
+ 218              		.loc 1 217 0
+ 219 0008 054B     		ldr	r3, .L14
+ 220 000a 1B68     		ldr	r3, [r3]
+ 221 000c FB60     		str	r3, [r7, #12]
+ 218:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 219:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     ramVectorTable[CYINT_IRQ_BASE + (uint32)isr_ADC_AudioStream__INTC_NUMBER] = address;
+ 222              		.loc 1 219 0
+ 223 000e FB68     		ldr	r3, [r7, #12]
+ 224 0010 4833     		adds	r3, r3, #72
+ 225 0012 7A68     		ldr	r2, [r7, #4]
+ 226 0014 1A60     		str	r2, [r3]
+ 220:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** }
+ 227              		.loc 1 220 0
+ 228 0016 00BF     		nop
+ 229 0018 1437     		adds	r7, r7, #20
+ 230              		.cfi_def_cfa_offset 4
+ 231 001a BD46     		mov	sp, r7
+ 232              		.cfi_def_cfa_register 13
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 9
+
+
+ 233              		@ sp needed
+ 234 001c 80BC     		pop	{r7}
+ 235              		.cfi_restore 7
+ 236              		.cfi_def_cfa_offset 0
+ 237 001e 7047     		bx	lr
+ 238              	.L15:
+ 239              		.align	2
+ 240              	.L14:
+ 241 0020 08ED00E0 		.word	-536810232
+ 242              		.cfi_endproc
+ 243              	.LFE67:
+ 244              		.size	isr_ADC_AudioStream_SetVector, .-isr_ADC_AudioStream_SetVector
+ 245              		.section	.text.isr_ADC_AudioStream_GetVector,"ax",%progbits
+ 246              		.align	2
+ 247              		.global	isr_ADC_AudioStream_GetVector
+ 248              		.thumb
+ 249              		.thumb_func
+ 250              		.type	isr_ADC_AudioStream_GetVector, %function
+ 251              	isr_ADC_AudioStream_GetVector:
+ 252              	.LFB68:
+ 221:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 222:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 223:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /*******************************************************************************
+ 224:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Function Name: isr_ADC_AudioStream_GetVector
+ 225:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** ********************************************************************************
+ 226:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 227:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Summary:
+ 228:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Gets the "address" of the current ISR vector for the Interrupt.
+ 229:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 230:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Parameters:
+ 231:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 232:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 233:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Return:
+ 234:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Address of the ISR in the interrupt vector table.
+ 235:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 236:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *******************************************************************************/
+ 237:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** cyisraddress isr_ADC_AudioStream_GetVector(void)
+ 238:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** {
+ 253              		.loc 1 238 0
+ 254              		.cfi_startproc
+ 255              		@ args = 0, pretend = 0, frame = 8
+ 256              		@ frame_needed = 1, uses_anonymous_args = 0
+ 257              		@ link register save eliminated.
+ 258 0000 80B4     		push	{r7}
+ 259              		.cfi_def_cfa_offset 4
+ 260              		.cfi_offset 7, -4
+ 261 0002 83B0     		sub	sp, sp, #12
+ 262              		.cfi_def_cfa_offset 16
+ 263 0004 00AF     		add	r7, sp, #0
+ 264              		.cfi_def_cfa_register 7
+ 239:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     cyisraddress * ramVectorTable;
+ 240:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 241:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
+ 265              		.loc 1 241 0
+ 266 0006 054B     		ldr	r3, .L18
+ 267 0008 1B68     		ldr	r3, [r3]
+ 268 000a 7B60     		str	r3, [r7, #4]
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 10
+
+
+ 242:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 243:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     return ramVectorTable[CYINT_IRQ_BASE + (uint32)isr_ADC_AudioStream__INTC_NUMBER];
+ 269              		.loc 1 243 0
+ 270 000c 7B68     		ldr	r3, [r7, #4]
+ 271 000e 9B6C     		ldr	r3, [r3, #72]
+ 244:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** }
+ 272              		.loc 1 244 0
+ 273 0010 1846     		mov	r0, r3
+ 274 0012 0C37     		adds	r7, r7, #12
+ 275              		.cfi_def_cfa_offset 4
+ 276 0014 BD46     		mov	sp, r7
+ 277              		.cfi_def_cfa_register 13
+ 278              		@ sp needed
+ 279 0016 80BC     		pop	{r7}
+ 280              		.cfi_restore 7
+ 281              		.cfi_def_cfa_offset 0
+ 282 0018 7047     		bx	lr
+ 283              	.L19:
+ 284 001a 00BF     		.align	2
+ 285              	.L18:
+ 286 001c 08ED00E0 		.word	-536810232
+ 287              		.cfi_endproc
+ 288              	.LFE68:
+ 289              		.size	isr_ADC_AudioStream_GetVector, .-isr_ADC_AudioStream_GetVector
+ 290              		.section	.text.isr_ADC_AudioStream_SetPriority,"ax",%progbits
+ 291              		.align	2
+ 292              		.global	isr_ADC_AudioStream_SetPriority
+ 293              		.thumb
+ 294              		.thumb_func
+ 295              		.type	isr_ADC_AudioStream_SetPriority, %function
+ 296              	isr_ADC_AudioStream_SetPriority:
+ 297              	.LFB69:
+ 245:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 246:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 247:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /*******************************************************************************
+ 248:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Function Name: isr_ADC_AudioStream_SetPriority
+ 249:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** ********************************************************************************
+ 250:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 251:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Summary:
+ 252:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Sets the Priority of the Interrupt. 
+ 253:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 254:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Note calling isr_ADC_AudioStream_Start or isr_ADC_AudioStream_StartEx will 
+ 255:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   override any effect this API would have had. This API should only be called
+ 256:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   after isr_ADC_AudioStream_Start or isr_ADC_AudioStream_StartEx has been called. 
+ 257:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   To set the initial priority for the component, use the Design-Wide Resources
+ 258:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Interrupt Editor.
+ 259:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 260:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Note This API has no effect on Non-maskable interrupt NMI).
+ 261:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 262:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Parameters:
+ 263:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   priority: Priority of the interrupt, 0 being the highest priority
+ 264:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *             PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
+ 265:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *             PSoC 4: Priority is from 0 to 3.
+ 266:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 267:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Return:
+ 268:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 269:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 11
+
+
+ 270:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *******************************************************************************/
+ 271:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** void isr_ADC_AudioStream_SetPriority(uint8 priority)
+ 272:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** {
+ 298              		.loc 1 272 0
+ 299              		.cfi_startproc
+ 300              		@ args = 0, pretend = 0, frame = 8
+ 301              		@ frame_needed = 1, uses_anonymous_args = 0
+ 302              		@ link register save eliminated.
+ 303 0000 80B4     		push	{r7}
+ 304              		.cfi_def_cfa_offset 4
+ 305              		.cfi_offset 7, -4
+ 306 0002 83B0     		sub	sp, sp, #12
+ 307              		.cfi_def_cfa_offset 16
+ 308 0004 00AF     		add	r7, sp, #0
+ 309              		.cfi_def_cfa_register 7
+ 310 0006 0346     		mov	r3, r0
+ 311 0008 FB71     		strb	r3, [r7, #7]
+ 273:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     *isr_ADC_AudioStream_INTC_PRIOR = priority << 5;
+ 312              		.loc 1 273 0
+ 313 000a 054A     		ldr	r2, .L21
+ 314 000c FB79     		ldrb	r3, [r7, #7]
+ 315 000e 5B01     		lsls	r3, r3, #5
+ 316 0010 DBB2     		uxtb	r3, r3
+ 317 0012 1370     		strb	r3, [r2]
+ 274:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** }
+ 318              		.loc 1 274 0
+ 319 0014 00BF     		nop
+ 320 0016 0C37     		adds	r7, r7, #12
+ 321              		.cfi_def_cfa_offset 4
+ 322 0018 BD46     		mov	sp, r7
+ 323              		.cfi_def_cfa_register 13
+ 324              		@ sp needed
+ 325 001a 80BC     		pop	{r7}
+ 326              		.cfi_restore 7
+ 327              		.cfi_def_cfa_offset 0
+ 328 001c 7047     		bx	lr
+ 329              	.L22:
+ 330 001e 00BF     		.align	2
+ 331              	.L21:
+ 332 0020 02E400E0 		.word	-536812542
+ 333              		.cfi_endproc
+ 334              	.LFE69:
+ 335              		.size	isr_ADC_AudioStream_SetPriority, .-isr_ADC_AudioStream_SetPriority
+ 336              		.section	.text.isr_ADC_AudioStream_GetPriority,"ax",%progbits
+ 337              		.align	2
+ 338              		.global	isr_ADC_AudioStream_GetPriority
+ 339              		.thumb
+ 340              		.thumb_func
+ 341              		.type	isr_ADC_AudioStream_GetPriority, %function
+ 342              	isr_ADC_AudioStream_GetPriority:
+ 343              	.LFB70:
+ 275:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 276:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 277:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /*******************************************************************************
+ 278:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Function Name: isr_ADC_AudioStream_GetPriority
+ 279:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** ********************************************************************************
+ 280:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 12
+
+
+ 281:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Summary:
+ 282:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Gets the Priority of the Interrupt.
+ 283:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 284:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Parameters:
+ 285:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 286:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 287:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Return:
+ 288:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Priority of the interrupt, 0 being the highest priority
+ 289:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *    PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
+ 290:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *    PSoC 4: Priority is from 0 to 3.
+ 291:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 292:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *******************************************************************************/
+ 293:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** uint8 isr_ADC_AudioStream_GetPriority(void)
+ 294:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** {
+ 344              		.loc 1 294 0
+ 345              		.cfi_startproc
+ 346              		@ args = 0, pretend = 0, frame = 8
+ 347              		@ frame_needed = 1, uses_anonymous_args = 0
+ 348              		@ link register save eliminated.
+ 349 0000 80B4     		push	{r7}
+ 350              		.cfi_def_cfa_offset 4
+ 351              		.cfi_offset 7, -4
+ 352 0002 83B0     		sub	sp, sp, #12
+ 353              		.cfi_def_cfa_offset 16
+ 354 0004 00AF     		add	r7, sp, #0
+ 355              		.cfi_def_cfa_register 7
+ 295:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     uint8 priority;
+ 296:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 297:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 298:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     priority = *isr_ADC_AudioStream_INTC_PRIOR >> 5;
+ 356              		.loc 1 298 0
+ 357 0006 054B     		ldr	r3, .L25
+ 358 0008 1B78     		ldrb	r3, [r3]
+ 359 000a DBB2     		uxtb	r3, r3
+ 360 000c 5B09     		lsrs	r3, r3, #5
+ 361 000e FB71     		strb	r3, [r7, #7]
+ 299:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 300:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     return priority;
+ 362              		.loc 1 300 0
+ 363 0010 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 301:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** }
+ 364              		.loc 1 301 0
+ 365 0012 1846     		mov	r0, r3
+ 366 0014 0C37     		adds	r7, r7, #12
+ 367              		.cfi_def_cfa_offset 4
+ 368 0016 BD46     		mov	sp, r7
+ 369              		.cfi_def_cfa_register 13
+ 370              		@ sp needed
+ 371 0018 80BC     		pop	{r7}
+ 372              		.cfi_restore 7
+ 373              		.cfi_def_cfa_offset 0
+ 374 001a 7047     		bx	lr
+ 375              	.L26:
+ 376              		.align	2
+ 377              	.L25:
+ 378 001c 02E400E0 		.word	-536812542
+ 379              		.cfi_endproc
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 13
+
+
+ 380              	.LFE70:
+ 381              		.size	isr_ADC_AudioStream_GetPriority, .-isr_ADC_AudioStream_GetPriority
+ 382              		.section	.text.isr_ADC_AudioStream_Enable,"ax",%progbits
+ 383              		.align	2
+ 384              		.global	isr_ADC_AudioStream_Enable
+ 385              		.thumb
+ 386              		.thumb_func
+ 387              		.type	isr_ADC_AudioStream_Enable, %function
+ 388              	isr_ADC_AudioStream_Enable:
+ 389              	.LFB71:
+ 302:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 303:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 304:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /*******************************************************************************
+ 305:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Function Name: isr_ADC_AudioStream_Enable
+ 306:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** ********************************************************************************
+ 307:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 308:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Summary:
+ 309:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Enables the interrupt to the interrupt controller. Do not call this function
+ 310:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   unless ISR_Start() has been called or the functionality of the ISR_Start() 
+ 311:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   function, which sets the vector and the priority, has been called.
+ 312:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 313:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Parameters:
+ 314:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 315:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 316:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Return:
+ 317:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 318:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 319:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *******************************************************************************/
+ 320:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** void isr_ADC_AudioStream_Enable(void)
+ 321:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** {
+ 390              		.loc 1 321 0
+ 391              		.cfi_startproc
+ 392              		@ args = 0, pretend = 0, frame = 0
+ 393              		@ frame_needed = 1, uses_anonymous_args = 0
+ 394              		@ link register save eliminated.
+ 395 0000 80B4     		push	{r7}
+ 396              		.cfi_def_cfa_offset 4
+ 397              		.cfi_offset 7, -4
+ 398 0002 00AF     		add	r7, sp, #0
+ 399              		.cfi_def_cfa_register 7
+ 322:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     /* Enable the general interrupt. */
+ 323:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     *isr_ADC_AudioStream_INTC_SET_EN = isr_ADC_AudioStream__INTC_MASK;
+ 400              		.loc 1 323 0
+ 401 0004 034B     		ldr	r3, .L28
+ 402 0006 0422     		movs	r2, #4
+ 403 0008 1A60     		str	r2, [r3]
+ 324:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** }
+ 404              		.loc 1 324 0
+ 405 000a 00BF     		nop
+ 406 000c BD46     		mov	sp, r7
+ 407              		.cfi_def_cfa_register 13
+ 408              		@ sp needed
+ 409 000e 80BC     		pop	{r7}
+ 410              		.cfi_restore 7
+ 411              		.cfi_def_cfa_offset 0
+ 412 0010 7047     		bx	lr
+ 413              	.L29:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 14
+
+
+ 414 0012 00BF     		.align	2
+ 415              	.L28:
+ 416 0014 00E100E0 		.word	-536813312
+ 417              		.cfi_endproc
+ 418              	.LFE71:
+ 419              		.size	isr_ADC_AudioStream_Enable, .-isr_ADC_AudioStream_Enable
+ 420              		.section	.text.isr_ADC_AudioStream_GetState,"ax",%progbits
+ 421              		.align	2
+ 422              		.global	isr_ADC_AudioStream_GetState
+ 423              		.thumb
+ 424              		.thumb_func
+ 425              		.type	isr_ADC_AudioStream_GetState, %function
+ 426              	isr_ADC_AudioStream_GetState:
+ 427              	.LFB72:
+ 325:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 326:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 327:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /*******************************************************************************
+ 328:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Function Name: isr_ADC_AudioStream_GetState
+ 329:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** ********************************************************************************
+ 330:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 331:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Summary:
+ 332:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Gets the state (enabled, disabled) of the Interrupt.
+ 333:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 334:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Parameters:
+ 335:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 336:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 337:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Return:
+ 338:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   1 if enabled, 0 if disabled.
+ 339:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 340:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *******************************************************************************/
+ 341:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** uint8 isr_ADC_AudioStream_GetState(void)
+ 342:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** {
+ 428              		.loc 1 342 0
+ 429              		.cfi_startproc
+ 430              		@ args = 0, pretend = 0, frame = 0
+ 431              		@ frame_needed = 1, uses_anonymous_args = 0
+ 432              		@ link register save eliminated.
+ 433 0000 80B4     		push	{r7}
+ 434              		.cfi_def_cfa_offset 4
+ 435              		.cfi_offset 7, -4
+ 436 0002 00AF     		add	r7, sp, #0
+ 437              		.cfi_def_cfa_register 7
+ 343:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     /* Get the state of the general interrupt. */
+ 344:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     return ((*isr_ADC_AudioStream_INTC_SET_EN & (uint32)isr_ADC_AudioStream__INTC_MASK) != 0u) ? 1u
+ 438              		.loc 1 344 0
+ 439 0004 064B     		ldr	r3, .L34
+ 440 0006 1B68     		ldr	r3, [r3]
+ 441 0008 03F00403 		and	r3, r3, #4
+ 442 000c 002B     		cmp	r3, #0
+ 443 000e 01D0     		beq	.L31
+ 444              		.loc 1 344 0 is_stmt 0 discriminator 1
+ 445 0010 0123     		movs	r3, #1
+ 446 0012 00E0     		b	.L32
+ 447              	.L31:
+ 448              		.loc 1 344 0 discriminator 2
+ 449 0014 0023     		movs	r3, #0
+ 450              	.L32:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 15
+
+
+ 345:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** }
+ 451              		.loc 1 345 0 is_stmt 1 discriminator 4
+ 452 0016 1846     		mov	r0, r3
+ 453 0018 BD46     		mov	sp, r7
+ 454              		.cfi_def_cfa_register 13
+ 455              		@ sp needed
+ 456 001a 80BC     		pop	{r7}
+ 457              		.cfi_restore 7
+ 458              		.cfi_def_cfa_offset 0
+ 459 001c 7047     		bx	lr
+ 460              	.L35:
+ 461 001e 00BF     		.align	2
+ 462              	.L34:
+ 463 0020 00E100E0 		.word	-536813312
+ 464              		.cfi_endproc
+ 465              	.LFE72:
+ 466              		.size	isr_ADC_AudioStream_GetState, .-isr_ADC_AudioStream_GetState
+ 467              		.section	.text.isr_ADC_AudioStream_Disable,"ax",%progbits
+ 468              		.align	2
+ 469              		.global	isr_ADC_AudioStream_Disable
+ 470              		.thumb
+ 471              		.thumb_func
+ 472              		.type	isr_ADC_AudioStream_Disable, %function
+ 473              	isr_ADC_AudioStream_Disable:
+ 474              	.LFB73:
+ 346:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 347:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 348:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /*******************************************************************************
+ 349:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Function Name: isr_ADC_AudioStream_Disable
+ 350:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** ********************************************************************************
+ 351:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 352:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Summary:
+ 353:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Disables the Interrupt in the interrupt controller.
+ 354:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 355:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Parameters:
+ 356:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 357:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 358:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Return:
+ 359:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 360:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 361:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *******************************************************************************/
+ 362:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** void isr_ADC_AudioStream_Disable(void)
+ 363:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** {
+ 475              		.loc 1 363 0
+ 476              		.cfi_startproc
+ 477              		@ args = 0, pretend = 0, frame = 0
+ 478              		@ frame_needed = 1, uses_anonymous_args = 0
+ 479              		@ link register save eliminated.
+ 480 0000 80B4     		push	{r7}
+ 481              		.cfi_def_cfa_offset 4
+ 482              		.cfi_offset 7, -4
+ 483 0002 00AF     		add	r7, sp, #0
+ 484              		.cfi_def_cfa_register 7
+ 364:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     /* Disable the general interrupt. */
+ 365:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     *isr_ADC_AudioStream_INTC_CLR_EN = isr_ADC_AudioStream__INTC_MASK;
+ 485              		.loc 1 365 0
+ 486 0004 034B     		ldr	r3, .L37
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 16
+
+
+ 487 0006 0422     		movs	r2, #4
+ 488 0008 1A60     		str	r2, [r3]
+ 366:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** }
+ 489              		.loc 1 366 0
+ 490 000a 00BF     		nop
+ 491 000c BD46     		mov	sp, r7
+ 492              		.cfi_def_cfa_register 13
+ 493              		@ sp needed
+ 494 000e 80BC     		pop	{r7}
+ 495              		.cfi_restore 7
+ 496              		.cfi_def_cfa_offset 0
+ 497 0010 7047     		bx	lr
+ 498              	.L38:
+ 499 0012 00BF     		.align	2
+ 500              	.L37:
+ 501 0014 80E100E0 		.word	-536813184
+ 502              		.cfi_endproc
+ 503              	.LFE73:
+ 504              		.size	isr_ADC_AudioStream_Disable, .-isr_ADC_AudioStream_Disable
+ 505              		.section	.text.isr_ADC_AudioStream_SetPending,"ax",%progbits
+ 506              		.align	2
+ 507              		.global	isr_ADC_AudioStream_SetPending
+ 508              		.thumb
+ 509              		.thumb_func
+ 510              		.type	isr_ADC_AudioStream_SetPending, %function
+ 511              	isr_ADC_AudioStream_SetPending:
+ 512              	.LFB74:
+ 367:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 368:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 369:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /*******************************************************************************
+ 370:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Function Name: isr_ADC_AudioStream_SetPending
+ 371:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** ********************************************************************************
+ 372:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 373:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Summary:
+ 374:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Causes the Interrupt to enter the pending state, a software method of
+ 375:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   generating the interrupt.
+ 376:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 377:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Parameters:
+ 378:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 379:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 380:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Return:
+ 381:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 382:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 383:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Side Effects:
+ 384:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   If interrupts are enabled and the interrupt is set up properly, the ISR is
+ 385:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   entered (depending on the priority of this interrupt and other pending 
+ 386:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   interrupts).
+ 387:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 388:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *******************************************************************************/
+ 389:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** void isr_ADC_AudioStream_SetPending(void)
+ 390:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** {
+ 513              		.loc 1 390 0
+ 514              		.cfi_startproc
+ 515              		@ args = 0, pretend = 0, frame = 0
+ 516              		@ frame_needed = 1, uses_anonymous_args = 0
+ 517              		@ link register save eliminated.
+ 518 0000 80B4     		push	{r7}
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 17
+
+
+ 519              		.cfi_def_cfa_offset 4
+ 520              		.cfi_offset 7, -4
+ 521 0002 00AF     		add	r7, sp, #0
+ 522              		.cfi_def_cfa_register 7
+ 391:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     *isr_ADC_AudioStream_INTC_SET_PD = isr_ADC_AudioStream__INTC_MASK;
+ 523              		.loc 1 391 0
+ 524 0004 034B     		ldr	r3, .L40
+ 525 0006 0422     		movs	r2, #4
+ 526 0008 1A60     		str	r2, [r3]
+ 392:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** }
+ 527              		.loc 1 392 0
+ 528 000a 00BF     		nop
+ 529 000c BD46     		mov	sp, r7
+ 530              		.cfi_def_cfa_register 13
+ 531              		@ sp needed
+ 532 000e 80BC     		pop	{r7}
+ 533              		.cfi_restore 7
+ 534              		.cfi_def_cfa_offset 0
+ 535 0010 7047     		bx	lr
+ 536              	.L41:
+ 537 0012 00BF     		.align	2
+ 538              	.L40:
+ 539 0014 00E200E0 		.word	-536813056
+ 540              		.cfi_endproc
+ 541              	.LFE74:
+ 542              		.size	isr_ADC_AudioStream_SetPending, .-isr_ADC_AudioStream_SetPending
+ 543              		.section	.text.isr_ADC_AudioStream_ClearPending,"ax",%progbits
+ 544              		.align	2
+ 545              		.global	isr_ADC_AudioStream_ClearPending
+ 546              		.thumb
+ 547              		.thumb_func
+ 548              		.type	isr_ADC_AudioStream_ClearPending, %function
+ 549              	isr_ADC_AudioStream_ClearPending:
+ 550              	.LFB75:
+ 393:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 394:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** 
+ 395:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** /*******************************************************************************
+ 396:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Function Name: isr_ADC_AudioStream_ClearPending
+ 397:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** ********************************************************************************
+ 398:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 399:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Summary:
+ 400:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Clears a pending interrupt in the interrupt controller.
+ 401:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 402:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   Note Some interrupt sources are clear-on-read and require the block 
+ 403:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   interrupt/status register to be read/cleared with the appropriate block API 
+ 404:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   (GPIO, UART, and so on). Otherwise the ISR will continue to remain in 
+ 405:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   pending state even though the interrupt itself is cleared using this API.
+ 406:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 407:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Parameters:
+ 408:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 409:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 410:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** * Return:
+ 411:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *   None
+ 412:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *
+ 413:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** *******************************************************************************/
+ 414:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** void isr_ADC_AudioStream_ClearPending(void)
+ 415:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** {
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 18
+
+
+ 551              		.loc 1 415 0
+ 552              		.cfi_startproc
+ 553              		@ args = 0, pretend = 0, frame = 0
+ 554              		@ frame_needed = 1, uses_anonymous_args = 0
+ 555              		@ link register save eliminated.
+ 556 0000 80B4     		push	{r7}
+ 557              		.cfi_def_cfa_offset 4
+ 558              		.cfi_offset 7, -4
+ 559 0002 00AF     		add	r7, sp, #0
+ 560              		.cfi_def_cfa_register 7
+ 416:Generated_Source\PSoC5/isr_ADC_AudioStream.c ****     *isr_ADC_AudioStream_INTC_CLR_PD = isr_ADC_AudioStream__INTC_MASK;
+ 561              		.loc 1 416 0
+ 562 0004 034B     		ldr	r3, .L43
+ 563 0006 0422     		movs	r2, #4
+ 564 0008 1A60     		str	r2, [r3]
+ 417:Generated_Source\PSoC5/isr_ADC_AudioStream.c **** }
+ 565              		.loc 1 417 0
+ 566 000a 00BF     		nop
+ 567 000c BD46     		mov	sp, r7
+ 568              		.cfi_def_cfa_register 13
+ 569              		@ sp needed
+ 570 000e 80BC     		pop	{r7}
+ 571              		.cfi_restore 7
+ 572              		.cfi_def_cfa_offset 0
+ 573 0010 7047     		bx	lr
+ 574              	.L44:
+ 575 0012 00BF     		.align	2
+ 576              	.L43:
+ 577 0014 80E200E0 		.word	-536812928
+ 578              		.cfi_endproc
+ 579              	.LFE75:
+ 580              		.size	isr_ADC_AudioStream_ClearPending, .-isr_ADC_AudioStream_ClearPending
+ 581              		.text
+ 582              	.Letext0:
+ 583              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 584              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 585              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 586              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
+ 587              		.section	.debug_info,"",%progbits
+ 588              	.Ldebug_info0:
+ 589 0000 A2020000 		.4byte	0x2a2
+ 590 0004 0400     		.2byte	0x4
+ 591 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 592 000a 04       		.byte	0x4
+ 593 000b 01       		.uleb128 0x1
+ 594 000c 06000000 		.4byte	.LASF39
+ 595 0010 0C       		.byte	0xc
+ 596 0011 FC000000 		.4byte	.LASF40
+ 597 0015 DB010000 		.4byte	.LASF41
+ 598 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 599 001d 00000000 		.4byte	0
+ 600 0021 00000000 		.4byte	.Ldebug_line0
+ 601 0025 02       		.uleb128 0x2
+ 602 0026 04       		.byte	0x4
+ 603 0027 05       		.byte	0x5
+ 604 0028 696E7400 		.ascii	"int\000"
+ 605 002c 03       		.uleb128 0x3
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 19
+
+
+ 606 002d 04       		.byte	0x4
+ 607 002e 07       		.byte	0x7
+ 608 002f 55020000 		.4byte	.LASF0
+ 609 0033 03       		.uleb128 0x3
+ 610 0034 08       		.byte	0x8
+ 611 0035 05       		.byte	0x5
+ 612 0036 D9020000 		.4byte	.LASF1
+ 613 003a 03       		.uleb128 0x3
+ 614 003b 08       		.byte	0x8
+ 615 003c 04       		.byte	0x4
+ 616 003d 75030000 		.4byte	.LASF2
+ 617 0041 03       		.uleb128 0x3
+ 618 0042 01       		.byte	0x1
+ 619 0043 06       		.byte	0x6
+ 620 0044 81030000 		.4byte	.LASF3
+ 621 0048 03       		.uleb128 0x3
+ 622 0049 01       		.byte	0x1
+ 623 004a 08       		.byte	0x8
+ 624 004b 6C010000 		.4byte	.LASF4
+ 625 004f 03       		.uleb128 0x3
+ 626 0050 02       		.byte	0x2
+ 627 0051 05       		.byte	0x5
+ 628 0052 44030000 		.4byte	.LASF5
+ 629 0056 03       		.uleb128 0x3
+ 630 0057 02       		.byte	0x2
+ 631 0058 07       		.byte	0x7
+ 632 0059 AC010000 		.4byte	.LASF6
+ 633 005d 04       		.uleb128 0x4
+ 634 005e F2000000 		.4byte	.LASF12
+ 635 0062 02       		.byte	0x2
+ 636 0063 3F       		.byte	0x3f
+ 637 0064 68000000 		.4byte	0x68
+ 638 0068 03       		.uleb128 0x3
+ 639 0069 04       		.byte	0x4
+ 640 006a 05       		.byte	0x5
+ 641 006b 63030000 		.4byte	.LASF7
+ 642 006f 03       		.uleb128 0x3
+ 643 0070 04       		.byte	0x4
+ 644 0071 07       		.byte	0x7
+ 645 0072 9A010000 		.4byte	.LASF8
+ 646 0076 03       		.uleb128 0x3
+ 647 0077 08       		.byte	0x8
+ 648 0078 07       		.byte	0x7
+ 649 0079 6A020000 		.4byte	.LASF9
+ 650 007d 03       		.uleb128 0x3
+ 651 007e 04       		.byte	0x4
+ 652 007f 07       		.byte	0x7
+ 653 0080 D0020000 		.4byte	.LASF10
+ 654 0084 03       		.uleb128 0x3
+ 655 0085 01       		.byte	0x1
+ 656 0086 08       		.byte	0x8
+ 657 0087 E7020000 		.4byte	.LASF11
+ 658 008b 05       		.uleb128 0x5
+ 659 008c 04       		.byte	0x4
+ 660 008d 91000000 		.4byte	0x91
+ 661 0091 06       		.uleb128 0x6
+ 662 0092 04       		.uleb128 0x4
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 20
+
+
+ 663 0093 C8020000 		.4byte	.LASF13
+ 664 0097 03       		.byte	0x3
+ 665 0098 2C       		.byte	0x2c
+ 666 0099 5D000000 		.4byte	0x5d
+ 667 009d 07       		.uleb128 0x7
+ 668 009e 4E030000 		.4byte	.LASF14
+ 669 00a2 04       		.byte	0x4
+ 670 00a3 E401     		.2byte	0x1e4
+ 671 00a5 48000000 		.4byte	0x48
+ 672 00a9 07       		.uleb128 0x7
+ 673 00aa 33020000 		.4byte	.LASF15
+ 674 00ae 04       		.byte	0x4
+ 675 00af E501     		.2byte	0x1e5
+ 676 00b1 56000000 		.4byte	0x56
+ 677 00b5 07       		.uleb128 0x7
+ 678 00b6 4E020000 		.4byte	.LASF16
+ 679 00ba 04       		.byte	0x4
+ 680 00bb E601     		.2byte	0x1e6
+ 681 00bd 6F000000 		.4byte	0x6f
+ 682 00c1 03       		.uleb128 0x3
+ 683 00c2 04       		.byte	0x4
+ 684 00c3 04       		.byte	0x4
+ 685 00c4 66010000 		.4byte	.LASF17
+ 686 00c8 03       		.uleb128 0x3
+ 687 00c9 08       		.byte	0x8
+ 688 00ca 04       		.byte	0x4
+ 689 00cb 2C020000 		.4byte	.LASF18
+ 690 00cf 07       		.uleb128 0x7
+ 691 00d0 95010000 		.4byte	.LASF19
+ 692 00d4 04       		.byte	0x4
+ 693 00d5 8E02     		.2byte	0x28e
+ 694 00d7 DB000000 		.4byte	0xdb
+ 695 00db 08       		.uleb128 0x8
+ 696 00dc 9D000000 		.4byte	0x9d
+ 697 00e0 07       		.uleb128 0x7
+ 698 00e1 00000000 		.4byte	.LASF20
+ 699 00e5 04       		.byte	0x4
+ 700 00e6 9002     		.2byte	0x290
+ 701 00e8 EC000000 		.4byte	0xec
+ 702 00ec 08       		.uleb128 0x8
+ 703 00ed B5000000 		.4byte	0xb5
+ 704 00f1 07       		.uleb128 0x7
+ 705 00f2 9B020000 		.4byte	.LASF21
+ 706 00f6 04       		.byte	0x4
+ 707 00f7 A002     		.2byte	0x2a0
+ 708 00f9 8B000000 		.4byte	0x8b
+ 709 00fd 09       		.uleb128 0x9
+ 710 00fe 81020000 		.4byte	.LASF22
+ 711 0102 01       		.byte	0x1
+ 712 0103 42       		.byte	0x42
+ 713 0104 00000000 		.4byte	.LFB63
+ 714 0108 20000000 		.4byte	.LFE63-.LFB63
+ 715 010c 01       		.uleb128 0x1
+ 716 010d 9C       		.byte	0x9c
+ 717 010e 0A       		.uleb128 0xa
+ 718 010f 0A030000 		.4byte	.LASF25
+ 719 0113 01       		.byte	0x1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 21
+
+
+ 720 0114 6D       		.byte	0x6d
+ 721 0115 00000000 		.4byte	.LFB64
+ 722 0119 24000000 		.4byte	.LFE64-.LFB64
+ 723 011d 01       		.uleb128 0x1
+ 724 011e 9C       		.byte	0x9c
+ 725 011f 32010000 		.4byte	0x132
+ 726 0123 0B       		.uleb128 0xb
+ 727 0124 62020000 		.4byte	.LASF27
+ 728 0128 01       		.byte	0x1
+ 729 0129 6D       		.byte	0x6d
+ 730 012a F1000000 		.4byte	0xf1
+ 731 012e 02       		.uleb128 0x2
+ 732 012f 91       		.byte	0x91
+ 733 0130 74       		.sleb128 -12
+ 734 0131 00       		.byte	0
+ 735 0132 09       		.uleb128 0x9
+ 736 0133 8D030000 		.4byte	.LASF23
+ 737 0137 01       		.byte	0x1
+ 738 0138 8B       		.byte	0x8b
+ 739 0139 00000000 		.4byte	.LFB65
+ 740 013d 18000000 		.4byte	.LFE65-.LFB65
+ 741 0141 01       		.uleb128 0x1
+ 742 0142 9C       		.byte	0x9c
+ 743 0143 09       		.uleb128 0x9
+ 744 0144 26030000 		.4byte	.LASF24
+ 745 0148 01       		.byte	0x1
+ 746 0149 A5       		.byte	0xa5
+ 747 014a 00000000 		.4byte	.LFB66
+ 748 014e 40000000 		.4byte	.LFE66-.LFB66
+ 749 0152 01       		.uleb128 0x1
+ 750 0153 9C       		.byte	0x9c
+ 751 0154 0C       		.uleb128 0xc
+ 752 0155 94000000 		.4byte	.LASF26
+ 753 0159 01       		.byte	0x1
+ 754 015a D5       		.byte	0xd5
+ 755 015b 00000000 		.4byte	.LFB67
+ 756 015f 24000000 		.4byte	.LFE67-.LFB67
+ 757 0163 01       		.uleb128 0x1
+ 758 0164 9C       		.byte	0x9c
+ 759 0165 86010000 		.4byte	0x186
+ 760 0169 0B       		.uleb128 0xb
+ 761 016a 62020000 		.4byte	.LASF27
+ 762 016e 01       		.byte	0x1
+ 763 016f D5       		.byte	0xd5
+ 764 0170 F1000000 		.4byte	0xf1
+ 765 0174 02       		.uleb128 0x2
+ 766 0175 91       		.byte	0x91
+ 767 0176 6C       		.sleb128 -20
+ 768 0177 0D       		.uleb128 0xd
+ 769 0178 54030000 		.4byte	.LASF28
+ 770 017c 01       		.byte	0x1
+ 771 017d D7       		.byte	0xd7
+ 772 017e 86010000 		.4byte	0x186
+ 773 0182 02       		.uleb128 0x2
+ 774 0183 91       		.byte	0x91
+ 775 0184 74       		.sleb128 -12
+ 776 0185 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 22
+
+
+ 777 0186 05       		.uleb128 0x5
+ 778 0187 04       		.byte	0x4
+ 779 0188 F1000000 		.4byte	0xf1
+ 780 018c 0E       		.uleb128 0xe
+ 781 018d EC020000 		.4byte	.LASF31
+ 782 0191 01       		.byte	0x1
+ 783 0192 ED       		.byte	0xed
+ 784 0193 F1000000 		.4byte	0xf1
+ 785 0197 00000000 		.4byte	.LFB68
+ 786 019b 20000000 		.4byte	.LFE68-.LFB68
+ 787 019f 01       		.uleb128 0x1
+ 788 01a0 9C       		.byte	0x9c
+ 789 01a1 B4010000 		.4byte	0x1b4
+ 790 01a5 0D       		.uleb128 0xd
+ 791 01a6 54030000 		.4byte	.LASF28
+ 792 01aa 01       		.byte	0x1
+ 793 01ab EF       		.byte	0xef
+ 794 01ac 86010000 		.4byte	0x186
+ 795 01b0 02       		.uleb128 0x2
+ 796 01b1 91       		.byte	0x91
+ 797 01b2 74       		.sleb128 -12
+ 798 01b3 00       		.byte	0
+ 799 01b4 0F       		.uleb128 0xf
+ 800 01b5 A8020000 		.4byte	.LASF29
+ 801 01b9 01       		.byte	0x1
+ 802 01ba 0F01     		.2byte	0x10f
+ 803 01bc 00000000 		.4byte	.LFB69
+ 804 01c0 24000000 		.4byte	.LFE69-.LFB69
+ 805 01c4 01       		.uleb128 0x1
+ 806 01c5 9C       		.byte	0x9c
+ 807 01c6 DA010000 		.4byte	0x1da
+ 808 01ca 10       		.uleb128 0x10
+ 809 01cb 3A020000 		.4byte	.LASF30
+ 810 01cf 01       		.byte	0x1
+ 811 01d0 0F01     		.2byte	0x10f
+ 812 01d2 9D000000 		.4byte	0x9d
+ 813 01d6 02       		.uleb128 0x2
+ 814 01d7 91       		.byte	0x91
+ 815 01d8 77       		.sleb128 -9
+ 816 01d9 00       		.byte	0
+ 817 01da 11       		.uleb128 0x11
+ 818 01db 46010000 		.4byte	.LASF32
+ 819 01df 01       		.byte	0x1
+ 820 01e0 2501     		.2byte	0x125
+ 821 01e2 9D000000 		.4byte	0x9d
+ 822 01e6 00000000 		.4byte	.LFB70
+ 823 01ea 20000000 		.4byte	.LFE70-.LFB70
+ 824 01ee 01       		.uleb128 0x1
+ 825 01ef 9C       		.byte	0x9c
+ 826 01f0 04020000 		.4byte	0x204
+ 827 01f4 12       		.uleb128 0x12
+ 828 01f5 3A020000 		.4byte	.LASF30
+ 829 01f9 01       		.byte	0x1
+ 830 01fa 2701     		.2byte	0x127
+ 831 01fc 9D000000 		.4byte	0x9d
+ 832 0200 02       		.uleb128 0x2
+ 833 0201 91       		.byte	0x91
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 23
+
+
+ 834 0202 77       		.sleb128 -9
+ 835 0203 00       		.byte	0
+ 836 0204 13       		.uleb128 0x13
+ 837 0205 7A010000 		.4byte	.LASF33
+ 838 0209 01       		.byte	0x1
+ 839 020a 4001     		.2byte	0x140
+ 840 020c 00000000 		.4byte	.LFB71
+ 841 0210 18000000 		.4byte	.LFE71-.LFB71
+ 842 0214 01       		.uleb128 0x1
+ 843 0215 9C       		.byte	0x9c
+ 844 0216 14       		.uleb128 0x14
+ 845 0217 29010000 		.4byte	.LASF42
+ 846 021b 01       		.byte	0x1
+ 847 021c 5501     		.2byte	0x155
+ 848 021e 9D000000 		.4byte	0x9d
+ 849 0222 00000000 		.4byte	.LFB72
+ 850 0226 24000000 		.4byte	.LFE72-.LFB72
+ 851 022a 01       		.uleb128 0x1
+ 852 022b 9C       		.byte	0x9c
+ 853 022c 13       		.uleb128 0x13
+ 854 022d BF010000 		.4byte	.LASF34
+ 855 0231 01       		.byte	0x1
+ 856 0232 6A01     		.2byte	0x16a
+ 857 0234 00000000 		.4byte	.LFB73
+ 858 0238 18000000 		.4byte	.LFE73-.LFB73
+ 859 023c 01       		.uleb128 0x1
+ 860 023d 9C       		.byte	0x9c
+ 861 023e 13       		.uleb128 0x13
+ 862 023f D3000000 		.4byte	.LASF35
+ 863 0243 01       		.byte	0x1
+ 864 0244 8501     		.2byte	0x185
+ 865 0246 00000000 		.4byte	.LFB74
+ 866 024a 18000000 		.4byte	.LFE74-.LFB74
+ 867 024e 01       		.uleb128 0x1
+ 868 024f 9C       		.byte	0x9c
+ 869 0250 13       		.uleb128 0x13
+ 870 0251 B2000000 		.4byte	.LASF36
+ 871 0255 01       		.byte	0x1
+ 872 0256 9E01     		.2byte	0x19e
+ 873 0258 00000000 		.4byte	.LFB75
+ 874 025c 18000000 		.4byte	.LFE75-.LFB75
+ 875 0260 01       		.uleb128 0x1
+ 876 0261 9C       		.byte	0x9c
+ 877 0262 0D       		.uleb128 0xd
+ 878 0263 6C030000 		.4byte	.LASF37
+ 879 0267 01       		.byte	0x1
+ 880 0268 20       		.byte	0x20
+ 881 0269 A9000000 		.4byte	0xa9
+ 882 026d 05       		.uleb128 0x5
+ 883 026e 03       		.byte	0x3
+ 884 026f 00000000 		.4byte	iterator
+ 885 0273 15       		.uleb128 0x15
+ 886 0274 A9000000 		.4byte	0xa9
+ 887 0278 83020000 		.4byte	0x283
+ 888 027c 16       		.uleb128 0x16
+ 889 027d 7D000000 		.4byte	0x7d
+ 890 0281 63       		.byte	0x63
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 24
+
+
+ 891 0282 00       		.byte	0
+ 892 0283 0D       		.uleb128 0xd
+ 893 0284 43020000 		.4byte	.LASF38
+ 894 0288 01       		.byte	0x1
+ 895 0289 21       		.byte	0x21
+ 896 028a 73020000 		.4byte	0x273
+ 897 028e 05       		.uleb128 0x5
+ 898 028f 03       		.byte	0x3
+ 899 0290 04000000 		.4byte	ADCReading
+ 900 0294 17       		.uleb128 0x17
+ 901 0295 1F020000 		.4byte	.LASF43
+ 902 0299 05       		.byte	0x5
+ 903 029a 1207     		.2byte	0x712
+ 904 029c A0020000 		.4byte	0x2a0
+ 905 02a0 08       		.uleb128 0x8
+ 906 02a1 92000000 		.4byte	0x92
+ 907 02a5 00       		.byte	0
+ 908              		.section	.debug_abbrev,"",%progbits
+ 909              	.Ldebug_abbrev0:
+ 910 0000 01       		.uleb128 0x1
+ 911 0001 11       		.uleb128 0x11
+ 912 0002 01       		.byte	0x1
+ 913 0003 25       		.uleb128 0x25
+ 914 0004 0E       		.uleb128 0xe
+ 915 0005 13       		.uleb128 0x13
+ 916 0006 0B       		.uleb128 0xb
+ 917 0007 03       		.uleb128 0x3
+ 918 0008 0E       		.uleb128 0xe
+ 919 0009 1B       		.uleb128 0x1b
+ 920 000a 0E       		.uleb128 0xe
+ 921 000b 55       		.uleb128 0x55
+ 922 000c 17       		.uleb128 0x17
+ 923 000d 11       		.uleb128 0x11
+ 924 000e 01       		.uleb128 0x1
+ 925 000f 10       		.uleb128 0x10
+ 926 0010 17       		.uleb128 0x17
+ 927 0011 00       		.byte	0
+ 928 0012 00       		.byte	0
+ 929 0013 02       		.uleb128 0x2
+ 930 0014 24       		.uleb128 0x24
+ 931 0015 00       		.byte	0
+ 932 0016 0B       		.uleb128 0xb
+ 933 0017 0B       		.uleb128 0xb
+ 934 0018 3E       		.uleb128 0x3e
+ 935 0019 0B       		.uleb128 0xb
+ 936 001a 03       		.uleb128 0x3
+ 937 001b 08       		.uleb128 0x8
+ 938 001c 00       		.byte	0
+ 939 001d 00       		.byte	0
+ 940 001e 03       		.uleb128 0x3
+ 941 001f 24       		.uleb128 0x24
+ 942 0020 00       		.byte	0
+ 943 0021 0B       		.uleb128 0xb
+ 944 0022 0B       		.uleb128 0xb
+ 945 0023 3E       		.uleb128 0x3e
+ 946 0024 0B       		.uleb128 0xb
+ 947 0025 03       		.uleb128 0x3
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 25
+
+
+ 948 0026 0E       		.uleb128 0xe
+ 949 0027 00       		.byte	0
+ 950 0028 00       		.byte	0
+ 951 0029 04       		.uleb128 0x4
+ 952 002a 16       		.uleb128 0x16
+ 953 002b 00       		.byte	0
+ 954 002c 03       		.uleb128 0x3
+ 955 002d 0E       		.uleb128 0xe
+ 956 002e 3A       		.uleb128 0x3a
+ 957 002f 0B       		.uleb128 0xb
+ 958 0030 3B       		.uleb128 0x3b
+ 959 0031 0B       		.uleb128 0xb
+ 960 0032 49       		.uleb128 0x49
+ 961 0033 13       		.uleb128 0x13
+ 962 0034 00       		.byte	0
+ 963 0035 00       		.byte	0
+ 964 0036 05       		.uleb128 0x5
+ 965 0037 0F       		.uleb128 0xf
+ 966 0038 00       		.byte	0
+ 967 0039 0B       		.uleb128 0xb
+ 968 003a 0B       		.uleb128 0xb
+ 969 003b 49       		.uleb128 0x49
+ 970 003c 13       		.uleb128 0x13
+ 971 003d 00       		.byte	0
+ 972 003e 00       		.byte	0
+ 973 003f 06       		.uleb128 0x6
+ 974 0040 15       		.uleb128 0x15
+ 975 0041 00       		.byte	0
+ 976 0042 27       		.uleb128 0x27
+ 977 0043 19       		.uleb128 0x19
+ 978 0044 00       		.byte	0
+ 979 0045 00       		.byte	0
+ 980 0046 07       		.uleb128 0x7
+ 981 0047 16       		.uleb128 0x16
+ 982 0048 00       		.byte	0
+ 983 0049 03       		.uleb128 0x3
+ 984 004a 0E       		.uleb128 0xe
+ 985 004b 3A       		.uleb128 0x3a
+ 986 004c 0B       		.uleb128 0xb
+ 987 004d 3B       		.uleb128 0x3b
+ 988 004e 05       		.uleb128 0x5
+ 989 004f 49       		.uleb128 0x49
+ 990 0050 13       		.uleb128 0x13
+ 991 0051 00       		.byte	0
+ 992 0052 00       		.byte	0
+ 993 0053 08       		.uleb128 0x8
+ 994 0054 35       		.uleb128 0x35
+ 995 0055 00       		.byte	0
+ 996 0056 49       		.uleb128 0x49
+ 997 0057 13       		.uleb128 0x13
+ 998 0058 00       		.byte	0
+ 999 0059 00       		.byte	0
+ 1000 005a 09       		.uleb128 0x9
+ 1001 005b 2E       		.uleb128 0x2e
+ 1002 005c 00       		.byte	0
+ 1003 005d 3F       		.uleb128 0x3f
+ 1004 005e 19       		.uleb128 0x19
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 26
+
+
+ 1005 005f 03       		.uleb128 0x3
+ 1006 0060 0E       		.uleb128 0xe
+ 1007 0061 3A       		.uleb128 0x3a
+ 1008 0062 0B       		.uleb128 0xb
+ 1009 0063 3B       		.uleb128 0x3b
+ 1010 0064 0B       		.uleb128 0xb
+ 1011 0065 27       		.uleb128 0x27
+ 1012 0066 19       		.uleb128 0x19
+ 1013 0067 11       		.uleb128 0x11
+ 1014 0068 01       		.uleb128 0x1
+ 1015 0069 12       		.uleb128 0x12
+ 1016 006a 06       		.uleb128 0x6
+ 1017 006b 40       		.uleb128 0x40
+ 1018 006c 18       		.uleb128 0x18
+ 1019 006d 9642     		.uleb128 0x2116
+ 1020 006f 19       		.uleb128 0x19
+ 1021 0070 00       		.byte	0
+ 1022 0071 00       		.byte	0
+ 1023 0072 0A       		.uleb128 0xa
+ 1024 0073 2E       		.uleb128 0x2e
+ 1025 0074 01       		.byte	0x1
+ 1026 0075 3F       		.uleb128 0x3f
+ 1027 0076 19       		.uleb128 0x19
+ 1028 0077 03       		.uleb128 0x3
+ 1029 0078 0E       		.uleb128 0xe
+ 1030 0079 3A       		.uleb128 0x3a
+ 1031 007a 0B       		.uleb128 0xb
+ 1032 007b 3B       		.uleb128 0x3b
+ 1033 007c 0B       		.uleb128 0xb
+ 1034 007d 27       		.uleb128 0x27
+ 1035 007e 19       		.uleb128 0x19
+ 1036 007f 11       		.uleb128 0x11
+ 1037 0080 01       		.uleb128 0x1
+ 1038 0081 12       		.uleb128 0x12
+ 1039 0082 06       		.uleb128 0x6
+ 1040 0083 40       		.uleb128 0x40
+ 1041 0084 18       		.uleb128 0x18
+ 1042 0085 9642     		.uleb128 0x2116
+ 1043 0087 19       		.uleb128 0x19
+ 1044 0088 01       		.uleb128 0x1
+ 1045 0089 13       		.uleb128 0x13
+ 1046 008a 00       		.byte	0
+ 1047 008b 00       		.byte	0
+ 1048 008c 0B       		.uleb128 0xb
+ 1049 008d 05       		.uleb128 0x5
+ 1050 008e 00       		.byte	0
+ 1051 008f 03       		.uleb128 0x3
+ 1052 0090 0E       		.uleb128 0xe
+ 1053 0091 3A       		.uleb128 0x3a
+ 1054 0092 0B       		.uleb128 0xb
+ 1055 0093 3B       		.uleb128 0x3b
+ 1056 0094 0B       		.uleb128 0xb
+ 1057 0095 49       		.uleb128 0x49
+ 1058 0096 13       		.uleb128 0x13
+ 1059 0097 02       		.uleb128 0x2
+ 1060 0098 18       		.uleb128 0x18
+ 1061 0099 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 27
+
+
+ 1062 009a 00       		.byte	0
+ 1063 009b 0C       		.uleb128 0xc
+ 1064 009c 2E       		.uleb128 0x2e
+ 1065 009d 01       		.byte	0x1
+ 1066 009e 3F       		.uleb128 0x3f
+ 1067 009f 19       		.uleb128 0x19
+ 1068 00a0 03       		.uleb128 0x3
+ 1069 00a1 0E       		.uleb128 0xe
+ 1070 00a2 3A       		.uleb128 0x3a
+ 1071 00a3 0B       		.uleb128 0xb
+ 1072 00a4 3B       		.uleb128 0x3b
+ 1073 00a5 0B       		.uleb128 0xb
+ 1074 00a6 27       		.uleb128 0x27
+ 1075 00a7 19       		.uleb128 0x19
+ 1076 00a8 11       		.uleb128 0x11
+ 1077 00a9 01       		.uleb128 0x1
+ 1078 00aa 12       		.uleb128 0x12
+ 1079 00ab 06       		.uleb128 0x6
+ 1080 00ac 40       		.uleb128 0x40
+ 1081 00ad 18       		.uleb128 0x18
+ 1082 00ae 9742     		.uleb128 0x2117
+ 1083 00b0 19       		.uleb128 0x19
+ 1084 00b1 01       		.uleb128 0x1
+ 1085 00b2 13       		.uleb128 0x13
+ 1086 00b3 00       		.byte	0
+ 1087 00b4 00       		.byte	0
+ 1088 00b5 0D       		.uleb128 0xd
+ 1089 00b6 34       		.uleb128 0x34
+ 1090 00b7 00       		.byte	0
+ 1091 00b8 03       		.uleb128 0x3
+ 1092 00b9 0E       		.uleb128 0xe
+ 1093 00ba 3A       		.uleb128 0x3a
+ 1094 00bb 0B       		.uleb128 0xb
+ 1095 00bc 3B       		.uleb128 0x3b
+ 1096 00bd 0B       		.uleb128 0xb
+ 1097 00be 49       		.uleb128 0x49
+ 1098 00bf 13       		.uleb128 0x13
+ 1099 00c0 02       		.uleb128 0x2
+ 1100 00c1 18       		.uleb128 0x18
+ 1101 00c2 00       		.byte	0
+ 1102 00c3 00       		.byte	0
+ 1103 00c4 0E       		.uleb128 0xe
+ 1104 00c5 2E       		.uleb128 0x2e
+ 1105 00c6 01       		.byte	0x1
+ 1106 00c7 3F       		.uleb128 0x3f
+ 1107 00c8 19       		.uleb128 0x19
+ 1108 00c9 03       		.uleb128 0x3
+ 1109 00ca 0E       		.uleb128 0xe
+ 1110 00cb 3A       		.uleb128 0x3a
+ 1111 00cc 0B       		.uleb128 0xb
+ 1112 00cd 3B       		.uleb128 0x3b
+ 1113 00ce 0B       		.uleb128 0xb
+ 1114 00cf 27       		.uleb128 0x27
+ 1115 00d0 19       		.uleb128 0x19
+ 1116 00d1 49       		.uleb128 0x49
+ 1117 00d2 13       		.uleb128 0x13
+ 1118 00d3 11       		.uleb128 0x11
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 28
+
+
+ 1119 00d4 01       		.uleb128 0x1
+ 1120 00d5 12       		.uleb128 0x12
+ 1121 00d6 06       		.uleb128 0x6
+ 1122 00d7 40       		.uleb128 0x40
+ 1123 00d8 18       		.uleb128 0x18
+ 1124 00d9 9742     		.uleb128 0x2117
+ 1125 00db 19       		.uleb128 0x19
+ 1126 00dc 01       		.uleb128 0x1
+ 1127 00dd 13       		.uleb128 0x13
+ 1128 00de 00       		.byte	0
+ 1129 00df 00       		.byte	0
+ 1130 00e0 0F       		.uleb128 0xf
+ 1131 00e1 2E       		.uleb128 0x2e
+ 1132 00e2 01       		.byte	0x1
+ 1133 00e3 3F       		.uleb128 0x3f
+ 1134 00e4 19       		.uleb128 0x19
+ 1135 00e5 03       		.uleb128 0x3
+ 1136 00e6 0E       		.uleb128 0xe
+ 1137 00e7 3A       		.uleb128 0x3a
+ 1138 00e8 0B       		.uleb128 0xb
+ 1139 00e9 3B       		.uleb128 0x3b
+ 1140 00ea 05       		.uleb128 0x5
+ 1141 00eb 27       		.uleb128 0x27
+ 1142 00ec 19       		.uleb128 0x19
+ 1143 00ed 11       		.uleb128 0x11
+ 1144 00ee 01       		.uleb128 0x1
+ 1145 00ef 12       		.uleb128 0x12
+ 1146 00f0 06       		.uleb128 0x6
+ 1147 00f1 40       		.uleb128 0x40
+ 1148 00f2 18       		.uleb128 0x18
+ 1149 00f3 9742     		.uleb128 0x2117
+ 1150 00f5 19       		.uleb128 0x19
+ 1151 00f6 01       		.uleb128 0x1
+ 1152 00f7 13       		.uleb128 0x13
+ 1153 00f8 00       		.byte	0
+ 1154 00f9 00       		.byte	0
+ 1155 00fa 10       		.uleb128 0x10
+ 1156 00fb 05       		.uleb128 0x5
+ 1157 00fc 00       		.byte	0
+ 1158 00fd 03       		.uleb128 0x3
+ 1159 00fe 0E       		.uleb128 0xe
+ 1160 00ff 3A       		.uleb128 0x3a
+ 1161 0100 0B       		.uleb128 0xb
+ 1162 0101 3B       		.uleb128 0x3b
+ 1163 0102 05       		.uleb128 0x5
+ 1164 0103 49       		.uleb128 0x49
+ 1165 0104 13       		.uleb128 0x13
+ 1166 0105 02       		.uleb128 0x2
+ 1167 0106 18       		.uleb128 0x18
+ 1168 0107 00       		.byte	0
+ 1169 0108 00       		.byte	0
+ 1170 0109 11       		.uleb128 0x11
+ 1171 010a 2E       		.uleb128 0x2e
+ 1172 010b 01       		.byte	0x1
+ 1173 010c 3F       		.uleb128 0x3f
+ 1174 010d 19       		.uleb128 0x19
+ 1175 010e 03       		.uleb128 0x3
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 29
+
+
+ 1176 010f 0E       		.uleb128 0xe
+ 1177 0110 3A       		.uleb128 0x3a
+ 1178 0111 0B       		.uleb128 0xb
+ 1179 0112 3B       		.uleb128 0x3b
+ 1180 0113 05       		.uleb128 0x5
+ 1181 0114 27       		.uleb128 0x27
+ 1182 0115 19       		.uleb128 0x19
+ 1183 0116 49       		.uleb128 0x49
+ 1184 0117 13       		.uleb128 0x13
+ 1185 0118 11       		.uleb128 0x11
+ 1186 0119 01       		.uleb128 0x1
+ 1187 011a 12       		.uleb128 0x12
+ 1188 011b 06       		.uleb128 0x6
+ 1189 011c 40       		.uleb128 0x40
+ 1190 011d 18       		.uleb128 0x18
+ 1191 011e 9742     		.uleb128 0x2117
+ 1192 0120 19       		.uleb128 0x19
+ 1193 0121 01       		.uleb128 0x1
+ 1194 0122 13       		.uleb128 0x13
+ 1195 0123 00       		.byte	0
+ 1196 0124 00       		.byte	0
+ 1197 0125 12       		.uleb128 0x12
+ 1198 0126 34       		.uleb128 0x34
+ 1199 0127 00       		.byte	0
+ 1200 0128 03       		.uleb128 0x3
+ 1201 0129 0E       		.uleb128 0xe
+ 1202 012a 3A       		.uleb128 0x3a
+ 1203 012b 0B       		.uleb128 0xb
+ 1204 012c 3B       		.uleb128 0x3b
+ 1205 012d 05       		.uleb128 0x5
+ 1206 012e 49       		.uleb128 0x49
+ 1207 012f 13       		.uleb128 0x13
+ 1208 0130 02       		.uleb128 0x2
+ 1209 0131 18       		.uleb128 0x18
+ 1210 0132 00       		.byte	0
+ 1211 0133 00       		.byte	0
+ 1212 0134 13       		.uleb128 0x13
+ 1213 0135 2E       		.uleb128 0x2e
+ 1214 0136 00       		.byte	0
+ 1215 0137 3F       		.uleb128 0x3f
+ 1216 0138 19       		.uleb128 0x19
+ 1217 0139 03       		.uleb128 0x3
+ 1218 013a 0E       		.uleb128 0xe
+ 1219 013b 3A       		.uleb128 0x3a
+ 1220 013c 0B       		.uleb128 0xb
+ 1221 013d 3B       		.uleb128 0x3b
+ 1222 013e 05       		.uleb128 0x5
+ 1223 013f 27       		.uleb128 0x27
+ 1224 0140 19       		.uleb128 0x19
+ 1225 0141 11       		.uleb128 0x11
+ 1226 0142 01       		.uleb128 0x1
+ 1227 0143 12       		.uleb128 0x12
+ 1228 0144 06       		.uleb128 0x6
+ 1229 0145 40       		.uleb128 0x40
+ 1230 0146 18       		.uleb128 0x18
+ 1231 0147 9742     		.uleb128 0x2117
+ 1232 0149 19       		.uleb128 0x19
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 30
+
+
+ 1233 014a 00       		.byte	0
+ 1234 014b 00       		.byte	0
+ 1235 014c 14       		.uleb128 0x14
+ 1236 014d 2E       		.uleb128 0x2e
+ 1237 014e 00       		.byte	0
+ 1238 014f 3F       		.uleb128 0x3f
+ 1239 0150 19       		.uleb128 0x19
+ 1240 0151 03       		.uleb128 0x3
+ 1241 0152 0E       		.uleb128 0xe
+ 1242 0153 3A       		.uleb128 0x3a
+ 1243 0154 0B       		.uleb128 0xb
+ 1244 0155 3B       		.uleb128 0x3b
+ 1245 0156 05       		.uleb128 0x5
+ 1246 0157 27       		.uleb128 0x27
+ 1247 0158 19       		.uleb128 0x19
+ 1248 0159 49       		.uleb128 0x49
+ 1249 015a 13       		.uleb128 0x13
+ 1250 015b 11       		.uleb128 0x11
+ 1251 015c 01       		.uleb128 0x1
+ 1252 015d 12       		.uleb128 0x12
+ 1253 015e 06       		.uleb128 0x6
+ 1254 015f 40       		.uleb128 0x40
+ 1255 0160 18       		.uleb128 0x18
+ 1256 0161 9742     		.uleb128 0x2117
+ 1257 0163 19       		.uleb128 0x19
+ 1258 0164 00       		.byte	0
+ 1259 0165 00       		.byte	0
+ 1260 0166 15       		.uleb128 0x15
+ 1261 0167 01       		.uleb128 0x1
+ 1262 0168 01       		.byte	0x1
+ 1263 0169 49       		.uleb128 0x49
+ 1264 016a 13       		.uleb128 0x13
+ 1265 016b 01       		.uleb128 0x1
+ 1266 016c 13       		.uleb128 0x13
+ 1267 016d 00       		.byte	0
+ 1268 016e 00       		.byte	0
+ 1269 016f 16       		.uleb128 0x16
+ 1270 0170 21       		.uleb128 0x21
+ 1271 0171 00       		.byte	0
+ 1272 0172 49       		.uleb128 0x49
+ 1273 0173 13       		.uleb128 0x13
+ 1274 0174 2F       		.uleb128 0x2f
+ 1275 0175 0B       		.uleb128 0xb
+ 1276 0176 00       		.byte	0
+ 1277 0177 00       		.byte	0
+ 1278 0178 17       		.uleb128 0x17
+ 1279 0179 34       		.uleb128 0x34
+ 1280 017a 00       		.byte	0
+ 1281 017b 03       		.uleb128 0x3
+ 1282 017c 0E       		.uleb128 0xe
+ 1283 017d 3A       		.uleb128 0x3a
+ 1284 017e 0B       		.uleb128 0xb
+ 1285 017f 3B       		.uleb128 0x3b
+ 1286 0180 05       		.uleb128 0x5
+ 1287 0181 49       		.uleb128 0x49
+ 1288 0182 13       		.uleb128 0x13
+ 1289 0183 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 31
+
+
+ 1290 0184 19       		.uleb128 0x19
+ 1291 0185 3C       		.uleb128 0x3c
+ 1292 0186 19       		.uleb128 0x19
+ 1293 0187 00       		.byte	0
+ 1294 0188 00       		.byte	0
+ 1295 0189 00       		.byte	0
+ 1296              		.section	.debug_aranges,"",%progbits
+ 1297 0000 7C000000 		.4byte	0x7c
+ 1298 0004 0200     		.2byte	0x2
+ 1299 0006 00000000 		.4byte	.Ldebug_info0
+ 1300 000a 04       		.byte	0x4
+ 1301 000b 00       		.byte	0
+ 1302 000c 0000     		.2byte	0
+ 1303 000e 0000     		.2byte	0
+ 1304 0010 00000000 		.4byte	.LFB63
+ 1305 0014 20000000 		.4byte	.LFE63-.LFB63
+ 1306 0018 00000000 		.4byte	.LFB64
+ 1307 001c 24000000 		.4byte	.LFE64-.LFB64
+ 1308 0020 00000000 		.4byte	.LFB65
+ 1309 0024 18000000 		.4byte	.LFE65-.LFB65
+ 1310 0028 00000000 		.4byte	.LFB66
+ 1311 002c 40000000 		.4byte	.LFE66-.LFB66
+ 1312 0030 00000000 		.4byte	.LFB67
+ 1313 0034 24000000 		.4byte	.LFE67-.LFB67
+ 1314 0038 00000000 		.4byte	.LFB68
+ 1315 003c 20000000 		.4byte	.LFE68-.LFB68
+ 1316 0040 00000000 		.4byte	.LFB69
+ 1317 0044 24000000 		.4byte	.LFE69-.LFB69
+ 1318 0048 00000000 		.4byte	.LFB70
+ 1319 004c 20000000 		.4byte	.LFE70-.LFB70
+ 1320 0050 00000000 		.4byte	.LFB71
+ 1321 0054 18000000 		.4byte	.LFE71-.LFB71
+ 1322 0058 00000000 		.4byte	.LFB72
+ 1323 005c 24000000 		.4byte	.LFE72-.LFB72
+ 1324 0060 00000000 		.4byte	.LFB73
+ 1325 0064 18000000 		.4byte	.LFE73-.LFB73
+ 1326 0068 00000000 		.4byte	.LFB74
+ 1327 006c 18000000 		.4byte	.LFE74-.LFB74
+ 1328 0070 00000000 		.4byte	.LFB75
+ 1329 0074 18000000 		.4byte	.LFE75-.LFB75
+ 1330 0078 00000000 		.4byte	0
+ 1331 007c 00000000 		.4byte	0
+ 1332              		.section	.debug_ranges,"",%progbits
+ 1333              	.Ldebug_ranges0:
+ 1334 0000 00000000 		.4byte	.LFB63
+ 1335 0004 20000000 		.4byte	.LFE63
+ 1336 0008 00000000 		.4byte	.LFB64
+ 1337 000c 24000000 		.4byte	.LFE64
+ 1338 0010 00000000 		.4byte	.LFB65
+ 1339 0014 18000000 		.4byte	.LFE65
+ 1340 0018 00000000 		.4byte	.LFB66
+ 1341 001c 40000000 		.4byte	.LFE66
+ 1342 0020 00000000 		.4byte	.LFB67
+ 1343 0024 24000000 		.4byte	.LFE67
+ 1344 0028 00000000 		.4byte	.LFB68
+ 1345 002c 20000000 		.4byte	.LFE68
+ 1346 0030 00000000 		.4byte	.LFB69
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 32
+
+
+ 1347 0034 24000000 		.4byte	.LFE69
+ 1348 0038 00000000 		.4byte	.LFB70
+ 1349 003c 20000000 		.4byte	.LFE70
+ 1350 0040 00000000 		.4byte	.LFB71
+ 1351 0044 18000000 		.4byte	.LFE71
+ 1352 0048 00000000 		.4byte	.LFB72
+ 1353 004c 24000000 		.4byte	.LFE72
+ 1354 0050 00000000 		.4byte	.LFB73
+ 1355 0054 18000000 		.4byte	.LFE73
+ 1356 0058 00000000 		.4byte	.LFB74
+ 1357 005c 18000000 		.4byte	.LFE74
+ 1358 0060 00000000 		.4byte	.LFB75
+ 1359 0064 18000000 		.4byte	.LFE75
+ 1360 0068 00000000 		.4byte	0
+ 1361 006c 00000000 		.4byte	0
+ 1362              		.section	.debug_line,"",%progbits
+ 1363              	.Ldebug_line0:
+ 1364 0000 6A020000 		.section	.debug_str,"MS",%progbits,1
+ 1364      02005B01 
+ 1364      00000201 
+ 1364      FB0E0D00 
+ 1364      01010101 
+ 1365              	.LASF20:
+ 1366 0000 72656733 		.ascii	"reg32\000"
+ 1366      3200
+ 1367              	.LASF39:
+ 1368 0006 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1368      43313120 
+ 1368      352E342E 
+ 1368      31203230 
+ 1368      31363036 
+ 1369 0039 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1369      20726576 
+ 1369      6973696F 
+ 1369      6E203233 
+ 1369      37373135 
+ 1370 006c 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1370      66756E63 
+ 1370      74696F6E 
+ 1370      2D736563 
+ 1370      74696F6E 
+ 1371              	.LASF26:
+ 1372 0094 6973725F 		.ascii	"isr_ADC_AudioStream_SetVector\000"
+ 1372      4144435F 
+ 1372      41756469 
+ 1372      6F537472 
+ 1372      65616D5F 
+ 1373              	.LASF36:
+ 1374 00b2 6973725F 		.ascii	"isr_ADC_AudioStream_ClearPending\000"
+ 1374      4144435F 
+ 1374      41756469 
+ 1374      6F537472 
+ 1374      65616D5F 
+ 1375              	.LASF35:
+ 1376 00d3 6973725F 		.ascii	"isr_ADC_AudioStream_SetPending\000"
+ 1376      4144435F 
+ 1376      41756469 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 33
+
+
+ 1376      6F537472 
+ 1376      65616D5F 
+ 1377              	.LASF12:
+ 1378 00f2 5F5F696E 		.ascii	"__int32_t\000"
+ 1378      7433325F 
+ 1378      7400
+ 1379              	.LASF40:
+ 1380 00fc 47656E65 		.ascii	"Generated_Source\\PSoC5\\isr_ADC_AudioStream.c\000"
+ 1380      72617465 
+ 1380      645F536F 
+ 1380      75726365 
+ 1380      5C50536F 
+ 1381              	.LASF42:
+ 1382 0129 6973725F 		.ascii	"isr_ADC_AudioStream_GetState\000"
+ 1382      4144435F 
+ 1382      41756469 
+ 1382      6F537472 
+ 1382      65616D5F 
+ 1383              	.LASF32:
+ 1384 0146 6973725F 		.ascii	"isr_ADC_AudioStream_GetPriority\000"
+ 1384      4144435F 
+ 1384      41756469 
+ 1384      6F537472 
+ 1384      65616D5F 
+ 1385              	.LASF17:
+ 1386 0166 666C6F61 		.ascii	"float\000"
+ 1386      7400
+ 1387              	.LASF4:
+ 1388 016c 756E7369 		.ascii	"unsigned char\000"
+ 1388      676E6564 
+ 1388      20636861 
+ 1388      7200
+ 1389              	.LASF33:
+ 1390 017a 6973725F 		.ascii	"isr_ADC_AudioStream_Enable\000"
+ 1390      4144435F 
+ 1390      41756469 
+ 1390      6F537472 
+ 1390      65616D5F 
+ 1391              	.LASF19:
+ 1392 0195 72656738 		.ascii	"reg8\000"
+ 1392      00
+ 1393              	.LASF8:
+ 1394 019a 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1394      20756E73 
+ 1394      69676E65 
+ 1394      6420696E 
+ 1394      7400
+ 1395              	.LASF6:
+ 1396 01ac 73686F72 		.ascii	"short unsigned int\000"
+ 1396      7420756E 
+ 1396      7369676E 
+ 1396      65642069 
+ 1396      6E7400
+ 1397              	.LASF34:
+ 1398 01bf 6973725F 		.ascii	"isr_ADC_AudioStream_Disable\000"
+ 1398      4144435F 
+ 1398      41756469 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 34
+
+
+ 1398      6F537472 
+ 1398      65616D5F 
+ 1399              	.LASF41:
+ 1400 01db 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\firm_F1-TestFixture\\"
+ 1400      73657273 
+ 1400      5C6D6172 
+ 1400      74686E69 
+ 1400      636B5C44 
+ 1401 020a 46312D54 		.ascii	"F1-TestFixture.cydsn\000"
+ 1401      65737446 
+ 1401      69787475 
+ 1401      72652E63 
+ 1401      7964736E 
+ 1402              	.LASF43:
+ 1403 021f 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1403      52784275 
+ 1403      66666572 
+ 1403      00
+ 1404              	.LASF18:
+ 1405 022c 646F7562 		.ascii	"double\000"
+ 1405      6C6500
+ 1406              	.LASF15:
+ 1407 0233 75696E74 		.ascii	"uint16\000"
+ 1407      313600
+ 1408              	.LASF30:
+ 1409 023a 7072696F 		.ascii	"priority\000"
+ 1409      72697479 
+ 1409      00
+ 1410              	.LASF38:
+ 1411 0243 41444352 		.ascii	"ADCReading\000"
+ 1411      65616469 
+ 1411      6E6700
+ 1412              	.LASF16:
+ 1413 024e 75696E74 		.ascii	"uint32\000"
+ 1413      333200
+ 1414              	.LASF0:
+ 1415 0255 756E7369 		.ascii	"unsigned int\000"
+ 1415      676E6564 
+ 1415      20696E74 
+ 1415      00
+ 1416              	.LASF27:
+ 1417 0262 61646472 		.ascii	"address\000"
+ 1417      65737300 
+ 1418              	.LASF9:
+ 1419 026a 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1419      206C6F6E 
+ 1419      6720756E 
+ 1419      7369676E 
+ 1419      65642069 
+ 1420              	.LASF22:
+ 1421 0281 6973725F 		.ascii	"isr_ADC_AudioStream_Start\000"
+ 1421      4144435F 
+ 1421      41756469 
+ 1421      6F537472 
+ 1421      65616D5F 
+ 1422              	.LASF21:
+ 1423 029b 63796973 		.ascii	"cyisraddress\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 35
+
+
+ 1423      72616464 
+ 1423      72657373 
+ 1423      00
+ 1424              	.LASF29:
+ 1425 02a8 6973725F 		.ascii	"isr_ADC_AudioStream_SetPriority\000"
+ 1425      4144435F 
+ 1425      41756469 
+ 1425      6F537472 
+ 1425      65616D5F 
+ 1426              	.LASF13:
+ 1427 02c8 696E7433 		.ascii	"int32_t\000"
+ 1427      325F7400 
+ 1428              	.LASF10:
+ 1429 02d0 73697A65 		.ascii	"sizetype\000"
+ 1429      74797065 
+ 1429      00
+ 1430              	.LASF1:
+ 1431 02d9 6C6F6E67 		.ascii	"long long int\000"
+ 1431      206C6F6E 
+ 1431      6720696E 
+ 1431      7400
+ 1432              	.LASF11:
+ 1433 02e7 63686172 		.ascii	"char\000"
+ 1433      00
+ 1434              	.LASF31:
+ 1435 02ec 6973725F 		.ascii	"isr_ADC_AudioStream_GetVector\000"
+ 1435      4144435F 
+ 1435      41756469 
+ 1435      6F537472 
+ 1435      65616D5F 
+ 1436              	.LASF25:
+ 1437 030a 6973725F 		.ascii	"isr_ADC_AudioStream_StartEx\000"
+ 1437      4144435F 
+ 1437      41756469 
+ 1437      6F537472 
+ 1437      65616D5F 
+ 1438              	.LASF24:
+ 1439 0326 6973725F 		.ascii	"isr_ADC_AudioStream_Interrupt\000"
+ 1439      4144435F 
+ 1439      41756469 
+ 1439      6F537472 
+ 1439      65616D5F 
+ 1440              	.LASF5:
+ 1441 0344 73686F72 		.ascii	"short int\000"
+ 1441      7420696E 
+ 1441      7400
+ 1442              	.LASF14:
+ 1443 034e 75696E74 		.ascii	"uint8\000"
+ 1443      3800
+ 1444              	.LASF28:
+ 1445 0354 72616D56 		.ascii	"ramVectorTable\000"
+ 1445      6563746F 
+ 1445      72546162 
+ 1445      6C6500
+ 1446              	.LASF7:
+ 1447 0363 6C6F6E67 		.ascii	"long int\000"
+ 1447      20696E74 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccLkqNVE.s 			page 36
+
+
+ 1447      00
+ 1448              	.LASF37:
+ 1449 036c 69746572 		.ascii	"iterator\000"
+ 1449      61746F72 
+ 1449      00
+ 1450              	.LASF2:
+ 1451 0375 6C6F6E67 		.ascii	"long double\000"
+ 1451      20646F75 
+ 1451      626C6500 
+ 1452              	.LASF3:
+ 1453 0381 7369676E 		.ascii	"signed char\000"
+ 1453      65642063 
+ 1453      68617200 
+ 1454              	.LASF23:
+ 1455 038d 6973725F 		.ascii	"isr_ADC_AudioStream_Stop\000"
+ 1455      4144435F 
+ 1455      41756469 
+ 1455      6F537472 
+ 1455      65616D5F 
+ 1456              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -28,11 +28,11 @@
 * Conditional Compilation Parameters
 ***************************************/
 
-#define UART_1_RX_ENABLED                     (1u)
-#define UART_1_TX_ENABLED                     (0u)
+#define UART_1_RX_ENABLED                     (0u)
+#define UART_1_TX_ENABLED                     (1u)
 #define UART_1_HD_ENABLED                     (0u)
 #define UART_1_RX_INTERRUPT_ENABLED           (0u)
-#define UART_1_TX_INTERRUPT_ENABLED           (0u)
+#define UART_1_TX_INTERRUPT_ENABLED           (1u)
 #define UART_1_INTERNAL_CLOCK_USED            (1u)
 #define UART_1_RXHW_ADDRESS_ENABLED           (0u)
 #define UART_1_OVER_SAMPLE_COUNT              (8u)
@@ -45,7 +45,7 @@
 #define UART_1_USE23POLLING                   (1u)
 #define UART_1_FLOW_CONTROL                   (0u)
 #define UART_1_CLK_FREQ                       (0u)
-#define UART_1_TX_BUFFER_SIZE                 (4u)
+#define UART_1_TX_BUFFER_SIZE                 (1024u)
 #define UART_1_RX_BUFFER_SIZE                 (4u)
 
 /* Check to see if required defines such as CY_PSOC5LP are available */
@@ -137,13 +137,13 @@ void UART_1_Wakeup(void) ;
     uint8 UART_1_ReadTxStatus(void) ;
     void UART_1_PutChar(uint8 txDataByte) ;
     void UART_1_PutString(const char8 string[]) ;
-    void UART_1_PutArray(const uint8 string[], uint8 byteCount)
+    void UART_1_PutArray(const uint8 string[], uint16 byteCount)
                                                             ;
     void UART_1_PutCRLF(uint8 txDataByte) ;
     void UART_1_ClearTxBuffer(void) ;
     void UART_1_SetTxAddressMode(uint8 addressMode) ;
     void UART_1_SendBreak(uint8 retMode) ;
-    uint8 UART_1_GetTxBufferSize(void)
+    uint16 UART_1_GetTxBufferSize(void)
                                                             ;
     /* Obsolete functions, defines for backward compatible */
     #define UART_1_PutStringConst         UART_1_PutString
@@ -310,8 +310,8 @@ void UART_1_Wakeup(void) ;
 extern uint8 UART_1_initVar;
 #if (UART_1_TX_INTERRUPT_ENABLED && UART_1_TX_ENABLED)
     extern volatile uint8 UART_1_txBuffer[UART_1_TX_BUFFER_SIZE];
-    extern volatile uint8 UART_1_txBufferRead;
-    extern uint8 UART_1_txBufferWrite;
+    extern volatile uint16 UART_1_txBufferRead;
+    extern uint16 UART_1_txBufferWrite;
 #endif /* (UART_1_TX_INTERRUPT_ENABLED && UART_1_TX_ENABLED) */
 #if (UART_1_RX_INTERRUPT_ENABLED && (UART_1_RX_ENABLED || UART_1_HD_ENABLED))
     extern uint8 UART_1_errorStatus;
@@ -359,7 +359,7 @@ extern uint8 UART_1_initVar;
 #endif /* (UART_1_RXHW_ADDRESS_ENABLED) */
 
 #define UART_1_INIT_RX_INTERRUPTS_MASK \
-                                  (uint8)((1 << UART_1_RX_STS_FIFO_NOTEMPTY_SHIFT) \
+                                  (uint8)((0 << UART_1_RX_STS_FIFO_NOTEMPTY_SHIFT) \
                                         | (0 << UART_1_RX_STS_MRKSPC_SHIFT) \
                                         | (0 << UART_1_RX_STS_ADDR_MATCH_SHIFT) \
                                         | (0 << UART_1_RX_STS_PAR_ERROR_SHIFT) \
@@ -369,7 +369,7 @@ extern uint8 UART_1_initVar;
 
 #define UART_1_INIT_TX_INTERRUPTS_MASK \
                                   (uint8)((0 << UART_1_TX_STS_COMPLETE_SHIFT) \
-                                        | (0 << UART_1_TX_STS_FIFO_EMPTY_SHIFT) \
+                                        | (1 << UART_1_TX_STS_FIFO_EMPTY_SHIFT) \
                                         | (0 << UART_1_TX_STS_FIFO_FULL_SHIFT) \
                                         | (0 << UART_1_TX_STS_FIFO_NOT_FULL_SHIFT))
 

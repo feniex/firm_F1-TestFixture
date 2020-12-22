@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc2MAyCU.s 			page 1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cccUCtF5.s 			page 1
 
 
    1              		.syntax unified
@@ -10,7 +10,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc2MAyCU.s 			page 1
    7              		.eabi_attribute 24, 1
    8              		.eabi_attribute 25, 1
    9              		.eabi_attribute 26, 1
-  10              		.eabi_attribute 30, 1
+  10              		.eabi_attribute 30, 6
   11              		.eabi_attribute 34, 1
   12              		.eabi_attribute 18, 4
   13              		.thumb
@@ -19,242 +19,801 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc2MAyCU.s 			page 1
   16              		.text
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
-  19              	.Letext0:
-  20              		.section	.debug_info,"",%progbits
-  21              	.Ldebug_info0:
-  22 0000 83000000 		.4byte	0x83
-  23 0004 0400     		.2byte	0x4
-  24 0006 00000000 		.4byte	.Ldebug_abbrev0
-  25 000a 04       		.byte	0x4
-  26 000b 01       		.uleb128 0x1
-  27 000c 5C000000 		.4byte	.LASF14
-  28 0010 0C       		.byte	0xc
-  29 0011 35010000 		.4byte	.LASF15
-  30 0015 1B000000 		.4byte	.LASF16
-  31 0019 00000000 		.4byte	.Ldebug_line0
-  32 001d 02       		.uleb128 0x2
-  33 001e 01       		.byte	0x1
-  34 001f 06       		.byte	0x6
-  35 0020 73010000 		.4byte	.LASF0
-  36 0024 02       		.uleb128 0x2
-  37 0025 01       		.byte	0x1
-  38 0026 08       		.byte	0x8
-  39 0027 19010000 		.4byte	.LASF1
-  40 002b 02       		.uleb128 0x2
-  41 002c 02       		.byte	0x2
-  42 002d 05       		.byte	0x5
-  43 002e 8B010000 		.4byte	.LASF2
-  44 0032 02       		.uleb128 0x2
-  45 0033 02       		.byte	0x2
-  46 0034 07       		.byte	0x7
-  47 0035 60010000 		.4byte	.LASF3
-  48 0039 02       		.uleb128 0x2
-  49 003a 04       		.byte	0x4
-  50 003b 05       		.byte	0x5
-  51 003c 2C010000 		.4byte	.LASF4
-  52 0040 02       		.uleb128 0x2
-  53 0041 04       		.byte	0x4
-  54 0042 07       		.byte	0x7
-  55 0043 EA000000 		.4byte	.LASF5
-  56 0047 02       		.uleb128 0x2
-  57 0048 08       		.byte	0x8
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc2MAyCU.s 			page 2
+  19              		.section	.text.UART_1_TXISR,"ax",%progbits
+  20              		.align	2
+  21              		.global	UART_1_TXISR
+  22              		.thumb
+  23              		.thumb_func
+  24              		.type	UART_1_TXISR, %function
+  25              	UART_1_TXISR:
+  26              	.LFB0:
+  27              		.file 1 "Generated_Source\\PSoC5\\UART_1_INT.c"
+   1:Generated_Source\PSoC5/UART_1_INT.c **** /*******************************************************************************
+   2:Generated_Source\PSoC5/UART_1_INT.c **** * File Name: UART_1INT.c
+   3:Generated_Source\PSoC5/UART_1_INT.c **** * Version 2.50
+   4:Generated_Source\PSoC5/UART_1_INT.c **** *
+   5:Generated_Source\PSoC5/UART_1_INT.c **** * Description:
+   6:Generated_Source\PSoC5/UART_1_INT.c **** *  This file provides all Interrupt Service functionality of the UART component
+   7:Generated_Source\PSoC5/UART_1_INT.c **** *
+   8:Generated_Source\PSoC5/UART_1_INT.c **** ********************************************************************************
+   9:Generated_Source\PSoC5/UART_1_INT.c **** * Copyright 2008-2015, Cypress Semiconductor Corporation.  All rights reserved.
+  10:Generated_Source\PSoC5/UART_1_INT.c **** * You may use this file only in accordance with the license, terms, conditions,
+  11:Generated_Source\PSoC5/UART_1_INT.c **** * disclaimers, and limitations in the end user license agreement accompanying
+  12:Generated_Source\PSoC5/UART_1_INT.c **** * the software package with which this file was provided.
+  13:Generated_Source\PSoC5/UART_1_INT.c **** *******************************************************************************/
+  14:Generated_Source\PSoC5/UART_1_INT.c **** 
+  15:Generated_Source\PSoC5/UART_1_INT.c **** #include "UART_1.h"
+  16:Generated_Source\PSoC5/UART_1_INT.c **** #include "cyapicallbacks.h"
+  17:Generated_Source\PSoC5/UART_1_INT.c **** 
+  18:Generated_Source\PSoC5/UART_1_INT.c **** 
+  19:Generated_Source\PSoC5/UART_1_INT.c **** /***************************************
+  20:Generated_Source\PSoC5/UART_1_INT.c **** * Custom Declarations
+  21:Generated_Source\PSoC5/UART_1_INT.c **** ***************************************/
+  22:Generated_Source\PSoC5/UART_1_INT.c **** /* `#START CUSTOM_DECLARATIONS` Place your declaration here */
+  23:Generated_Source\PSoC5/UART_1_INT.c **** 
+  24:Generated_Source\PSoC5/UART_1_INT.c **** /* `#END` */
+  25:Generated_Source\PSoC5/UART_1_INT.c **** 
+  26:Generated_Source\PSoC5/UART_1_INT.c **** #if (UART_1_RX_INTERRUPT_ENABLED && (UART_1_RX_ENABLED || UART_1_HD_ENABLED))
+  27:Generated_Source\PSoC5/UART_1_INT.c ****     /*******************************************************************************
+  28:Generated_Source\PSoC5/UART_1_INT.c ****     * Function Name: UART_1_RXISR
+  29:Generated_Source\PSoC5/UART_1_INT.c ****     ********************************************************************************
+  30:Generated_Source\PSoC5/UART_1_INT.c ****     *
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cccUCtF5.s 			page 2
 
 
-  58 0049 05       		.byte	0x5
-  59 004a 00000000 		.4byte	.LASF6
-  60 004e 02       		.uleb128 0x2
-  61 004f 08       		.byte	0x8
-  62 0050 07       		.byte	0x7
-  63 0051 FC000000 		.4byte	.LASF7
-  64 0055 03       		.uleb128 0x3
-  65 0056 04       		.byte	0x4
-  66 0057 05       		.byte	0x5
-  67 0058 696E7400 		.ascii	"int\000"
-  68 005c 02       		.uleb128 0x2
-  69 005d 04       		.byte	0x4
-  70 005e 07       		.byte	0x7
-  71 005f 0E000000 		.4byte	.LASF8
-  72 0063 02       		.uleb128 0x2
-  73 0064 04       		.byte	0x4
-  74 0065 04       		.byte	0x4
-  75 0066 13010000 		.4byte	.LASF9
-  76 006a 02       		.uleb128 0x2
-  77 006b 08       		.byte	0x8
-  78 006c 04       		.byte	0x4
-  79 006d 59010000 		.4byte	.LASF10
-  80 0071 02       		.uleb128 0x2
-  81 0072 01       		.byte	0x1
-  82 0073 08       		.byte	0x8
-  83 0074 27010000 		.4byte	.LASF11
-  84 0078 02       		.uleb128 0x2
-  85 0079 08       		.byte	0x8
-  86 007a 04       		.byte	0x4
-  87 007b 7F010000 		.4byte	.LASF12
-  88 007f 02       		.uleb128 0x2
-  89 0080 04       		.byte	0x4
-  90 0081 07       		.byte	0x7
-  91 0082 95010000 		.4byte	.LASF13
-  92 0086 00       		.byte	0
-  93              		.section	.debug_abbrev,"",%progbits
-  94              	.Ldebug_abbrev0:
-  95 0000 01       		.uleb128 0x1
-  96 0001 11       		.uleb128 0x11
-  97 0002 01       		.byte	0x1
-  98 0003 25       		.uleb128 0x25
-  99 0004 0E       		.uleb128 0xe
- 100 0005 13       		.uleb128 0x13
- 101 0006 0B       		.uleb128 0xb
- 102 0007 03       		.uleb128 0x3
- 103 0008 0E       		.uleb128 0xe
- 104 0009 1B       		.uleb128 0x1b
- 105 000a 0E       		.uleb128 0xe
- 106 000b 10       		.uleb128 0x10
- 107 000c 17       		.uleb128 0x17
- 108 000d 00       		.byte	0
- 109 000e 00       		.byte	0
- 110 000f 02       		.uleb128 0x2
- 111 0010 24       		.uleb128 0x24
- 112 0011 00       		.byte	0
- 113 0012 0B       		.uleb128 0xb
- 114 0013 0B       		.uleb128 0xb
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc2MAyCU.s 			page 3
+  31:Generated_Source\PSoC5/UART_1_INT.c ****     * Summary:
+  32:Generated_Source\PSoC5/UART_1_INT.c ****     *  Interrupt Service Routine for RX portion of the UART
+  33:Generated_Source\PSoC5/UART_1_INT.c ****     *
+  34:Generated_Source\PSoC5/UART_1_INT.c ****     * Parameters:
+  35:Generated_Source\PSoC5/UART_1_INT.c ****     *  None.
+  36:Generated_Source\PSoC5/UART_1_INT.c ****     *
+  37:Generated_Source\PSoC5/UART_1_INT.c ****     * Return:
+  38:Generated_Source\PSoC5/UART_1_INT.c ****     *  None.
+  39:Generated_Source\PSoC5/UART_1_INT.c ****     *
+  40:Generated_Source\PSoC5/UART_1_INT.c ****     * Global Variables:
+  41:Generated_Source\PSoC5/UART_1_INT.c ****     *  UART_1_rxBuffer - RAM buffer pointer for save received data.
+  42:Generated_Source\PSoC5/UART_1_INT.c ****     *  UART_1_rxBufferWrite - cyclic index for write to rxBuffer,
+  43:Generated_Source\PSoC5/UART_1_INT.c ****     *     increments after each byte saved to buffer.
+  44:Generated_Source\PSoC5/UART_1_INT.c ****     *  UART_1_rxBufferRead - cyclic index for read from rxBuffer,
+  45:Generated_Source\PSoC5/UART_1_INT.c ****     *     checked to detect overflow condition.
+  46:Generated_Source\PSoC5/UART_1_INT.c ****     *  UART_1_rxBufferOverflow - software overflow flag. Set to one
+  47:Generated_Source\PSoC5/UART_1_INT.c ****     *     when UART_1_rxBufferWrite index overtakes
+  48:Generated_Source\PSoC5/UART_1_INT.c ****     *     UART_1_rxBufferRead index.
+  49:Generated_Source\PSoC5/UART_1_INT.c ****     *  UART_1_rxBufferLoopDetect - additional variable to detect overflow.
+  50:Generated_Source\PSoC5/UART_1_INT.c ****     *     Set to one when UART_1_rxBufferWrite is equal to
+  51:Generated_Source\PSoC5/UART_1_INT.c ****     *    UART_1_rxBufferRead
+  52:Generated_Source\PSoC5/UART_1_INT.c ****     *  UART_1_rxAddressMode - this variable contains the Address mode,
+  53:Generated_Source\PSoC5/UART_1_INT.c ****     *     selected in customizer or set by UART_SetRxAddressMode() API.
+  54:Generated_Source\PSoC5/UART_1_INT.c ****     *  UART_1_rxAddressDetected - set to 1 when correct address received,
+  55:Generated_Source\PSoC5/UART_1_INT.c ****     *     and analysed to store following addressed data bytes to the buffer.
+  56:Generated_Source\PSoC5/UART_1_INT.c ****     *     When not correct address received, set to 0 to skip following data bytes.
+  57:Generated_Source\PSoC5/UART_1_INT.c ****     *
+  58:Generated_Source\PSoC5/UART_1_INT.c ****     *******************************************************************************/
+  59:Generated_Source\PSoC5/UART_1_INT.c ****     CY_ISR(UART_1_RXISR)
+  60:Generated_Source\PSoC5/UART_1_INT.c ****     {
+  61:Generated_Source\PSoC5/UART_1_INT.c ****         uint8 readData;
+  62:Generated_Source\PSoC5/UART_1_INT.c ****         uint8 readStatus;
+  63:Generated_Source\PSoC5/UART_1_INT.c ****         uint8 increment_pointer = 0u;
+  64:Generated_Source\PSoC5/UART_1_INT.c **** 
+  65:Generated_Source\PSoC5/UART_1_INT.c ****     #if(CY_PSOC3)
+  66:Generated_Source\PSoC5/UART_1_INT.c ****         uint8 int_en;
+  67:Generated_Source\PSoC5/UART_1_INT.c ****     #endif /* (CY_PSOC3) */
+  68:Generated_Source\PSoC5/UART_1_INT.c **** 
+  69:Generated_Source\PSoC5/UART_1_INT.c ****     #ifdef UART_1_RXISR_ENTRY_CALLBACK
+  70:Generated_Source\PSoC5/UART_1_INT.c ****         UART_1_RXISR_EntryCallback();
+  71:Generated_Source\PSoC5/UART_1_INT.c ****     #endif /* UART_1_RXISR_ENTRY_CALLBACK */
+  72:Generated_Source\PSoC5/UART_1_INT.c **** 
+  73:Generated_Source\PSoC5/UART_1_INT.c ****         /* User code required at start of ISR */
+  74:Generated_Source\PSoC5/UART_1_INT.c ****         /* `#START UART_1_RXISR_START` */
+  75:Generated_Source\PSoC5/UART_1_INT.c **** 
+  76:Generated_Source\PSoC5/UART_1_INT.c ****         /* `#END` */
+  77:Generated_Source\PSoC5/UART_1_INT.c **** 
+  78:Generated_Source\PSoC5/UART_1_INT.c ****     #if(CY_PSOC3)   /* Make sure nested interrupt is enabled */
+  79:Generated_Source\PSoC5/UART_1_INT.c ****         int_en = EA;
+  80:Generated_Source\PSoC5/UART_1_INT.c ****         CyGlobalIntEnable;
+  81:Generated_Source\PSoC5/UART_1_INT.c ****     #endif /* (CY_PSOC3) */
+  82:Generated_Source\PSoC5/UART_1_INT.c **** 
+  83:Generated_Source\PSoC5/UART_1_INT.c ****         do
+  84:Generated_Source\PSoC5/UART_1_INT.c ****         {
+  85:Generated_Source\PSoC5/UART_1_INT.c ****             /* Read receiver status register */
+  86:Generated_Source\PSoC5/UART_1_INT.c ****             readStatus = UART_1_RXSTATUS_REG;
+  87:Generated_Source\PSoC5/UART_1_INT.c ****             /* Copy the same status to readData variable for backward compatibility support 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cccUCtF5.s 			page 3
 
 
- 115 0014 3E       		.uleb128 0x3e
- 116 0015 0B       		.uleb128 0xb
- 117 0016 03       		.uleb128 0x3
- 118 0017 0E       		.uleb128 0xe
- 119 0018 00       		.byte	0
- 120 0019 00       		.byte	0
- 121 001a 03       		.uleb128 0x3
- 122 001b 24       		.uleb128 0x24
- 123 001c 00       		.byte	0
- 124 001d 0B       		.uleb128 0xb
- 125 001e 0B       		.uleb128 0xb
- 126 001f 3E       		.uleb128 0x3e
- 127 0020 0B       		.uleb128 0xb
- 128 0021 03       		.uleb128 0x3
- 129 0022 08       		.uleb128 0x8
- 130 0023 00       		.byte	0
- 131 0024 00       		.byte	0
- 132 0025 00       		.byte	0
- 133              		.section	.debug_aranges,"",%progbits
- 134 0000 14000000 		.4byte	0x14
- 135 0004 0200     		.2byte	0x2
- 136 0006 00000000 		.4byte	.Ldebug_info0
- 137 000a 04       		.byte	0x4
- 138 000b 00       		.byte	0
- 139 000c 0000     		.2byte	0
- 140 000e 0000     		.2byte	0
- 141 0010 00000000 		.4byte	0
- 142 0014 00000000 		.4byte	0
- 143              		.section	.debug_line,"",%progbits
- 144              	.Ldebug_line0:
- 145 0000 19000000 		.section	.debug_str,"MS",%progbits,1
- 145      02001300 
- 145      00000201 
- 145      FB0E0D00 
- 145      01010101 
- 146              	.LASF6:
- 147 0000 6C6F6E67 		.ascii	"long long int\000"
- 147      206C6F6E 
- 147      6720696E 
- 147      7400
- 148              	.LASF8:
- 149 000e 756E7369 		.ascii	"unsigned int\000"
- 149      676E6564 
- 149      20696E74 
- 149      00
- 150              	.LASF16:
- 151 001b 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\Firm-F1Siren200W\\Re"
- 151      73657273 
- 151      5C6D6172 
- 151      74686E69 
- 151      636B5C44 
- 152 0049 6C656173 		.ascii	"leaseVersion.cydsn\000"
- 152      65566572 
- 152      73696F6E 
- 152      2E637964 
- 152      736E00
- 153              	.LASF14:
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc2MAyCU.s 			page 4
+  88:Generated_Source\PSoC5/UART_1_INT.c ****             *  of the user code in UART_1_RXISR_ERROR` section. 
+  89:Generated_Source\PSoC5/UART_1_INT.c ****             */
+  90:Generated_Source\PSoC5/UART_1_INT.c ****             readData = readStatus;
+  91:Generated_Source\PSoC5/UART_1_INT.c **** 
+  92:Generated_Source\PSoC5/UART_1_INT.c ****             if((readStatus & (UART_1_RX_STS_BREAK | 
+  93:Generated_Source\PSoC5/UART_1_INT.c ****                             UART_1_RX_STS_PAR_ERROR |
+  94:Generated_Source\PSoC5/UART_1_INT.c ****                             UART_1_RX_STS_STOP_ERROR | 
+  95:Generated_Source\PSoC5/UART_1_INT.c ****                             UART_1_RX_STS_OVERRUN)) != 0u)
+  96:Generated_Source\PSoC5/UART_1_INT.c ****             {
+  97:Generated_Source\PSoC5/UART_1_INT.c ****                 /* ERROR handling. */
+  98:Generated_Source\PSoC5/UART_1_INT.c ****                 UART_1_errorStatus |= readStatus & ( UART_1_RX_STS_BREAK | 
+  99:Generated_Source\PSoC5/UART_1_INT.c ****                                                             UART_1_RX_STS_PAR_ERROR | 
+ 100:Generated_Source\PSoC5/UART_1_INT.c ****                                                             UART_1_RX_STS_STOP_ERROR | 
+ 101:Generated_Source\PSoC5/UART_1_INT.c ****                                                             UART_1_RX_STS_OVERRUN);
+ 102:Generated_Source\PSoC5/UART_1_INT.c ****                 /* `#START UART_1_RXISR_ERROR` */
+ 103:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 104:Generated_Source\PSoC5/UART_1_INT.c ****                 /* `#END` */
+ 105:Generated_Source\PSoC5/UART_1_INT.c ****                 
+ 106:Generated_Source\PSoC5/UART_1_INT.c ****             #ifdef UART_1_RXISR_ERROR_CALLBACK
+ 107:Generated_Source\PSoC5/UART_1_INT.c ****                 UART_1_RXISR_ERROR_Callback();
+ 108:Generated_Source\PSoC5/UART_1_INT.c ****             #endif /* UART_1_RXISR_ERROR_CALLBACK */
+ 109:Generated_Source\PSoC5/UART_1_INT.c ****             }
+ 110:Generated_Source\PSoC5/UART_1_INT.c ****             
+ 111:Generated_Source\PSoC5/UART_1_INT.c ****             if((readStatus & UART_1_RX_STS_FIFO_NOTEMPTY) != 0u)
+ 112:Generated_Source\PSoC5/UART_1_INT.c ****             {
+ 113:Generated_Source\PSoC5/UART_1_INT.c ****                 /* Read data from the RX data register */
+ 114:Generated_Source\PSoC5/UART_1_INT.c ****                 readData = UART_1_RXDATA_REG;
+ 115:Generated_Source\PSoC5/UART_1_INT.c ****             #if (UART_1_RXHW_ADDRESS_ENABLED)
+ 116:Generated_Source\PSoC5/UART_1_INT.c ****                 if(UART_1_rxAddressMode == (uint8)UART_1__B_UART__AM_SW_DETECT_TO_BUFFER)
+ 117:Generated_Source\PSoC5/UART_1_INT.c ****                 {
+ 118:Generated_Source\PSoC5/UART_1_INT.c ****                     if((readStatus & UART_1_RX_STS_MRKSPC) != 0u)
+ 119:Generated_Source\PSoC5/UART_1_INT.c ****                     {
+ 120:Generated_Source\PSoC5/UART_1_INT.c ****                         if ((readStatus & UART_1_RX_STS_ADDR_MATCH) != 0u)
+ 121:Generated_Source\PSoC5/UART_1_INT.c ****                         {
+ 122:Generated_Source\PSoC5/UART_1_INT.c ****                             UART_1_rxAddressDetected = 1u;
+ 123:Generated_Source\PSoC5/UART_1_INT.c ****                         }
+ 124:Generated_Source\PSoC5/UART_1_INT.c ****                         else
+ 125:Generated_Source\PSoC5/UART_1_INT.c ****                         {
+ 126:Generated_Source\PSoC5/UART_1_INT.c ****                             UART_1_rxAddressDetected = 0u;
+ 127:Generated_Source\PSoC5/UART_1_INT.c ****                         }
+ 128:Generated_Source\PSoC5/UART_1_INT.c ****                     }
+ 129:Generated_Source\PSoC5/UART_1_INT.c ****                     if(UART_1_rxAddressDetected != 0u)
+ 130:Generated_Source\PSoC5/UART_1_INT.c ****                     {   /* Store only addressed data */
+ 131:Generated_Source\PSoC5/UART_1_INT.c ****                         UART_1_rxBuffer[UART_1_rxBufferWrite] = readData;
+ 132:Generated_Source\PSoC5/UART_1_INT.c ****                         increment_pointer = 1u;
+ 133:Generated_Source\PSoC5/UART_1_INT.c ****                     }
+ 134:Generated_Source\PSoC5/UART_1_INT.c ****                 }
+ 135:Generated_Source\PSoC5/UART_1_INT.c ****                 else /* Without software addressing */
+ 136:Generated_Source\PSoC5/UART_1_INT.c ****                 {
+ 137:Generated_Source\PSoC5/UART_1_INT.c ****                     UART_1_rxBuffer[UART_1_rxBufferWrite] = readData;
+ 138:Generated_Source\PSoC5/UART_1_INT.c ****                     increment_pointer = 1u;
+ 139:Generated_Source\PSoC5/UART_1_INT.c ****                 }
+ 140:Generated_Source\PSoC5/UART_1_INT.c ****             #else  /* Without addressing */
+ 141:Generated_Source\PSoC5/UART_1_INT.c ****                 UART_1_rxBuffer[UART_1_rxBufferWrite] = readData;
+ 142:Generated_Source\PSoC5/UART_1_INT.c ****                 increment_pointer = 1u;
+ 143:Generated_Source\PSoC5/UART_1_INT.c ****             #endif /* (UART_1_RXHW_ADDRESS_ENABLED) */
+ 144:Generated_Source\PSoC5/UART_1_INT.c **** 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cccUCtF5.s 			page 4
 
 
- 154 005c 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 154      43313120 
- 154      352E342E 
- 154      31203230 
- 154      31363036 
- 155 008f 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 155      20726576 
- 155      6973696F 
- 155      6E203233 
- 155      37373135 
- 156 00c2 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
- 156      66756E63 
- 156      74696F6E 
- 156      2D736563 
- 156      74696F6E 
- 157              	.LASF5:
- 158 00ea 6C6F6E67 		.ascii	"long unsigned int\000"
- 158      20756E73 
- 158      69676E65 
- 158      6420696E 
- 158      7400
- 159              	.LASF7:
- 160 00fc 6C6F6E67 		.ascii	"long long unsigned int\000"
- 160      206C6F6E 
- 160      6720756E 
- 160      7369676E 
- 160      65642069 
- 161              	.LASF9:
- 162 0113 666C6F61 		.ascii	"float\000"
- 162      7400
- 163              	.LASF1:
- 164 0119 756E7369 		.ascii	"unsigned char\000"
- 164      676E6564 
- 164      20636861 
- 164      7200
- 165              	.LASF11:
- 166 0127 63686172 		.ascii	"char\000"
- 166      00
- 167              	.LASF4:
- 168 012c 6C6F6E67 		.ascii	"long int\000"
- 168      20696E74 
- 168      00
- 169              	.LASF15:
- 170 0135 47656E65 		.ascii	"Generated_Source\\PSoC5\\UART_1_INT.c\000"
- 170      72617465 
- 170      645F536F 
- 170      75726365 
- 170      5C50536F 
- 171              	.LASF10:
- 172 0159 646F7562 		.ascii	"double\000"
- 172      6C6500
- 173              	.LASF3:
- 174 0160 73686F72 		.ascii	"short unsigned int\000"
- 174      7420756E 
- 174      7369676E 
- 174      65642069 
- 174      6E7400
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc2MAyCU.s 			page 5
+ 145:Generated_Source\PSoC5/UART_1_INT.c ****                 /* Do not increment buffer pointer when skip not addressed data */
+ 146:Generated_Source\PSoC5/UART_1_INT.c ****                 if(increment_pointer != 0u)
+ 147:Generated_Source\PSoC5/UART_1_INT.c ****                 {
+ 148:Generated_Source\PSoC5/UART_1_INT.c ****                     if(UART_1_rxBufferLoopDetect != 0u)
+ 149:Generated_Source\PSoC5/UART_1_INT.c ****                     {   /* Set Software Buffer status Overflow */
+ 150:Generated_Source\PSoC5/UART_1_INT.c ****                         UART_1_rxBufferOverflow = 1u;
+ 151:Generated_Source\PSoC5/UART_1_INT.c ****                     }
+ 152:Generated_Source\PSoC5/UART_1_INT.c ****                     /* Set next pointer. */
+ 153:Generated_Source\PSoC5/UART_1_INT.c ****                     UART_1_rxBufferWrite++;
+ 154:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 155:Generated_Source\PSoC5/UART_1_INT.c ****                     /* Check pointer for a loop condition */
+ 156:Generated_Source\PSoC5/UART_1_INT.c ****                     if(UART_1_rxBufferWrite >= UART_1_RX_BUFFER_SIZE)
+ 157:Generated_Source\PSoC5/UART_1_INT.c ****                     {
+ 158:Generated_Source\PSoC5/UART_1_INT.c ****                         UART_1_rxBufferWrite = 0u;
+ 159:Generated_Source\PSoC5/UART_1_INT.c ****                     }
+ 160:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 161:Generated_Source\PSoC5/UART_1_INT.c ****                     /* Detect pre-overload condition and set flag */
+ 162:Generated_Source\PSoC5/UART_1_INT.c ****                     if(UART_1_rxBufferWrite == UART_1_rxBufferRead)
+ 163:Generated_Source\PSoC5/UART_1_INT.c ****                     {
+ 164:Generated_Source\PSoC5/UART_1_INT.c ****                         UART_1_rxBufferLoopDetect = 1u;
+ 165:Generated_Source\PSoC5/UART_1_INT.c ****                         /* When Hardware Flow Control selected */
+ 166:Generated_Source\PSoC5/UART_1_INT.c ****                         #if (UART_1_FLOW_CONTROL != 0u)
+ 167:Generated_Source\PSoC5/UART_1_INT.c ****                             /* Disable RX interrupt mask, it is enabled when user read data from th
+ 168:Generated_Source\PSoC5/UART_1_INT.c ****                             UART_1_RXSTATUS_MASK_REG  &= (uint8)~UART_1_RX_STS_FIFO_NOTEMPTY;
+ 169:Generated_Source\PSoC5/UART_1_INT.c ****                             CyIntClearPending(UART_1_RX_VECT_NUM);
+ 170:Generated_Source\PSoC5/UART_1_INT.c ****                             break; /* Break the reading of the FIFO loop, leave the data there for 
+ 171:Generated_Source\PSoC5/UART_1_INT.c ****                         #endif /* (UART_1_FLOW_CONTROL != 0u) */
+ 172:Generated_Source\PSoC5/UART_1_INT.c ****                     }
+ 173:Generated_Source\PSoC5/UART_1_INT.c ****                 }
+ 174:Generated_Source\PSoC5/UART_1_INT.c ****             }
+ 175:Generated_Source\PSoC5/UART_1_INT.c ****         }while((readStatus & UART_1_RX_STS_FIFO_NOTEMPTY) != 0u);
+ 176:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 177:Generated_Source\PSoC5/UART_1_INT.c ****         /* User code required at end of ISR (Optional) */
+ 178:Generated_Source\PSoC5/UART_1_INT.c ****         /* `#START UART_1_RXISR_END` */
+ 179:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 180:Generated_Source\PSoC5/UART_1_INT.c ****         /* `#END` */
+ 181:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 182:Generated_Source\PSoC5/UART_1_INT.c ****     #ifdef UART_1_RXISR_EXIT_CALLBACK
+ 183:Generated_Source\PSoC5/UART_1_INT.c ****         UART_1_RXISR_ExitCallback();
+ 184:Generated_Source\PSoC5/UART_1_INT.c ****     #endif /* UART_1_RXISR_EXIT_CALLBACK */
+ 185:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 186:Generated_Source\PSoC5/UART_1_INT.c ****     #if(CY_PSOC3)
+ 187:Generated_Source\PSoC5/UART_1_INT.c ****         EA = int_en;
+ 188:Generated_Source\PSoC5/UART_1_INT.c ****     #endif /* (CY_PSOC3) */
+ 189:Generated_Source\PSoC5/UART_1_INT.c ****     }
+ 190:Generated_Source\PSoC5/UART_1_INT.c ****     
+ 191:Generated_Source\PSoC5/UART_1_INT.c **** #endif /* (UART_1_RX_INTERRUPT_ENABLED && (UART_1_RX_ENABLED || UART_1_HD_ENABLED)) */
+ 192:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 193:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 194:Generated_Source\PSoC5/UART_1_INT.c **** #if (UART_1_TX_INTERRUPT_ENABLED && UART_1_TX_ENABLED)
+ 195:Generated_Source\PSoC5/UART_1_INT.c ****     /*******************************************************************************
+ 196:Generated_Source\PSoC5/UART_1_INT.c ****     * Function Name: UART_1_TXISR
+ 197:Generated_Source\PSoC5/UART_1_INT.c ****     ********************************************************************************
+ 198:Generated_Source\PSoC5/UART_1_INT.c ****     *
+ 199:Generated_Source\PSoC5/UART_1_INT.c ****     * Summary:
+ 200:Generated_Source\PSoC5/UART_1_INT.c ****     * Interrupt Service Routine for the TX portion of the UART
+ 201:Generated_Source\PSoC5/UART_1_INT.c ****     *
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cccUCtF5.s 			page 5
 
 
- 175              	.LASF0:
- 176 0173 7369676E 		.ascii	"signed char\000"
- 176      65642063 
- 176      68617200 
- 177              	.LASF12:
- 178 017f 6C6F6E67 		.ascii	"long double\000"
- 178      20646F75 
- 178      626C6500 
- 179              	.LASF2:
- 180 018b 73686F72 		.ascii	"short int\000"
- 180      7420696E 
- 180      7400
- 181              	.LASF13:
- 182 0195 73697A65 		.ascii	"sizetype\000"
- 182      74797065 
- 182      00
- 183              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ 202:Generated_Source\PSoC5/UART_1_INT.c ****     * Parameters:
+ 203:Generated_Source\PSoC5/UART_1_INT.c ****     *  None.
+ 204:Generated_Source\PSoC5/UART_1_INT.c ****     *
+ 205:Generated_Source\PSoC5/UART_1_INT.c ****     * Return:
+ 206:Generated_Source\PSoC5/UART_1_INT.c ****     *  None.
+ 207:Generated_Source\PSoC5/UART_1_INT.c ****     *
+ 208:Generated_Source\PSoC5/UART_1_INT.c ****     * Global Variables:
+ 209:Generated_Source\PSoC5/UART_1_INT.c ****     *  UART_1_txBuffer - RAM buffer pointer for transmit data from.
+ 210:Generated_Source\PSoC5/UART_1_INT.c ****     *  UART_1_txBufferRead - cyclic index for read and transmit data
+ 211:Generated_Source\PSoC5/UART_1_INT.c ****     *     from txBuffer, increments after each transmitted byte.
+ 212:Generated_Source\PSoC5/UART_1_INT.c ****     *  UART_1_rxBufferWrite - cyclic index for write to txBuffer,
+ 213:Generated_Source\PSoC5/UART_1_INT.c ****     *     checked to detect available for transmission bytes.
+ 214:Generated_Source\PSoC5/UART_1_INT.c ****     *
+ 215:Generated_Source\PSoC5/UART_1_INT.c ****     *******************************************************************************/
+ 216:Generated_Source\PSoC5/UART_1_INT.c ****     CY_ISR(UART_1_TXISR)
+ 217:Generated_Source\PSoC5/UART_1_INT.c ****     {
+  28              		.loc 1 217 0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 1, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+  33 0000 80B4     		push	{r7}
+  34              		.cfi_def_cfa_offset 4
+  35              		.cfi_offset 7, -4
+  36 0002 00AF     		add	r7, sp, #0
+  37              		.cfi_def_cfa_register 7
+ 218:Generated_Source\PSoC5/UART_1_INT.c ****     #if(CY_PSOC3)
+ 219:Generated_Source\PSoC5/UART_1_INT.c ****         uint8 int_en;
+ 220:Generated_Source\PSoC5/UART_1_INT.c ****     #endif /* (CY_PSOC3) */
+ 221:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 222:Generated_Source\PSoC5/UART_1_INT.c ****     #ifdef UART_1_TXISR_ENTRY_CALLBACK
+ 223:Generated_Source\PSoC5/UART_1_INT.c ****         UART_1_TXISR_EntryCallback();
+ 224:Generated_Source\PSoC5/UART_1_INT.c ****     #endif /* UART_1_TXISR_ENTRY_CALLBACK */
+ 225:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 226:Generated_Source\PSoC5/UART_1_INT.c ****         /* User code required at start of ISR */
+ 227:Generated_Source\PSoC5/UART_1_INT.c ****         /* `#START UART_1_TXISR_START` */
+ 228:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 229:Generated_Source\PSoC5/UART_1_INT.c ****         /* `#END` */
+ 230:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 231:Generated_Source\PSoC5/UART_1_INT.c ****     #if(CY_PSOC3)   /* Make sure nested interrupt is enabled */
+ 232:Generated_Source\PSoC5/UART_1_INT.c ****         int_en = EA;
+ 233:Generated_Source\PSoC5/UART_1_INT.c ****         CyGlobalIntEnable;
+ 234:Generated_Source\PSoC5/UART_1_INT.c ****     #endif /* (CY_PSOC3) */
+ 235:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 236:Generated_Source\PSoC5/UART_1_INT.c ****         while((UART_1_txBufferRead != UART_1_txBufferWrite) &&
+  38              		.loc 1 236 0
+  39 0004 18E0     		b	.L2
+  40              	.L5:
+ 237:Generated_Source\PSoC5/UART_1_INT.c ****              ((UART_1_TXSTATUS_REG & UART_1_TX_STS_FIFO_FULL) == 0u))
+ 238:Generated_Source\PSoC5/UART_1_INT.c ****         {
+ 239:Generated_Source\PSoC5/UART_1_INT.c ****             /* Check pointer wrap around */
+ 240:Generated_Source\PSoC5/UART_1_INT.c ****             if(UART_1_txBufferRead >= UART_1_TX_BUFFER_SIZE)
+  41              		.loc 1 240 0
+  42 0006 154B     		ldr	r3, .L7
+  43 0008 1B88     		ldrh	r3, [r3]	@ movhi
+  44 000a 9BB2     		uxth	r3, r3
+  45 000c B3F5806F 		cmp	r3, #1024
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cccUCtF5.s 			page 6
+
+
+  46 0010 02D3     		bcc	.L3
+ 241:Generated_Source\PSoC5/UART_1_INT.c ****             {
+ 242:Generated_Source\PSoC5/UART_1_INT.c ****                 UART_1_txBufferRead = 0u;
+  47              		.loc 1 242 0
+  48 0012 124B     		ldr	r3, .L7
+  49 0014 0022     		movs	r2, #0
+  50 0016 1A80     		strh	r2, [r3]	@ movhi
+  51              	.L3:
+ 243:Generated_Source\PSoC5/UART_1_INT.c ****             }
+ 244:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 245:Generated_Source\PSoC5/UART_1_INT.c ****             UART_1_TXDATA_REG = UART_1_txBuffer[UART_1_txBufferRead];
+  52              		.loc 1 245 0
+  53 0018 114B     		ldr	r3, .L7+4
+  54 001a 104A     		ldr	r2, .L7
+  55 001c 1288     		ldrh	r2, [r2]	@ movhi
+  56 001e 92B2     		uxth	r2, r2
+  57 0020 1146     		mov	r1, r2
+  58 0022 104A     		ldr	r2, .L7+8
+  59 0024 525C     		ldrb	r2, [r2, r1]
+  60 0026 D2B2     		uxtb	r2, r2
+  61 0028 1A70     		strb	r2, [r3]
+ 246:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 247:Generated_Source\PSoC5/UART_1_INT.c ****             /* Set next pointer */
+ 248:Generated_Source\PSoC5/UART_1_INT.c ****             UART_1_txBufferRead++;
+  62              		.loc 1 248 0
+  63 002a 0C4B     		ldr	r3, .L7
+  64 002c 1B88     		ldrh	r3, [r3]	@ movhi
+  65 002e 9BB2     		uxth	r3, r3
+  66 0030 0133     		adds	r3, r3, #1
+  67 0032 9AB2     		uxth	r2, r3
+  68 0034 094B     		ldr	r3, .L7
+  69 0036 1A80     		strh	r2, [r3]	@ movhi
+  70              	.L2:
+ 236:Generated_Source\PSoC5/UART_1_INT.c ****              ((UART_1_TXSTATUS_REG & UART_1_TX_STS_FIFO_FULL) == 0u))
+  71              		.loc 1 236 0
+  72 0038 084B     		ldr	r3, .L7
+  73 003a 1B88     		ldrh	r3, [r3]	@ movhi
+  74 003c 9AB2     		uxth	r2, r3
+  75 003e 0A4B     		ldr	r3, .L7+12
+  76 0040 1B88     		ldrh	r3, [r3]
+  77 0042 9A42     		cmp	r2, r3
+  78 0044 06D0     		beq	.L6
+ 237:Generated_Source\PSoC5/UART_1_INT.c ****         {
+  79              		.loc 1 237 0 discriminator 1
+  80 0046 094B     		ldr	r3, .L7+16
+  81 0048 1B78     		ldrb	r3, [r3]
+  82 004a DBB2     		uxtb	r3, r3
+  83 004c 03F00403 		and	r3, r3, #4
+ 236:Generated_Source\PSoC5/UART_1_INT.c ****              ((UART_1_TXSTATUS_REG & UART_1_TX_STS_FIFO_FULL) == 0u))
+  84              		.loc 1 236 0 discriminator 1
+  85 0050 002B     		cmp	r3, #0
+  86 0052 D8D0     		beq	.L5
+  87              	.L6:
+ 249:Generated_Source\PSoC5/UART_1_INT.c ****         }
+ 250:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 251:Generated_Source\PSoC5/UART_1_INT.c ****         /* User code required at end of ISR (Optional) */
+ 252:Generated_Source\PSoC5/UART_1_INT.c ****         /* `#START UART_1_TXISR_END` */
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cccUCtF5.s 			page 7
+
+
+ 253:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 254:Generated_Source\PSoC5/UART_1_INT.c ****         /* `#END` */
+ 255:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 256:Generated_Source\PSoC5/UART_1_INT.c ****     #ifdef UART_1_TXISR_EXIT_CALLBACK
+ 257:Generated_Source\PSoC5/UART_1_INT.c ****         UART_1_TXISR_ExitCallback();
+ 258:Generated_Source\PSoC5/UART_1_INT.c ****     #endif /* UART_1_TXISR_EXIT_CALLBACK */
+ 259:Generated_Source\PSoC5/UART_1_INT.c **** 
+ 260:Generated_Source\PSoC5/UART_1_INT.c ****     #if(CY_PSOC3)
+ 261:Generated_Source\PSoC5/UART_1_INT.c ****         EA = int_en;
+ 262:Generated_Source\PSoC5/UART_1_INT.c ****     #endif /* (CY_PSOC3) */
+ 263:Generated_Source\PSoC5/UART_1_INT.c ****    }
+  88              		.loc 1 263 0
+  89 0054 00BF     		nop
+  90 0056 BD46     		mov	sp, r7
+  91              		.cfi_def_cfa_register 13
+  92              		@ sp needed
+  93 0058 80BC     		pop	{r7}
+  94              		.cfi_restore 7
+  95              		.cfi_def_cfa_offset 0
+  96 005a 7047     		bx	lr
+  97              	.L8:
+  98              		.align	2
+  99              	.L7:
+ 100 005c 00000000 		.word	UART_1_txBufferRead
+ 101 0060 43640040 		.word	1073767491
+ 102 0064 00000000 		.word	UART_1_txBuffer
+ 103 0068 00000000 		.word	UART_1_txBufferWrite
+ 104 006c 63640040 		.word	1073767523
+ 105              		.cfi_endproc
+ 106              	.LFE0:
+ 107              		.size	UART_1_TXISR, .-UART_1_TXISR
+ 108              		.text
+ 109              	.Letext0:
+ 110              		.file 2 "Generated_Source\\PSoC5\\cytypes.h"
+ 111              		.file 3 "Generated_Source\\PSoC5\\UART_1.h"
+ 112              		.section	.debug_info,"",%progbits
+ 113              	.Ldebug_info0:
+ 114 0000 04010000 		.4byte	0x104
+ 115 0004 0400     		.2byte	0x4
+ 116 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 117 000a 04       		.byte	0x4
+ 118 000b 01       		.uleb128 0x1
+ 119 000c BC000000 		.4byte	.LASF20
+ 120 0010 0C       		.byte	0xc
+ 121 0011 66010000 		.4byte	.LASF21
+ 122 0015 78000000 		.4byte	.LASF22
+ 123 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 124 001d 00000000 		.4byte	0
+ 125 0021 00000000 		.4byte	.Ldebug_line0
+ 126 0025 02       		.uleb128 0x2
+ 127 0026 01       		.byte	0x1
+ 128 0027 06       		.byte	0x6
+ 129 0028 9E010000 		.4byte	.LASF0
+ 130 002c 02       		.uleb128 0x2
+ 131 002d 01       		.byte	0x1
+ 132 002e 08       		.byte	0x8
+ 133 002f 4A010000 		.4byte	.LASF1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cccUCtF5.s 			page 8
+
+
+ 134 0033 02       		.uleb128 0x2
+ 135 0034 02       		.byte	0x2
+ 136 0035 05       		.byte	0x5
+ 137 0036 B6010000 		.4byte	.LASF2
+ 138 003a 02       		.uleb128 0x2
+ 139 003b 02       		.byte	0x2
+ 140 003c 07       		.byte	0x7
+ 141 003d 0E000000 		.4byte	.LASF3
+ 142 0041 02       		.uleb128 0x2
+ 143 0042 04       		.byte	0x4
+ 144 0043 05       		.byte	0x5
+ 145 0044 5D010000 		.4byte	.LASF4
+ 146 0048 02       		.uleb128 0x2
+ 147 0049 04       		.byte	0x4
+ 148 004a 07       		.byte	0x7
+ 149 004b 49000000 		.4byte	.LASF5
+ 150 004f 02       		.uleb128 0x2
+ 151 0050 08       		.byte	0x8
+ 152 0051 05       		.byte	0x5
+ 153 0052 00000000 		.4byte	.LASF6
+ 154 0056 02       		.uleb128 0x2
+ 155 0057 08       		.byte	0x8
+ 156 0058 07       		.byte	0x7
+ 157 0059 5B000000 		.4byte	.LASF7
+ 158 005d 03       		.uleb128 0x3
+ 159 005e 04       		.byte	0x4
+ 160 005f 05       		.byte	0x5
+ 161 0060 696E7400 		.ascii	"int\000"
+ 162 0064 02       		.uleb128 0x2
+ 163 0065 04       		.byte	0x4
+ 164 0066 07       		.byte	0x7
+ 165 0067 21000000 		.4byte	.LASF8
+ 166 006b 04       		.uleb128 0x4
+ 167 006c 43000000 		.4byte	.LASF9
+ 168 0070 02       		.byte	0x2
+ 169 0071 E401     		.2byte	0x1e4
+ 170 0073 2C000000 		.4byte	0x2c
+ 171 0077 04       		.uleb128 0x4
+ 172 0078 C0010000 		.4byte	.LASF10
+ 173 007c 02       		.byte	0x2
+ 174 007d E501     		.2byte	0x1e5
+ 175 007f 3A000000 		.4byte	0x3a
+ 176 0083 02       		.uleb128 0x2
+ 177 0084 04       		.byte	0x4
+ 178 0085 04       		.byte	0x4
+ 179 0086 72000000 		.4byte	.LASF11
+ 180 008a 02       		.uleb128 0x2
+ 181 008b 08       		.byte	0x8
+ 182 008c 04       		.byte	0x4
+ 183 008d 8A010000 		.4byte	.LASF12
+ 184 0091 02       		.uleb128 0x2
+ 185 0092 01       		.byte	0x1
+ 186 0093 08       		.byte	0x8
+ 187 0094 58010000 		.4byte	.LASF13
+ 188 0098 04       		.uleb128 0x4
+ 189 0099 3E000000 		.4byte	.LASF14
+ 190 009d 02       		.byte	0x2
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cccUCtF5.s 			page 9
+
+
+ 191 009e 8E02     		.2byte	0x28e
+ 192 00a0 A4000000 		.4byte	0xa4
+ 193 00a4 05       		.uleb128 0x5
+ 194 00a5 6B000000 		.4byte	0x6b
+ 195 00a9 05       		.uleb128 0x5
+ 196 00aa 77000000 		.4byte	0x77
+ 197 00ae 02       		.uleb128 0x2
+ 198 00af 08       		.byte	0x8
+ 199 00b0 04       		.byte	0x4
+ 200 00b1 AA010000 		.4byte	.LASF15
+ 201 00b5 02       		.uleb128 0x2
+ 202 00b6 04       		.byte	0x4
+ 203 00b7 07       		.byte	0x7
+ 204 00b8 F0010000 		.4byte	.LASF16
+ 205 00bc 06       		.uleb128 0x6
+ 206 00bd 91010000 		.4byte	.LASF23
+ 207 00c1 01       		.byte	0x1
+ 208 00c2 D8       		.byte	0xd8
+ 209 00c3 00000000 		.4byte	.LFB0
+ 210 00c7 70000000 		.4byte	.LFE0-.LFB0
+ 211 00cb 01       		.uleb128 0x1
+ 212 00cc 9C       		.byte	0x9c
+ 213 00cd 07       		.uleb128 0x7
+ 214 00ce A4000000 		.4byte	0xa4
+ 215 00d2 DE000000 		.4byte	0xde
+ 216 00d6 08       		.uleb128 0x8
+ 217 00d7 B5000000 		.4byte	0xb5
+ 218 00db FF03     		.2byte	0x3ff
+ 219 00dd 00       		.byte	0
+ 220 00de 09       		.uleb128 0x9
+ 221 00df 2E000000 		.4byte	.LASF17
+ 222 00e3 03       		.byte	0x3
+ 223 00e4 3801     		.2byte	0x138
+ 224 00e6 EA000000 		.4byte	0xea
+ 225 00ea 05       		.uleb128 0x5
+ 226 00eb CD000000 		.4byte	0xcd
+ 227 00ef 09       		.uleb128 0x9
+ 228 00f0 DC010000 		.4byte	.LASF18
+ 229 00f4 03       		.byte	0x3
+ 230 00f5 3901     		.2byte	0x139
+ 231 00f7 A9000000 		.4byte	0xa9
+ 232 00fb 09       		.uleb128 0x9
+ 233 00fc C7010000 		.4byte	.LASF19
+ 234 0100 03       		.byte	0x3
+ 235 0101 3A01     		.2byte	0x13a
+ 236 0103 77000000 		.4byte	0x77
+ 237 0107 00       		.byte	0
+ 238              		.section	.debug_abbrev,"",%progbits
+ 239              	.Ldebug_abbrev0:
+ 240 0000 01       		.uleb128 0x1
+ 241 0001 11       		.uleb128 0x11
+ 242 0002 01       		.byte	0x1
+ 243 0003 25       		.uleb128 0x25
+ 244 0004 0E       		.uleb128 0xe
+ 245 0005 13       		.uleb128 0x13
+ 246 0006 0B       		.uleb128 0xb
+ 247 0007 03       		.uleb128 0x3
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cccUCtF5.s 			page 10
+
+
+ 248 0008 0E       		.uleb128 0xe
+ 249 0009 1B       		.uleb128 0x1b
+ 250 000a 0E       		.uleb128 0xe
+ 251 000b 55       		.uleb128 0x55
+ 252 000c 17       		.uleb128 0x17
+ 253 000d 11       		.uleb128 0x11
+ 254 000e 01       		.uleb128 0x1
+ 255 000f 10       		.uleb128 0x10
+ 256 0010 17       		.uleb128 0x17
+ 257 0011 00       		.byte	0
+ 258 0012 00       		.byte	0
+ 259 0013 02       		.uleb128 0x2
+ 260 0014 24       		.uleb128 0x24
+ 261 0015 00       		.byte	0
+ 262 0016 0B       		.uleb128 0xb
+ 263 0017 0B       		.uleb128 0xb
+ 264 0018 3E       		.uleb128 0x3e
+ 265 0019 0B       		.uleb128 0xb
+ 266 001a 03       		.uleb128 0x3
+ 267 001b 0E       		.uleb128 0xe
+ 268 001c 00       		.byte	0
+ 269 001d 00       		.byte	0
+ 270 001e 03       		.uleb128 0x3
+ 271 001f 24       		.uleb128 0x24
+ 272 0020 00       		.byte	0
+ 273 0021 0B       		.uleb128 0xb
+ 274 0022 0B       		.uleb128 0xb
+ 275 0023 3E       		.uleb128 0x3e
+ 276 0024 0B       		.uleb128 0xb
+ 277 0025 03       		.uleb128 0x3
+ 278 0026 08       		.uleb128 0x8
+ 279 0027 00       		.byte	0
+ 280 0028 00       		.byte	0
+ 281 0029 04       		.uleb128 0x4
+ 282 002a 16       		.uleb128 0x16
+ 283 002b 00       		.byte	0
+ 284 002c 03       		.uleb128 0x3
+ 285 002d 0E       		.uleb128 0xe
+ 286 002e 3A       		.uleb128 0x3a
+ 287 002f 0B       		.uleb128 0xb
+ 288 0030 3B       		.uleb128 0x3b
+ 289 0031 05       		.uleb128 0x5
+ 290 0032 49       		.uleb128 0x49
+ 291 0033 13       		.uleb128 0x13
+ 292 0034 00       		.byte	0
+ 293 0035 00       		.byte	0
+ 294 0036 05       		.uleb128 0x5
+ 295 0037 35       		.uleb128 0x35
+ 296 0038 00       		.byte	0
+ 297 0039 49       		.uleb128 0x49
+ 298 003a 13       		.uleb128 0x13
+ 299 003b 00       		.byte	0
+ 300 003c 00       		.byte	0
+ 301 003d 06       		.uleb128 0x6
+ 302 003e 2E       		.uleb128 0x2e
+ 303 003f 00       		.byte	0
+ 304 0040 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cccUCtF5.s 			page 11
+
+
+ 305 0041 19       		.uleb128 0x19
+ 306 0042 03       		.uleb128 0x3
+ 307 0043 0E       		.uleb128 0xe
+ 308 0044 3A       		.uleb128 0x3a
+ 309 0045 0B       		.uleb128 0xb
+ 310 0046 3B       		.uleb128 0x3b
+ 311 0047 0B       		.uleb128 0xb
+ 312 0048 27       		.uleb128 0x27
+ 313 0049 19       		.uleb128 0x19
+ 314 004a 11       		.uleb128 0x11
+ 315 004b 01       		.uleb128 0x1
+ 316 004c 12       		.uleb128 0x12
+ 317 004d 06       		.uleb128 0x6
+ 318 004e 40       		.uleb128 0x40
+ 319 004f 18       		.uleb128 0x18
+ 320 0050 9742     		.uleb128 0x2117
+ 321 0052 19       		.uleb128 0x19
+ 322 0053 00       		.byte	0
+ 323 0054 00       		.byte	0
+ 324 0055 07       		.uleb128 0x7
+ 325 0056 01       		.uleb128 0x1
+ 326 0057 01       		.byte	0x1
+ 327 0058 49       		.uleb128 0x49
+ 328 0059 13       		.uleb128 0x13
+ 329 005a 01       		.uleb128 0x1
+ 330 005b 13       		.uleb128 0x13
+ 331 005c 00       		.byte	0
+ 332 005d 00       		.byte	0
+ 333 005e 08       		.uleb128 0x8
+ 334 005f 21       		.uleb128 0x21
+ 335 0060 00       		.byte	0
+ 336 0061 49       		.uleb128 0x49
+ 337 0062 13       		.uleb128 0x13
+ 338 0063 2F       		.uleb128 0x2f
+ 339 0064 05       		.uleb128 0x5
+ 340 0065 00       		.byte	0
+ 341 0066 00       		.byte	0
+ 342 0067 09       		.uleb128 0x9
+ 343 0068 34       		.uleb128 0x34
+ 344 0069 00       		.byte	0
+ 345 006a 03       		.uleb128 0x3
+ 346 006b 0E       		.uleb128 0xe
+ 347 006c 3A       		.uleb128 0x3a
+ 348 006d 0B       		.uleb128 0xb
+ 349 006e 3B       		.uleb128 0x3b
+ 350 006f 05       		.uleb128 0x5
+ 351 0070 49       		.uleb128 0x49
+ 352 0071 13       		.uleb128 0x13
+ 353 0072 3F       		.uleb128 0x3f
+ 354 0073 19       		.uleb128 0x19
+ 355 0074 3C       		.uleb128 0x3c
+ 356 0075 19       		.uleb128 0x19
+ 357 0076 00       		.byte	0
+ 358 0077 00       		.byte	0
+ 359 0078 00       		.byte	0
+ 360              		.section	.debug_aranges,"",%progbits
+ 361 0000 1C000000 		.4byte	0x1c
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cccUCtF5.s 			page 12
+
+
+ 362 0004 0200     		.2byte	0x2
+ 363 0006 00000000 		.4byte	.Ldebug_info0
+ 364 000a 04       		.byte	0x4
+ 365 000b 00       		.byte	0
+ 366 000c 0000     		.2byte	0
+ 367 000e 0000     		.2byte	0
+ 368 0010 00000000 		.4byte	.LFB0
+ 369 0014 70000000 		.4byte	.LFE0-.LFB0
+ 370 0018 00000000 		.4byte	0
+ 371 001c 00000000 		.4byte	0
+ 372              		.section	.debug_ranges,"",%progbits
+ 373              	.Ldebug_ranges0:
+ 374 0000 00000000 		.4byte	.LFB0
+ 375 0004 70000000 		.4byte	.LFE0
+ 376 0008 00000000 		.4byte	0
+ 377 000c 00000000 		.4byte	0
+ 378              		.section	.debug_line,"",%progbits
+ 379              	.Ldebug_line0:
+ 380 0000 80000000 		.section	.debug_str,"MS",%progbits,1
+ 380      02005300 
+ 380      00000201 
+ 380      FB0E0D00 
+ 380      01010101 
+ 381              	.LASF6:
+ 382 0000 6C6F6E67 		.ascii	"long long int\000"
+ 382      206C6F6E 
+ 382      6720696E 
+ 382      7400
+ 383              	.LASF3:
+ 384 000e 73686F72 		.ascii	"short unsigned int\000"
+ 384      7420756E 
+ 384      7369676E 
+ 384      65642069 
+ 384      6E7400
+ 385              	.LASF8:
+ 386 0021 756E7369 		.ascii	"unsigned int\000"
+ 386      676E6564 
+ 386      20696E74 
+ 386      00
+ 387              	.LASF17:
+ 388 002e 55415254 		.ascii	"UART_1_txBuffer\000"
+ 388      5F315F74 
+ 388      78427566 
+ 388      66657200 
+ 389              	.LASF14:
+ 390 003e 72656738 		.ascii	"reg8\000"
+ 390      00
+ 391              	.LASF9:
+ 392 0043 75696E74 		.ascii	"uint8\000"
+ 392      3800
+ 393              	.LASF5:
+ 394 0049 6C6F6E67 		.ascii	"long unsigned int\000"
+ 394      20756E73 
+ 394      69676E65 
+ 394      6420696E 
+ 394      7400
+ 395              	.LASF7:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cccUCtF5.s 			page 13
+
+
+ 396 005b 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 396      206C6F6E 
+ 396      6720756E 
+ 396      7369676E 
+ 396      65642069 
+ 397              	.LASF11:
+ 398 0072 666C6F61 		.ascii	"float\000"
+ 398      7400
+ 399              	.LASF22:
+ 400 0078 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\firm_F1-TestFixture\\"
+ 400      73657273 
+ 400      5C6D6172 
+ 400      74686E69 
+ 400      636B5C44 
+ 401 00a7 46312D54 		.ascii	"F1-TestFixture.cydsn\000"
+ 401      65737446 
+ 401      69787475 
+ 401      72652E63 
+ 401      7964736E 
+ 402              	.LASF20:
+ 403 00bc 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 403      43313120 
+ 403      352E342E 
+ 403      31203230 
+ 403      31363036 
+ 404 00ef 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 404      20726576 
+ 404      6973696F 
+ 404      6E203233 
+ 404      37373135 
+ 405 0122 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 405      66756E63 
+ 405      74696F6E 
+ 405      2D736563 
+ 405      74696F6E 
+ 406              	.LASF1:
+ 407 014a 756E7369 		.ascii	"unsigned char\000"
+ 407      676E6564 
+ 407      20636861 
+ 407      7200
+ 408              	.LASF13:
+ 409 0158 63686172 		.ascii	"char\000"
+ 409      00
+ 410              	.LASF4:
+ 411 015d 6C6F6E67 		.ascii	"long int\000"
+ 411      20696E74 
+ 411      00
+ 412              	.LASF21:
+ 413 0166 47656E65 		.ascii	"Generated_Source\\PSoC5\\UART_1_INT.c\000"
+ 413      72617465 
+ 413      645F536F 
+ 413      75726365 
+ 413      5C50536F 
+ 414              	.LASF12:
+ 415 018a 646F7562 		.ascii	"double\000"
+ 415      6C6500
+ 416              	.LASF23:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cccUCtF5.s 			page 14
+
+
+ 417 0191 55415254 		.ascii	"UART_1_TXISR\000"
+ 417      5F315F54 
+ 417      58495352 
+ 417      00
+ 418              	.LASF0:
+ 419 019e 7369676E 		.ascii	"signed char\000"
+ 419      65642063 
+ 419      68617200 
+ 420              	.LASF15:
+ 421 01aa 6C6F6E67 		.ascii	"long double\000"
+ 421      20646F75 
+ 421      626C6500 
+ 422              	.LASF2:
+ 423 01b6 73686F72 		.ascii	"short int\000"
+ 423      7420696E 
+ 423      7400
+ 424              	.LASF10:
+ 425 01c0 75696E74 		.ascii	"uint16\000"
+ 425      313600
+ 426              	.LASF19:
+ 427 01c7 55415254 		.ascii	"UART_1_txBufferWrite\000"
+ 427      5F315F74 
+ 427      78427566 
+ 427      66657257 
+ 427      72697465 
+ 428              	.LASF18:
+ 429 01dc 55415254 		.ascii	"UART_1_txBufferRead\000"
+ 429      5F315F74 
+ 429      78427566 
+ 429      66657252 
+ 429      65616400 
+ 430              	.LASF16:
+ 431 01f0 73697A65 		.ascii	"sizetype\000"
+ 431      74797065 
+ 431      00
+ 432              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

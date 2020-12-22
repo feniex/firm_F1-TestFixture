@@ -32,6 +32,7 @@
     //#include "UART_230400_Functions.h"
     #include "ControllerTest.h"
     #include "RelayTest.h"
+    #include "SirenTest.h"
      
     //uint8 SelectedTest;
     //struct structTestInfo CurrentTest;

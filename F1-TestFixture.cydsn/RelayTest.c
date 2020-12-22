@@ -25,17 +25,20 @@
 #define TOLERANCE_CURRENT   2 
 #define TIMEOUT_FAIL        50              // Number of 20msec counts before failure timeout
 
-static RxPacket_RelaySiren rxPacket_Relay;            
-static RxPacket_RelaySiren * pRxPacket_Relay; 
+static RxPacket_RelaySiren rxPacket_Relay;            // Inputs - 'D' relay to controller
+static RxPacket_RelaySiren * pRxPacket_Relay;           // UART_SIREN     
 
-static TxPacket_RelaySiren txPacket_RelaySiren;            
-static TxPacket_RelaySiren * pTxPacket_RelaySiren;
+//static RxPacket_RelaySiren rxPacket_RelaySiren;            
+//static RxPacket_RelaySiren * pRxPacket_RelaySiren;
+
+static TxPacket_RelaySiren txPacket_RelaySiren;         // SetRelayOutputs - 'I' (also 3,S,P) controller to relay
+static TxPacket_RelaySiren * pTxPacket_RelaySiren;      // 
 
 //static TxPacket_Relay txPacket_Relay;            
 //static TxPacket_Relay * pTxPacket_Relay;
 
-static RxPacket_Siren rxPacket_Siren;
-static RxPacket_Siren * pRxPacket_Siren;  
+//static RxPacket_Siren rxPacket_Siren;             // 'S' relay to siren
+//static RxPacket_Siren * pRxPacket_Siren;  
 
 static Packet_H txPacket_H;          //     Packet 'H'
 static Packet_H * pTxPacket_H;      //
@@ -94,9 +97,9 @@ enum TestStep               // *** Need to get muxes setup permanently,
 { 
     INITIALIZE_TEST, 
     SIREN_EN,               // (Implemented - need hardware to test)
-    TEST_OUTPUTS,           //                      - 230400 TX TESTED      - (needs hardware)
+    TEST_OUTPUTS,           // ---------------------- 230400 TX TESTED      - (needs hardware)
     DATALINK,               // (***115200 rx tested)
-    QUAD_PORTS,             // (460800 rx_tested, with 'C' packet, need to test for 'Y' and 'L') - (460800 tx tested)
+    QUAD_PORTS,             // (460800 rx_tested, with 'C' packet, need to test for 'Y' and 'L') - (460800 tx tested - ***need tor remove Rx on relay)
     UART_SIREN,             // 230400 RX_TESTED     - 230400 TX TESTED      - 
     INPUTS,                 // 230400 RX_TESTED     - 230400 TX TESTED      - (needs hardware)
     VBATT,                  // 230400 RX_TESTED                             - COMPLETE
@@ -458,24 +461,31 @@ uint8 RTest_Test_QuadPorts(void)
 uint8 RTest_Test_UART_Siren(void)
 {
 // We need to send a Siren packet (through relay to controller) - ***passes through the micro
-// Then check the packet going from the relay to the controller    
+// Then check that the packet going from the relay to the controller    
    
-    DEMUX_CTRL_230400_Write(RTEST_SIREN);                  // Rx - Select the demux channel
-    
-//    pTxPacket_RelaySiren = getTxPacket_RelaySiren();        // Tx - Get pointers to packet
-//        pTxPacket_RelaySiren->Payload.Siren1Tone = 0;       // Load the packet with data
-//        pTxPacket_RelaySiren->Payload.Siren2Tone = 0;
-//        pTxPacket_RelaySiren->Payload.SirenEnable = 0;
-    
-    MUX_CTRL_230400_Write(RTEST_CONT);                  // Rx - Select the mux channel
-    
-//        pRxPacket_Siren = getRxPacket_Siren();        // Tx - Get pointers to packet
-//        pRxPacket_Siren
-        
-    //while( !VerifyPacket_230400(RTEST_SIREN) )          // Wait for the packet to be verified
-    {}
-          
-      
+//    // test receive from siren
+//    DEMUX_CTRL_230400_Write(RTEST_SIREN);                  // Rx - Select the demux channel
+//
+//    pTxPacket_H = getTxPacket_H();                          // Load the packet with data to check for in 'D' packet 
+//    pTxPacket_H->Payload.SirenFirm_0 = 's';
+//    pTxPacket_H->Payload.SirenFirm_1 = 's';
+//    pTxPacket_H->Payload.SirenFirm_2 = 's';
+//    pTxPacket_H->Payload.Speaker1_Overcurrent = 's';
+//    pTxPacket_H->Payload.Speaker2_Overcurrent = 's';
+//
+//    
+//    // test transmit to controller ***need tx wires on relay to test
+//    MUX_CTRL_230400_Write(RTEST_CONT);                                  // Rx - Select the mux channel
+//    
+////    pRxPacket_Relay = getRxPacket_Relay();                              // Rx - Get pointers to packet      
+////    while(  (pRxPacket_Relay->Payload.SirenFirm_0 != 's' ) &&           // Wait for the packet to be verified
+////            (pRxPacket_Relay->Payload.SirenFirm_1 != 's' ) &&
+////            (pRxPacket_Relay->Payload.SirenFirm_2 != 's' ) &&
+////            (pRxPacket_Relay->Payload.Speaker1_Overcurrent != 's' ) &&
+////            (pRxPacket_Relay->Payload.Speaker2_Overcurrent != 's' ) )
+////    {}
+////          
+////    LED_EN_Write(1);
 //----------------------------------------------------------------------------------------------
     
 // ***We need to detect a packet going (from the relay to the siren)
@@ -483,16 +493,19 @@ uint8 RTest_Test_UART_Siren(void)
 // Read and verify 'S' packets (from relay to siren)
     
     //DEMUX_CTRL_230400_Write(RTEST_CONT);                // Tx - Select the demux channel
-//    pTxPacket_Relay = getTxPacket_Relay();              // Tx - Get pointers to packet
-//    
-//    pTxPacket_Relay->Payload.SirenFirm_0 = 0;          // Tx - Setup packet with test data
-//    pTxPacket_Relay->Payload.SirenFirm_1 = 1;
-//    pTxPacket_Relay->Payload.SirenFirm_2 = 2;
-//    pTxPacket_Relay->Payload.Speaker1_Overcurrent = 1;
-//    pTxPacket_Relay->Payload.Speaker2_Overcurrent = 1;
+    //(no need to load the packet)
+    //CyDelay(100);
     
-    //***
-    //return( VerifyPacket_230400(RTEST_CONT) );          // Rx - When packet has been verified, return 'pass'
+//////    pTxPacket_Relay = getTxPacket_Relay();              // Tx - Get pointers to packet
+//////    pTxPacket_Relay->Payload.SirenFirm_0 = 0;          // Tx - Setup packet with test data
+//////    pTxPacket_Relay->Payload.SirenFirm_1 = 1;
+//////    pTxPacket_Relay->Payload.SirenFirm_2 = 2;
+//////    pTxPacket_Relay->Payload.Speaker1_Overcurrent = 1;
+//////    pTxPacket_Relay->Payload.Speaker2_Overcurrent = 1;
+    
+    //MUX_CTRL_230400_Write(RTEST_SIREN);                                  // Rx - Select the mux channel
+    //CyDelay(100);
+    //return( VerifyPacket_230400(STEST_RELAY) );          // Rx - When packet has been verified, return 'pass'
 
     return(0);
 }
@@ -509,7 +522,7 @@ uint8 RTest_Test_Inputs(void)
     //MUX_CTRL_230400_Write(RTEST_CONT);                  // Rx - Select the mux channel
     pRxPacket_Relay = getRxPacket_Relay();              // Rx - Get pointers to packet
     
-    DEMUX_CTRL_230400_Write(RTEST_CONT);                // Tx - Select the demux channel
+    //DEMUX_CTRL_230400_Write(RTEST_CONT);                // Tx - Select the demux channel
     pTxPacket_RelaySiren = getTxPacket_RelaySiren();              // Tx - Get pointers to packet
     
     // RTest_HSide1_Write(0);                           // Deactivate all inputs
@@ -624,6 +637,12 @@ RxPacket_RelaySiren * getRxPacket_Relay(void)
     return pRxPacket_Relay;
 }
 
+//RxPacket_RelaySiren * getRxPacket_RelayS(void)
+//{
+//    pRxPacket_Relay = &rxPacket_Relay;
+//    
+//    return pRxPacket_Relay;
+
 //TxPacket_Relay * getTxPacket_Relay()
 //{
 //    pTxPacket_Relay = &txPacket_Relay;
@@ -631,12 +650,12 @@ RxPacket_RelaySiren * getRxPacket_Relay(void)
 //    return pTxPacket_Relay;
 //}
 
-RxPacket_Siren * getRxPacket_Siren()
-{
-    pRxPacket_Siren = &rxPacket_Siren;
-    
-    return pRxPacket_Siren;
-}
+//RxPacket_Siren * getRxPacket_Siren()
+//{
+//    pRxPacket_Siren = &rxPacket_Siren;
+//    
+//    return pRxPacket_Siren;
+//}
 
 TxPacket_RelaySiren * getTxPacket_RelaySiren()
 {
@@ -781,8 +800,8 @@ void RTest_50ms_isr(void)                       // Times interboard comms, and s
             (TestState == INPUTS) ||
             (TestState == BLOCK_CURRENTS) )
         {      
-            //sendPacketToRelaySiren();
-            sendPacket_SirenToRelay();              //*** both are used for UART_SIREN
+            sendPacketToRelaySiren();
+            //sendPacket_SirenToRelay();              //*** both are used for UART_SIREN
         }
 //    }
     

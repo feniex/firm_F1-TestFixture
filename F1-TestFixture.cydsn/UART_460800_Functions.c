@@ -329,6 +329,7 @@ uint8 VerifyPacket_460800(uint8 PacketType)
        
 }
 
+//  ---------RTest----------------------------
 void sendPacketToRelay_Quad(void)              
 {
     static uint16 iterator = 0;
@@ -345,7 +346,33 @@ void sendPacketToRelay_Quad(void)
 
 }
 
+//  ----------------STest---------------
+void sendPacketToSiren_Audio(void)
+{
+    
+    static uint16 iterator = 0;
+    static uint16 ADCReading[100];
 
+//    UART_460800_WriteTxData(0x7E);                          // Send 'L' packet 
+//    UART_460800_WriteTxData('L');
+//    for(iterator = 0; iterator<100; iterator++)             
+//    {
+//        UART_460800_WriteTxData(iterator);
+//    }
+//    UART_460800_WriteTxData(0x0D);
+//    UART_460800_WriteTxData(0x0A);
+    
+    //UART_460800_WriteTxData(iterator);
+    
+//    ADCReading[iterator] = ADC_AudioStream_GetResult16();
+//    UART_460800_WriteTxData( ADCReading[iterator] );
+    
+    iterator++;
+    if(iterator > 100)
+        iterator = 0;
+    
+    return;
+}
 
 
 /* [] END OF FILE */

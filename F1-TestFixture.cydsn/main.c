@@ -83,8 +83,8 @@ int main()
     for(;;)
     {     
         //CurrentTest.SelectedTest = CTEST;
-        CurrentTest.SelectedTest = RTEST;
-        //CurrentTest.SelectedTest = STEST;
+        //CurrentTest.SelectedTest = RTEST;
+        CurrentTest.SelectedTest = STEST;
         
         switch(CurrentTest.SelectedTest)
         {
@@ -151,6 +151,10 @@ static void initializePeripherals(void)
     //----------Start UART_9600----------
 //    UART_9600_Start();    
 //    isr_UART_9600_Start();
+    
+    
+    //UART_1_Start();    
+    //isr_UART_230400_Start();
 
     
     //-----------------------------------
@@ -163,6 +167,13 @@ static void initializePeripherals(void)
     
     Timer_10ms_Start();
     isr_Timer_10ms_Start();
+    
+    //WaveDAC_Start();
+    
+    Timer_DAC_Start();
+    
+    ADC_AudioStream_Start();
+    isr_ADC_AudioStream_Start();
 
     return;
 }
@@ -180,6 +191,8 @@ void StopTimeout(void)
 
     return;
 }
+
+
 
 
 

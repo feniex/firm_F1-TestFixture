@@ -142,8 +142,8 @@ void processByteReceivedHandler(void)
         
         detectPacket(dataByte);
         
-        if(findpacket(dataByte))
-            LED_EN_Write(0);
+//        if(findpacket(dataByte))
+//            LED_EN_Write(0);
         
     }while(UART_230400_ReadRxStatus() & UART_230400_RX_STS_FIFO_NOTEMPTY);
     
@@ -298,14 +298,15 @@ uint8 VerifyPacket_230400(uint8 PacketType)
     
     static uint16 singlepacketsuccess = 0;
     
-    if(PacketType == 0)
-//        MUX_CTRL_460800_Write(0x00);
-    
-    if(PacketType == 0)
-        singlepacketsuccess = packetsuccess[0];
-//    else if(PacketType == 1)
-//        singlepacketsuccess = packetsuccess[1];
+////    if(PacketType == 0)
+//////        MUX_CTRL_460800_Write(0x00);
+////    
+////    if(PacketType == 0)
+////        singlepacketsuccess = packetsuccess[0];
+//////    else if(PacketType == 1)
+//////        singlepacketsuccess = packetsuccess[1];
         
+    singlepacketsuccess = packetsuccess[PacketType];
         
     if(singlepacketsuccess >= PACKET_VERIFICATION_COUNT)                //maybe we wait until pass here
         return(1);
@@ -361,17 +362,48 @@ void sendPacketToRelaySiren(void)                   //*** This part needs some w
 //        checkSumRelay ^= pTxPacket_Controller->bytes[checkSumRelayIterator];
 //    }
     
+//        pTxPacket_RelaySiren->Payload.StartByte_FLB = '~';
+//        pTxPacket_RelaySiren->Payload.FLB_PacketType = '3';
+//        pTxPacket_RelaySiren->Payload.StopByte1_FLB = 0x0D;
+//        pTxPacket_RelaySiren->Payload.StopByte2_FLB = 0x0A;    
+        pTxPacket_RelaySiren->Payload.StartByte1_Siren = '~';    
+        pTxPacket_RelaySiren->Payload.Siren_PacketType = 'S';
+        
+        //pTxPacket_RelaySiren->Payload.Siren1Tone = 0x01;
+        
+        pTxPacket_RelaySiren->Payload.StopByte1_Siren = 0x0D;
+        pTxPacket_RelaySiren->Payload.StopByte2_Siren = 0x0A;                       
+        pTxPacket_RelaySiren->Payload.StartByte1_Relay = '~';
+        pTxPacket_RelaySiren->Payload.Relay_PacketType = 'P';
+        pTxPacket_RelaySiren->Payload.StopByte1_Relay = 0x0D;
+        pTxPacket_RelaySiren->Payload.StopByte2_Relay = 0x0A; 
+    
         // Specific code for Controller to Relay/Siren packet 
         UART_230400_WriteTxData(0x7E);
         UART_230400_WriteTxData('I');
         for(iterator = 0; iterator<79; iterator++)              // Send entire payload every other send
         {
             UART_230400_WriteTxData(pTxPacket_RelaySiren->bytes[iterator]);
+            //UART_230400_WriteTxData(iterator);
         }
 //       
 //        UART_230400_WriteTxData(checkSumRelay);
         UART_230400_WriteTxData(0x0D);
         UART_230400_WriteTxData(0x0A);
+        
+  
+        
+                // Specific code for Controller to Relay/Siren packet 
+//        UART_1_WriteTxData(0x7E);
+//        UART_1_WriteTxData('I');
+//        for(iterator = 0; iterator<79; iterator++)              // Send entire payload every other send
+//        {
+//            UART_1_WriteTxData(pTxPacket_RelaySiren->bytes[iterator]);
+//        }
+//        UART_1_WriteTxData(0x0D);
+//        UART_1_WriteTxData(0x0A);
+        
+        return;
 
 }
 
@@ -383,14 +415,7 @@ void sendPacket_SirenToRelay(void)
     static TxPacket_RelaySiren * pTxPacket_RelaySiren;
     
     pTxPacket_H = getTxPacket_H();
-    
-    pTxPacket_H->Payload.SirenFirm_0 = 1;
-    pTxPacket_H->Payload.SirenFirm_1 = 1;
-    pTxPacket_H->Payload.SirenFirm_2 = 1;
-    pTxPacket_H->Payload.Speaker1_Overcurrent = 1;
-    pTxPacket_H->Payload.Speaker2_Overcurrent = 1;
 
-//    // Specific code for Controller to Relay/Siren packet 
     UART_230400_WriteTxData(0x7E);
     UART_230400_WriteTxData('H');
     for(iterator = 0; iterator<5; iterator++)             
