@@ -38,5 +38,8 @@ void RTest_50ms_isr(void);
 
 void SetRelayOutputs(uint8 enable);
 
+void RTest_StartAutomatedStep(void);
+void RTest_StopAutomatedStep(void);
+
 
 /* [] END OF FILE */

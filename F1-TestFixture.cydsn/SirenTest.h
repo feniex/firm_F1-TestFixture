@@ -29,6 +29,9 @@ void PB_WaitForAction(void);
 void STest_PlayTestTone(void);
 void STest_PlayTestTone_AudioStream(void);
 
+void StartAutomatedStep(void);
+void StopAutomatedStep(void);
+
 
 
 

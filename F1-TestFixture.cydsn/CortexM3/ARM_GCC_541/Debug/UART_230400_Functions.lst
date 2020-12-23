@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 1
 
 
    1              		.syntax unified
@@ -57,8 +57,8 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
   52              	pRxPacket_Controller:
   53 0010 00000000 		.space	4
   54              		.align	2
-  55              	rxPacket_Relay:
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 2
+  55              	rxPacket_RelaySiren:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 2
 
 
   56 0014 00000000 		.space	15
@@ -66,7 +66,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
   56      00000000 
   56      000000
   57 0023 00       		.align	2
-  58              	pRxPacket_Relay:
+  58              	pRxPacket_RelaySiren:
   59 0024 00000000 		.space	4
   60              		.align	2
   61              	rxPacket_H:
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
   22:UART_230400_Functions.c **** #define EOP_BYTE_COUNT          2
   23:UART_230400_Functions.c **** 
   24:UART_230400_Functions.c **** #define HEADER_START_INDEX      0
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 3
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 3
 
 
   25:UART_230400_Functions.c **** #define PAYLOAD_START_INDEX     HEADER_BYTE_COUNT
@@ -177,11 +177,11 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
   78:UART_230400_Functions.c **** static RxPacket_Controller rxPacket_Controller;            
   79:UART_230400_Functions.c **** static RxPacket_Controller * pRxPacket_Controller;  
   80:UART_230400_Functions.c **** 
-  81:UART_230400_Functions.c **** static RxPacket_RelaySiren rxPacket_Relay;            
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 4
+  81:UART_230400_Functions.c **** static RxPacket_RelaySiren rxPacket_RelaySiren;              // 'D' packet from relay/sirem to cont
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 4
 
 
-  82:UART_230400_Functions.c **** static RxPacket_RelaySiren * pRxPacket_Relay;  
+  82:UART_230400_Functions.c **** static RxPacket_RelaySiren * pRxPacket_RelaySiren;  
   83:UART_230400_Functions.c **** 
   84:UART_230400_Functions.c **** static Packet_H rxPacket_H; 
   85:UART_230400_Functions.c **** static Packet_H * pRxPacket_H;
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
   91              		.cfi_offset 14, -4
   92 0002 82B0     		sub	sp, sp, #8
   93              		.cfi_def_cfa_offset 16
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 5
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 5
 
 
   94 0004 00AF     		add	r7, sp, #0
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  145:UART_230400_Functions.c **** //        if(findpacket(dataByte))
  146:UART_230400_Functions.c **** //            LED_EN_Write(0);
  147:UART_230400_Functions.c ****         
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 6
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 6
 
 
  148:UART_230400_Functions.c ****     }while(UART_230400_ReadRxStatus() & UART_230400_RX_STS_FIFO_NOTEMPTY);
@@ -322,8 +322,8 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  146              	.L5:
  147 0056 00BF     		.align	2
  148              	.L4:
- 149 0058 44000000 		.word	testbuffer_count.6621
- 150 005c 48000000 		.word	testbuffer.6620
+ 149 0058 44000000 		.word	testbuffer_count.6623
+ 150 005c 48000000 		.word	testbuffer.6622
  151              		.cfi_endproc
  152              	.LFE63:
  153              		.size	processByteReceivedHandler, .-processByteReceivedHandler
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  162              		.cfi_startproc
  163              		@ args = 0, pretend = 0, frame = 8
  164              		@ frame_needed = 1, uses_anonymous_args = 0
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 7
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 7
 
 
  165 0000 80B5     		push	{r7, lr}
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  207:UART_230400_Functions.c ****             {
  208:UART_230400_Functions.c ****                 currentPacketIndex = HEADER_START_INDEX;
  209:UART_230400_Functions.c ****                 currentType = CTEST_RELAY;
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 8
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 8
 
 
  210:UART_230400_Functions.c ****             }
@@ -452,8 +452,8 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  238:UART_230400_Functions.c ****                 }
  239:UART_230400_Functions.c ****                 else if(currentType == RTEST_CONTROLLER)
  240:UART_230400_Functions.c ****                 {
- 241:UART_230400_Functions.c ****                    pRxPacket_Relay = getRxPacket_Relay();
- 242:UART_230400_Functions.c ****                    memcpy(&pRxPacket_Relay->bytes[0], &packet[2], PacketList[RTEST_CONTROLLER].PAYL
+ 241:UART_230400_Functions.c ****                    pRxPacket_RelaySiren = getRxPacket_RelaySiren();
+ 242:UART_230400_Functions.c ****                    memcpy(&pRxPacket_RelaySiren->bytes[0], &packet[2], PacketList[RTEST_CONTROLLER]
  243:UART_230400_Functions.c ****                    packetsuccess[RTEST_CONTROLLER]++;   
  244:UART_230400_Functions.c ****                 }
  245:UART_230400_Functions.c ****                 else if(currentType == RTEST_SIREN)
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  264:UART_230400_Functions.c **** //                if(count >= 50)
  265:UART_230400_Functions.c **** //                    packetsuccess[2] = 0;
  266:UART_230400_Functions.c **** //                if(count == 0)
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 9
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 9
 
 
  267:UART_230400_Functions.c **** //                    packetsuccess[2] = 0;
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  215              		.loc 1 182 0
  216 0048 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
  217 004a 9A42     		cmp	r2, r3
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 10
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 10
 
 
  218 004c 0CD1     		bne	.L11
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  263 0090 1B7C     		ldrb	r3, [r3, #16]	@ zero_extendqisi2
  190:UART_230400_Functions.c ****                                                                         (dataByte == PacketList[STE
  264              		.loc 1 190 0
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 11
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 11
 
 
  265 0092 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  310              		.loc 1 197 0
  311 00d8 13E0     		b	.L13
  312              	.L18:
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 12
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 12
 
 
  201:UART_230400_Functions.c ****                     currentType = STEST_RELAY;
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  356 0112 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  357 0114 0133     		adds	r3, r3, #1
  358 0116 DAB2     		uxtb	r2, r3
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 13
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 13
 
 
  359 0118 594B     		ldr	r3, .L30+4
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  408 0170 9B00     		lsls	r3, r3, #2
  409 0172 0B44     		add	r3, r3, r1
  410 0174 1344     		add	r3, r3, r2
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 14
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 14
 
 
  411 0176 0333     		adds	r3, r3, #3
@@ -838,7 +838,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  460 01ce 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  228:UART_230400_Functions.c ****                 (dataByte == PacketList[currentType].EOP_LINE_FEED))
  461              		.loc 1 228 0 discriminator 1
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 15
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 15
 
 
  462 01d0 FA79     		ldrb	r2, [r7, #7]	@ zero_extendqisi2
@@ -890,15 +890,15 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  502 0218 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
  503 021a 012B     		cmp	r3, #1
  504 021c 14D1     		bne	.L26
- 241:UART_230400_Functions.c ****                    memcpy(&pRxPacket_Relay->bytes[0], &packet[2], PacketList[RTEST_CONTROLLER].PAYL
+ 241:UART_230400_Functions.c ****                    memcpy(&pRxPacket_RelaySiren->bytes[0], &packet[2], PacketList[RTEST_CONTROLLER]
  505              		.loc 1 241 0
- 506 021e FFF7FEFF 		bl	getRxPacket_Relay
+ 506 021e FFF7FEFF 		bl	getRxPacket_RelaySiren
  507 0222 0246     		mov	r2, r0
  508 0224 1D4B     		ldr	r3, .L30+32
  509 0226 1A60     		str	r2, [r3]
  242:UART_230400_Functions.c ****                    packetsuccess[RTEST_CONTROLLER]++;   
  510              		.loc 1 242 0
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 16
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 16
 
 
  511 0228 1C4B     		ldr	r3, .L30+32
@@ -953,18 +953,18 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  555              	.L31:
  556 027a 00BF     		.align	2
  557              	.L30:
- 558 027c AC000000 		.word	currentState.6628
- 559 0280 AD000000 		.word	currentPacketIndex.6630
+ 558 027c AC000000 		.word	currentState.6630
+ 559 0280 AD000000 		.word	currentPacketIndex.6632
  560 0284 00000000 		.word	PacketList
- 561 0288 B0000000 		.word	packet.6627
- 562 028c C3000000 		.word	currentType.6629
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 17
+ 561 0288 B0000000 		.word	packet.6629
+ 562 028c C3000000 		.word	currentType.6631
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 17
 
 
  563 0290 10000000 		.word	pRxPacket_Controller
- 564 0294 B2000000 		.word	packet.6627+2
+ 564 0294 B2000000 		.word	packet.6629+2
  565 0298 00000000 		.word	packetsuccess
- 566 029c 24000000 		.word	pRxPacket_Relay
+ 566 029c 24000000 		.word	pRxPacket_RelaySiren
  567 02a0 30000000 		.word	pRxPacket_H
  568              	.L27:
  251:UART_230400_Functions.c ****                 {  
@@ -1018,7 +1018,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  275:UART_230400_Functions.c ****                 currentState = HEADER_STATE;
  610              		.loc 1 275 0
  611 02e8 0C4B     		ldr	r3, .L32+20
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 18
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 18
 
 
  612 02ea 0022     		movs	r2, #0
@@ -1055,13 +1055,13 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  639              	.L33:
  640              		.align	2
  641              	.L32:
- 642 0308 C3000000 		.word	currentType.6629
+ 642 0308 C3000000 		.word	currentType.6631
  643 030c 30000000 		.word	pRxPacket_H
  644 0310 00000000 		.word	PacketList
- 645 0314 B2000000 		.word	packet.6627+2
+ 645 0314 B2000000 		.word	packet.6629+2
  646 0318 00000000 		.word	packetsuccess
- 647 031c AD000000 		.word	currentPacketIndex.6630
- 648 0320 AC000000 		.word	currentState.6628
+ 647 031c AD000000 		.word	currentPacketIndex.6632
+ 648 0320 AC000000 		.word	currentState.6630
  649              		.cfi_endproc
  650              	.LFE64:
  651              		.size	detectPacket, .-detectPacket
@@ -1078,7 +1078,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  284:UART_230400_Functions.c **** 
  285:UART_230400_Functions.c **** 
  286:UART_230400_Functions.c **** void ResetPacketSuccess(void)           //*** This can be improved
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 19
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 19
 
 
  287:UART_230400_Functions.c **** {
@@ -1138,7 +1138,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  706              		.thumb
  707              		.thumb_func
  708              		.type	VerifyPacket_230400, %function
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 20
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 20
 
 
  709              	VerifyPacket_230400:
@@ -1198,7 +1198,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  315:UART_230400_Functions.c ****        
  316:UART_230400_Functions.c **** }
  743              		.loc 1 316 0
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 21
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 21
 
 
  744 0024 1846     		mov	r0, r3
@@ -1215,7 +1215,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  755 002e 00BF     		.align	2
  756              	.L41:
  757 0030 00000000 		.word	packetsuccess
- 758 0034 C4000000 		.word	singlepacketsuccess.6641
+ 758 0034 C4000000 		.word	singlepacketsuccess.6643
  759              		.cfi_endproc
  760              	.LFE66:
  761              		.size	VerifyPacket_230400, .-VerifyPacket_230400
@@ -1258,7 +1258,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  790              		.loc 1 324 0
  791 0014 124B     		ldr	r3, .L48+4
  792 0016 0022     		movs	r2, #0
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 22
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 22
 
 
  793 0018 1A70     		strb	r2, [r3]
@@ -1318,7 +1318,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  832              		.loc 1 339 0
  833 0050 1846     		mov	r0, r3
  834 0052 0C37     		adds	r7, r7, #12
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 23
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 23
 
 
  835              		.cfi_def_cfa_offset 4
@@ -1332,8 +1332,8 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  843              	.L49:
  844 005a 00BF     		.align	2
  845              	.L48:
- 846 005c 14000000 		.word	targetstring.6645
- 847 0060 C6000000 		.word	index.6646
+ 846 005c 14000000 		.word	targetstring.6647
+ 847 0060 C6000000 		.word	index.6648
  848              		.cfi_endproc
  849              	.LFE67:
  850              		.size	findpacket, .-findpacket
@@ -1378,7 +1378,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  871 0008 0246     		mov	r2, r0
  872 000a 274B     		ldr	r3, .L54
  873 000c 1A60     		str	r2, [r3]
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 24
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 24
 
 
  358:UART_230400_Functions.c ****     
@@ -1438,7 +1438,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  907 004e 0D22     		movs	r2, #13
  908 0050 83F84D20 		strb	r2, [r3, #77]
  379:UART_230400_Functions.c ****         pTxPacket_RelaySiren->Payload.StopByte2_Relay = 0x0A; 
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 25
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 25
 
 
  909              		.loc 1 379 0
@@ -1498,7 +1498,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  949 0098 FFF7FEFF 		bl	UART_230400_WriteTxData
  392:UART_230400_Functions.c ****         UART_230400_WriteTxData(0x0A);
  950              		.loc 1 392 0
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 26
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 26
 
 
  951 009c 0A20     		movs	r0, #10
@@ -1526,8 +1526,8 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  957              	.L55:
  958 00a6 00BF     		.align	2
  959              	.L54:
- 960 00a8 C8000000 		.word	pTxPacket_RelaySiren.6652
- 961 00ac CC000000 		.word	iterator.6650
+ 960 00a8 C8000000 		.word	pTxPacket_RelaySiren.6654
+ 961 00ac CC000000 		.word	iterator.6652
  962              		.cfi_endproc
  963              	.LFE68:
  964              		.size	sendPacketToRelaySiren, .-sendPacketToRelaySiren
@@ -1558,7 +1558,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  415:UART_230400_Functions.c ****     static TxPacket_RelaySiren * pTxPacket_RelaySiren;
  416:UART_230400_Functions.c ****     
  417:UART_230400_Functions.c ****     pTxPacket_H = getTxPacket_H();
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 27
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 27
 
 
  983              		.loc 1 417 0
@@ -1618,7 +1618,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1026 004e FFF7FEFF 		bl	UART_230400_WriteTxData
  427:UART_230400_Functions.c ****         
  428:UART_230400_Functions.c ****       return;  
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 28
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 28
 
 
  1027              		.loc 1 428 0
@@ -1631,7 +1631,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1032 0056 00BF     		.align	2
  1033              	.L60:
  1034 0058 3C000000 		.word	pTxPacket_H
- 1035 005c 20010000 		.word	iterator.6659
+ 1035 005c 20010000 		.word	iterator.6661
  1036              		.cfi_endproc
  1037              	.LFE69:
  1038              		.size	sendPacket_SirenToRelay, .-sendPacket_SirenToRelay
@@ -1678,7 +1678,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  453:UART_230400_Functions.c **** //    }
  454:UART_230400_Functions.c **** //    UART_230400_WriteTxData(0x0D);
  455:UART_230400_Functions.c **** //    UART_230400_WriteTxData(0x0A);
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 29
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 29
 
 
  456:UART_230400_Functions.c ****         
@@ -1699,36 +1699,36 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1068              	.LFE70:
  1069              		.size	sendPacket_RelayToSiren, .-sendPacket_RelayToSiren
  1070              		.bss
- 1071              	testbuffer_count.6621:
+ 1071              	testbuffer_count.6623:
  1072 0044 00       		.space	1
  1073 0045 000000   		.align	2
- 1074              	testbuffer.6620:
+ 1074              	testbuffer.6622:
  1075 0048 00000000 		.space	100
  1075      00000000 
  1075      00000000 
  1075      00000000 
  1075      00000000 
- 1076              	currentState.6628:
+ 1076              	currentState.6630:
  1077 00ac 00       		.space	1
- 1078              	currentPacketIndex.6630:
+ 1078              	currentPacketIndex.6632:
  1079 00ad 00       		.space	1
  1080 00ae 0000     		.align	2
- 1081              	packet.6627:
+ 1081              	packet.6629:
  1082 00b0 00000000 		.space	19
  1082      00000000 
  1082      00000000 
  1082      00000000 
  1082      000000
- 1083              	currentType.6629:
+ 1083              	currentType.6631:
  1084 00c3 00       		.space	1
  1085              		.align	1
- 1086              	singlepacketsuccess.6641:
+ 1086              	singlepacketsuccess.6643:
  1087 00c4 0000     		.space	2
  1088              		.data
  1089              		.align	2
- 1090              		.type	targetstring.6645, %object
- 1091              		.size	targetstring.6645, 6
- 1092              	targetstring.6645:
+ 1090              		.type	targetstring.6647, %object
+ 1091              		.size	targetstring.6647, 6
+ 1092              	targetstring.6647:
  1093 0014 24       		.byte	36
  1094 0015 47       		.byte	71
  1095 0016 50       		.byte	80
@@ -1736,39 +1736,39 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1097 0018 52       		.byte	82
  1098 0019 43       		.byte	67
  1099              		.bss
- 1100              	index.6646:
+ 1100              	index.6648:
  1101 00c6 00       		.space	1
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 30
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 30
 
 
  1102 00c7 00       		.align	2
- 1103              	pTxPacket_RelaySiren.6652:
+ 1103              	pTxPacket_RelaySiren.6654:
  1104 00c8 00000000 		.space	4
  1105              		.align	1
- 1106              	iterator.6650:
+ 1106              	iterator.6652:
  1107 00cc 0000     		.space	2
  1108 00ce 0000     		.align	2
- 1109              	txPacket_RelaySiren.6651:
+ 1109              	txPacket_RelaySiren.6653:
  1110 00d0 00000000 		.space	79
  1110      00000000 
  1110      00000000 
  1110      00000000 
  1110      00000000 
  1111 011f 00       		.align	1
- 1112              	iterator.6659:
+ 1112              	iterator.6661:
  1113 0120 0000     		.space	2
  1114 0122 0000     		.align	2
- 1115              	pTxPacket_RelaySiren.6661:
+ 1115              	pTxPacket_RelaySiren.6663:
  1116 0124 00000000 		.space	4
  1117              		.align	2
- 1118              	txPacket_RelaySiren.6660:
+ 1118              	txPacket_RelaySiren.6662:
  1119 0128 00000000 		.space	79
  1119      00000000 
  1119      00000000 
  1119      00000000 
  1119      00000000 
  1120 0177 00       		.align	1
- 1121              	iterator.6668:
+ 1121              	iterator.6670:
  1122 0178 0000     		.space	2
  1123              		.text
  1124              	.Letext0:
@@ -1784,32 +1784,32 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1134 0006 00000000 		.4byte	.Ldebug_abbrev0
  1135 000a 04       		.byte	0x4
  1136 000b 01       		.uleb128 0x1
- 1137 000c 11010000 		.4byte	.LASF179
+ 1137 000c 11010000 		.4byte	.LASF178
  1138 0010 0C       		.byte	0xc
- 1139 0011 3E070000 		.4byte	.LASF180
- 1140 0015 C3010000 		.4byte	.LASF181
+ 1139 0011 43070000 		.4byte	.LASF179
+ 1140 0015 C3010000 		.4byte	.LASF180
  1141 0019 00000000 		.4byte	.Ldebug_ranges0+0
  1142 001d 00000000 		.4byte	0
  1143 0021 00000000 		.4byte	.Ldebug_line0
  1144 0025 02       		.uleb128 0x2
  1145 0026 01       		.byte	0x1
  1146 0027 06       		.byte	0x6
- 1147 0028 69090000 		.4byte	.LASF0
+ 1147 0028 6E090000 		.4byte	.LASF0
  1148 002c 02       		.uleb128 0x2
  1149 002d 01       		.byte	0x1
  1150 002e 08       		.byte	0x8
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 31
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 31
 
 
- 1151 002f 9A080000 		.4byte	.LASF1
+ 1151 002f 9F080000 		.4byte	.LASF1
  1152 0033 02       		.uleb128 0x2
  1153 0034 02       		.byte	0x2
  1154 0035 05       		.byte	0x5
- 1155 0036 07070000 		.4byte	.LASF2
+ 1155 0036 0C070000 		.4byte	.LASF2
  1156 003a 02       		.uleb128 0x2
  1157 003b 02       		.byte	0x2
  1158 003c 07       		.byte	0x7
- 1159 003d 88090000 		.4byte	.LASF3
+ 1159 003d 8D090000 		.4byte	.LASF3
  1160 0041 03       		.uleb128 0x3
  1161 0042 F0000000 		.4byte	.LASF9
  1162 0046 02       		.byte	0x2
@@ -1818,11 +1818,11 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1165 004c 02       		.uleb128 0x2
  1166 004d 04       		.byte	0x4
  1167 004e 05       		.byte	0x5
- 1168 004f 1F070000 		.4byte	.LASF4
+ 1168 004f 24070000 		.4byte	.LASF4
  1169 0053 02       		.uleb128 0x2
  1170 0054 04       		.byte	0x4
  1171 0055 07       		.byte	0x7
- 1172 0056 28080000 		.4byte	.LASF5
+ 1172 0056 2D080000 		.4byte	.LASF5
  1173 005a 02       		.uleb128 0x2
  1174 005b 08       		.byte	0x8
  1175 005c 05       		.byte	0x5
@@ -1840,12 +1840,12 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1187 0071 07       		.byte	0x7
  1188 0072 B1000000 		.4byte	.LASF8
  1189 0076 03       		.uleb128 0x3
- 1190 0077 49080000 		.4byte	.LASF10
+ 1190 0077 4E080000 		.4byte	.LASF10
  1191 007b 03       		.byte	0x3
  1192 007c 2C       		.byte	0x2c
  1193 007d 41000000 		.4byte	0x41
  1194 0081 05       		.uleb128 0x5
- 1195 0082 B6090000 		.4byte	.LASF11
+ 1195 0082 AC090000 		.4byte	.LASF11
  1196 0086 04       		.byte	0x4
  1197 0087 E401     		.2byte	0x1e4
  1198 0089 2C000000 		.4byte	0x2c
@@ -1858,13 +1858,13 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1205 009a 04       		.byte	0x4
  1206 009b 04       		.byte	0x4
  1207 009c A0020000 		.4byte	.LASF13
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 32
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 32
 
 
  1208 00a0 02       		.uleb128 0x2
  1209 00a1 08       		.byte	0x8
  1210 00a2 04       		.byte	0x4
- 1211 00a3 BC090000 		.4byte	.LASF14
+ 1211 00a3 B2090000 		.4byte	.LASF14
  1212 00a7 02       		.uleb128 0x2
  1213 00a8 01       		.byte	0x1
  1214 00a9 08       		.byte	0x8
@@ -1872,19 +1872,19 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1216 00ae 02       		.uleb128 0x2
  1217 00af 08       		.byte	0x8
  1218 00b0 04       		.byte	0x4
- 1219 00b1 8A060000 		.4byte	.LASF16
+ 1219 00b1 8F060000 		.4byte	.LASF16
  1220 00b5 02       		.uleb128 0x2
  1221 00b6 04       		.byte	0x4
  1222 00b7 07       		.byte	0x7
- 1223 00b8 1F080000 		.4byte	.LASF17
+ 1223 00b8 24080000 		.4byte	.LASF17
  1224 00bc 06       		.uleb128 0x6
- 1225 00bd EC050000 		.4byte	.LASF29
+ 1225 00bd F1050000 		.4byte	.LASF29
  1226 00c1 08       		.byte	0x8
  1227 00c2 05       		.byte	0x5
  1228 00c3 20       		.byte	0x20
  1229 00c4 29010000 		.4byte	0x129
  1230 00c8 07       		.uleb128 0x7
- 1231 00c9 36060000 		.4byte	.LASF18
+ 1231 00c9 3B060000 		.4byte	.LASF18
  1232 00cd 05       		.byte	0x5
  1233 00ce 22       		.byte	0x22
  1234 00cf 81000000 		.4byte	0x81
@@ -1908,17 +1908,17 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1252 00f3 81000000 		.4byte	0x81
  1253 00f7 03       		.byte	0x3
  1254 00f8 07       		.uleb128 0x7
- 1255 00f9 6C050000 		.4byte	.LASF22
+ 1255 00f9 5C050000 		.4byte	.LASF22
  1256 00fd 05       		.byte	0x5
  1257 00fe 26       		.byte	0x26
  1258 00ff 81000000 		.4byte	0x81
  1259 0103 04       		.byte	0x4
  1260 0104 07       		.uleb128 0x7
- 1261 0105 03090000 		.4byte	.LASF23
+ 1261 0105 08090000 		.4byte	.LASF23
  1262 0109 05       		.byte	0x5
  1263 010a 27       		.byte	0x27
  1264 010b 81000000 		.4byte	0x81
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 33
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 33
 
 
  1265 010f 05       		.byte	0x5
@@ -1929,7 +1929,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1270 0117 81000000 		.4byte	0x81
  1271 011b 06       		.byte	0x6
  1272 011c 07       		.uleb128 0x7
- 1273 011d 28070000 		.4byte	.LASF25
+ 1273 011d 2D070000 		.4byte	.LASF25
  1274 0121 05       		.byte	0x5
  1275 0122 29       		.byte	0x29
  1276 0123 81000000 		.4byte	0x81
@@ -1960,7 +1960,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1301 015a 07       		.byte	0x7
  1302 015b 00       		.byte	0
  1303 015c 03       		.uleb128 0x3
- 1304 015d 55090000 		.4byte	.LASF28
+ 1304 015d 5A090000 		.4byte	.LASF28
  1305 0161 05       		.byte	0x5
  1306 0162 2B       		.byte	0x2b
  1307 0163 29010000 		.4byte	0x129
@@ -1978,7 +1978,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1319 017e 00       		.byte	0
  1320 017f 07       		.uleb128 0x7
  1321 0180 B2040000 		.4byte	.LASF32
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 34
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 34
 
 
  1322 0184 05       		.byte	0x5
@@ -2010,13 +2010,13 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1348 01b6 81000000 		.4byte	0x81
  1349 01ba 05       		.byte	0x5
  1350 01bb 07       		.uleb128 0x7
- 1351 01bc 64070000 		.4byte	.LASF37
+ 1351 01bc 69070000 		.4byte	.LASF37
  1352 01c0 05       		.byte	0x5
  1353 01c1 3A       		.byte	0x3a
  1354 01c2 81000000 		.4byte	0x81
  1355 01c6 06       		.byte	0x6
  1356 01c7 07       		.uleb128 0x7
- 1357 01c8 0E090000 		.4byte	.LASF38
+ 1357 01c8 13090000 		.4byte	.LASF38
  1358 01cc 05       		.byte	0x5
  1359 01cd 3B       		.byte	0x3b
  1360 01ce 81000000 		.4byte	0x81
@@ -2038,7 +2038,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1376 01f0 05       		.byte	0x5
  1377 01f1 3E       		.byte	0x3e
  1378 01f2 81000000 		.4byte	0x81
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 35
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 35
 
 
  1379 01f6 0A       		.byte	0xa
@@ -2061,7 +2061,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1396 0216 81000000 		.4byte	0x81
  1397 021a 0D       		.byte	0xd
  1398 021b 07       		.uleb128 0x7
- 1399 021c 8F050000 		.4byte	.LASF45
+ 1399 021c 7F050000 		.4byte	.LASF45
  1400 0220 05       		.byte	0x5
  1401 0221 42       		.byte	0x42
  1402 0222 81000000 		.4byte	0x81
@@ -2092,13 +2092,13 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1427 0259 0E       		.byte	0xe
  1428 025a 00       		.byte	0
  1429 025b 03       		.uleb128 0x3
- 1430 025c 52060000 		.4byte	.LASF48
+ 1430 025c 57060000 		.4byte	.LASF48
  1431 0260 05       		.byte	0x5
  1432 0261 44       		.byte	0x44
  1433 0262 28020000 		.4byte	0x228
  1434 0266 06       		.uleb128 0x6
- 1435 0267 66060000 		.4byte	.LASF49
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 36
+ 1435 0267 6B060000 		.4byte	.LASF49
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 36
 
 
  1436 026b 0F       		.byte	0xf
@@ -2142,13 +2142,13 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1474 02b5 81000000 		.4byte	0x81
  1475 02b9 05       		.byte	0x5
  1476 02ba 07       		.uleb128 0x7
- 1477 02bb 64070000 		.4byte	.LASF37
+ 1477 02bb 69070000 		.4byte	.LASF37
  1478 02bf 05       		.byte	0x5
  1479 02c0 6A       		.byte	0x6a
  1480 02c1 81000000 		.4byte	0x81
  1481 02c5 06       		.byte	0x6
  1482 02c6 07       		.uleb128 0x7
- 1483 02c7 0E090000 		.4byte	.LASF38
+ 1483 02c7 13090000 		.4byte	.LASF38
  1484 02cb 05       		.byte	0x5
  1485 02cc 6B       		.byte	0x6b
  1486 02cd 81000000 		.4byte	0x81
@@ -2158,7 +2158,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1490 02d7 05       		.byte	0x5
  1491 02d8 6C       		.byte	0x6c
  1492 02d9 81000000 		.4byte	0x81
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 37
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 37
 
 
  1493 02dd 08       		.byte	0x8
@@ -2193,7 +2193,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1522 0315 81000000 		.4byte	0x81
  1523 0319 0D       		.byte	0xd
  1524 031a 07       		.uleb128 0x7
- 1525 031b 8F050000 		.4byte	.LASF45
+ 1525 031b 7F050000 		.4byte	.LASF45
  1526 031f 05       		.byte	0x5
  1527 0320 72       		.byte	0x72
  1528 0321 81000000 		.4byte	0x81
@@ -2217,8 +2217,8 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1546 0345 66020000 		.4byte	0x266
  1547 0349 00       		.byte	0
  1548 034a 03       		.uleb128 0x3
- 1549 034b C3090000 		.4byte	.LASF51
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 38
+ 1549 034b B9090000 		.4byte	.LASF51
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 38
 
 
  1550 034f 05       		.byte	0x5
@@ -2231,19 +2231,19 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1557 035c 8F       		.byte	0x8f
  1558 035d 16070000 		.4byte	0x716
  1559 0361 07       		.uleb128 0x7
- 1560 0362 96060000 		.4byte	.LASF53
+ 1560 0362 9B060000 		.4byte	.LASF53
  1561 0366 05       		.byte	0x5
  1562 0367 91       		.byte	0x91
  1563 0368 81000000 		.4byte	0x81
  1564 036c 00       		.byte	0
  1565 036d 07       		.uleb128 0x7
- 1566 036e 81060000 		.4byte	.LASF54
+ 1566 036e 86060000 		.4byte	.LASF54
  1567 0372 05       		.byte	0x5
  1568 0373 92       		.byte	0x92
  1569 0374 81000000 		.4byte	0x81
  1570 0378 01       		.byte	0x1
  1571 0379 07       		.uleb128 0x7
- 1572 037a 78060000 		.4byte	.LASF55
+ 1572 037a 7D060000 		.4byte	.LASF55
  1573 037e 05       		.byte	0x5
  1574 037f 93       		.byte	0x93
  1575 0380 81000000 		.4byte	0x81
@@ -2267,22 +2267,22 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1593 03a4 81000000 		.4byte	0x81
  1594 03a8 05       		.byte	0x5
  1595 03a9 07       		.uleb128 0x7
- 1596 03aa B1080000 		.4byte	.LASF59
+ 1596 03aa B6080000 		.4byte	.LASF59
  1597 03ae 05       		.byte	0x5
  1598 03af 97       		.byte	0x97
  1599 03b0 81000000 		.4byte	0x81
  1600 03b4 06       		.byte	0x6
  1601 03b5 07       		.uleb128 0x7
- 1602 03b6 88080000 		.4byte	.LASF60
+ 1602 03b6 8D080000 		.4byte	.LASF60
  1603 03ba 05       		.byte	0x5
  1604 03bb 98       		.byte	0x98
  1605 03bc 81000000 		.4byte	0x81
  1606 03c0 07       		.byte	0x7
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 39
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 39
 
 
  1607 03c1 07       		.uleb128 0x7
- 1608 03c2 7F080000 		.4byte	.LASF61
+ 1608 03c2 84080000 		.4byte	.LASF61
  1609 03c6 05       		.byte	0x5
  1610 03c7 99       		.byte	0x99
  1611 03c8 81000000 		.4byte	0x81
@@ -2294,7 +2294,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1617 03d4 81000000 		.4byte	0x81
  1618 03d8 09       		.byte	0x9
  1619 03d9 07       		.uleb128 0x7
- 1620 03da D3060000 		.4byte	.LASF63
+ 1620 03da D8060000 		.4byte	.LASF63
  1621 03de 05       		.byte	0x5
  1622 03df 9B       		.byte	0x9b
  1623 03e0 81000000 		.4byte	0x81
@@ -2324,21 +2324,21 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1647 0410 81000000 		.4byte	0x81
  1648 0414 0E       		.byte	0xe
  1649 0415 07       		.uleb128 0x7
- 1650 0416 C3060000 		.4byte	.LASF68
+ 1650 0416 C8060000 		.4byte	.LASF68
  1651 041a 05       		.byte	0x5
  1652 041b A0       		.byte	0xa0
  1653 041c 81000000 		.4byte	0x81
  1654 0420 0F       		.byte	0xf
  1655 0421 07       		.uleb128 0x7
- 1656 0422 A8060000 		.4byte	.LASF69
+ 1656 0422 AD060000 		.4byte	.LASF69
  1657 0426 05       		.byte	0x5
  1658 0427 A1       		.byte	0xa1
  1659 0428 81000000 		.4byte	0x81
  1660 042c 10       		.byte	0x10
  1661 042d 07       		.uleb128 0x7
- 1662 042e 9F060000 		.4byte	.LASF70
+ 1662 042e A4060000 		.4byte	.LASF70
  1663 0432 05       		.byte	0x5
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 40
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 40
 
 
  1664 0433 A2       		.byte	0xa2
@@ -2381,24 +2381,24 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1701 047c 81000000 		.4byte	0x81
  1702 0480 17       		.byte	0x17
  1703 0481 07       		.uleb128 0x7
- 1704 0482 C7080000 		.4byte	.LASF77
+ 1704 0482 CC080000 		.4byte	.LASF77
  1705 0486 05       		.byte	0x5
  1706 0487 A9       		.byte	0xa9
  1707 0488 81000000 		.4byte	0x81
  1708 048c 18       		.byte	0x18
  1709 048d 07       		.uleb128 0x7
- 1710 048e A8080000 		.4byte	.LASF78
+ 1710 048e AD080000 		.4byte	.LASF78
  1711 0492 05       		.byte	0x5
  1712 0493 AA       		.byte	0xaa
  1713 0494 81000000 		.4byte	0x81
  1714 0498 19       		.byte	0x19
  1715 0499 07       		.uleb128 0x7
- 1716 049a 91080000 		.4byte	.LASF79
+ 1716 049a 96080000 		.4byte	.LASF79
  1717 049e 05       		.byte	0x5
  1718 049f AB       		.byte	0xab
  1719 04a0 81000000 		.4byte	0x81
  1720 04a4 1A       		.byte	0x1a
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 41
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 41
 
 
  1721 04a5 07       		.uleb128 0x7
@@ -2438,19 +2438,19 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1755 04e8 81000000 		.4byte	0x81
  1756 04ec 20       		.byte	0x20
  1757 04ed 07       		.uleb128 0x7
- 1758 04ee DC060000 		.4byte	.LASF86
+ 1758 04ee E1060000 		.4byte	.LASF86
  1759 04f2 05       		.byte	0x5
  1760 04f3 B2       		.byte	0xb2
  1761 04f4 81000000 		.4byte	0x81
  1762 04f8 21       		.byte	0x21
  1763 04f9 07       		.uleb128 0x7
- 1764 04fa BA060000 		.4byte	.LASF87
+ 1764 04fa BF060000 		.4byte	.LASF87
  1765 04fe 05       		.byte	0x5
  1766 04ff B3       		.byte	0xb3
  1767 0500 81000000 		.4byte	0x81
  1768 0504 22       		.byte	0x22
  1769 0505 07       		.uleb128 0x7
- 1770 0506 B1060000 		.4byte	.LASF88
+ 1770 0506 B6060000 		.4byte	.LASF88
  1771 050a 05       		.byte	0x5
  1772 050b B4       		.byte	0xb4
  1773 050c 81000000 		.4byte	0x81
@@ -2458,7 +2458,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1775 0511 07       		.uleb128 0x7
  1776 0512 61030000 		.4byte	.LASF89
  1777 0516 05       		.byte	0x5
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 42
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 42
 
 
  1778 0517 B5       		.byte	0xb5
@@ -2477,19 +2477,19 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1791 0530 81000000 		.4byte	0x81
  1792 0534 26       		.byte	0x26
  1793 0535 07       		.uleb128 0x7
- 1794 0536 FA080000 		.4byte	.LASF92
+ 1794 0536 FF080000 		.4byte	.LASF92
  1795 053a 05       		.byte	0x5
  1796 053b B8       		.byte	0xb8
  1797 053c 81000000 		.4byte	0x81
  1798 0540 27       		.byte	0x27
  1799 0541 07       		.uleb128 0x7
- 1800 0542 E2080000 		.4byte	.LASF93
+ 1800 0542 E7080000 		.4byte	.LASF93
  1801 0546 05       		.byte	0x5
  1802 0547 B9       		.byte	0xb9
  1803 0548 81000000 		.4byte	0x81
  1804 054c 28       		.byte	0x28
  1805 054d 07       		.uleb128 0x7
- 1806 054e D0080000 		.4byte	.LASF94
+ 1806 054e D5080000 		.4byte	.LASF94
  1807 0552 05       		.byte	0x5
  1808 0553 BA       		.byte	0xba
  1809 0554 81000000 		.4byte	0x81
@@ -2518,7 +2518,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1832 0583 BE       		.byte	0xbe
  1833 0584 81000000 		.4byte	0x81
  1834 0588 2D       		.byte	0x2d
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 43
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 43
 
 
  1835 0589 07       		.uleb128 0x7
@@ -2534,25 +2534,25 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1845 059c 81000000 		.4byte	0x81
  1846 05a0 2F       		.byte	0x2f
  1847 05a1 07       		.uleb128 0x7
- 1848 05a2 51080000 		.4byte	.LASF101
+ 1848 05a2 56080000 		.4byte	.LASF101
  1849 05a6 05       		.byte	0x5
  1850 05a7 C1       		.byte	0xc1
  1851 05a8 81000000 		.4byte	0x81
  1852 05ac 30       		.byte	0x30
  1853 05ad 07       		.uleb128 0x7
- 1854 05ae 5A080000 		.4byte	.LASF102
+ 1854 05ae 5F080000 		.4byte	.LASF102
  1855 05b2 05       		.byte	0x5
  1856 05b3 C2       		.byte	0xc2
  1857 05b4 81000000 		.4byte	0x81
  1858 05b8 31       		.byte	0x31
  1859 05b9 07       		.uleb128 0x7
- 1860 05ba 01080000 		.4byte	.LASF103
+ 1860 05ba 06080000 		.4byte	.LASF103
  1861 05be 05       		.byte	0x5
  1862 05bf C3       		.byte	0xc3
  1863 05c0 81000000 		.4byte	0x81
  1864 05c4 32       		.byte	0x32
  1865 05c5 07       		.uleb128 0x7
- 1866 05c6 E9070000 		.4byte	.LASF104
+ 1866 05c6 EE070000 		.4byte	.LASF104
  1867 05ca 05       		.byte	0x5
  1868 05cb C4       		.byte	0xc4
  1869 05cc 81000000 		.4byte	0x81
@@ -2564,7 +2564,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1875 05d8 81000000 		.4byte	0x81
  1876 05dc 34       		.byte	0x34
  1877 05dd 07       		.uleb128 0x7
- 1878 05de 56070000 		.4byte	.LASF106
+ 1878 05de 5B070000 		.4byte	.LASF106
  1879 05e2 05       		.byte	0x5
  1880 05e3 C6       		.byte	0xc6
  1881 05e4 81000000 		.4byte	0x81
@@ -2578,7 +2578,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1889 05f5 07       		.uleb128 0x7
  1890 05f6 73030000 		.4byte	.LASF108
  1891 05fa 05       		.byte	0x5
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 44
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 44
 
 
  1892 05fb C8       		.byte	0xc8
@@ -2597,7 +2597,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1905 0614 81000000 		.4byte	0x81
  1906 0618 39       		.byte	0x39
  1907 0619 07       		.uleb128 0x7
- 1908 061a 11070000 		.4byte	.LASF111
+ 1908 061a 16070000 		.4byte	.LASF111
  1909 061e 05       		.byte	0x5
  1910 061f CB       		.byte	0xcb
  1911 0620 81000000 		.4byte	0x81
@@ -2609,7 +2609,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1917 062c 81000000 		.4byte	0x81
  1918 0630 3B       		.byte	0x3b
  1919 0631 07       		.uleb128 0x7
- 1920 0632 6E080000 		.4byte	.LASF113
+ 1920 0632 73080000 		.4byte	.LASF113
  1921 0636 05       		.byte	0x5
  1922 0637 CD       		.byte	0xcd
  1923 0638 81000000 		.4byte	0x81
@@ -2627,7 +2627,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1935 0650 81000000 		.4byte	0x81
  1936 0654 3E       		.byte	0x3e
  1937 0655 07       		.uleb128 0x7
- 1938 0656 63080000 		.4byte	.LASF116
+ 1938 0656 68080000 		.4byte	.LASF116
  1939 065a 05       		.byte	0x5
  1940 065b D0       		.byte	0xd0
  1941 065c 81000000 		.4byte	0x81
@@ -2638,11 +2638,11 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1946 0667 D1       		.byte	0xd1
  1947 0668 81000000 		.4byte	0x81
  1948 066c 40       		.byte	0x40
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 45
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 45
 
 
  1949 066d 07       		.uleb128 0x7
- 1950 066e D9070000 		.4byte	.LASF118
+ 1950 066e DE070000 		.4byte	.LASF118
  1951 0672 05       		.byte	0x5
  1952 0673 D2       		.byte	0xd2
  1953 0674 81000000 		.4byte	0x81
@@ -2660,45 +2660,45 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  1965 068c 81000000 		.4byte	0x81
  1966 0690 43       		.byte	0x43
  1967 0691 07       		.uleb128 0x7
- 1968 0692 A3050000 		.4byte	.LASF121
+ 1968 0692 A8050000 		.4byte	.LASF121
  1969 0696 05       		.byte	0x5
  1970 0697 D5       		.byte	0xd5
  1971 0698 81000000 		.4byte	0x81
  1972 069c 44       		.byte	0x44
  1973 069d 07       		.uleb128 0x7
- 1974 069e 78050000 		.4byte	.LASF122
+ 1974 069e 68050000 		.4byte	.LASF122
  1975 06a2 05       		.byte	0x5
  1976 06a3 D6       		.byte	0xd6
  1977 06a4 81000000 		.4byte	0x81
  1978 06a8 45       		.byte	0x45
  1979 06a9 07       		.uleb128 0x7
- 1980 06aa F9060000 		.4byte	.LASF123
+ 1980 06aa FE060000 		.4byte	.LASF123
  1981 06ae 05       		.byte	0x5
  1982 06af D7       		.byte	0xd7
  1983 06b0 81000000 		.4byte	0x81
  1984 06b4 46       		.byte	0x46
  1985 06b5 07       		.uleb128 0x7
- 1986 06b6 FE050000 		.4byte	.LASF124
+ 1986 06b6 03060000 		.4byte	.LASF124
  1987 06ba 05       		.byte	0x5
  1988 06bb D8       		.byte	0xd8
  1989 06bc 81000000 		.4byte	0x81
  1990 06c0 47       		.byte	0x47
  1991 06c1 07       		.uleb128 0x7
- 1992 06c2 EB080000 		.4byte	.LASF125
+ 1992 06c2 F0080000 		.4byte	.LASF125
  1993 06c6 05       		.byte	0x5
  1994 06c7 D9       		.byte	0xd9
  1995 06c8 81000000 		.4byte	0x81
  1996 06cc 48       		.byte	0x48
  1997 06cd 07       		.uleb128 0x7
- 1998 06ce 3A080000 		.4byte	.LASF126
+ 1998 06ce 3F080000 		.4byte	.LASF126
  1999 06d2 05       		.byte	0x5
  2000 06d3 DA       		.byte	0xda
  2001 06d4 81000000 		.4byte	0x81
  2002 06d8 49       		.byte	0x49
  2003 06d9 07       		.uleb128 0x7
- 2004 06da 03090000 		.4byte	.LASF23
+ 2004 06da 08090000 		.4byte	.LASF23
  2005 06de 05       		.byte	0x5
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 46
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 46
 
 
  2006 06df DB       		.byte	0xdb
@@ -2711,7 +2711,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2013 06ec 81000000 		.4byte	0x81
  2014 06f0 4B       		.byte	0x4b
  2015 06f1 07       		.uleb128 0x7
- 2016 06f2 1A060000 		.4byte	.LASF127
+ 2016 06f2 1F060000 		.4byte	.LASF127
  2017 06f6 05       		.byte	0x5
  2018 06f7 DD       		.byte	0xdd
  2019 06f8 81000000 		.4byte	0x81
@@ -2723,7 +2723,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2025 0704 81000000 		.4byte	0x81
  2026 0708 4D       		.byte	0x4d
  2027 0709 07       		.uleb128 0x7
- 2028 070a A2070000 		.4byte	.LASF129
+ 2028 070a A7070000 		.4byte	.LASF129
  2029 070e 05       		.byte	0x5
  2030 070f DF       		.byte	0xdf
  2031 0710 81000000 		.4byte	0x81
@@ -2754,15 +2754,15 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2056 0747 4E       		.byte	0x4e
  2057 0748 00       		.byte	0
  2058 0749 03       		.uleb128 0x3
- 2059 074a E5060000 		.4byte	.LASF131
+ 2059 074a EA060000 		.4byte	.LASF131
  2060 074e 05       		.byte	0x5
  2061 074f E1       		.byte	0xe1
  2062 0750 16070000 		.4byte	0x716
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 47
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 47
 
 
  2063 0754 06       		.uleb128 0x6
- 2064 0755 2F060000 		.4byte	.LASF132
+ 2064 0755 34060000 		.4byte	.LASF132
  2065 0759 05       		.byte	0x5
  2066 075a 05       		.byte	0x5
  2067 075b F9       		.byte	0xf9
@@ -2792,7 +2792,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2091 078b 81000000 		.4byte	0x81
  2092 078f 03       		.byte	0x3
  2093 0790 0D       		.uleb128 0xd
- 2094 0791 64070000 		.4byte	.LASF37
+ 2094 0791 69070000 		.4byte	.LASF37
  2095 0795 05       		.byte	0x5
  2096 0796 0001     		.2byte	0x100
  2097 0798 81000000 		.4byte	0x81
@@ -2818,7 +2818,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2117 07c2 0A       		.uleb128 0xa
  2118 07c3 81000000 		.4byte	0x81
  2119 07c7 D2070000 		.4byte	0x7d2
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 48
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 48
 
 
  2120 07cb 0B       		.uleb128 0xb
@@ -2826,12 +2826,12 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2122 07d0 04       		.byte	0x4
  2123 07d1 00       		.byte	0
  2124 07d2 05       		.uleb128 0x5
- 2125 07d3 D9080000 		.4byte	.LASF134
+ 2125 07d3 DE080000 		.4byte	.LASF134
  2126 07d7 05       		.byte	0x5
  2127 07d8 0301     		.2byte	0x103
  2128 07da 9E070000 		.4byte	0x79e
  2129 07de 0F       		.uleb128 0xf
- 2130 07df 26060000 		.4byte	.LASF139
+ 2130 07df 2B060000 		.4byte	.LASF139
  2131 07e3 01       		.byte	0x1
  2132 07e4 2C000000 		.4byte	0x2c
  2133 07e8 01       		.byte	0x1
@@ -2841,7 +2841,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2137 07ef 34020000 		.4byte	.LASF135
  2138 07f3 00       		.byte	0
  2139 07f4 10       		.uleb128 0x10
- 2140 07f5 86070000 		.4byte	.LASF136
+ 2140 07f5 8B070000 		.4byte	.LASF136
  2141 07f9 01       		.byte	0x1
  2142 07fa 10       		.uleb128 0x10
  2143 07fb 22000000 		.4byte	.LASF137
@@ -2851,20 +2851,20 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2147 0805 03       		.byte	0x3
  2148 0806 00       		.byte	0
  2149 0807 0F       		.uleb128 0xf
- 2150 0808 D7090000 		.4byte	.LASF140
+ 2150 0808 CD090000 		.4byte	.LASF140
  2151 080c 01       		.byte	0x1
  2152 080d 2C000000 		.4byte	0x2c
  2153 0811 01       		.byte	0x1
  2154 0812 2A       		.byte	0x2a
  2155 0813 2A080000 		.4byte	0x82a
  2156 0817 10       		.uleb128 0x10
- 2157 0818 79070000 		.4byte	.LASF141
+ 2157 0818 7E070000 		.4byte	.LASF141
  2158 081c 00       		.byte	0
  2159 081d 10       		.uleb128 0x10
  2160 081e 14000000 		.4byte	.LASF142
  2161 0822 01       		.byte	0x1
  2162 0823 10       		.uleb128 0x10
- 2163 0824 85050000 		.4byte	.LASF143
+ 2163 0824 75050000 		.4byte	.LASF143
  2164 0828 02       		.byte	0x2
  2165 0829 00       		.byte	0
  2166 082a 11       		.uleb128 0x11
@@ -2878,7 +2878,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2174 0838 34       		.byte	0x34
  2175 0839 6F080000 		.4byte	0x86f
  2176 083d 00       		.byte	0
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 49
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 49
 
 
  2177 083e 07       		.uleb128 0x7
@@ -2888,13 +2888,13 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2181 0845 6F080000 		.4byte	0x86f
  2182 0849 01       		.byte	0x1
  2183 084a 07       		.uleb128 0x7
- 2184 084b 12080000 		.4byte	.LASF146
+ 2184 084b 17080000 		.4byte	.LASF146
  2185 084f 01       		.byte	0x1
  2186 0850 36       		.byte	0x36
  2187 0851 6F080000 		.4byte	0x86f
  2188 0855 02       		.byte	0x2
  2189 0856 07       		.uleb128 0x7
- 2190 0857 1A090000 		.4byte	.LASF147
+ 2190 0857 1F090000 		.4byte	.LASF147
  2191 085b 01       		.byte	0x1
  2192 085c 37       		.byte	0x37
  2193 085d 6F080000 		.4byte	0x86f
@@ -2909,12 +2909,12 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2202 086f 12       		.uleb128 0x12
  2203 0870 81000000 		.4byte	0x81
  2204 0874 03       		.uleb128 0x3
- 2205 0875 E3090000 		.4byte	.LASF149
+ 2205 0875 D9090000 		.4byte	.LASF149
  2206 0879 01       		.byte	0x1
  2207 087a 39       		.byte	0x39
  2208 087b 2A080000 		.4byte	0x82a
  2209 087f 13       		.uleb128 0x13
- 2210 0880 BE070000 		.4byte	.LASF163
+ 2210 0880 C3070000 		.4byte	.LASF163
  2211 0884 01       		.byte	0x1
  2212 0885 7F       		.byte	0x7f
  2213 0886 00000000 		.4byte	.LFB63
@@ -2931,24 +2931,24 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2224 08a0 91       		.byte	0x91
  2225 08a1 77       		.sleb128 -9
  2226 08a2 14       		.uleb128 0x14
- 2227 08a3 97070000 		.4byte	.LASF151
+ 2227 08a3 9C070000 		.4byte	.LASF151
  2228 08a7 01       		.byte	0x1
  2229 08a8 83       		.byte	0x83
  2230 08a9 C5080000 		.4byte	0x8c5
  2231 08ad 05       		.uleb128 0x5
  2232 08ae 03       		.byte	0x3
- 2233 08af 48000000 		.4byte	testbuffer.6620
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 50
+ 2233 08af 48000000 		.4byte	testbuffer.6622
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 50
 
 
  2234 08b3 14       		.uleb128 0x14
- 2235 08b4 41060000 		.4byte	.LASF152
+ 2235 08b4 46060000 		.4byte	.LASF152
  2236 08b8 01       		.byte	0x1
  2237 08b9 84       		.byte	0x84
  2238 08ba 81000000 		.4byte	0x81
  2239 08be 05       		.uleb128 0x5
  2240 08bf 03       		.byte	0x3
- 2241 08c0 44000000 		.4byte	testbuffer_count.6621
+ 2241 08c0 44000000 		.4byte	testbuffer_count.6623
  2242 08c4 00       		.byte	0
  2243 08c5 0A       		.uleb128 0xa
  2244 08c6 81000000 		.4byte	0x81
@@ -2958,7 +2958,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2248 08d3 63       		.byte	0x63
  2249 08d4 00       		.byte	0
  2250 08d5 15       		.uleb128 0x15
- 2251 08d6 BA080000 		.4byte	.LASF182
+ 2251 08d6 BF080000 		.4byte	.LASF181
  2252 08da 01       		.byte	0x1
  2253 08db AA       		.byte	0xaa
  2254 08dc 00000000 		.4byte	.LFB64
@@ -2975,40 +2975,40 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2265 08f6 91       		.byte	0x91
  2266 08f7 77       		.sleb128 -9
  2267 08f8 14       		.uleb128 0x14
- 2268 08f9 CC060000 		.4byte	.LASF153
+ 2268 08f9 D1060000 		.4byte	.LASF153
  2269 08fd 01       		.byte	0x1
  2270 08fe AC       		.byte	0xac
  2271 08ff 3D090000 		.4byte	0x93d
  2272 0903 05       		.uleb128 0x5
  2273 0904 03       		.byte	0x3
- 2274 0905 B0000000 		.4byte	packet.6627
+ 2274 0905 B0000000 		.4byte	packet.6629
  2275 0909 14       		.uleb128 0x14
- 2276 090a 0D060000 		.4byte	.LASF154
+ 2276 090a 12060000 		.4byte	.LASF154
  2277 090e 01       		.byte	0x1
  2278 090f AD       		.byte	0xad
  2279 0910 07080000 		.4byte	0x807
  2280 0914 05       		.uleb128 0x5
  2281 0915 03       		.byte	0x3
- 2282 0916 AC000000 		.4byte	currentState.6628
+ 2282 0916 AC000000 		.4byte	currentState.6630
  2283 091a 14       		.uleb128 0x14
- 2284 091b 9B090000 		.4byte	.LASF155
+ 2284 091b A0090000 		.4byte	.LASF155
  2285 091f 01       		.byte	0x1
  2286 0920 AE       		.byte	0xae
  2287 0921 DE070000 		.4byte	0x7de
  2288 0925 05       		.uleb128 0x5
  2289 0926 03       		.byte	0x3
- 2290 0927 C3000000 		.4byte	currentType.6629
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 51
+ 2290 0927 C3000000 		.4byte	currentType.6631
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 51
 
 
  2291 092b 14       		.uleb128 0x14
- 2292 092c 75090000 		.4byte	.LASF156
+ 2292 092c 7A090000 		.4byte	.LASF156
  2293 0930 01       		.byte	0x1
  2294 0931 AF       		.byte	0xaf
  2295 0932 81000000 		.4byte	0x81
  2296 0936 05       		.uleb128 0x5
  2297 0937 03       		.byte	0x3
- 2298 0938 AD000000 		.4byte	currentPacketIndex.6630
+ 2298 0938 AD000000 		.4byte	currentPacketIndex.6632
  2299 093c 00       		.byte	0
  2300 093d 0A       		.uleb128 0xa
  2301 093e 81000000 		.4byte	0x81
@@ -3018,7 +3018,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2305 094b 12       		.byte	0x12
  2306 094c 00       		.byte	0
  2307 094d 17       		.uleb128 0x17
- 2308 094e 2E090000 		.4byte	.LASF183
+ 2308 094e 33090000 		.4byte	.LASF182
  2309 0952 01       		.byte	0x1
  2310 0953 1E01     		.2byte	0x11e
  2311 0955 00000000 		.4byte	.LFB65
@@ -3044,21 +3044,21 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2331 0986 91       		.byte	0x91
  2332 0987 77       		.sleb128 -9
  2333 0988 1A       		.uleb128 0x1a
- 2334 0989 41090000 		.4byte	.LASF158
+ 2334 0989 46090000 		.4byte	.LASF158
  2335 098d 01       		.byte	0x1
  2336 098e 2B01     		.2byte	0x12b
  2337 0990 8D000000 		.4byte	0x8d
  2338 0994 05       		.uleb128 0x5
  2339 0995 03       		.byte	0x3
- 2340 0996 C4000000 		.4byte	singlepacketsuccess.6641
+ 2340 0996 C4000000 		.4byte	singlepacketsuccess.6643
  2341 099a 00       		.byte	0
  2342 099b 18       		.uleb128 0x18
- 2343 099c E1050000 		.4byte	.LASF160
+ 2343 099c E6050000 		.4byte	.LASF160
  2344 09a0 01       		.byte	0x1
  2345 09a1 3E01     		.2byte	0x13e
  2346 09a3 81000000 		.4byte	0x81
  2347 09a7 00000000 		.4byte	.LFB67
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 52
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 52
 
 
  2348 09ab 64000000 		.4byte	.LFE67-.LFB67
@@ -3080,7 +3080,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2364 09cc E9090000 		.4byte	0x9e9
  2365 09d0 05       		.uleb128 0x5
  2366 09d1 03       		.byte	0x3
- 2367 09d2 14000000 		.4byte	targetstring.6645
+ 2367 09d2 14000000 		.4byte	targetstring.6647
  2368 09d6 1A       		.uleb128 0x1a
  2369 09d7 E7020000 		.4byte	.LASF162
  2370 09db 01       		.byte	0x1
@@ -3088,7 +3088,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2372 09de 81000000 		.4byte	0x81
  2373 09e2 05       		.uleb128 0x5
  2374 09e3 03       		.byte	0x3
- 2375 09e4 C6000000 		.4byte	index.6646
+ 2375 09e4 C6000000 		.4byte	index.6648
  2376 09e8 00       		.byte	0
  2377 09e9 0A       		.uleb128 0xa
  2378 09ea 81000000 		.4byte	0x81
@@ -3113,18 +3113,18 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2397 0a17 8D000000 		.4byte	0x8d
  2398 0a1b 05       		.uleb128 0x5
  2399 0a1c 03       		.byte	0x3
- 2400 0a1d CC000000 		.4byte	iterator.6650
+ 2400 0a1d CC000000 		.4byte	iterator.6652
  2401 0a21 1A       		.uleb128 0x1a
  2402 0a22 00000000 		.4byte	.LASF130
  2403 0a26 01       		.byte	0x1
  2404 0a27 6201     		.2byte	0x162
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 53
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 53
 
 
  2405 0a29 49070000 		.4byte	0x749
  2406 0a2d 05       		.uleb128 0x5
  2407 0a2e 03       		.byte	0x3
- 2408 0a2f D0000000 		.4byte	txPacket_RelaySiren.6651
+ 2408 0a2f D0000000 		.4byte	txPacket_RelaySiren.6653
  2409 0a33 1A       		.uleb128 0x1a
  2410 0a34 12020000 		.4byte	.LASF166
  2411 0a38 01       		.byte	0x1
@@ -3132,7 +3132,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2413 0a3b 460A0000 		.4byte	0xa46
  2414 0a3f 05       		.uleb128 0x5
  2415 0a40 03       		.byte	0x3
- 2416 0a41 C8000000 		.4byte	pTxPacket_RelaySiren.6652
+ 2416 0a41 C8000000 		.4byte	pTxPacket_RelaySiren.6654
  2417 0a45 00       		.byte	0
  2418 0a46 1C       		.uleb128 0x1c
  2419 0a47 04       		.byte	0x4
@@ -3153,7 +3153,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2434 0a6a 8D000000 		.4byte	0x8d
  2435 0a6e 05       		.uleb128 0x5
  2436 0a6f 03       		.byte	0x3
- 2437 0a70 20010000 		.4byte	iterator.6659
+ 2437 0a70 20010000 		.4byte	iterator.6661
  2438 0a74 1A       		.uleb128 0x1a
  2439 0a75 00000000 		.4byte	.LASF130
  2440 0a79 01       		.byte	0x1
@@ -3161,7 +3161,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2442 0a7c 49070000 		.4byte	0x749
  2443 0a80 05       		.uleb128 0x5
  2444 0a81 03       		.byte	0x3
- 2445 0a82 28010000 		.4byte	txPacket_RelaySiren.6660
+ 2445 0a82 28010000 		.4byte	txPacket_RelaySiren.6662
  2446 0a86 1A       		.uleb128 0x1a
  2447 0a87 12020000 		.4byte	.LASF166
  2448 0a8b 01       		.byte	0x1
@@ -3169,16 +3169,16 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2450 0a8e 460A0000 		.4byte	0xa46
  2451 0a92 05       		.uleb128 0x5
  2452 0a93 03       		.byte	0x3
- 2453 0a94 24010000 		.4byte	pTxPacket_RelaySiren.6661
+ 2453 0a94 24010000 		.4byte	pTxPacket_RelaySiren.6663
  2454 0a98 00       		.byte	0
  2455 0a99 1D       		.uleb128 0x1d
- 2456 0a9a B4050000 		.4byte	.LASF168
+ 2456 0a9a B9050000 		.4byte	.LASF168
  2457 0a9e 01       		.byte	0x1
  2458 0a9f B001     		.2byte	0x1b0
  2459 0aa1 00000000 		.4byte	.LFB70
  2460 0aa5 0C000000 		.4byte	.LFE70-.LFB70
  2461 0aa9 01       		.uleb128 0x1
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 54
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 54
 
 
  2462 0aaa 9C       		.byte	0x9c
@@ -3190,7 +3190,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2468 0ab7 8D000000 		.4byte	0x8d
  2469 0abb 05       		.uleb128 0x5
  2470 0abc 03       		.byte	0x3
- 2471 0abd 78010000 		.4byte	iterator.6668
+ 2471 0abd 78010000 		.4byte	iterator.6670
  2472 0ac1 00       		.byte	0
  2473 0ac2 0A       		.uleb128 0xa
  2474 0ac3 74080000 		.4byte	0x874
@@ -3231,40 +3231,40 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2509 0b10 03       		.byte	0x3
  2510 0b11 08000000 		.4byte	rxPacket_Controller
  2511 0b15 14       		.uleb128 0x14
- 2512 0b16 CC050000 		.4byte	.LASF171
+ 2512 0b16 D1050000 		.4byte	.LASF171
  2513 0b1a 01       		.byte	0x1
  2514 0b1b 4F       		.byte	0x4f
  2515 0b1c 260B0000 		.4byte	0xb26
  2516 0b20 05       		.uleb128 0x5
  2517 0b21 03       		.byte	0x3
  2518 0b22 10000000 		.4byte	pRxPacket_Controller
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 55
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 55
 
 
  2519 0b26 1C       		.uleb128 0x1c
  2520 0b27 04       		.byte	0x4
  2521 0b28 5C010000 		.4byte	0x15c
  2522 0b2c 14       		.uleb128 0x14
- 2523 0b2d A7090000 		.4byte	.LASF172
+ 2523 0b2d BD030000 		.4byte	.LASF50
  2524 0b31 01       		.byte	0x1
  2525 0b32 51       		.byte	0x51
  2526 0b33 4A030000 		.4byte	0x34a
  2527 0b37 05       		.uleb128 0x5
  2528 0b38 03       		.byte	0x3
- 2529 0b39 14000000 		.4byte	rxPacket_Relay
+ 2529 0b39 14000000 		.4byte	rxPacket_RelaySiren
  2530 0b3d 14       		.uleb128 0x14
- 2531 0b3e 5C050000 		.4byte	.LASF173
+ 2531 0b3e 88050000 		.4byte	.LASF172
  2532 0b42 01       		.byte	0x1
  2533 0b43 52       		.byte	0x52
  2534 0b44 4E0B0000 		.4byte	0xb4e
  2535 0b48 05       		.uleb128 0x5
  2536 0b49 03       		.byte	0x3
- 2537 0b4a 24000000 		.4byte	pRxPacket_Relay
+ 2537 0b4a 24000000 		.4byte	pRxPacket_RelaySiren
  2538 0b4e 1C       		.uleb128 0x1c
  2539 0b4f 04       		.byte	0x4
  2540 0b50 4A030000 		.4byte	0x34a
  2541 0b54 14       		.uleb128 0x14
- 2542 0b55 D0000000 		.4byte	.LASF174
+ 2542 0b55 D0000000 		.4byte	.LASF173
  2543 0b59 01       		.byte	0x1
  2544 0b5a 54       		.byte	0x54
  2545 0b5b D2070000 		.4byte	0x7d2
@@ -3272,7 +3272,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2547 0b60 03       		.byte	0x3
  2548 0b61 28000000 		.4byte	rxPacket_H
  2549 0b65 14       		.uleb128 0x14
- 2550 0b66 B2070000 		.4byte	.LASF175
+ 2550 0b66 B7070000 		.4byte	.LASF174
  2551 0b6a 01       		.byte	0x1
  2552 0b6b 55       		.byte	0x55
  2553 0b6c 760B0000 		.4byte	0xb76
@@ -3283,7 +3283,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2558 0b77 04       		.byte	0x4
  2559 0b78 D2070000 		.4byte	0x7d2
  2560 0b7c 14       		.uleb128 0x14
- 2561 0b7d 98050000 		.4byte	.LASF176
+ 2561 0b7d 9D050000 		.4byte	.LASF175
  2562 0b81 01       		.byte	0x1
  2563 0b82 57       		.byte	0x57
  2564 0b83 D2070000 		.4byte	0x7d2
@@ -3291,18 +3291,18 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2566 0b88 03       		.byte	0x3
  2567 0b89 34000000 		.4byte	txPacket_H
  2568 0b8d 14       		.uleb128 0x14
- 2569 0b8e 50020000 		.4byte	.LASF177
+ 2569 0b8e 50020000 		.4byte	.LASF176
  2570 0b92 01       		.byte	0x1
  2571 0b93 58       		.byte	0x58
  2572 0b94 760B0000 		.4byte	0xb76
  2573 0b98 05       		.uleb128 0x5
  2574 0b99 03       		.byte	0x3
  2575 0b9a 3C000000 		.4byte	pTxPacket_H
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 56
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 56
 
 
  2576 0b9e 14       		.uleb128 0x14
- 2577 0b9f 3A030000 		.4byte	.LASF178
+ 2577 0b9f 3A030000 		.4byte	.LASF177
  2578 0ba3 01       		.byte	0x1
  2579 0ba4 5A       		.byte	0x5a
  2580 0ba5 AF0B0000 		.4byte	0xbaf
@@ -3313,7 +3313,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2585 0bb0 04       		.byte	0x4
  2586 0bb1 5B020000 		.4byte	0x25b
  2587 0bb5 1E       		.uleb128 0x1e
- 2588 0bb6 31070000 		.4byte	.LASF184
+ 2588 0bb6 36070000 		.4byte	.LASF183
  2589 0bba 06       		.byte	0x6
  2590 0bbb 1207     		.2byte	0x712
  2591 0bbd C10B0000 		.4byte	0xbc1
@@ -3358,7 +3358,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2630 0021 03       		.uleb128 0x3
  2631 0022 0E       		.uleb128 0xe
  2632 0023 3A       		.uleb128 0x3a
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 57
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 57
 
 
  2633 0024 0B       		.uleb128 0xb
@@ -3418,7 +3418,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2687 005a 0B       		.uleb128 0xb
  2688 005b 49       		.uleb128 0x49
  2689 005c 13       		.uleb128 0x13
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 58
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 58
 
 
  2690 005d 38       		.uleb128 0x38
@@ -3478,7 +3478,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2744 0093 08       		.uleb128 0x8
  2745 0094 3A       		.uleb128 0x3a
  2746 0095 0B       		.uleb128 0xb
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 59
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 59
 
 
  2747 0096 3B       		.uleb128 0x3b
@@ -3538,7 +3538,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2801 00cc 28       		.uleb128 0x28
  2802 00cd 00       		.byte	0
  2803 00ce 03       		.uleb128 0x3
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 60
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 60
 
 
  2804 00cf 0E       		.uleb128 0xe
@@ -3598,7 +3598,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2858 0106 0E       		.uleb128 0xe
  2859 0107 3A       		.uleb128 0x3a
  2860 0108 0B       		.uleb128 0xb
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 61
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 61
 
 
  2861 0109 3B       		.uleb128 0x3b
@@ -3658,7 +3658,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2915 0140 0B       		.uleb128 0xb
  2916 0141 3B       		.uleb128 0x3b
  2917 0142 05       		.uleb128 0x5
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 62
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 62
 
 
  2918 0143 27       		.uleb128 0x27
@@ -3718,7 +3718,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  2972 017b 1A       		.uleb128 0x1a
  2973 017c 34       		.uleb128 0x34
  2974 017d 00       		.byte	0
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 63
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 63
 
 
  2975 017e 03       		.uleb128 0x3
@@ -3778,7 +3778,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  3029 01b5 0B       		.uleb128 0xb
  3030 01b6 3B       		.uleb128 0x3b
  3031 01b7 05       		.uleb128 0x5
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 64
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 64
 
 
  3032 01b8 27       		.uleb128 0x27
@@ -3838,7 +3838,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  3086 002c 38000000 		.4byte	.LFE66-.LFB66
  3087 0030 00000000 		.4byte	.LFB67
  3088 0034 64000000 		.4byte	.LFE67-.LFB67
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 65
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 65
 
 
  3089 0038 00000000 		.4byte	.LFB68
@@ -3898,7 +3898,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  3128              	.LASF67:
  3129 003a 4C45445F 		.ascii	"LED_12_B\000"
  3129      31325F42 
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 66
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 66
 
 
  3129      00
@@ -3958,11 +3958,11 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  3155      74615F43 
  3155      6F6E7472 
  3155      6F6C6C65 
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 67
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 67
 
 
  3155      7200
- 3156              	.LASF174:
+ 3156              	.LASF173:
  3157 00d0 72785061 		.ascii	"rxPacket_H\000"
  3157      636B6574 
  3157      5F4800
@@ -3982,7 +3982,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  3163      6574546F 
  3163      52656C61 
  3163      79536972 
- 3164              	.LASF179:
+ 3164              	.LASF178:
  3165 0111 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
  3165      43313120 
  3165      352E342E 
@@ -4010,7 +4010,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  3173 01b7 53697265 		.ascii	"SirenFirm_2\000"
  3173      6E466972 
  3173      6D5F3200 
- 3174              	.LASF181:
+ 3174              	.LASF180:
  3175 01c3 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\firm_F1-TestFixture\\"
  3175      73657273 
  3175      5C6D6172 
@@ -4018,7 +4018,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  3175      636B5C44 
  3176 01f2 46312D54 		.ascii	"F1-TestFixture.cydsn\000"
  3176      65737446 
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 68
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 68
 
 
  3176      69787475 
@@ -4048,7 +4048,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  3186      42797465 
  3186      315F5265 
  3186      6C617900 
- 3187              	.LASF177:
+ 3187              	.LASF176:
  3188 0250 70547850 		.ascii	"pTxPacket_H\000"
  3188      61636B65 
  3188      745F4800 
@@ -4078,7 +4078,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  3199              	.LASF35:
  3200 02a6 566F6C74 		.ascii	"Voltage_BATT\000"
  3200      6167655F 
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 69
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 69
 
 
  3200      42415454 
@@ -4136,9 +4136,9 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  3224      6720756E 
  3224      7369676E 
  3224      65642069 
- 3225              	.LASF178:
+ 3225              	.LASF177:
  3226 033a 70547850 		.ascii	"pTxPacket_Controller\000"
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 70
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 70
 
 
  3226      61636B65 
@@ -4198,7 +4198,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  3248      4200
  3249              	.LASF119:
  3250 03df 53746F70 		.ascii	"StopByte2_Siren\000"
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 71
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 71
 
 
  3250      42797465 
@@ -4258,7 +4258,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  3274      44656C61 
  3274      7900
  3275              	.LASF15:
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 72
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 72
 
 
  3276 0486 63686172 		.ascii	"char\000"
@@ -4318,7 +4318,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  3300      00
  3301              	.LASF80:
  3302 0517 4C45445F 		.ascii	"LED_07_R\000"
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 73
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 73
 
 
  3302      30375F52 
@@ -4347,438 +4347,434 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 1
  3314 0551 5061636B 		.ascii	"PacketList\000"
  3314      65744C69 
  3314      737400
- 3315              	.LASF173:
- 3316 055c 70527850 		.ascii	"pRxPacket_Relay\000"
- 3316      61636B65 
- 3316      745F5265 
- 3316      6C617900 
- 3317              	.LASF22:
- 3318 056c 496E7075 		.ascii	"Input_Logic\000"
- 3318      745F4C6F 
- 3318      67696300 
- 3319              	.LASF122:
- 3320 0578 4F757470 		.ascii	"Outputs_1to8\000"
- 3320      7574735F 
- 3320      31746F38 
- 3320      00
- 3321              	.LASF143:
- 3322 0585 454F505F 		.ascii	"EOP_STATE\000"
- 3322      53544154 
- 3322      4500
- 3323              	.LASF45:
- 3324 058f 63686563 		.ascii	"checkSum\000"
- 3324      6B53756D 
- 3324      00
- 3325              	.LASF176:
- 3326 0598 74785061 		.ascii	"txPacket_H\000"
+ 3315              	.LASF22:
+ 3316 055c 496E7075 		.ascii	"Input_Logic\000"
+ 3316      745F4C6F 
+ 3316      67696300 
+ 3317              	.LASF122:
+ 3318 0568 4F757470 		.ascii	"Outputs_1to8\000"
+ 3318      7574735F 
+ 3318      31746F38 
+ 3318      00
+ 3319              	.LASF143:
+ 3320 0575 454F505F 		.ascii	"EOP_STATE\000"
+ 3320      53544154 
+ 3320      4500
+ 3321              	.LASF45:
+ 3322 057f 63686563 		.ascii	"checkSum\000"
+ 3322      6B53756D 
+ 3322      00
+ 3323              	.LASF172:
+ 3324 0588 70527850 		.ascii	"pRxPacket_RelaySiren\000"
+ 3324      61636B65 
+ 3324      745F5265 
+ 3324      6C617953 
+ 3324      6972656E 
+ 3325              	.LASF175:
+ 3326 059d 74785061 		.ascii	"txPacket_H\000"
  3326      636B6574 
  3326      5F4800
  3327              	.LASF121:
- 3328 05a3 52656C61 		.ascii	"Relay_PacketType\000"
+ 3328 05a8 52656C61 		.ascii	"Relay_PacketType\000"
  3328      795F5061 
  3328      636B6574 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 74
+
+
  3328      54797065 
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 74
-
-
  3328      00
  3329              	.LASF168:
- 3330 05b4 73656E64 		.ascii	"sendPacket_RelayToSiren\000"
+ 3330 05b9 73656E64 		.ascii	"sendPacket_RelayToSiren\000"
  3330      5061636B 
  3330      65745F52 
  3330      656C6179 
  3330      546F5369 
  3331              	.LASF171:
- 3332 05cc 70527850 		.ascii	"pRxPacket_Controller\000"
+ 3332 05d1 70527850 		.ascii	"pRxPacket_Controller\000"
  3332      61636B65 
  3332      745F436F 
  3332      6E74726F 
  3332      6C6C6572 
  3333              	.LASF160:
- 3334 05e1 66696E64 		.ascii	"findpacket\000"
+ 3334 05e6 66696E64 		.ascii	"findpacket\000"
  3334      7061636B 
  3334      657400
  3335              	.LASF29:
- 3336 05ec 72784461 		.ascii	"rxData_Controller\000"
+ 3336 05f1 72784461 		.ascii	"rxData_Controller\000"
  3336      74615F43 
  3336      6F6E7472 
  3336      6F6C6C65 
  3336      7200
  3337              	.LASF124:
- 3338 05fe 4F757470 		.ascii	"Outputs_17to24\000"
+ 3338 0603 4F757470 		.ascii	"Outputs_17to24\000"
  3338      7574735F 
  3338      3137746F 
  3338      323400
  3339              	.LASF154:
- 3340 060d 63757272 		.ascii	"currentState\000"
+ 3340 0612 63757272 		.ascii	"currentState\000"
  3340      656E7453 
  3340      74617465 
  3340      00
  3341              	.LASF127:
- 3342 061a 53697265 		.ascii	"SirenEnable\000"
+ 3342 061f 53697265 		.ascii	"SirenEnable\000"
  3342      6E456E61 
  3342      626C6500 
  3343              	.LASF139:
- 3344 0626 44617461 		.ascii	"DataType\000"
+ 3344 062b 44617461 		.ascii	"DataType\000"
  3344      54797065 
  3344      00
  3345              	.LASF132:
- 3346 062f 44617461 		.ascii	"Data_H\000"
+ 3346 0634 44617461 		.ascii	"Data_H\000"
  3346      5F4800
  3347              	.LASF18:
- 3348 0636 4F757470 		.ascii	"Outputs1_8\000"
+ 3348 063b 4F757470 		.ascii	"Outputs1_8\000"
  3348      75747331 
  3348      5F3800
  3349              	.LASF152:
- 3350 0641 74657374 		.ascii	"testbuffer_count\000"
+ 3350 0646 74657374 		.ascii	"testbuffer_count\000"
  3350      62756666 
  3350      65725F63 
  3350      6F756E74 
  3350      00
  3351              	.LASF48:
- 3352 0652 54785061 		.ascii	"TxPacket_Controller\000"
+ 3352 0657 54785061 		.ascii	"TxPacket_Controller\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 75
+
+
  3352      636B6574 
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 75
-
-
  3352      5F436F6E 
  3352      74726F6C 
  3352      6C657200 
  3353              	.LASF49:
- 3354 0666 72784461 		.ascii	"rxData_RelaySiren\000"
+ 3354 066b 72784461 		.ascii	"rxData_RelaySiren\000"
  3354      74615F52 
  3354      656C6179 
  3354      53697265 
  3354      6E00
  3355              	.LASF55:
- 3356 0678 4C45445F 		.ascii	"LED_16_B\000"
+ 3356 067d 4C45445F 		.ascii	"LED_16_B\000"
  3356      31365F42 
  3356      00
  3357              	.LASF54:
- 3358 0681 4C45445F 		.ascii	"LED_16_G\000"
+ 3358 0686 4C45445F 		.ascii	"LED_16_G\000"
  3358      31365F47 
  3358      00
  3359              	.LASF16:
- 3360 068a 6C6F6E67 		.ascii	"long double\000"
+ 3360 068f 6C6F6E67 		.ascii	"long double\000"
  3360      20646F75 
  3360      626C6500 
  3361              	.LASF53:
- 3362 0696 4C45445F 		.ascii	"LED_16_R\000"
+ 3362 069b 4C45445F 		.ascii	"LED_16_R\000"
  3362      31365F52 
  3362      00
  3363              	.LASF70:
- 3364 069f 4C45445F 		.ascii	"LED_11_B\000"
+ 3364 06a4 4C45445F 		.ascii	"LED_11_B\000"
  3364      31315F42 
  3364      00
  3365              	.LASF69:
- 3366 06a8 4C45445F 		.ascii	"LED_11_G\000"
+ 3366 06ad 4C45445F 		.ascii	"LED_11_G\000"
  3366      31315F47 
  3366      00
  3367              	.LASF88:
- 3368 06b1 4C45445F 		.ascii	"LED_05_B\000"
+ 3368 06b6 4C45445F 		.ascii	"LED_05_B\000"
  3368      30355F42 
  3368      00
  3369              	.LASF87:
- 3370 06ba 4C45445F 		.ascii	"LED_05_G\000"
+ 3370 06bf 4C45445F 		.ascii	"LED_05_G\000"
  3370      30355F47 
  3370      00
  3371              	.LASF68:
- 3372 06c3 4C45445F 		.ascii	"LED_11_R\000"
+ 3372 06c8 4C45445F 		.ascii	"LED_11_R\000"
  3372      31315F52 
  3372      00
  3373              	.LASF153:
- 3374 06cc 7061636B 		.ascii	"packet\000"
+ 3374 06d1 7061636B 		.ascii	"packet\000"
  3374      657400
  3375              	.LASF63:
- 3376 06d3 4C45445F 		.ascii	"LED_13_G\000"
+ 3376 06d8 4C45445F 		.ascii	"LED_13_G\000"
  3376      31335F47 
  3376      00
  3377              	.LASF86:
- 3378 06dc 4C45445F 		.ascii	"LED_05_R\000"
+ 3378 06e1 4C45445F 		.ascii	"LED_05_R\000"
  3378      30355F52 
  3378      00
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 76
+
+
  3379              	.LASF131:
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 76
-
-
- 3380 06e5 54785061 		.ascii	"TxPacket_RelaySiren\000"
+ 3380 06ea 54785061 		.ascii	"TxPacket_RelaySiren\000"
  3380      636B6574 
  3380      5F52656C 
  3380      61795369 
  3380      72656E00 
  3381              	.LASF123:
- 3382 06f9 4F757470 		.ascii	"Outputs_9to16\000"
+ 3382 06fe 4F757470 		.ascii	"Outputs_9to16\000"
  3382      7574735F 
  3382      39746F31 
  3382      3600
  3383              	.LASF2:
- 3384 0707 73686F72 		.ascii	"short int\000"
+ 3384 070c 73686F72 		.ascii	"short int\000"
  3384      7420696E 
  3384      7400
  3385              	.LASF111:
- 3386 0711 53746F70 		.ascii	"StopByte1_FLB\000"
+ 3386 0716 53746F70 		.ascii	"StopByte1_FLB\000"
  3386      42797465 
  3386      315F464C 
  3386      4200
  3387              	.LASF4:
- 3388 071f 6C6F6E67 		.ascii	"long int\000"
+ 3388 0724 6C6F6E67 		.ascii	"long int\000"
  3388      20696E74 
  3388      00
  3389              	.LASF25:
- 3390 0728 53697265 		.ascii	"Siren_EN\000"
+ 3390 072d 53697265 		.ascii	"Siren_EN\000"
  3390      6E5F454E 
  3390      00
- 3391              	.LASF184:
- 3392 0731 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 3391              	.LASF183:
+ 3392 0736 49544D5F 		.ascii	"ITM_RxBuffer\000"
  3392      52784275 
  3392      66666572 
  3392      00
- 3393              	.LASF180:
- 3394 073e 55415254 		.ascii	"UART_230400_Functions.c\000"
+ 3393              	.LASF179:
+ 3394 0743 55415254 		.ascii	"UART_230400_Functions.c\000"
  3394      5F323330 
  3394      3430305F 
  3394      46756E63 
  3394      74696F6E 
  3395              	.LASF106:
- 3396 0756 53746172 		.ascii	"StartByte_FLB\000"
+ 3396 075b 53746172 		.ascii	"StartByte_FLB\000"
  3396      74427974 
  3396      655F464C 
  3396      4200
  3397              	.LASF37:
- 3398 0764 53706561 		.ascii	"Speaker2_Overcurrent\000"
+ 3398 0769 53706561 		.ascii	"Speaker2_Overcurrent\000"
  3398      6B657232 
  3398      5F4F7665 
  3398      72637572 
  3398      72656E74 
  3399              	.LASF141:
- 3400 0779 48454144 		.ascii	"HEADER_STATE\000"
+ 3400 077e 48454144 		.ascii	"HEADER_STATE\000"
  3400      45525F53 
  3400      54415445 
  3400      00
  3401              	.LASF136:
- 3402 0786 52544553 		.ascii	"RTEST_CONTROLLER\000"
+ 3402 078b 52544553 		.ascii	"RTEST_CONTROLLER\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 77
+
+
  3402      545F434F 
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 77
-
-
  3402      4E54524F 
  3402      4C4C4552 
  3402      00
  3403              	.LASF151:
- 3404 0797 74657374 		.ascii	"testbuffer\000"
+ 3404 079c 74657374 		.ascii	"testbuffer\000"
  3404      62756666 
  3404      657200
  3405              	.LASF129:
- 3406 07a2 53746F70 		.ascii	"StopByte2_Relay\000"
+ 3406 07a7 53746F70 		.ascii	"StopByte2_Relay\000"
  3406      42797465 
  3406      325F5265 
  3406      6C617900 
- 3407              	.LASF175:
- 3408 07b2 70527850 		.ascii	"pRxPacket_H\000"
+ 3407              	.LASF174:
+ 3408 07b7 70527850 		.ascii	"pRxPacket_H\000"
  3408      61636B65 
  3408      745F4800 
  3409              	.LASF163:
- 3410 07be 70726F63 		.ascii	"processByteReceivedHandler\000"
+ 3410 07c3 70726F63 		.ascii	"processByteReceivedHandler\000"
  3410      65737342 
  3410      79746552 
  3410      65636569 
  3410      76656448 
  3411              	.LASF118:
- 3412 07d9 53746F70 		.ascii	"StopByte1_Siren\000"
+ 3412 07de 53746F70 		.ascii	"StopByte1_Siren\000"
  3412      42797465 
  3412      315F5369 
  3412      72656E00 
  3413              	.LASF104:
- 3414 07e9 636F6E74 		.ascii	"controllerSpeakerEnable\000"
+ 3414 07ee 636F6E74 		.ascii	"controllerSpeakerEnable\000"
  3414      726F6C6C 
  3414      65725370 
  3414      65616B65 
  3414      72456E61 
  3415              	.LASF103:
- 3416 0801 53637265 		.ascii	"ScreenBrightness\000"
+ 3416 0806 53637265 		.ascii	"ScreenBrightness\000"
  3416      656E4272 
  3416      69676874 
  3416      6E657373 
  3416      00
  3417              	.LASF146:
- 3418 0812 5041594C 		.ascii	"PAYLOAD_SIZE\000"
+ 3418 0817 5041594C 		.ascii	"PAYLOAD_SIZE\000"
  3418      4F41445F 
  3418      53495A45 
  3418      00
  3419              	.LASF17:
- 3420 081f 73697A65 		.ascii	"sizetype\000"
+ 3420 0824 73697A65 		.ascii	"sizetype\000"
  3420      74797065 
  3420      00
  3421              	.LASF5:
- 3422 0828 6C6F6E67 		.ascii	"long unsigned int\000"
+ 3422 082d 6C6F6E67 		.ascii	"long unsigned int\000"
  3422      20756E73 
  3422      69676E65 
  3422      6420696E 
  3422      7400
  3423              	.LASF126:
- 3424 083a 48694C6F 		.ascii	"HiLoInputLogic\000"
+ 3424 083f 48694C6F 		.ascii	"HiLoInputLogic\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 78
+
+
  3424      496E7075 
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 78
-
-
  3424      744C6F67 
  3424      696300
  3425              	.LASF10:
- 3426 0849 696E7433 		.ascii	"int32_t\000"
+ 3426 084e 696E7433 		.ascii	"int32_t\000"
  3426      325F7400 
  3427              	.LASF101:
- 3428 0851 42757A7A 		.ascii	"Buzzer_H\000"
+ 3428 0856 42757A7A 		.ascii	"Buzzer_H\000"
  3428      65725F48 
  3428      00
  3429              	.LASF102:
- 3430 085a 42757A7A 		.ascii	"Buzzer_L\000"
+ 3430 085f 42757A7A 		.ascii	"Buzzer_L\000"
  3430      65725F4C 
  3430      00
  3431              	.LASF116:
- 3432 0863 53697265 		.ascii	"Siren2Tone\000"
+ 3432 0868 53697265 		.ascii	"Siren2Tone\000"
  3432      6E32546F 
  3432      6E6500
  3433              	.LASF113:
- 3434 086e 53746172 		.ascii	"StartByte1_Siren\000"
+ 3434 0873 53746172 		.ascii	"StartByte1_Siren\000"
  3434      74427974 
  3434      65315F53 
  3434      6972656E 
  3434      00
  3435              	.LASF61:
- 3436 087f 4C45445F 		.ascii	"LED_14_B\000"
+ 3436 0884 4C45445F 		.ascii	"LED_14_B\000"
  3436      31345F42 
  3436      00
  3437              	.LASF60:
- 3438 0888 4C45445F 		.ascii	"LED_14_G\000"
+ 3438 088d 4C45445F 		.ascii	"LED_14_G\000"
  3438      31345F47 
  3438      00
  3439              	.LASF79:
- 3440 0891 4C45445F 		.ascii	"LED_08_B\000"
+ 3440 0896 4C45445F 		.ascii	"LED_08_B\000"
  3440      30385F42 
  3440      00
  3441              	.LASF1:
- 3442 089a 756E7369 		.ascii	"unsigned char\000"
+ 3442 089f 756E7369 		.ascii	"unsigned char\000"
  3442      676E6564 
  3442      20636861 
  3442      7200
  3443              	.LASF78:
- 3444 08a8 4C45445F 		.ascii	"LED_08_G\000"
+ 3444 08ad 4C45445F 		.ascii	"LED_08_G\000"
  3444      30385F47 
  3444      00
  3445              	.LASF59:
- 3446 08b1 4C45445F 		.ascii	"LED_14_R\000"
+ 3446 08b6 4C45445F 		.ascii	"LED_14_R\000"
  3446      31345F52 
  3446      00
- 3447              	.LASF182:
- 3448 08ba 64657465 		.ascii	"detectPacket\000"
+ 3447              	.LASF181:
+ 3448 08bf 64657465 		.ascii	"detectPacket\000"
  3448      63745061 
  3448      636B6574 
  3448      00
  3449              	.LASF77:
- 3450 08c7 4C45445F 		.ascii	"LED_08_R\000"
+ 3450 08cc 4C45445F 		.ascii	"LED_08_R\000"
  3450      30385F52 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 79
+
+
  3450      00
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 79
-
-
  3451              	.LASF94:
- 3452 08d0 4C45445F 		.ascii	"LED_03_B\000"
+ 3452 08d5 4C45445F 		.ascii	"LED_03_B\000"
  3452      30335F42 
  3452      00
  3453              	.LASF134:
- 3454 08d9 5061636B 		.ascii	"Packet_H\000"
+ 3454 08de 5061636B 		.ascii	"Packet_H\000"
  3454      65745F48 
  3454      00
  3455              	.LASF93:
- 3456 08e2 4C45445F 		.ascii	"LED_03_G\000"
+ 3456 08e7 4C45445F 		.ascii	"LED_03_G\000"
  3456      30335F47 
  3456      00
  3457              	.LASF125:
- 3458 08eb 4F757470 		.ascii	"Outputs_25to32\000"
+ 3458 08f0 4F757470 		.ascii	"Outputs_25to32\000"
  3458      7574735F 
  3458      3235746F 
  3458      333200
  3459              	.LASF92:
- 3460 08fa 4C45445F 		.ascii	"LED_03_R\000"
+ 3460 08ff 4C45445F 		.ascii	"LED_03_R\000"
  3460      30335F52 
  3460      00
  3461              	.LASF23:
- 3462 0903 506F7765 		.ascii	"PowerState\000"
+ 3462 0908 506F7765 		.ascii	"PowerState\000"
  3462      72537461 
  3462      746500
  3463              	.LASF38:
- 3464 090e 52656C61 		.ascii	"RelayInputs\000"
+ 3464 0913 52656C61 		.ascii	"RelayInputs\000"
  3464      79496E70 
  3464      75747300 
  3465              	.LASF147:
- 3466 091a 454F505F 		.ascii	"EOP_CARRIAGE_RETURN\000"
+ 3466 091f 454F505F 		.ascii	"EOP_CARRIAGE_RETURN\000"
  3466      43415252 
  3466      49414745 
  3466      5F524554 
  3466      55524E00 
- 3467              	.LASF183:
- 3468 092e 52657365 		.ascii	"ResetPacketSuccess\000"
+ 3467              	.LASF182:
+ 3468 0933 52657365 		.ascii	"ResetPacketSuccess\000"
  3468      74506163 
  3468      6B657453 
  3468      75636365 
  3468      737300
  3469              	.LASF158:
- 3470 0941 73696E67 		.ascii	"singlepacketsuccess\000"
+ 3470 0946 73696E67 		.ascii	"singlepacketsuccess\000"
  3470      6C657061 
  3470      636B6574 
  3470      73756363 
  3470      65737300 
  3471              	.LASF28:
- 3472 0955 52785061 		.ascii	"RxPacket_Controller\000"
+ 3472 095a 52785061 		.ascii	"RxPacket_Controller\000"
  3472      636B6574 
  3472      5F436F6E 
  3472      74726F6C 
  3472      6C657200 
  3473              	.LASF0:
- 3474 0969 7369676E 		.ascii	"signed char\000"
+ 3474 096e 7369676E 		.ascii	"signed char\000"
  3474      65642063 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccbrDi7b.s 			page 80
+
+
  3474      68617200 
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cciQX8Ec.s 			page 80
-
-
  3475              	.LASF156:
- 3476 0975 63757272 		.ascii	"currentPacketIndex\000"
+ 3476 097a 63757272 		.ascii	"currentPacketIndex\000"
  3476      656E7450 
  3476      61636B65 
  3476      74496E64 
  3476      657800
  3477              	.LASF3:
- 3478 0988 73686F72 		.ascii	"short unsigned int\000"
+ 3478 098d 73686F72 		.ascii	"short unsigned int\000"
  3478      7420756E 
  3478      7369676E 
  3478      65642069 
  3478      6E7400
  3479              	.LASF155:
- 3480 099b 63757272 		.ascii	"currentType\000"
+ 3480 09a0 63757272 		.ascii	"currentType\000"
  3480      656E7454 
  3480      79706500 
- 3481              	.LASF172:
- 3482 09a7 72785061 		.ascii	"rxPacket_Relay\000"
- 3482      636B6574 
- 3482      5F52656C 
- 3482      617900
- 3483              	.LASF11:
- 3484 09b6 75696E74 		.ascii	"uint8\000"
- 3484      3800
- 3485              	.LASF14:
- 3486 09bc 646F7562 		.ascii	"double\000"
- 3486      6C6500
- 3487              	.LASF51:
- 3488 09c3 52785061 		.ascii	"RxPacket_RelaySiren\000"
- 3488      636B6574 
- 3488      5F52656C 
- 3488      61795369 
- 3488      72656E00 
- 3489              	.LASF140:
- 3490 09d7 5061636B 		.ascii	"PacketState\000"
- 3490      65745374 
- 3490      61746500 
- 3491              	.LASF149:
- 3492 09e3 5061636B 		.ascii	"Packet\000"
- 3492      657400
- 3493              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ 3481              	.LASF11:
+ 3482 09ac 75696E74 		.ascii	"uint8\000"
+ 3482      3800
+ 3483              	.LASF14:
+ 3484 09b2 646F7562 		.ascii	"double\000"
+ 3484      6C6500
+ 3485              	.LASF51:
+ 3486 09b9 52785061 		.ascii	"RxPacket_RelaySiren\000"
+ 3486      636B6574 
+ 3486      5F52656C 
+ 3486      61795369 
+ 3486      72656E00 
+ 3487              	.LASF140:
+ 3488 09cd 5061636B 		.ascii	"PacketState\000"
+ 3488      65745374 
+ 3488      61746500 
+ 3489              	.LASF149:
+ 3490 09d9 5061636B 		.ascii	"Packet\000"
+ 3490      657400
+ 3491              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

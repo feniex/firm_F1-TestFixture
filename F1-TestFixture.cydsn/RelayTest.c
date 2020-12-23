@@ -11,6 +11,7 @@
 */
 
 #include <project.h>
+#include "CommonVariables.h"
 #include "RelayTest.h"
 #include "UART_115200_Functions.h"
 #include "UART_230400_Functions.h"
@@ -25,11 +26,10 @@
 #define TOLERANCE_CURRENT   2 
 #define TIMEOUT_FAIL        50              // Number of 20msec counts before failure timeout
 
-static RxPacket_RelaySiren rxPacket_Relay;            // Inputs - 'D' relay to controller
-static RxPacket_RelaySiren * pRxPacket_Relay;           // UART_SIREN     
-
-//static RxPacket_RelaySiren rxPacket_RelaySiren;            
-//static RxPacket_RelaySiren * pRxPacket_RelaySiren;
+static RxPacket_RelaySiren rxPacket_Relay;          // Inputs - 'D' relay to controller
+static RxPacket_RelaySiren * pRxPacket_Relay;       // UART_SIREN
+static RxPacket_RelaySiren rxPacket_RelaySiren;     // *** these are redundant 'D' packets 
+static RxPacket_RelaySiren * pRxPacket_RelaySiren;  // OVERLOAD
 
 static TxPacket_RelaySiren txPacket_RelaySiren;         // SetRelayOutputs - 'I' (also 3,S,P) controller to relay
 static TxPacket_RelaySiren * pTxPacket_RelaySiren;      // 
@@ -99,7 +99,7 @@ enum TestStep               // *** Need to get muxes setup permanently,
     SIREN_EN,               // (Implemented - need hardware to test)
     TEST_OUTPUTS,           // ---------------------- 230400 TX TESTED      - (needs hardware)
     DATALINK,               // (***115200 rx tested)
-    QUAD_PORTS,             // (460800 rx_tested, with 'C' packet, need to test for 'Y' and 'L') - (460800 tx tested - ***need tor remove Rx on relay)
+    QUAD_PORTS,             // (460800 rx_tested, with 'C' packet, need to test for 'Y' and 'L') - (460800 tx tested - ***need to remove Rx on relay)
     UART_SIREN,             // 230400 RX_TESTED     - 230400 TX TESTED      - 
     INPUTS,                 // 230400 RX_TESTED     - 230400 TX TESTED      - (needs hardware)
     VBATT,                  // 230400 RX_TESTED                             - COMPLETE
@@ -108,9 +108,7 @@ enum TestStep               // *** Need to get muxes setup permanently,
     FAIL
 };
 
-static uint8 RelayTestStatus[NUMBER_TEST_STEPS];
-
-static uint8 TestState = INITIALIZE_TEST;
+static uint8 RTestStatus[NUMBER_TEST_STEPS];
 
 //----------------------------------------
 // Main state machine for F1-Relay Test
@@ -119,7 +117,7 @@ uint8 RelayTest(void)
 {
     //TestState = VBATT;                  //*** Comment this out
     
-    switch(TestState)
+    switch(CurrentTest.TestStep)
     {   
                
         case INITIALIZE_TEST:
@@ -135,7 +133,7 @@ uint8 RelayTest(void)
             //CyDelay(1000);                      // Pause before next test
         
             for (uint8 i=0;i<NUMBER_TEST_STEPS;i++)            // Reset Status of aall test steps to 0
-                RelayTestStatus[i] = '_';
+                RTestStatus[i] = '_';
    
             // Initialize TX_RelaySiren packet
             pTxPacket_RelaySiren = getTxPacket_RelaySiren();              // Tx - Get pointers to packet 
@@ -167,17 +165,13 @@ uint8 RelayTest(void)
             // RTest_HSide7_Write(0);
             // RTest_HSide8_Write(0);
             
-            //TestState = SIREN_EN; 
-            //TestState = QUAD_PORTS;
-            TestState = UART_SIREN;
-            //TestState = INPUTS;  
-            //TestState = BLOCK_CURRENTS;  
+            CurrentTest.TestStep = UART_SIREN; 
                    
         break;
              
         case SIREN_EN:
                 
-            RelayTestStatus[TestState] = 'B';
+            RTestStatus[CurrentTest.TestStep] = 'B';
 
             RTest_20ms_isr_count = 0;
             RTest_20ms_isr_EN = 1;
@@ -188,166 +182,170 @@ uint8 RelayTest(void)
             
             RTest_20ms_isr_EN = 0;
             
-            if(RelayTestStatus[TestState] != 'F')       // If not failed, then pass
-                RelayTestStatus[TestState] = 'P';
+            if(RTestStatus[CurrentTest.TestStep] != 'F')       // If not failed, then pass
+                RTestStatus[CurrentTest.TestStep] = 'P';
 
-            TestState = TEST_OUTPUTS;        
+            CurrentTest.TestStep = TEST_OUTPUTS;        
         break;    
               
         case TEST_OUTPUTS:  
                 
             SetRelayOutputs(1);                         // Send command to turn on relay outputs
                 
-            RelayTestStatus[TestState] = 'B';
+            RTestStatus[CurrentTest.TestStep] = 'B';
 
             RTest_20ms_isr_count = 0;
             RTest_20ms_isr_EN = 1;
              
-            while( (!RTest_Test_Outputs()) && (RelayTestStatus[TestState] != 'F') )    // Wait for test to complete or fail
+            while( (!RTest_Test_Outputs()) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
             {}   
             
             RTest_20ms_isr_EN = 0;
             
             SetRelayOutputs(0);                         // Send command to turn off relay outputs
             
-            if(RelayTestStatus[TestState] != 'F')       // If not failed, then pass
-                RelayTestStatus[TestState] = 'P';
+            if(RTestStatus[CurrentTest.TestStep] != 'F')       // If not failed, then pass
+                RTestStatus[CurrentTest.TestStep] = 'P';
 
-            TestState = DATALINK;        
+            CurrentTest.TestStep = DATALINK;        
         break;        
               
         case DATALINK: 
                 
-            RelayTestStatus[TestState] = 'B';
+            RTestStatus[CurrentTest.TestStep] = 'B';
 
             RTest_20ms_isr_count = 0;
             RTest_20ms_isr_EN = 1;            
              
-            while( (!RTest_Test_DataLink()) && (RelayTestStatus[TestState] != 'F') )    // Wait for test to complete or fail
+            while( (!RTest_Test_DataLink()) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
             {}  
             
             RTest_20ms_isr_EN = 0;
             
-            if(RelayTestStatus[TestState] != 'F')       // If not failed, then pass
-                RelayTestStatus[TestState] = 'P';
+            if(RTestStatus[CurrentTest.TestStep] != 'F')       // If not failed, then pass
+                RTestStatus[CurrentTest.TestStep] = 'P';
             
-            TestState = QUAD_PORTS;        
+            CurrentTest.TestStep = QUAD_PORTS;        
         break;  
               
         case QUAD_PORTS: 
                 
-            RelayTestStatus[TestState] = 'B';
+            RTestStatus[CurrentTest.TestStep] = 'B';
 
             RTest_20ms_isr_count = 0;
             RTest_20ms_isr_EN = 1;            
                 
-            while( (!RTest_Test_QuadPorts()) && (RelayTestStatus[TestState] != 'F') )    // Wait for test to complete or fail
+            while( (!RTest_Test_QuadPorts()) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
             {}    
             
             RTest_20ms_isr_EN = 0;
             
-            if(RelayTestStatus[TestState] != 'F')                                   // If not failed, then pass
-                RelayTestStatus[TestState] = 'P';
+            if(RTestStatus[CurrentTest.TestStep] != 'F')                                   // If not failed, then pass
+                RTestStatus[CurrentTest.TestStep] = 'P';
                   
             //TestState = QUAD_PORTS;
-            TestState = UART_SIREN;        
+            CurrentTest.TestStep = UART_SIREN;        
         break;  
                 
         case UART_SIREN: 
                 
-            RelayTestStatus[TestState] = 'B';
-
-            RTest_20ms_isr_count = 0;
-            RTest_20ms_isr_EN = 1;            
+//            RTestStatus[CurrentTest.TestStep] = 'B';
+//
+//            RTest_20ms_isr_count = 0;
+//            RTest_20ms_isr_EN = 1;       
+            
+            RTest_StartAutomatedStep();
                 
-            while( (!RTest_Test_UART_Siren()) && (RelayTestStatus[TestState] != 'F') )
+            while( (!RTest_Test_UART_Siren()) && (RTestStatus[CurrentTest.TestStep] != 'F') )
             {}    
             
-            RTest_20ms_isr_EN = 0;
+            RTest_StopAutomatedStep();
             
-            if(RelayTestStatus[TestState] != 'F')                                   // If not failed, then pass
-                RelayTestStatus[TestState] = 'P';
+//            RTest_20ms_isr_EN = 0;
+//            
+//            if(RTestStatus[CurrentTest.TestStep] != 'F')                                   // If not failed, then pass
+//                RTestStatus[CurrentTest.TestStep] = 'P';
                 
-            TestState = INITIALIZE_TEST;  
+            CurrentTest.TestStep = INITIALIZE_TEST;  
             //TestState = INPUTS;                
         break;  
               
         case INPUTS:          
                 
-            RelayTestStatus[TestState] = 'B';
+            RTestStatus[CurrentTest.TestStep] = 'B';
 
             RTest_20ms_isr_count = 0;
             RTest_20ms_isr_EN = 1;            
                 
-            while( (!RTest_Test_Inputs()) && (RelayTestStatus[TestState] != 'F') )
+            while( (!RTest_Test_Inputs()) && (RTestStatus[CurrentTest.TestStep] != 'F') )
             {}   
             
             RTest_20ms_isr_EN = 0;
             
-            if(RelayTestStatus[TestState] != 'F')                                   // If not failed, then pass
-                RelayTestStatus[TestState] = 'P';
+            if(RTestStatus[CurrentTest.TestStep] != 'F')                                   // If not failed, then pass
+                RTestStatus[CurrentTest.TestStep] = 'P';
                 
-            TestState = VBATT;                
+            CurrentTest.TestStep = VBATT;                
         break;          
 
         case VBATT:                                     // Tested and working
                 
-            RelayTestStatus[TestState] = 'B';
+            RTestStatus[CurrentTest.TestStep] = 'B';
 
             RTest_20ms_isr_count = 0;
             RTest_20ms_isr_EN = 1;            
                 
-            while( (!RTest_Test_Vbatt()) && (RelayTestStatus[TestState] != 'F') )
+            while( (!RTest_Test_Vbatt()) && (RTestStatus[CurrentTest.TestStep] != 'F') )
             {}    
             
             RTest_20ms_isr_EN = 0;
             
-            if(RelayTestStatus[TestState] != 'F')                                   // If not failed, then pass
-                RelayTestStatus[TestState] = 'P';
+            if(RTestStatus[CurrentTest.TestStep] != 'F')                                   // If not failed, then pass
+                RTestStatus[CurrentTest.TestStep] = 'P';
             
-            TestState = BLOCK_CURRENTS;                
+            CurrentTest.TestStep = BLOCK_CURRENTS;                
         break; 
          
         case BLOCK_CURRENTS:                            //*** Tested and working
             
             SetRelayOutputs(1);                         // Send command to turn on relay outputs
                 
-            RelayTestStatus[TestState] = 'B';
+            RTestStatus[CurrentTest.TestStep] = 'B';
 
             RTest_20ms_isr_count = 0;                   // Start timeout
             RTest_20ms_isr_EN = 1;            
             
-            while( (!RTest_Test_BlockCurrents()) && (RelayTestStatus[TestState] != 'F') )
+            while( (!RTest_Test_BlockCurrents()) && (RTestStatus[CurrentTest.TestStep] != 'F') )
             {} 
             
             RTest_20ms_isr_EN = 0;                      // Stop timeout
             
             SetRelayOutputs(0);                         // Send command to turn off relay outputs
             
-            if(RelayTestStatus[TestState] != 'F')       // If not failed, then pass
-                RelayTestStatus[TestState] = 'P';
+            if(RTestStatus[CurrentTest.TestStep] != 'F')       // If not failed, then pass
+                RTestStatus[CurrentTest.TestStep] = 'P';
                 
             //TestState = INITIALIZE_TEST;
-            TestState = GPS;  
+            CurrentTest.TestStep = GPS;  
         break; 
     //---------------------------------------------------------------------------------------------------           
         case GPS:         
                 
-            RelayTestStatus[TestState] = 'B';
+            RTestStatus[CurrentTest.TestStep] = 'B';
 
             RTest_20ms_isr_count = 0;
             RTest_20ms_isr_EN = 1;            
                 
-            while( (!RTest_Test_GPS()) && (RelayTestStatus[TestState] != 'F') )
+            while( (!RTest_Test_GPS()) && (RTestStatus[CurrentTest.TestStep] != 'F') )
             {}        
             
             RTest_20ms_isr_EN = 0;
             
-            if(RelayTestStatus[TestState] != 'F')                                   // If not failed, then pass
-                RelayTestStatus[TestState] = 'P';
+            if(RTestStatus[CurrentTest.TestStep] != 'F')                                   // If not failed, then pass
+                RTestStatus[CurrentTest.TestStep] = 'P';
             
             CyDelay(1000);
-            TestState = INITIALIZE_TEST;                
+            CurrentTest.TestStep = INITIALIZE_TEST;                
         break;   
             
         case FAIL:  
@@ -463,29 +461,29 @@ uint8 RTest_Test_UART_Siren(void)
 // We need to send a Siren packet (through relay to controller) - ***passes through the micro
 // Then check that the packet going from the relay to the controller    
    
-//    // test receive from siren
-//    DEMUX_CTRL_230400_Write(RTEST_SIREN);                  // Rx - Select the demux channel
-//
-//    pTxPacket_H = getTxPacket_H();                          // Load the packet with data to check for in 'D' packet 
-//    pTxPacket_H->Payload.SirenFirm_0 = 's';
-//    pTxPacket_H->Payload.SirenFirm_1 = 's';
-//    pTxPacket_H->Payload.SirenFirm_2 = 's';
-//    pTxPacket_H->Payload.Speaker1_Overcurrent = 's';
-//    pTxPacket_H->Payload.Speaker2_Overcurrent = 's';
-//
-//    
-//    // test transmit to controller ***need tx wires on relay to test
-//    MUX_CTRL_230400_Write(RTEST_CONT);                                  // Rx - Select the mux channel
-//    
-////    pRxPacket_Relay = getRxPacket_Relay();                              // Rx - Get pointers to packet      
-////    while(  (pRxPacket_Relay->Payload.SirenFirm_0 != 's' ) &&           // Wait for the packet to be verified
-////            (pRxPacket_Relay->Payload.SirenFirm_1 != 's' ) &&
-////            (pRxPacket_Relay->Payload.SirenFirm_2 != 's' ) &&
-////            (pRxPacket_Relay->Payload.Speaker1_Overcurrent != 's' ) &&
-////            (pRxPacket_Relay->Payload.Speaker2_Overcurrent != 's' ) )
-////    {}
-////          
-////    LED_EN_Write(1);
+    // test receive from siren
+    //DEMUX_CTRL_230400_Write(RTEST_SIREN);                  // Rx - Select the demux channel
+
+    pTxPacket_H = getTxPacket_H();                          // Load the packet with data to check for in 'D' packet 
+    pTxPacket_H->Payload.SirenFirm_0 = 's';
+    pTxPacket_H->Payload.SirenFirm_1 = 's';
+    pTxPacket_H->Payload.SirenFirm_2 = 's';
+    pTxPacket_H->Payload.Speaker1_Overcurrent = 's';
+    pTxPacket_H->Payload.Speaker2_Overcurrent = 's';
+
+    
+    // test transmit to controller ***need tx wires on relay to test
+    //MUX_CTRL_230400_Write(RTEST_CONT);                                  // Rx - Select the mux channel
+    
+//    pRxPacket_Relay = getRxPacket_Relay();                              // Rx - Get pointers to packet      
+//    while(  (pRxPacket_Relay->Payload.SirenFirm_0 != 's' ) &&           // Wait for the packet to be verified
+//            (pRxPacket_Relay->Payload.SirenFirm_1 != 's' ) &&
+//            (pRxPacket_Relay->Payload.SirenFirm_2 != 's' ) &&
+//            (pRxPacket_Relay->Payload.Speaker1_Overcurrent != 's' ) &&
+//            (pRxPacket_Relay->Payload.Speaker2_Overcurrent != 's' ) )
+//    {}
+//          
+//    LED_EN_Write(1);
 //----------------------------------------------------------------------------------------------
     
 // ***We need to detect a packet going (from the relay to the siren)
@@ -657,11 +655,18 @@ RxPacket_RelaySiren * getRxPacket_Relay(void)
 //    return pRxPacket_Siren;
 //}
 
-TxPacket_RelaySiren * getTxPacket_RelaySiren()
+TxPacket_RelaySiren * getTxPacket_RelaySiren()          // STest Tx - 'I' packet sent to relay and siren from controller
 {
     pTxPacket_RelaySiren = &txPacket_RelaySiren;
     
     return pTxPacket_RelaySiren;
+}
+
+RxPacket_RelaySiren * getRxPacket_RelaySiren()          // STest - 'D' packet sent to controller from relay and siren
+{
+    pRxPacket_RelaySiren = &rxPacket_RelaySiren;
+    
+    return pRxPacket_RelaySiren;
 }
 
 //Packet_H * getPacket_H(void);
@@ -694,7 +699,7 @@ void RTest_sendDiagPacket(void)
     
     for(uint8 i=0;i<NUMBER_TEST_STEPS;i++)
     {
-        RelayTestStatus_display[i*2] = RelayTestStatus[i];
+        RelayTestStatus_display[i*2] = RTestStatus[i];
         RelayTestStatus_display[(i*2) + 1] = ' ';
     }
     
@@ -757,7 +762,7 @@ uint8 RTest_BlockCurrent(uint8 block)
 void RTest_10ms_isr(void)                       // Times Quad and Audio packets
 {
 
-    if(TestState == QUAD_PORTS)    
+    if(CurrentTest.TestStep == QUAD_PORTS)    
         sendPacketToRelay_Quad();
 
     return;
@@ -773,7 +778,7 @@ void RTest_20ms_isr(void)                       // Manage Timeout for failure
         RTest_20ms_isr_count = 0;
         
         if(RTest_20ms_isr_EN == 1)
-            RelayTestStatus[TestState] = 'F';
+            RTestStatus[CurrentTest.TestStep] = 'F';
             
         return;
     }
@@ -794,11 +799,11 @@ void RTest_50ms_isr(void)                       // Times interboard comms, and s
         
 //    if( (isr_count % 5) == 0 )
 //    {
-        if( (TestState == TEST_OUTPUTS) ||
-            (TestState == DATALINK) ||
-            (TestState == UART_SIREN) ||
-            (TestState == INPUTS) ||
-            (TestState == BLOCK_CURRENTS) )
+        if( (CurrentTest.TestStep == TEST_OUTPUTS) ||
+            (CurrentTest.TestStep == DATALINK) ||
+            (CurrentTest.TestStep == UART_SIREN) ||
+            (CurrentTest.TestStep == INPUTS) ||
+            (CurrentTest.TestStep == BLOCK_CURRENTS) )
         {      
             sendPacketToRelaySiren();
             //sendPacket_SirenToRelay();              //*** both are used for UART_SIREN
@@ -838,5 +843,27 @@ void SetRelayOutputs(uint8 enable)
 //    return;
 //    
 //}
+
+void RTest_StartAutomatedStep(void)
+{
+    
+    RTestStatus[CurrentTest.TestStep] = 'B';
+    RTest_20ms_isr_count = 0;
+    RTest_20ms_isr_EN = 1;
+    
+    return;
+    
+}
+
+void RTest_StopAutomatedStep(void)
+{
+    
+    RTest_20ms_isr_EN = 0;
+    if(RTestStatus[CurrentTest.TestStep] != 'F')       // If not failed, then pass
+        RTestStatus[CurrentTest.TestStep] = 'P';
+    
+    return;
+    
+}
 
 /* [] END OF FILE */

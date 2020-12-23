@@ -78,8 +78,8 @@ static uint16 packetsuccess[4] = {0,0,0,0};
 static RxPacket_Controller rxPacket_Controller;            
 static RxPacket_Controller * pRxPacket_Controller;  
 
-static RxPacket_RelaySiren rxPacket_Relay;            
-static RxPacket_RelaySiren * pRxPacket_Relay;  
+static RxPacket_RelaySiren rxPacket_RelaySiren;              // 'D' packet from relay/sirem to controller
+static RxPacket_RelaySiren * pRxPacket_RelaySiren;  
 
 static Packet_H rxPacket_H; 
 static Packet_H * pRxPacket_H;
@@ -238,8 +238,8 @@ static void detectPacket(uint8 dataByte)
                 }
                 else if(currentType == RTEST_CONTROLLER)
                 {
-                   pRxPacket_Relay = getRxPacket_Relay();
-                   memcpy(&pRxPacket_Relay->bytes[0], &packet[2], PacketList[RTEST_CONTROLLER].PAYLOAD_SIZE);
+                   pRxPacket_RelaySiren = getRxPacket_RelaySiren();
+                   memcpy(&pRxPacket_RelaySiren->bytes[0], &packet[2], PacketList[RTEST_CONTROLLER].PAYLOAD_SIZE);
                    packetsuccess[RTEST_CONTROLLER]++;   
                 }
                 else if(currentType == RTEST_SIREN)

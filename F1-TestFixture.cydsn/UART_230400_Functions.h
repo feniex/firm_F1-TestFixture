@@ -308,10 +308,12 @@ TxPacket_Controller * getTxPacket_Controller(void);
 Packet_H * getTxPacket_H(void);
 Packet_H * getRxPacket_H(void);
 
-TxPacket_RelaySiren * getTxPacket_RelaySiren(void); // STest - 'I' packet to Siren - enable RRB
+TxPacket_RelaySiren * getTxPacket_RelaySiren(void);     // STest Tx - 'I' packet to Siren - enable RRB
+RxPacket_RelaySiren * getRxPacket_RelaySiren(void);     // STest Rx - 'D' packet to Controller - read overload
+
 RxPacket_RelaySiren * getRxPacket_Relay(void);
 
-//TxPacket_RelaySiren * getTxPacket_Siren(void);          // STest - 'I' packet to Siren - enable RRB
+//TxPacket_RelaySiren * getTxPacket_Siren(void);        // STest - 'I' packet to Siren - enable RRB
 
 //TxPacket_Relay * getTxPacket_Relay(void);
 
