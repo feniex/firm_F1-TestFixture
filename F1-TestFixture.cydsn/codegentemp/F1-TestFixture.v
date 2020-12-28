@@ -1,6 +1,6 @@
 // ======================================================================
 // F1-TestFixture.v generated from TopDesign.cysch
-// 12/22/2020 at 14:23
+// 12/28/2020 at 16:16
 // This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 // ======================================================================
 
@@ -481,7 +481,7 @@ module Timer_v2_80_2 (
 
 endmodule
 
-// UART_v2_50(Address1=0, Address2=0, BaudRate=460800, BreakBitsRX=13, BreakBitsTX=13, BreakDetect=false, CRCoutputsEn=false, Enable_RX=1, Enable_RXIntInterrupt=0, Enable_TX=1, Enable_TXIntInterrupt=0, EnableHWAddress=0, EnIntRXInterrupt=false, EnIntTXInterrupt=false, FlowControl=0, HalfDuplexEn=false, HwTXEnSignal=true, InternalClock=true, InternalClockToleranceMinus=3.93736842105263, InternalClockTolerancePlus=3.93736842105263, InternalClockUsed=1, InterruptOnAddDetect=0, InterruptOnAddressMatch=0, InterruptOnBreak=0, InterruptOnByteRcvd=1, InterruptOnOverrunError=0, InterruptOnParityError=0, InterruptOnStopError=0, InterruptOnTXComplete=false, InterruptOnTXFifoEmpty=false, InterruptOnTXFifoFull=false, InterruptOnTXFifoNotFull=false, IntOnAddressDetect=false, IntOnAddressMatch=false, IntOnBreak=false, IntOnByteRcvd=true, IntOnOverrunError=false, IntOnParityError=false, IntOnStopError=false, NumDataBits=8, NumStopBits=1, OverSamplingRate=8, ParityType=0, ParityTypeSw=false, RequiredClock=3686400, RXAddressMode=0, RXBufferSize=4, RxBuffRegSizeReplacementString=uint8, RXEnable=true, TXBitClkGenDP=true, TXBufferSize=4, TxBuffRegSizeReplacementString=uint8, TXEnable=true, Use23Polling=true, CY_API_CALLBACK_HEADER_INCLUDE=#include "cyapicallbacks.h", CY_COMMENT=, CY_COMPONENT_NAME=UART_v2_50, CY_CONFIG_TITLE=UART_460800, CY_CONST_CONFIG=true, CY_CONTROL_FILE=<:default:>, CY_DATASHEET_FILE=<:default:>, CY_FITTER_NAME=UART_460800, CY_INSTANCE_SHORT_NAME=UART_460800, CY_MAJOR_VERSION=2, CY_MINOR_VERSION=50, CY_PDL_DRIVER_NAME=, CY_PDL_DRIVER_REQ_VERSION=, CY_PDL_DRIVER_SUBGROUP=, CY_PDL_DRIVER_VARIANT=, CY_REMOVE=false, CY_SUPPRESS_API_GEN=false, CY_VERSION=PSoC Creator  4.3, INSTANCE_NAME=UART_460800, )
+// UART_v2_50(Address1=0, Address2=0, BaudRate=460800, BreakBitsRX=13, BreakBitsTX=13, BreakDetect=false, CRCoutputsEn=false, Enable_RX=1, Enable_RXIntInterrupt=0, Enable_TX=1, Enable_TXIntInterrupt=1, EnableHWAddress=0, EnIntRXInterrupt=false, EnIntTXInterrupt=true, FlowControl=0, HalfDuplexEn=false, HwTXEnSignal=true, InternalClock=true, InternalClockToleranceMinus=3.93736842105263, InternalClockTolerancePlus=3.93736842105263, InternalClockUsed=1, InterruptOnAddDetect=0, InterruptOnAddressMatch=0, InterruptOnBreak=0, InterruptOnByteRcvd=1, InterruptOnOverrunError=0, InterruptOnParityError=0, InterruptOnStopError=0, InterruptOnTXComplete=false, InterruptOnTXFifoEmpty=true, InterruptOnTXFifoFull=false, InterruptOnTXFifoNotFull=false, IntOnAddressDetect=false, IntOnAddressMatch=false, IntOnBreak=false, IntOnByteRcvd=true, IntOnOverrunError=false, IntOnParityError=false, IntOnStopError=false, NumDataBits=8, NumStopBits=1, OverSamplingRate=8, ParityType=0, ParityTypeSw=false, RequiredClock=3686400, RXAddressMode=0, RXBufferSize=4, RxBuffRegSizeReplacementString=uint8, RXEnable=true, TXBitClkGenDP=true, TXBufferSize=2048, TxBuffRegSizeReplacementString=uint16, TXEnable=true, Use23Polling=true, CY_API_CALLBACK_HEADER_INCLUDE=#include "cyapicallbacks.h", CY_COMMENT=, CY_COMPONENT_NAME=UART_v2_50, CY_CONFIG_TITLE=UART_460800, CY_CONST_CONFIG=true, CY_CONTROL_FILE=<:default:>, CY_DATASHEET_FILE=<:default:>, CY_FITTER_NAME=UART_460800, CY_INSTANCE_SHORT_NAME=UART_460800, CY_MAJOR_VERSION=2, CY_MINOR_VERSION=50, CY_PDL_DRIVER_NAME=, CY_PDL_DRIVER_REQ_VERSION=, CY_PDL_DRIVER_SUBGROUP=, CY_PDL_DRIVER_VARIANT=, CY_REMOVE=false, CY_SUPPRESS_API_GEN=false, CY_VERSION=PSoC Creator  4.3, INSTANCE_NAME=UART_460800, )
 module UART_v2_50_3 (
     cts_n,
     tx,
@@ -513,7 +513,7 @@ module UART_v2_50_3 (
     parameter Address1 = 0;
     parameter Address2 = 0;
     parameter EnIntRXInterrupt = 0;
-    parameter EnIntTXInterrupt = 0;
+    parameter EnIntTXInterrupt = 1;
     parameter FlowControl = 0;
     parameter HalfDuplexEn = 0;
     parameter HwTXEnSignal = 1;
@@ -526,6 +526,13 @@ module UART_v2_50_3 (
           wire  Net_289;
           wire  Net_61;
           wire  Net_9;
+
+
+	cy_isr_v1_0
+		#(.int_type(2'b10))
+		TXInternalInterrupt
+		 (.int_signal(tx_interrupt));
+
 
 
 	cy_clock_v1_0
@@ -1152,7 +1159,6 @@ module top ;
           wire  Net_6212;
           wire  Net_6253;
           wire  Net_6211;
-          wire  Net_6210;
           wire  Net_6252;
           wire  Net_6255;
           wire  Net_6254;
@@ -1166,16 +1172,16 @@ module top ;
           wire  Net_6224;
           wire  Net_6223;
           wire  Net_6222;
+          wire  Net_6429;
           wire  Net_6203;
+          wire  Net_6193;
           wire  Net_6202;
           wire  Net_6201;
           wire  Net_6200;
           wire  Net_6199;
           wire  Net_6198;
-          wire  Net_6197;
-          wire  Net_6196;
           wire  Net_6237;
-          wire  Net_6193;
+          wire  Net_6196;
           wire  Net_6192;
           wire  Net_6191;
           wire  Net_6190;
@@ -1186,6 +1192,7 @@ module top ;
           wire  Net_6185;
           wire  Net_6184;
           wire  Net_6183;
+          wire  Net_6210;
           wire  Net_6155;
           wire  Net_6154;
           wire  Net_6153;
@@ -1214,8 +1221,8 @@ module top ;
           wire  Net_5869;
           wire  Net_5868;
           wire  Net_5867;
-          wire  Net_5866;
           wire [3:0] mywire_1;
+          wire  Net_5866;
           wire  Net_5865;
           wire  Net_5864;
           wire  Net_5975;
@@ -1236,9 +1243,9 @@ module top ;
           wire  Net_5837;
           wire  Net_5839;
           wire  Net_5849;
-          wire  Net_6317;
           wire  Net_5997;
           wire  Net_5985;
+          wire  Net_6230;
           wire  Net_6121;
           wire  Net_5995;
           wire  Net_5994;
@@ -1302,7 +1309,7 @@ module top ;
           wire  Net_5738;
           wire  Net_5737;
           wire  Net_6169;
-          wire  Net_6230;
+          wire  Net_6197;
           wire  Net_6278;
           wire  Net_5971;
           wire  Net_6277;
@@ -1316,11 +1323,11 @@ module top ;
           wire  Net_5853;
           wire  Net_6016;
           wire  Net_5857;
+          wire  Net_6336;
+          wire  Net_568;
     electrical  Net_6407;
           wire  Net_6342;
           wire  Net_6361;
-          wire  Net_6336;
-          wire  Net_568;
           wire  Net_6293;
           wire [1:0] Net_5612;
           wire  Net_6017;
@@ -1403,7 +1410,7 @@ module top ;
 		CTest_RS485_RELAY_RX
 		 (.oe(tmpOE__CTest_RS485_RELAY_RX_net),
 		  .y({1'b0}),
-		  .fb({Net_6230}),
+		  .fb({Net_6197}),
 		  .io({tmpIO_0__CTest_RS485_RELAY_RX_net[0:0]}),
 		  .siovref(tmpSIOVREF__CTest_RS485_RELAY_RX_net),
 		  .interrupt({tmpINTERRUPT_0__CTest_RS485_RELAY_RX_net[0:0]}),
@@ -1546,16 +1553,16 @@ module top ;
     if (1)
     begin : MUX_230400
         reg  tmp__MUX_230400_reg;
-        always @(Net_6230 or Net_5974)
+        always @(Net_6121 or Net_5974)
         begin
             case (Net_5974[1:0])
-                2'b00 :  tmp__MUX_230400_reg = 1'b0;
-                2'b01 :  tmp__MUX_230400_reg = Net_6230;
+                2'b00 :  tmp__MUX_230400_reg = Net_6121;
+                2'b01 :  tmp__MUX_230400_reg = 1'b0;
                 2'b10 :  tmp__MUX_230400_reg = 1'b0;
                 2'b11 :  tmp__MUX_230400_reg = 1'b0;
             endcase
         end
-        assign Net_6317 = tmp__MUX_230400_reg;
+        assign Net_568 = tmp__MUX_230400_reg;
     end
     // -- Mux end --
 
@@ -1833,7 +1840,7 @@ module top ;
 		DIAG_UART_RX
 		 (.oe(tmpOE__DIAG_UART_RX_net),
 		  .y({1'b0}),
-		  .fb({Net_568}),
+		  .fb({Net_6121}),
 		  .io({tmpIO_0__DIAG_UART_RX_net[0:0]}),
 		  .siovref(tmpSIOVREF__DIAG_UART_RX_net),
 		  .interrupt({tmpINTERRUPT_0__DIAG_UART_RX_net[0:0]}),
@@ -1907,7 +1914,7 @@ module top ;
 		  .input_buffer_sel(2'b00))
 		DIAG_UART_TX
 		 (.oe(tmpOE__DIAG_UART_TX_net),
-		  .y({Net_6336}),
+		  .y({Net_6210}),
 		  .fb({tmpFB_0__DIAG_UART_TX_net[0:0]}),
 		  .io({tmpIO_0__DIAG_UART_TX_net[0:0]}),
 		  .siovref(tmpSIOVREF__DIAG_UART_TX_net),
@@ -1945,7 +1952,7 @@ module top ;
     defparam UART_460800.Address1 = 0;
     defparam UART_460800.Address2 = 0;
     defparam UART_460800.EnIntRXInterrupt = 0;
-    defparam UART_460800.EnIntTXInterrupt = 0;
+    defparam UART_460800.EnIntTXInterrupt = 1;
     defparam UART_460800.FlowControl = 0;
     defparam UART_460800.HalfDuplexEn = 0;
     defparam UART_460800.HwTXEnSignal = 1;
@@ -1959,12 +1966,12 @@ module top ;
     if (1)
     begin : mux_1
         reg  tmp__mux_1_reg;
-        always @(Net_6017 or Net_6017 or Net_6017 or Net_6017 or Net_6017 or Net_6017 or mywire_1)
+        always @(Net_6197 or Net_6017 or Net_6017 or Net_6017 or Net_6017 or Net_6017 or Net_6017 or mywire_1)
         begin
             case (mywire_1[3:0])
                 4'b0000 :  tmp__mux_1_reg = 1'b0;
                 4'b0001 :  tmp__mux_1_reg = 1'b0;
-                4'b0010 :  tmp__mux_1_reg = 1'b0;
+                4'b0010 :  tmp__mux_1_reg = Net_6197;
                 4'b0011 :  tmp__mux_1_reg = 1'b0;
                 4'b0100 :  tmp__mux_1_reg = 1'b0;
                 4'b0101 :  tmp__mux_1_reg = 1'b0;

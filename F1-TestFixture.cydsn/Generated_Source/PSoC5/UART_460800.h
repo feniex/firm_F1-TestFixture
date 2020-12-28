@@ -32,7 +32,7 @@
 #define UART_460800_TX_ENABLED                     (1u)
 #define UART_460800_HD_ENABLED                     (0u)
 #define UART_460800_RX_INTERRUPT_ENABLED           (0u)
-#define UART_460800_TX_INTERRUPT_ENABLED           (0u)
+#define UART_460800_TX_INTERRUPT_ENABLED           (1u)
 #define UART_460800_INTERNAL_CLOCK_USED            (1u)
 #define UART_460800_RXHW_ADDRESS_ENABLED           (0u)
 #define UART_460800_OVER_SAMPLE_COUNT              (8u)
@@ -45,7 +45,7 @@
 #define UART_460800_USE23POLLING                   (1u)
 #define UART_460800_FLOW_CONTROL                   (0u)
 #define UART_460800_CLK_FREQ                       (0u)
-#define UART_460800_TX_BUFFER_SIZE                 (4u)
+#define UART_460800_TX_BUFFER_SIZE                 (2048u)
 #define UART_460800_RX_BUFFER_SIZE                 (4u)
 
 /* Check to see if required defines such as CY_PSOC5LP are available */
@@ -137,13 +137,13 @@ void UART_460800_Wakeup(void) ;
     uint8 UART_460800_ReadTxStatus(void) ;
     void UART_460800_PutChar(uint8 txDataByte) ;
     void UART_460800_PutString(const char8 string[]) ;
-    void UART_460800_PutArray(const uint8 string[], uint8 byteCount)
+    void UART_460800_PutArray(const uint8 string[], uint16 byteCount)
                                                             ;
     void UART_460800_PutCRLF(uint8 txDataByte) ;
     void UART_460800_ClearTxBuffer(void) ;
     void UART_460800_SetTxAddressMode(uint8 addressMode) ;
     void UART_460800_SendBreak(uint8 retMode) ;
-    uint8 UART_460800_GetTxBufferSize(void)
+    uint16 UART_460800_GetTxBufferSize(void)
                                                             ;
     /* Obsolete functions, defines for backward compatible */
     #define UART_460800_PutStringConst         UART_460800_PutString
@@ -310,8 +310,8 @@ void UART_460800_Wakeup(void) ;
 extern uint8 UART_460800_initVar;
 #if (UART_460800_TX_INTERRUPT_ENABLED && UART_460800_TX_ENABLED)
     extern volatile uint8 UART_460800_txBuffer[UART_460800_TX_BUFFER_SIZE];
-    extern volatile uint8 UART_460800_txBufferRead;
-    extern uint8 UART_460800_txBufferWrite;
+    extern volatile uint16 UART_460800_txBufferRead;
+    extern uint16 UART_460800_txBufferWrite;
 #endif /* (UART_460800_TX_INTERRUPT_ENABLED && UART_460800_TX_ENABLED) */
 #if (UART_460800_RX_INTERRUPT_ENABLED && (UART_460800_RX_ENABLED || UART_460800_HD_ENABLED))
     extern uint8 UART_460800_errorStatus;
@@ -369,7 +369,7 @@ extern uint8 UART_460800_initVar;
 
 #define UART_460800_INIT_TX_INTERRUPTS_MASK \
                                   (uint8)((0 << UART_460800_TX_STS_COMPLETE_SHIFT) \
-                                        | (0 << UART_460800_TX_STS_FIFO_EMPTY_SHIFT) \
+                                        | (1 << UART_460800_TX_STS_FIFO_EMPTY_SHIFT) \
                                         | (0 << UART_460800_TX_STS_FIFO_FULL_SHIFT) \
                                         | (0 << UART_460800_TX_STS_FIFO_NOT_FULL_SHIFT))
 

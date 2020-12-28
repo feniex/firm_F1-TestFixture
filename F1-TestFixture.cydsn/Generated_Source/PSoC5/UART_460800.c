@@ -28,8 +28,8 @@ uint8 UART_460800_initVar = 0u;
 
 #if (UART_460800_TX_INTERRUPT_ENABLED && UART_460800_TX_ENABLED)
     volatile uint8 UART_460800_txBuffer[UART_460800_TX_BUFFER_SIZE];
-    volatile uint8 UART_460800_txBufferRead = 0u;
-    uint8 UART_460800_txBufferWrite = 0u;
+    volatile uint16 UART_460800_txBufferRead = 0u;
+    uint16 UART_460800_txBufferWrite = 0u;
 #endif /* (UART_460800_TX_INTERRUPT_ENABLED && UART_460800_TX_ENABLED) */
 
 #if (UART_460800_RX_INTERRUPT_ENABLED && (UART_460800_RX_ENABLED || UART_460800_HD_ENABLED))
@@ -1045,8 +1045,8 @@ void  UART_460800_WriteControlRegister(uint8 control)
         *  to increment with a wrap, and we can't risk doing that with the real
         *  pointer and getting an interrupt in between instructions.
         */
-        uint8 locTxBufferWrite;
-        uint8 locTxBufferRead;
+        uint16 locTxBufferWrite;
+        uint16 locTxBufferRead;
 
         do
         { /* Block if software buffer is full, so we don't overwrite. */
@@ -1066,7 +1066,7 @@ void  UART_460800_WriteControlRegister(uint8 control)
         }
         while( (locTxBufferWrite < locTxBufferRead) ? (locTxBufferWrite == (locTxBufferRead - 1u)) :
                                 ((locTxBufferWrite - locTxBufferRead) ==
-                                (uint8)(UART_460800_TX_BUFFER_SIZE - 1u)) );
+                                (uint16)(UART_460800_TX_BUFFER_SIZE - 1u)) );
 
         if( (locTxBufferRead == locTxBufferWrite) &&
             ((UART_460800_TXSTATUS_REG & UART_460800_TX_STS_FIFO_FULL) == 0u) )
@@ -1188,10 +1188,10 @@ void  UART_460800_WriteControlRegister(uint8 control)
     *  TX buffer.
     *
     *******************************************************************************/
-    void UART_460800_PutArray(const uint8 string[], uint8 byteCount)
+    void UART_460800_PutArray(const uint8 string[], uint16 byteCount)
                                                                     
     {
-        uint8 bufIndex = 0u;
+        uint16 bufIndex = 0u;
 
         /* If not Initialized then skip this function */
         if(UART_460800_initVar != 0u)
@@ -1270,10 +1270,10 @@ void  UART_460800_WriteControlRegister(uint8 control)
     *  Allows the user to find out how full the TX Buffer is.
     *
     *******************************************************************************/
-    uint8 UART_460800_GetTxBufferSize(void)
+    uint16 UART_460800_GetTxBufferSize(void)
                                                             
     {
-        uint8 size;
+        uint16 size;
 
     #if (UART_460800_TX_INTERRUPT_ENABLED)
 

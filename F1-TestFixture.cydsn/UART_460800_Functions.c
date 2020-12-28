@@ -16,6 +16,7 @@
 
 
 /**********PREPROCESSOR DIRECTIVES**********/
+#include "CommonVariables.h"
 #include "UART_460800_Functions.h"
 
 #define HEADER_BYTE_COUNT       2
@@ -24,8 +25,8 @@
 #define HEADER_START_INDEX      0
 #define PAYLOAD_START_INDEX     HEADER_BYTE_COUNT
 
-#define MAX_PAYLOAD_BYTE_COUNT  15
-#define PACKET_TYPE_COUNT       4
+#define MAX_PAYLOAD_BYTE_COUNT  111
+#define PACKET_TYPE_COUNT       2
 
 /**************************************/
 #define PACKET_VERIFICATION_COUNT   5
@@ -33,10 +34,10 @@
 /**********DEFINED CONSTANTS**********/
 enum DataType
 { 
-    CTEST_QUAD,             // This is for both cont and relay tests
-    CTEST_QUADSERIAL,       // This is for both cont and relay tests
-    CTEST_AUDIO,
-    QTEST_QUAD              //***Not for F1 - detects Quad-Controller packets (type 'C')
+    CTEST_AUDIO,        // This is for both cont and relay tests
+    CTEST_RTEST_QUAD,   // CTest/RTest - quad normal - (controller to relay, relay to quad)
+//    CTEST_A,            //*** needs to  (*** not used - only need to look for 'L' packet)
+//    QTEST_QUAD          // (*** not used - Quad-Controller packets - type 'C')
 };
 
 enum PacketState
@@ -59,9 +60,9 @@ typedef struct
 static Packet PacketList[PACKET_TYPE_COUNT] = 
 {
     {'~', 'A', 10, '\r', '\n'},             // CTest - audio stream - (controller to siren)
-    {'~', 'L', 111, '\r', '\n'},            // CTest - quad normal - (controller to relay)
-    {'~', 'Y', 9, '\r', '\n'},              // RTest - quad serial - (relay to modules)
-    {'~', 'C', 4, '\r', '\n'},              // (Quad-Controller packets)
+    {'~', 'L', 111, '\r', '\n'},            // CTest/RTest - quad stream - (controller to relay, relay to quad)
+//    {'~', 'Y', 9, '\r', '\n'},              // (*** not used - only need to look for 'L' packet)
+//    {'~', 'C', 4, '\r', '\n'},              // (*** not used - Quad-Controller packets)
 };
 
 ///**********GLOBAL VARIABLES**********/
@@ -153,44 +154,44 @@ static void detectPacket(uint8 dataByte)
 {
     static uint8 packet[MAX_PAYLOAD_BYTE_COUNT+HEADER_BYTE_COUNT+EOP_BYTE_COUNT];   
     static enum PacketState currentState = HEADER_STATE;
-    static enum DataType currentType = CTEST_QUAD;
+    static enum DataType currentType = CTEST_AUDIO;
     static uint8 currentPacketIndex = HEADER_START_INDEX;
     
     switch(currentState)
     {
         case HEADER_STATE:
-            if( (currentPacketIndex == HEADER_START_INDEX) && ( (dataByte == PacketList[CTEST_QUAD].HEADER_BYTE) ||
-                                                                (dataByte == PacketList[CTEST_QUADSERIAL].HEADER_BYTE) ||
-                                                                (dataByte == PacketList[CTEST_AUDIO].HEADER_BYTE) ||
-                                                                (dataByte == PacketList[QTEST_QUAD].HEADER_BYTE) ) )
+            if( (currentPacketIndex == HEADER_START_INDEX) && ( (dataByte == PacketList[CTEST_AUDIO].HEADER_BYTE) ||
+                                                                (dataByte == PacketList[CTEST_RTEST_QUAD].HEADER_BYTE) ) )    // ||
+//                                                                (dataByte == PacketList[CTEST_A].HEADER_BYTE) ||
+//                                                                (dataByte == PacketList[QTEST_QUAD].HEADER_BYTE) ) )                                                      
             {
                 packet[currentPacketIndex] = dataByte;
                 currentPacketIndex++;
             }
-            else if( (currentPacketIndex == (HEADER_START_INDEX+1)) && ( (dataByte == PacketList[CTEST_QUAD].PACKET_TYPE) ||
-                                                                            (dataByte == PacketList[CTEST_QUADSERIAL].PACKET_TYPE) ||
-                                                                            (dataByte == PacketList[CTEST_AUDIO].PACKET_TYPE) ||
-                                                                            (dataByte == PacketList[QTEST_QUAD].PACKET_TYPE) ) )
+            else if( (currentPacketIndex == (HEADER_START_INDEX+1)) && ( (dataByte == PacketList[CTEST_AUDIO].PACKET_TYPE) ||
+                                                                            (dataByte == PacketList[CTEST_RTEST_QUAD].PACKET_TYPE) ) )  //||
+//                                                                            (dataByte == PacketList[CTEST_A].PACKET_TYPE) ||
+//                                                                            (dataByte == PacketList[QTEST_QUAD].PACKET_TYPE) ) )
             {
                 packet[currentPacketIndex] = dataByte;
                 currentPacketIndex++;
                 currentState = PAYLOAD_STATE;
                 
-                if(dataByte == PacketList[CTEST_QUAD].PACKET_TYPE)
-                    currentType = CTEST_QUAD;
-                else if(dataByte == PacketList[CTEST_QUADSERIAL].PACKET_TYPE)
-                    currentType = CTEST_QUADSERIAL;
-                else if(dataByte == PacketList[CTEST_AUDIO].PACKET_TYPE)
+                if(dataByte == PacketList[CTEST_AUDIO].PACKET_TYPE)
                     currentType = CTEST_AUDIO;
-                else if(dataByte == PacketList[QTEST_QUAD].PACKET_TYPE)
-                    currentType = QTEST_QUAD;
+                else if(dataByte == PacketList[CTEST_RTEST_QUAD].PACKET_TYPE)
+                    currentType = CTEST_RTEST_QUAD;
+//                else if(dataByte == PacketList[CTEST_A].PACKET_TYPE)
+//                    currentType = CTEST_A;
+//                else if(dataByte == PacketList[QTEST_QUAD].PACKET_TYPE)
+//                    currentType = QTEST_QUAD;
                 else
-                    currentType = CTEST_QUAD;
+                    currentType = CTEST_AUDIO;
             }
             else
             {
                 currentPacketIndex = HEADER_START_INDEX;
-                currentType = CTEST_QUAD;
+                currentType = CTEST_AUDIO;
             }
             break;
             
@@ -214,43 +215,33 @@ static void detectPacket(uint8 dataByte)
             {
                 packet[currentPacketIndex] = dataByte;
                               
-                if(currentType == CTEST_QUAD)
+                if(currentType == CTEST_AUDIO)
                 {
 //                   pRxPacket_Controller = getRxPacket_Controller();
 //                   memcpy(&pRxPacket_Controller->bytes[0], &packet[2], PacketList[CTEST_RELAY].PAYLOAD_SIZE);
-                    packetsuccess[CTEST_QUAD]++;   
+                    packetsuccess[CTEST_AUDIO]++;   
                 }
-                else if(currentType == CTEST_QUADSERIAL)
+                else if(currentType == CTEST_RTEST_QUAD)
                 {
 //                   pRxPacket_Relay = getRxPacket_Relay();
 //                   memcpy(&pRxPacket_Relay->bytes[0], &packet[2], PacketList[RTEST_CONTROLLER].PAYLOAD_SIZE);
-                   packetsuccess[CTEST_QUADSERIAL]++;   
+                   packetsuccess[CTEST_RTEST_QUAD]++;   
                 }
-                else if(currentType == CTEST_AUDIO)
-                   packetsuccess[CTEST_AUDIO]++;
-
-                else if(currentType == QTEST_QUAD)
-                   packetsuccess[QTEST_QUAD]++;
-
-//                if(packetsuccess[0] > 1000)
-//                    packetsuccess[0] = 0;
-//                if(packetsuccess[2] > 1000)
-//                    packetsuccess[2] = 0;
-
-//                if(count >= 50)
-//                    packetsuccess[2] = 0;
-//                if(count == 0)
-//                    packetsuccess[2] = 0;
+//                else if(currentType == CTEST_A)
+//                   packetsuccess[CTEST_A]++;
+//
+//                else if(currentType == QTEST_QUAD)
+//                   packetsuccess[QTEST_QUAD]++;
                 
                 currentPacketIndex = HEADER_START_INDEX;
                 currentState = HEADER_STATE;
-                currentType = CTEST_QUAD;
+                currentType = CTEST_AUDIO;
             }
             else
             {
                 currentPacketIndex = HEADER_START_INDEX;
                 currentState = HEADER_STATE;
-                currentType = CTEST_QUAD;
+                currentType = CTEST_AUDIO;
             }
             break;
     }
@@ -310,20 +301,15 @@ void ResetPacketSuccess_460800(void)           //*** This can be improved
 
 uint8 VerifyPacket_460800(uint8 PacketType)
 {
-    
-    static uint16 singlepacketsuccess = 0;
-    
-//    if(PacketType == 0)
-//        MUX_CTRL_460800_Write(0x00);
-    
-//    if(PacketType == 0)
-//        singlepacketsuccess = packetsuccess[0];
-////    else if(PacketType == 1)
-//        singlepacketsuccess = packetsuccess[1];
-        
-        
+       
     if(packetsuccess[PacketType] >= PACKET_VERIFICATION_COUNT)                //maybe we wait until pass here
+    {
+        packetsuccess[PacketType] = 0;
+        
+        //CurrentTest.Failures
+        
         return(1);
+    }
     else
         return(0);
        
@@ -332,18 +318,24 @@ uint8 VerifyPacket_460800(uint8 PacketType)
 //  ---------RTest----------------------------
 void sendPacketToRelay_Quad(void)              
 {
-    static uint16 iterator = 0;
+    //static uint16 iterator = 0;
 
-        UART_460800_WriteTxData(0x7E);                          // Send 'L' packet 
+        UART_460800_WriteTxData('~');                          // Send 'L' packet 
         UART_460800_WriteTxData('L');
-        for(iterator = 0; iterator<111; iterator++)             
+        for(uint8 iterator = 0; iterator<111; iterator++)             
         {
             UART_460800_WriteTxData(iterator);
         }
+        
+//        for(uint8 iterator = 0; iterator<111; iterator++)             
+//        {
+//            UART_460800_WriteTxData(iterator);
+//        }
 
         UART_460800_WriteTxData(0x0D);
         UART_460800_WriteTxData(0x0A);
-
+        
+        return;
 }
 
 //  ----------------STest---------------
