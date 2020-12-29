@@ -2,7 +2,7 @@
 --	Conversion of F1-TestFixture.v to vh2:
 --
 --	Cypress Semiconductor - WARP Version 6.3 IR 41
---	Mon Dec 28 16:16:20 2020
+--	Tue Dec 29 11:53:29 2020
 --
 
 USE cypress.cypress.all;
@@ -448,11 +448,11 @@ SIGNAL \Timer_20ms:Net_57\ : bit;
 SIGNAL Net_6163 : bit;
 SIGNAL Net_6134 : bit;
 SIGNAL \Timer_20ms:Net_102\ : bit;
-SIGNAL tmpOE__LED_EN_net_0 : bit;
-SIGNAL tmpFB_0__LED_EN_net_0 : bit;
-SIGNAL tmpIO_0__LED_EN_net_0 : bit;
-TERMINAL tmpSIOVREF__LED_EN_net_0 : bit;
-SIGNAL tmpINTERRUPT_0__LED_EN_net_0 : bit;
+SIGNAL tmpOE__PB_NextAction_net_0 : bit;
+SIGNAL tmpFB_0__PB_NextAction_net_0 : bit;
+SIGNAL tmpIO_0__PB_NextAction_net_0 : bit;
+TERMINAL tmpSIOVREF__PB_NextAction_net_0 : bit;
+SIGNAL tmpINTERRUPT_0__PB_NextAction_net_0 : bit;
 SIGNAL \Timer_10ms:Net_260\ : bit;
 SIGNAL \Timer_10ms:Net_266\ : bit;
 SIGNAL \Timer_10ms:Net_51\ : bit;
@@ -890,11 +890,11 @@ SIGNAL \Timer_50ms:Net_57\ : bit;
 SIGNAL Net_6266 : bit;
 SIGNAL Net_6271 : bit;
 SIGNAL \Timer_50ms:Net_102\ : bit;
-SIGNAL tmpOE__PB_NextAction_net_0 : bit;
-SIGNAL tmpFB_0__PB_NextAction_net_0 : bit;
-SIGNAL tmpIO_0__PB_NextAction_net_0 : bit;
-TERMINAL tmpSIOVREF__PB_NextAction_net_0 : bit;
-SIGNAL tmpINTERRUPT_0__PB_NextAction_net_0 : bit;
+SIGNAL tmpOE__LED_EN_net_0 : bit;
+SIGNAL tmpFB_0__LED_EN_net_0 : bit;
+SIGNAL tmpIO_0__LED_EN_net_0 : bit;
+TERMINAL tmpSIOVREF__LED_EN_net_0 : bit;
+SIGNAL tmpINTERRUPT_0__LED_EN_net_0 : bit;
 SIGNAL tmpOE__STest_RRB_net_0 : bit;
 SIGNAL tmpFB_0__STest_RRB_net_0 : bit;
 TERMINAL Net_6407 : bit;
@@ -1754,12 +1754,12 @@ timer_clock:cy_clock_v1_0
 		tc=>Net_6134,
 		compare=>\Timer_20ms:Net_261\,
 		interrupt=>\Timer_20ms:Net_57\);
-LED_EN:cy_psoc3_pins_v1_10
-	GENERIC MAP(id=>"86969b19-12ee-431b-979f-f6172fe2f363",
-		drive_mode=>"110",
+PB_NextAction:cy_psoc3_pins_v1_10
+	GENERIC MAP(id=>"9d090d12-2d8e-4d17-95ce-5a9ea8df9376",
+		drive_mode=>"011",
 		ibuf_enabled=>"1",
 		init_dr_st=>"0",
-		input_sync=>"1",
+		input_sync=>"0",
 		input_clk_en=>'0',
 		input_sync_mode=>"0",
 		intr_mode=>"00",
@@ -1781,7 +1781,7 @@ LED_EN:cy_psoc3_pins_v1_10
 		oe_conn=>"0",
 		oe_reset=>'0',
 		pin_aliases=>"",
-		pin_mode=>"O",
+		pin_mode=>"I",
 		por_state=>4,
 		sio_group_cnt=>0,
 		sio_hifreq=>"00000000",
@@ -1795,7 +1795,7 @@ LED_EN:cy_psoc3_pins_v1_10
 		slew_rate=>"0",
 		spanning=>'0',
 		sw_only=>'0',
-		vtrip=>"10",
+		vtrip=>"00",
 		width=>1,
 		port_alias_required=>'0',
 		port_alias_group=>"",
@@ -1812,10 +1812,10 @@ LED_EN:cy_psoc3_pins_v1_10
 		input_buffer_sel=>"00")
 	PORT MAP(oe=>(tmpOE__CTest_RS485_RELAY_RX_net_0),
 		y=>(zero),
-		fb=>(tmpFB_0__LED_EN_net_0),
+		fb=>(tmpFB_0__PB_NextAction_net_0),
 		analog=>(open),
-		io=>(tmpIO_0__LED_EN_net_0),
-		siovref=>(tmpSIOVREF__LED_EN_net_0),
+		io=>(tmpIO_0__PB_NextAction_net_0),
+		siovref=>(tmpSIOVREF__PB_NextAction_net_0),
 		annotation=>(open),
 		in_clock=>zero,
 		in_clock_en=>tmpOE__CTest_RS485_RELAY_RX_net_0,
@@ -1823,7 +1823,7 @@ LED_EN:cy_psoc3_pins_v1_10
 		out_clock=>zero,
 		out_clock_en=>tmpOE__CTest_RS485_RELAY_RX_net_0,
 		out_reset=>zero,
-		interrupt=>tmpINTERRUPT_0__LED_EN_net_0);
+		interrupt=>tmpINTERRUPT_0__PB_NextAction_net_0);
 isr_Timer_20ms:cy_isr_v1_0
 	GENERIC MAP(int_type=>"10",
 		is_nmi=>'0')
@@ -2329,12 +2329,12 @@ isr_Timer_50ms:cy_isr_v1_0
 	GENERIC MAP(int_type=>"10",
 		is_nmi=>'0')
 	PORT MAP(int_signal=>Net_6271);
-PB_NextAction:cy_psoc3_pins_v1_10
-	GENERIC MAP(id=>"9d090d12-2d8e-4d17-95ce-5a9ea8df9376",
-		drive_mode=>"011",
+LED_EN:cy_psoc3_pins_v1_10
+	GENERIC MAP(id=>"86969b19-12ee-431b-979f-f6172fe2f363",
+		drive_mode=>"110",
 		ibuf_enabled=>"1",
 		init_dr_st=>"0",
-		input_sync=>"0",
+		input_sync=>"1",
 		input_clk_en=>'0',
 		input_sync_mode=>"0",
 		intr_mode=>"00",
@@ -2356,7 +2356,7 @@ PB_NextAction:cy_psoc3_pins_v1_10
 		oe_conn=>"0",
 		oe_reset=>'0',
 		pin_aliases=>"",
-		pin_mode=>"I",
+		pin_mode=>"O",
 		por_state=>4,
 		sio_group_cnt=>0,
 		sio_hifreq=>"00000000",
@@ -2370,7 +2370,7 @@ PB_NextAction:cy_psoc3_pins_v1_10
 		slew_rate=>"0",
 		spanning=>'0',
 		sw_only=>'0',
-		vtrip=>"00",
+		vtrip=>"10",
 		width=>1,
 		port_alias_required=>'0',
 		port_alias_group=>"",
@@ -2387,10 +2387,10 @@ PB_NextAction:cy_psoc3_pins_v1_10
 		input_buffer_sel=>"00")
 	PORT MAP(oe=>(tmpOE__CTest_RS485_RELAY_RX_net_0),
 		y=>(zero),
-		fb=>(tmpFB_0__PB_NextAction_net_0),
+		fb=>(tmpFB_0__LED_EN_net_0),
 		analog=>(open),
-		io=>(tmpIO_0__PB_NextAction_net_0),
-		siovref=>(tmpSIOVREF__PB_NextAction_net_0),
+		io=>(tmpIO_0__LED_EN_net_0),
+		siovref=>(tmpSIOVREF__LED_EN_net_0),
 		annotation=>(open),
 		in_clock=>zero,
 		in_clock_en=>tmpOE__CTest_RS485_RELAY_RX_net_0,
@@ -2398,7 +2398,7 @@ PB_NextAction:cy_psoc3_pins_v1_10
 		out_clock=>zero,
 		out_clock_en=>tmpOE__CTest_RS485_RELAY_RX_net_0,
 		out_reset=>zero,
-		interrupt=>tmpINTERRUPT_0__PB_NextAction_net_0);
+		interrupt=>tmpINTERRUPT_0__LED_EN_net_0);
 STest_RRB:cy_psoc3_pins_v1_10
 	GENERIC MAP(id=>"77715107-f8d5-47e5-a629-0fb83101ac6b",
 		drive_mode=>"000",

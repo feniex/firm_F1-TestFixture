@@ -113,7 +113,7 @@ enum MUX_115200_CHANNEL
 enum TestStep               // *** Need to get muxes setup permanently, 
 { 
     INITIALIZE_TEST, 
-    SIREN_EN,               // (Implemented - need hardware to test)
+    SIREN_EN,               // *** (Implemented - need hardware to test)
     TEST_OUTPUTS,           // ---------------------- 230400 TX TESTED      - (needs hardware)
     DATALINK,               // (***115200 rx tested)
     //QUAD_PORTS,           // 460800 RX TESTED   460800 TX TESTED      (*** need to implement last 4 channels and test them all)
@@ -190,68 +190,54 @@ uint8 RelayTest(void)
             // RTest_HSide7_Write(0);
             // RTest_HSide8_Write(0);
             
+            
+            //CurrentTest.TestStep = SIREN_EN;
+            CurrentTest.TestStep = TEST_OUTPUTS;
+            //CurrentTest.TestStep = DATALINK;
+            //CurrentTest.TestStep = QUAD_PORT_1;
             //CurrentTest.TestStep = UART_SIREN; 
-            CurrentTest.TestStep = QUAD_PORT_1;
                    
         break;
              
         case SIREN_EN:
                 
-            RTestStatus[CurrentTest.TestStep] = 'B';
-
-            RTest_20ms_isr_count = 0;
-            RTest_20ms_isr_EN = 1;
+            //RTest_StartAutomatedStep(); 
              
-            //while(1);
             //while( (!RTest_SIREN_EN_Read()) && (RelayTestStatus[TestState] != 'F') )              // Wait for test to complete or fail          
             {} 
             
-            RTest_20ms_isr_EN = 0;
+            //RTest_StopAutomatedStep();
             
-            if(RTestStatus[CurrentTest.TestStep] != 'F')       // If not failed, then pass
-                RTestStatus[CurrentTest.TestStep] = 'P';
-
-            CurrentTest.TestStep = TEST_OUTPUTS;        
+            CurrentTest.TestStep = INITIALIZE_TEST;
+            //CurrentTest.TestStep = TEST_OUTPUTS;        
         break;    
               
         case TEST_OUTPUTS:  
                 
-            SetRelayOutputs(1);                         // Send command to turn on relay outputs
-                
-            RTestStatus[CurrentTest.TestStep] = 'B';
+            RTest_StartAutomatedStep(); 
+            
+            while(!RTest_Test_Outputs())                                                        // Wait for test to complete or fail
+            {}  
+//            while( (!RTest_Test_Outputs()) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
+//            {}   
+            
+//            RTest_StopAutomatedStep();
 
-            RTest_20ms_isr_count = 0;
-            RTest_20ms_isr_EN = 1;
-             
-            while( (!RTest_Test_Outputs()) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
-            {}   
-            
-            RTest_20ms_isr_EN = 0;
-            
-            SetRelayOutputs(0);                         // Send command to turn off relay outputs
-            
-            if(RTestStatus[CurrentTest.TestStep] != 'F')       // If not failed, then pass
-                RTestStatus[CurrentTest.TestStep] = 'P';
-
-            CurrentTest.TestStep = DATALINK;        
+            CurrentTest.TestStep = INITIALIZE_TEST;
+            //CurrentTest.TestStep = DATALINK;        
         break;        
               
         case DATALINK: 
-                
-            RTestStatus[CurrentTest.TestStep] = 'B';
 
-            RTest_20ms_isr_count = 0;
-            RTest_20ms_isr_EN = 1;            
+            RTest_StartAutomatedStep();           
              
             while( (!RTest_Test_DataLink()) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
             {}  
             
-            RTest_20ms_isr_EN = 0;
+            RTest_StopAutomatedStep();
             
-            if(RTestStatus[CurrentTest.TestStep] != 'F')       // If not failed, then pass
-                RTestStatus[CurrentTest.TestStep] = 'P';
-            
-            CurrentTest.TestStep = QUAD_PORT_1;        
+            CurrentTest.TestStep = INITIALIZE_TEST;
+            //CurrentTest.TestStep = QUAD_PORT_1;        
         break;  
               
         case QUAD_PORT_1: 
@@ -434,37 +420,23 @@ uint8 RelayTest(void)
 uint8 RTest_Test_Outputs(void)
 {
 
-    //DEMUX_CTRL_230400_Write(RTEST_CONT);                // Tx - Select the demux channel
-    pTxPacket_RelaySiren = getTxPacket_RelaySiren();              // Tx - Get pointers to packet   
-    
-    pTxPacket_RelaySiren->Payload.Outputs_1to8 = 0xFF;       // Turn on all outputs
-    pTxPacket_RelaySiren->Payload.Outputs_25to32 = 0xFF; 
-    pTxPacket_RelaySiren->Payload.Outputs_9to16 = 0xFF;
-    pTxPacket_RelaySiren->Payload.Outputs_17to24 = 0xFF;
-    
-    //while(1);
-    
     uint32 OutputsState = 0;
     static uint32 channel = 0;
     
-    //*** Address channel 'channel 0-31' in hardware
-    //selectADCChannelMux(0);                           //*** This needs to be fleshed out when hardware arrives
-    
-    for (uint8 channel=0; channel<32; channel++)
+    SetRelayOutputs(1);                                                     // Send command to turn on relay outputs
+
+    for (uint8 channel=0; channel<32; channel++)                            // Address and read channels '0-31' in hardware
     {
-        //*** Address channel 'channel'
-        // OutputsState = ( RTest_INPUT_DEMUX | (RTest_INPUT_DEMUX << channel) )    // Read RTest_INPUT_DEMUX and store each bit in OutputsState
+        selectADCChannelMux(channel);                                       //*** This needs to be fleshed out when hardware arrives
+        //OutputsState = ( RTest_DEMUX_COM | (RTest_DEMUX_COM << channel) )   // Read RTest_INPUT_DEMUX and store each bit in OutputsState
     }
     
-    pTxPacket_RelaySiren->Payload.Outputs_1to8 = 0x00;       // Turn off all Relay outputs
-    pTxPacket_RelaySiren->Payload.Outputs_9to16 = 0x00;
-    pTxPacket_RelaySiren->Payload.Outputs_17to24 = 0x00;
-    pTxPacket_RelaySiren->Payload.Outputs_25to32 = 0x00;
+    SetRelayOutputs(0);                                                     // Send command to turn off relay outputs
     
     if(OutputsState == 0xFFFFFF)
-        return(1);                                      // If all outputs are turned on, then return pass
+        return(1);                                                          // If all outputs are turned on, then return pass
     else
-        return(0);                                      // If not pass, then return fail
+        return(0);                                                          // If not pass, then return fail
 }
 
 /* 230400/115200bps **************************************************************************
@@ -884,7 +856,10 @@ void RTest_20ms_isr(void)                       // Manage Timeout for failure
         RTest_20ms_isr_count = 0;
         
         if(RTest_20ms_isr_EN == 1)
+        {
             RTestStatus[CurrentTest.TestStep] = 'F';
+            CurrentTest.Status = 'F';
+        }
             
         return;
     }
@@ -926,6 +901,10 @@ void RTest_50ms_isr(void)                       // Times interboard comms, and s
 
 void SetRelayOutputs(uint8 enable)
 {
+    
+    //DEMUX_CTRL_230400_Write(RTEST_CONT);                        // Tx - Select the demux channel
+    pTxPacket_RelaySiren = getTxPacket_RelaySiren();            // Tx - Get pointers to packet   
+    
     if(enable == 1)
     {
         pTxPacket_RelaySiren->Payload.Outputs_1to8 = 0xFF;       // Turn on all Relay outputs
@@ -958,6 +937,8 @@ void RTest_StartAutomatedStep(void)
 {
     
     RTestStatus[CurrentTest.TestStep] = 'B';
+    CurrentTest.Status = 'B';
+    
     RTest_20ms_isr_count = 0;
     RTest_20ms_isr_EN = 1;
     
@@ -970,7 +951,10 @@ void RTest_StopAutomatedStep(void)
     
     RTest_20ms_isr_EN = 0;
     if(RTestStatus[CurrentTest.TestStep] != 'F')       // If not failed, then pass
+    {
         RTestStatus[CurrentTest.TestStep] = 'P';
+        CurrentTest.Status = 'P';
+    }
     
     return;
     

@@ -1,12 +1,79 @@
---------------- Build Started: 12/28/2020 16:31:52 Project: F1-TestFixture, Configuration: ARM GCC 5.4-2016-q2-update Debug ---------------
-The code generation step is up to date.
+--------------- Build Started: 12/29/2020 11:53:22 Project: F1-TestFixture, Configuration: ARM GCC 5.4-2016-q2-update Debug ---------------
+cydsfit.exe -.appdatapath "C:\Users\marthnick\AppData\Local\Cypress Semiconductor\PSoC Creator\4.3" -.fdsnotice -.fdswarpdepfile=warp_dependencies.txt -.fdselabdepfile=elab_dependencies.txt -.fdsbldfile=generated_files.txt -.fdsreffile=referenced_files.txt -p C:\Users\marthnick\Desktop\firm_F1-TestFixture\F1-TestFixture.cydsn\F1-TestFixture.cyprj -d CY8C5467AXI-LP108 -s C:\Users\marthnick\Desktop\firm_F1-TestFixture\F1-TestFixture.cydsn\Generated_Source\PSoC5 -- -yv2 -q10 -ygs -o2 -v3 -.fftcfgtype=LE
+Elaborating Design...
+ADD: fit.M0014: warning: One or more rows of flash have been configured to be read protected; however, debugging has been enabled in the System DWR Editor. This means that the read protected flash rows can still be read via SWD or JTAG. To protect these rows of flash, disable debugging in the System DWR Editor.
+ * C:\Users\marthnick\Desktop\firm_F1-TestFixture\F1-TestFixture.cydsn\F1-TestFixture.cydwr (Enable Device Protection)
+HDL Generation...
+Synthesis...
+Tech Mapping...
+ADD: mpr.M0037: information: Unused pieces of the design have been optimized out. See the Tech mapping section of the report file for details.
+ * C:\Users\marthnick\Desktop\firm_F1-TestFixture\F1-TestFixture.cydsn\codegentemp\F1-TestFixture.rpt (Tech mapping)
+Analog Placement...
+Log: apr.M0058: The analog placement iterative improvement is 42% done. (App=cydsfit)
+Log: apr.M0058: The analog placement iterative improvement is 100% done. (App=cydsfit)
+Analog Routing...
+Analog Code Generation...
+Digital Placement...
+Digital Routing...
+Bitstream Generation...
+Bitstream Verification...
+Static timing analysis...
+Warning: sta.M0021: F1-TestFixture_timing.html: Warning-1350: Asynchronous path(s) exist from "ClockBlock/dclk_glb_ff_3" to "CyBUS_CLK". See the timing report for details. (File=C:\Users\marthnick\Desktop\firm_F1-TestFixture\F1-TestFixture.cydsn\F1-TestFixture_timing.html)
+API Generation...
+Dependency Generation...
+Cleanup...
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/main.lst -g -D DEBUG -Wall -ffunction-sections -ffat-lto-objects -O0 -c main.c -o .\CortexM3\ARM_GCC_541\Debug\main.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/ControllerTest.lst -g -D DEBUG -Wall -ffunction-sections -ffat-lto-objects -O0 -c ControllerTest.c -o .\CortexM3\ARM_GCC_541\Debug\ControllerTest.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/UART_230400_Functions.lst -g -D DEBUG -Wall -ffunction-sections -ffat-lto-objects -O0 -c UART_230400_Functions.c -o .\CortexM3\ARM_GCC_541\Debug\UART_230400_Functions.o
+UART_230400_Functions.c: In function 'processByteReceivedHandler':
+UART_230400_Functions.c:131:18: warning: variable 'testbuffer' set but not used [-Wunused-but-set-variable]
+     static uint8 testbuffer[100];
+                  ^
+UART_230400_Functions.c: In function 'sendPacketToRelaySiren':
+UART_230400_Functions.c:354:32: warning: unused variable 'txPacket_RelaySiren' [-Wunused-variable]
+     static TxPacket_RelaySiren txPacket_RelaySiren;            
+                                ^
+UART_230400_Functions.c: In function 'sendPacket_SirenToRelay':
+UART_230400_Functions.c:415:34: warning: unused variable 'pTxPacket_RelaySiren' [-Wunused-variable]
+     static TxPacket_RelaySiren * pTxPacket_RelaySiren;
+                                  ^
+UART_230400_Functions.c:414:32: warning: unused variable 'txPacket_RelaySiren' [-Wunused-variable]
+     static TxPacket_RelaySiren txPacket_RelaySiren;            
+                                ^
+UART_230400_Functions.c: In function 'sendPacket_RelayToSiren':
+UART_230400_Functions.c:434:19: warning: unused variable 'iterator' [-Wunused-variable]
+     static uint16 iterator = 0;
+                   ^
+UART_230400_Functions.c: At top level:
+UART_230400_Functions.c:78:28: warning: 'rxPacket_Controller' defined but not used [-Wunused-variable]
+ static RxPacket_Controller rxPacket_Controller;            
+                            ^
+UART_230400_Functions.c:81:28: warning: 'rxPacket_RelaySiren' defined but not used [-Wunused-variable]
+ static RxPacket_RelaySiren rxPacket_RelaySiren;              // 'D' packet from relay/sirem to controller
+                            ^
+UART_230400_Functions.c:84:17: warning: 'rxPacket_H' defined but not used [-Wunused-variable]
+ static Packet_H rxPacket_H; 
+                 ^
+UART_230400_Functions.c:87:17: warning: 'txPacket_H' defined but not used [-Wunused-variable]
+ static Packet_H txPacket_H; 
+                 ^
+UART_230400_Functions.c:90:30: warning: 'pTxPacket_Controller' defined but not used [-Wunused-variable]
+ static TxPacket_Controller * pTxPacket_Controller; 
+                              ^
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/SirenTest.lst -g -D DEBUG -Wall -ffunction-sections -ffat-lto-objects -O0 -c SirenTest.c -o .\CortexM3\ARM_GCC_541\Debug\SirenTest.o
+SirenTest.c:64:28: warning: 'txPacket_RelaySiren' defined but not used [-Wunused-variable]
+ static TxPacket_RelaySiren txPacket_RelaySiren;         // SetRelayOutputs - 'I' (also 3,S,P) controller to relay
+                            ^
+SirenTest.c:67:28: warning: 'rxPacket_RelaySiren' defined but not used [-Wunused-variable]
+ static RxPacket_RelaySiren rxPacket_RelaySiren;         // SetRelayOutputs - 'D' - relay to controller
+                            ^
 arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/RelayTest.lst -g -D DEBUG -Wall -ffunction-sections -ffat-lto-objects -O0 -c RelayTest.c -o .\CortexM3\ARM_GCC_541\Debug\RelayTest.o
 RelayTest.c: In function 'RTest_Test_Outputs':
-RelayTest.c:448:19: warning: unused variable 'channel' [-Wunused-variable]
+RelayTest.c:424:19: warning: unused variable 'channel' [-Wunused-variable]
      static uint32 channel = 0;
                    ^
 RelayTest.c: In function 'RTest_Test_GPS':
-RelayTest.c:716:18: warning: unused variable 'targetstring' [-Wunused-variable]
+RelayTest.c:688:18: warning: unused variable 'targetstring' [-Wunused-variable]
      static uint8 targetstring[6] = {'$','G','P','M','R','C'};
                   ^
 RelayTest.c: At top level:
@@ -16,6 +83,55 @@ RelayTest.c:47:22: warning: 'txPacket_Quad' defined but not used [-Wunused-varia
 RelayTest.c:48:24: warning: 'pTxPacket_Quad' defined but not used [-Wunused-variable]
  static RxPacket_Quad * pTxPacket_Quad;      //***
                         ^
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/UART_460800_Functions.lst -g -D DEBUG -Wall -ffunction-sections -ffat-lto-objects -O0 -c UART_460800_Functions.c -o .\CortexM3\ARM_GCC_541\Debug\UART_460800_Functions.o
+UART_460800_Functions.c: In function 'processByteReceivedHandler_460800':
+UART_460800_Functions.c:117:18: warning: variable 'testbuffer' set but not used [-Wunused-but-set-variable]
+     static uint8 testbuffer[100];
+                  ^
+UART_460800_Functions.c: In function 'detectPacket':
+UART_460800_Functions.c:155:18: warning: variable 'packet' set but not used [-Wunused-but-set-variable]
+     static uint8 packet[MAX_PAYLOAD_BYTE_COUNT+HEADER_BYTE_COUNT+EOP_BYTE_COUNT];   
+                  ^
+UART_460800_Functions.c: In function 'sendPacketToSiren_Audio':
+UART_460800_Functions.c:346:19: warning: unused variable 'ADCReading' [-Wunused-variable]
+     static uint16 ADCReading[100];
+                   ^
+UART_460800_Functions.c: At top level:
+UART_460800_Functions.c:72:22: warning: 'rxPacket_Quad' defined but not used [-Wunused-variable]
+ static RxPacket_Quad rxPacket_Quad;            
+                      ^
+UART_460800_Functions.c:73:24: warning: 'pRxPacket_Quad' defined but not used [-Wunused-variable]
+ static RxPacket_Quad * pRxPacket_Quad;  
+                        ^
+UART_460800_Functions.c:75:28: warning: 'rxPacket_QuadSerial' defined but not used [-Wunused-variable]
+ static RxPacket_QuadSerial rxPacket_QuadSerial;            
+                            ^
+UART_460800_Functions.c:76:30: warning: 'pRxPacket_QuadSerial' defined but not used [-Wunused-variable]
+ static RxPacket_QuadSerial * pRxPacket_QuadSerial; 
+                              ^
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/UART_115200_Functions.lst -g -D DEBUG -Wall -ffunction-sections -ffat-lto-objects -O0 -c UART_115200_Functions.c -o .\CortexM3\ARM_GCC_541\Debug\UART_115200_Functions.o
+UART_115200_Functions.c: In function 'detectPacket':
+UART_115200_Functions.c:149:18: warning: variable 'packet' set but not used [-Wunused-but-set-variable]
+     static uint8 packet[MAX_PAYLOAD_BYTE_COUNT+HEADER_BYTE_COUNT+EOP_BYTE_COUNT];   
+                  ^
+UART_115200_Functions.c: In function 'VerifyPacket_115200':
+UART_115200_Functions.c:309:19: warning: unused variable 'singlepacketsuccess' [-Wunused-variable]
+     static uint16 singlepacketsuccess = 0;
+                   ^
+UART_115200_Functions.c: At top level:
+UART_115200_Functions.c:71:25: warning: 'rxPacket_DLink_S' defined but not used [-Wunused-variable]
+ static RxPacket_DLink_S rxPacket_DLink_S;            
+                         ^
+UART_115200_Functions.c:147:13: warning: 'detectPacket' defined but not used [-Wunused-function]
+ static void detectPacket(uint8 dataByte)
+             ^
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/CD4051BPW_Driver.lst -g -D DEBUG -Wall -ffunction-sections -ffat-lto-objects -O0 -c CD4051BPW_Driver.c -o .\CortexM3\ARM_GCC_541\Debug\CD4051BPW_Driver.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/isr_UART_230400.lst -g -D DEBUG -Wall -ffunction-sections -ffat-lto-objects -O0 -c Generated_Source\PSoC5\isr_UART_230400.c -o .\CortexM3\ARM_GCC_541\Debug\isr_UART_230400.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/isr_Timer_20ms.lst -g -D DEBUG -Wall -ffunction-sections -ffat-lto-objects -O0 -c Generated_Source\PSoC5\isr_Timer_20ms.c -o .\CortexM3\ARM_GCC_541\Debug\isr_Timer_20ms.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/isr_UART_460800.lst -g -D DEBUG -Wall -ffunction-sections -ffat-lto-objects -O0 -c Generated_Source\PSoC5\isr_UART_460800.c -o .\CortexM3\ARM_GCC_541\Debug\isr_UART_460800.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/isr_Timer_10ms.lst -g -D DEBUG -Wall -ffunction-sections -ffat-lto-objects -O0 -c Generated_Source\PSoC5\isr_Timer_10ms.c -o .\CortexM3\ARM_GCC_541\Debug\isr_Timer_10ms.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/isr_Timer_50ms.lst -g -D DEBUG -Wall -ffunction-sections -ffat-lto-objects -O0 -c Generated_Source\PSoC5\isr_Timer_50ms.c -o .\CortexM3\ARM_GCC_541\Debug\isr_Timer_50ms.o
+arm-none-eabi-gcc.exe -mcpu=cortex-m3 -mthumb -I. -IGenerated_Source\PSoC5 -Wa,-alh=.\CortexM3\ARM_GCC_541\Debug/isr_ADC_AudioStream.lst -g -D DEBUG -Wall -ffunction-sections -ffat-lto-objects -O0 -c Generated_Source\PSoC5\isr_ADC_AudioStream.c -o .\CortexM3\ARM_GCC_541\Debug\isr_ADC_AudioStream.o
 arm-none-eabi-ar.exe -rs .\CortexM3\ARM_GCC_541\Debug\F1-TestFixture.a .\CortexM3\ARM_GCC_541\Debug\CyDividedClock.o .\CortexM3\ARM_GCC_541\Debug\CyDmac.o .\CortexM3\ARM_GCC_541\Debug\CyFlash.o .\CortexM3\ARM_GCC_541\Debug\CyLib.o .\CortexM3\ARM_GCC_541\Debug\cyPm.o .\CortexM3\ARM_GCC_541\Debug\CySpc.o .\CortexM3\ARM_GCC_541\Debug\cyutils.o .\CortexM3\ARM_GCC_541\Debug\cy_em_eeprom.o .\CortexM3\ARM_GCC_541\Debug\CTest_RS485_RELAY_RX.o .\CortexM3\ARM_GCC_541\Debug\isr_UART_230400.o .\CortexM3\ARM_GCC_541\Debug\UART_230400.o .\CortexM3\ARM_GCC_541\Debug\UART_230400_PM.o .\CortexM3\ARM_GCC_541\Debug\UART_230400_INT.o .\CortexM3\ARM_GCC_541\Debug\UART_230400_BOOT.o .\CortexM3\ARM_GCC_541\Debug\UART_230400_IntClock.o .\CortexM3\ARM_GCC_541\Debug\RS485_RX_EN.o .\CortexM3\ARM_GCC_541\Debug\MUX_CTRL_230400.o .\CortexM3\ARM_GCC_541\Debug\MUX_CTRL_230400_PM.o .\CortexM3\ARM_GCC_541\Debug\timer_clock.o .\CortexM3\ARM_GCC_541\Debug\Timer_20ms.o .\CortexM3\ARM_GCC_541\Debug\Timer_20ms_PM.o .\CortexM3\ARM_GCC_541\Debug\LED_EN.o .\CortexM3\ARM_GCC_541\Debug\isr_Timer_20ms.o .\CortexM3\ARM_GCC_541\Debug\DIAG_UART_RX.o .\CortexM3\ARM_GCC_541\Debug\DIAG_UART_TX.o .\CortexM3\ARM_GCC_541\Debug\DEMUX_CTRL_230400.o .\CortexM3\ARM_GCC_541\Debug\DEMUX_CTRL_230400_PM.o .\CortexM3\ARM_GCC_541\Debug\isr_UART_460800.o .\CortexM3\ARM_GCC_541\Debug\UART_460800.o .\CortexM3\ARM_GCC_541\Debug\UART_460800_PM.o .\CortexM3\ARM_GCC_541\Debug\UART_460800_INT.o .\CortexM3\ARM_GCC_541\Debug\UART_460800_BOOT.o .\CortexM3\ARM_GCC_541\Debug\MUX_CTRL_460800.o .\CortexM3\ARM_GCC_541\Debug\MUX_CTRL_460800_PM.o .\CortexM3\ARM_GCC_541\Debug\DEMUX_CTRL_460800.o .\CortexM3\ARM_GCC_541\Debug\DEMUX_CTRL_460800_PM.o .\CortexM3\ARM_GCC_541\Debug\UART_460800_IntClock.o .\CortexM3\ARM_GCC_541\Debug\Timer_10ms.o .\CortexM3\ARM_GCC_541\Debug\Timer_10ms_PM.o .\CortexM3\ARM_GCC_541\Debug\isr_Timer_10ms.o .\CortexM3\ARM_GCC_541\Debug\Timer_50ms.o .\CortexM3\ARM_GCC_541\Debug\Timer_50ms_PM.o .\CortexM3\ARM_GCC_541\Debug\isr_Timer_50ms.o .\CortexM3\ARM_GCC_541\Debug\PB_NextAction.o .\CortexM3\ARM_GCC_541\Debug\WaveDAC.o .\CortexM3\ARM_GCC_541\Debug\WaveDAC_PM.o .\CortexM3\ARM_GCC_541\Debug\WaveDAC_Wave1_DMA_dma.o .\CortexM3\ARM_GCC_541\Debug\WaveDAC_Wave2_DMA_dma.o .\CortexM3\ARM_GCC_541\Debug\WaveDAC_VDAC8.o .\CortexM3\ARM_GCC_541\Debug\WaveDAC_VDAC8_PM.o .\CortexM3\ARM_GCC_541\Debug\timer_clock_2.o .\CortexM3\ARM_GCC_541\Debug\Timer_DAC.o .\CortexM3\ARM_GCC_541\Debug\Timer_DAC_PM.o .\CortexM3\ARM_GCC_541\Debug\STest_RRB.o .\CortexM3\ARM_GCC_541\Debug\isr_ADC_AudioStream.o .\CortexM3\ARM_GCC_541\Debug\ADC_AudioStream.o .\CortexM3\ARM_GCC_541\Debug\ADC_AudioStream_INT.o .\CortexM3\ARM_GCC_541\Debug\ADC_AudioStream_PM.o .\CortexM3\ARM_GCC_541\Debug\ADC_AudioStream_IRQ.o .\CortexM3\ARM_GCC_541\Debug\ADC_AudioStream_theACLK.o .\CortexM3\ARM_GCC_541\Debug\CyBootAsmGnu.o
 arm-none-eabi-ar.exe: creating .\CortexM3\ARM_GCC_541\Debug\F1-TestFixture.a
 arm-none-eabi-gcc.exe -Wl,--start-group -o C:\Users\marthnick\Desktop\firm_F1-TestFixture\F1-TestFixture.cydsn\CortexM3\ARM_GCC_541\Debug\F1-TestFixture.elf .\CortexM3\ARM_GCC_541\Debug\main.o .\CortexM3\ARM_GCC_541\Debug\ControllerTest.o .\CortexM3\ARM_GCC_541\Debug\UART_230400_Functions.o .\CortexM3\ARM_GCC_541\Debug\SirenTest.o .\CortexM3\ARM_GCC_541\Debug\RelayTest.o .\CortexM3\ARM_GCC_541\Debug\UART_460800_Functions.o .\CortexM3\ARM_GCC_541\Debug\UART_115200_Functions.o .\CortexM3\ARM_GCC_541\Debug\CD4051BPW_Driver.o .\CortexM3\ARM_GCC_541\Debug\cyfitter_cfg.o .\CortexM3\ARM_GCC_541\Debug\cymetadata.o .\CortexM3\ARM_GCC_541\Debug\Cm3Start.o .\CortexM3\ARM_GCC_541\Debug\F1-TestFixture.a "C:\Program Files (x86)\Cypress\PSoC Creator\4.3\PSoC Creator\psoc\content\cycomponentlibrary\CyComponentLibrary.cylib\CortexM3\ARM_GCC_541\Debug\CyComponentLibrary.a" -mcpu=cortex-m3 -mthumb -L Generated_Source\PSoC5 -Wl,-Map,.\CortexM3\ARM_GCC_541\Debug/F1-TestFixture.map -T Generated_Source\PSoC5\cm3gcc.ld -specs=nano.specs -Wl,--gc-sections -g -ffunction-sections -O0 -ffat-lto-objects -Wl,--end-group
@@ -24,6 +140,6 @@ No ELF section .cychecksum found, creating one
 Application checksum calculated and stored in ELF section .cychecksum
 Checksum calculated and stored in ELF section .cymeta
 cyelftool.exe -S C:\Users\marthnick\Desktop\firm_F1-TestFixture\F1-TestFixture.cydsn\CortexM3\ARM_GCC_541\Debug\F1-TestFixture.elf
-Flash used: 16334 of 131072 bytes (12.5%).
-SRAM used: 7805 of 32768 bytes (23.8%). Stack: 2048 bytes. Heap: 128 bytes.
---------------- Build Succeeded: 12/28/2020 16:31:54 ---------------
+Flash used: 16214 of 131072 bytes (12.4%).
+SRAM used: 7837 of 32768 bytes (23.9%). Stack: 2048 bytes. Heap: 128 bytes.
+--------------- Build Succeeded: 12/29/2020 11:53:48 ---------------

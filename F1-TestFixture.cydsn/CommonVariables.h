@@ -17,7 +17,8 @@ struct structTestInfo
 {
     uint8 SelectedTest;
     uint8 TestStep;
-    uint8 Failures;
+    uint8 Status;
+    //uint8 Failures;
 }Test;
 
 typedef struct structTestInfo StructTestInfo;
