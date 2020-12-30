@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: DIAG_UART_RX.h  
+* File Name: QUAD_DATA_2.h  
 * Version 2.20
 *
 * Description:
@@ -15,8 +15,8 @@
 * the software package with which this file was provided.
 *******************************************************************************/
 
-#if !defined(CY_PINS_DIAG_UART_RX_ALIASES_H) /* Pins DIAG_UART_RX_ALIASES_H */
-#define CY_PINS_DIAG_UART_RX_ALIASES_H
+#if !defined(CY_PINS_QUAD_DATA_2_ALIASES_H) /* Pins QUAD_DATA_2_ALIASES_H */
+#define CY_PINS_QUAD_DATA_2_ALIASES_H
 
 #include "cytypes.h"
 #include "cyfitter.h"
@@ -25,12 +25,12 @@
 /***************************************
 *              Constants        
 ***************************************/
-#define DIAG_UART_RX_0			(DIAG_UART_RX__0__PC)
-#define DIAG_UART_RX_0_INTR	((uint16)((uint16)0x0001u << DIAG_UART_RX__0__SHIFT))
+#define QUAD_DATA_2_0			(QUAD_DATA_2__0__PC)
+#define QUAD_DATA_2_0_INTR	((uint16)((uint16)0x0001u << QUAD_DATA_2__0__SHIFT))
 
-#define DIAG_UART_RX_INTR_ALL	 ((uint16)(DIAG_UART_RX_0_INTR))
+#define QUAD_DATA_2_INTR_ALL	 ((uint16)(QUAD_DATA_2_0_INTR))
 
-#endif /* End Pins DIAG_UART_RX_ALIASES_H */
+#endif /* End Pins QUAD_DATA_2_ALIASES_H */
 
 
 /* [] END OF FILE */

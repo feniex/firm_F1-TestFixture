@@ -16,22 +16,6 @@
 
 // *** Pins need to be remapped if they are going to be read individually
 // *** Right now it is set up to read all channels only
-//  Out_1   -   Mux_2 Channel_5
-//  Out_2   -   Mux_2 Channel_7
-//  Out_3   -   Mux_2 Channel_6
-//  Out_4   -   Mux_2 Channel_4
-//
-//  Out_5   -   Mux_1 Channel_2
-//  Out_6   -   Mux_1 Channel_1
-//  Out_7   -   Mux_1 Channel_0
-//  Out_8   -   Mux_1 Channel_3
-//
-//  Out_21   -   Mux_1 Channel_5
-//  Out_22   -   Mux_1 Channel_7
-//  Out_23   -   Mux_1 Channel_6
-//  Out_24   -   Mux_1 Channel_4
-
-
 
 //  Out_7   -   Mux_1 Channel_0         - 0
 //  Out_6   -   Mux_1 Channel_1         - 1
@@ -87,7 +71,10 @@ static unsigned char getMuxValue(uint8 channelToRead)
                                                     29, 31, 30, 28, 11, 8, 9, 10,       //Output_9-16
                                                     27, 24, 25, 26, 5, 7, 6, 4,         //Output_17-24
                                                     19, 16, 17, 18, 20, 22, 23, 21,};   //Output_25-32
-    
+//    static unsigned char lookUpChipMuxValues[32] = {13, 15, 14, 12, 2, 1, 0, 3,         //Output_1-8
+//                                                    29, 31, 30, 28, 11, 8, 9, 10,       //Output_9-16
+//                                                    27, 24, 25, 26, 5, 7, 6, 4,         //Output_17-24
+//                                                    19, 16, 17, 18, 20, 22, 23, 21,};   //Output_25-32
     return lookUpChipMuxValues[channelToRead];
 }
 
@@ -101,47 +88,59 @@ void selectADCChannelMux(uint8 channelToRead)
     if(localMuxValue < 8)
     {
 
-        LED_EN_Write(0);
+        RTest_BLOCK_1_EN_Write(0);                                  // Address Mux_1
+        RTest_BLOCK_2_EN_Write(1);
+        RTest_BLOCK_3_EN_Write(1);
+        RTest_BLOCK_4_EN_Write(1);
         
-//        RTest_BLOCK_1_EN_Write(0);                                  // Address Mux_1
-//        RTest_BLOCK_2_EN_Write(1);
-//        RTest_BLOCK_3_EN_Write(1);
-//        RTest_BLOCK_4_EN_Write(1);
-//        
-//        RTest_DEMUX_C_Write(((localMuxValue&0x04)>>2));
-//        RTest_DEMUX_B_Write(((localMuxValue&0x02)>>1));
-//        RTest_DEMUX_A_Write(localMuxValue&0x01);
+        RTest_DEMUX_C_Write(((localMuxValue&0x04)>>2));
+        RTest_DEMUX_B_Write(((localMuxValue&0x02)>>1));
+        RTest_DEMUX_A_Write(localMuxValue&0x01);
+ 
     }
-//    else if(channelToRead>CHANNEL16 && channelToRead<=CHANNEL32)
-//    {
-////        DIAG_INH_1_Write(1);
-////        DIAG_INH_2_Write(0);
-////        DIAG_INH_3_Write(1);
-//        
-////        DIAG_BCD_C_Write(((localMuxValue&0x04)>>2));
-////        DIAG_BCD_B_Write(((localMuxValue&0x02)>>1));
-////        DIAG_BCD_A_Write(localMuxValue&0x01);
-//    }
-//    else if(channelToRead == VSENSEBATT)
-//    {
-////        DIAG_INH_1_Write(1);
-////        DIAG_INH_2_Write(1);
-////        DIAG_INH_3_Write(0);
-//        
-////        DIAG_BCD_C_Write(((localMuxValue&0x04)>>2));
-////        DIAG_BCD_B_Write(((localMuxValue&0x02)>>1));
-////        DIAG_BCD_A_Write(localMuxValue&0x01);
-//    }
-//    else if(channelToRead>CHANNEL32)
-//    {
-////        DIAG_INH_1_Write(1);
-////        DIAG_INH_2_Write(1);
-////        DIAG_INH_3_Write(0);
-//        
-////        DIAG_BCD_C_Write(((localMuxValue&0x04)>>2));
-////        DIAG_BCD_B_Write(((localMuxValue&0x02)>>1));
-////        DIAG_BCD_A_Write(localMuxValue&0x01);
-//    }
+    
+    else if( (localMuxValue >= 8) && (localMuxValue<16) )
+    {
+
+        RTest_BLOCK_1_EN_Write(1);                                  // Address Mux_1
+        RTest_BLOCK_2_EN_Write(0);
+        RTest_BLOCK_3_EN_Write(1);
+        RTest_BLOCK_4_EN_Write(1);
+        
+        RTest_DEMUX_C_Write(((localMuxValue&0x04)>>2));
+        RTest_DEMUX_B_Write(((localMuxValue&0x02)>>1));
+        RTest_DEMUX_A_Write(localMuxValue&0x01);
+        
+    }
+    
+    else if( (localMuxValue >= 16) && (localMuxValue<24) )
+    {
+
+        RTest_BLOCK_1_EN_Write(1);                                  // Address Mux_1
+        RTest_BLOCK_2_EN_Write(1);
+        RTest_BLOCK_3_EN_Write(0);
+        RTest_BLOCK_4_EN_Write(1);
+        
+        RTest_DEMUX_C_Write(((localMuxValue&0x04)>>2));
+        RTest_DEMUX_B_Write(((localMuxValue&0x02)>>1));
+        RTest_DEMUX_A_Write(localMuxValue&0x01);
+        
+    }
+    
+    else if( (localMuxValue >= 24) && (localMuxValue<32) )
+    {
+
+        RTest_BLOCK_1_EN_Write(1);                                  // Address Mux_1
+        RTest_BLOCK_2_EN_Write(1);
+        RTest_BLOCK_3_EN_Write(1);
+        RTest_BLOCK_4_EN_Write(0);
+        
+        RTest_DEMUX_C_Write(((localMuxValue&0x04)>>2));
+        RTest_DEMUX_B_Write(((localMuxValue&0x02)>>1));
+        RTest_DEMUX_A_Write(localMuxValue&0x01);
+        
+    }
+
 }
 
 

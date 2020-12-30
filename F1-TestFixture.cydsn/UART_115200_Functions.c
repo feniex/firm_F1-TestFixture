@@ -58,7 +58,8 @@ typedef struct
 
 static Packet PacketList[PACKET_TYPE_COUNT] = 
 {
-    {'~', 'S', 3, '\r', '\n'},              // RTest - DataLink - (controller to siren)
+    //{'~', 'S', 3, '\r', '\n'},              // RTest - DataLink - (controller to siren)
+    {'~', '3', 3, '\r', '\n'},
 //    {'~', 'L', 111, '\r', '\n'},            // CTest - quad normal - (controller to relay)
 //    {'~', 'Y', 9, '\r', '\n'},              // RTest - quad serial - (relay to modules)
 //    {'~', 'C', 4, '\r', '\n'},              // (Quad-Controller packets)
@@ -106,23 +107,23 @@ static void detectPacket(uint8 dataByte);
 *******************************************************************************/
 void processByteReceivedHandler_115200(void)
 {
-//    uint8 dataByte = 0;
-//    
-//    static uint8 testbuffer[100];
-//    static uint8 testbuffer_count = 0;
-//    
-//    do
-//    {
-//        dataByte = UART_115200_GetChar();
-//        
-//        testbuffer[testbuffer_count] = dataByte;
-//        testbuffer_count++;
-//        if(testbuffer_count >= 100)
-//            testbuffer_count = 0;
-//        
-//        detectPacket(dataByte);
-//        
-//    }while(UART_115200_ReadRxStatus() & UART_115200_RX_STS_FIFO_NOTEMPTY);
+    uint8 dataByte = 0;
+    
+    static uint8 testbuffer[100];
+    static uint8 testbuffer_count = 0;
+    
+    do
+    {
+        dataByte = UART_115200_GetChar();
+        
+        testbuffer[testbuffer_count] = dataByte;
+        testbuffer_count++;
+        if(testbuffer_count >= 100)
+            testbuffer_count = 0;
+        
+        detectPacket(dataByte);
+        
+    }while(UART_115200_ReadRxStatus() & UART_115200_RX_STS_FIFO_NOTEMPTY);
     
     //UART_Timer_Start();
 }
@@ -306,21 +307,19 @@ void ResetPacketSuccess_115200(void)           //*** This can be improved
 uint8 VerifyPacket_115200(uint8 PacketType)
 {
     
-    static uint16 singlepacketsuccess = 0;
-    
-//    if(PacketType == 0)
-//        MUX_CTRL_460800_Write(0x00);
-    
-//    if(PacketType == 0)
-//        singlepacketsuccess = packetsuccess[0];
-////    else if(PacketType == 1)
-//        singlepacketsuccess = packetsuccess[1];
-        
-        
     if(packetsuccess[PacketType] >= PACKET_VERIFICATION_COUNT)                //maybe we wait until pass here
+    {
+        packetsuccess[PacketType] = 0;
         return(1);
+    }
     else
         return(0);
+        
+        
+//    if(packetsuccess[PacketType] >= PACKET_VERIFICATION_COUNT)                //maybe we wait until pass here
+//        return(1);
+//    else
+//        return(0);
        
 }
 

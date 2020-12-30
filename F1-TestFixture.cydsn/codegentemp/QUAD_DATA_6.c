@@ -1,5 +1,5 @@
 /*******************************************************************************
-* File Name: RS485_RX_EN.c  
+* File Name: QUAD_DATA_6.c  
 * Version 2.20
 *
 * Description:
@@ -15,15 +15,15 @@
 *******************************************************************************/
 
 #include "cytypes.h"
-#include "RS485_RX_EN.h"
+#include "QUAD_DATA_6.h"
 
 /* APIs are not generated for P15[7:6] on PSoC 5 */
 #if !(CY_PSOC5A &&\
-	 RS485_RX_EN__PORT == 15 && ((RS485_RX_EN__MASK & 0xC0) != 0))
+	 QUAD_DATA_6__PORT == 15 && ((QUAD_DATA_6__MASK & 0xC0) != 0))
 
 
 /*******************************************************************************
-* Function Name: RS485_RX_EN_Write
+* Function Name: QUAD_DATA_6_Write
 ****************************************************************************//**
 *
 * \brief Writes the value to the physical port (data output register), masking
@@ -52,17 +52,17 @@
 *  this function.
 *
 * \funcusage
-*  \snippet RS485_RX_EN_SUT.c usage_RS485_RX_EN_Write
+*  \snippet QUAD_DATA_6_SUT.c usage_QUAD_DATA_6_Write
 *******************************************************************************/
-void RS485_RX_EN_Write(uint8 value)
+void QUAD_DATA_6_Write(uint8 value)
 {
-    uint8 staticBits = (RS485_RX_EN_DR & (uint8)(~RS485_RX_EN_MASK));
-    RS485_RX_EN_DR = staticBits | ((uint8)(value << RS485_RX_EN_SHIFT) & RS485_RX_EN_MASK);
+    uint8 staticBits = (QUAD_DATA_6_DR & (uint8)(~QUAD_DATA_6_MASK));
+    QUAD_DATA_6_DR = staticBits | ((uint8)(value << QUAD_DATA_6_SHIFT) & QUAD_DATA_6_MASK);
 }
 
 
 /*******************************************************************************
-* Function Name: RS485_RX_EN_SetDriveMode
+* Function Name: QUAD_DATA_6_SetDriveMode
 ****************************************************************************//**
 *
 * \brief Sets the drive mode for each of the Pins component's pins.
@@ -85,16 +85,16 @@ void RS485_RX_EN_Write(uint8 value)
 *  APIs (primary method) or disable interrupts around this function.
 *
 * \funcusage
-*  \snippet RS485_RX_EN_SUT.c usage_RS485_RX_EN_SetDriveMode
+*  \snippet QUAD_DATA_6_SUT.c usage_QUAD_DATA_6_SetDriveMode
 *******************************************************************************/
-void RS485_RX_EN_SetDriveMode(uint8 mode)
+void QUAD_DATA_6_SetDriveMode(uint8 mode)
 {
-	CyPins_SetPinDriveMode(RS485_RX_EN_0, mode);
+	CyPins_SetPinDriveMode(QUAD_DATA_6_0, mode);
 }
 
 
 /*******************************************************************************
-* Function Name: RS485_RX_EN_Read
+* Function Name: QUAD_DATA_6_Read
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port (pin status register) and masks 
@@ -108,16 +108,16 @@ void RS485_RX_EN_SetDriveMode(uint8 mode)
 *  The current value for the pins in the component as a right justified number.
 *
 * \funcusage
-*  \snippet RS485_RX_EN_SUT.c usage_RS485_RX_EN_Read  
+*  \snippet QUAD_DATA_6_SUT.c usage_QUAD_DATA_6_Read  
 *******************************************************************************/
-uint8 RS485_RX_EN_Read(void)
+uint8 QUAD_DATA_6_Read(void)
 {
-    return (RS485_RX_EN_PS & RS485_RX_EN_MASK) >> RS485_RX_EN_SHIFT;
+    return (QUAD_DATA_6_PS & QUAD_DATA_6_MASK) >> QUAD_DATA_6_SHIFT;
 }
 
 
 /*******************************************************************************
-* Function Name: RS485_RX_EN_ReadDataReg
+* Function Name: QUAD_DATA_6_ReadDataReg
 ****************************************************************************//**
 *
 * \brief Reads the associated physical port's data output register and masks 
@@ -126,8 +126,8 @@ uint8 RS485_RX_EN_Read(void)
 *
 * The data output register controls the signal applied to the physical pin in 
 * conjunction with the drive mode parameter. This is not the same as the 
-* preferred RS485_RX_EN_Read() API because the 
-* RS485_RX_EN_ReadDataReg() reads the data register instead of the status 
+* preferred QUAD_DATA_6_Read() API because the 
+* QUAD_DATA_6_ReadDataReg() reads the data register instead of the status 
 * register. For output pins this is a useful function to determine the value 
 * just written to the pin.
 *
@@ -136,19 +136,19 @@ uint8 RS485_RX_EN_Read(void)
 *  justified number for the component instance.
 *
 * \funcusage
-*  \snippet RS485_RX_EN_SUT.c usage_RS485_RX_EN_ReadDataReg 
+*  \snippet QUAD_DATA_6_SUT.c usage_QUAD_DATA_6_ReadDataReg 
 *******************************************************************************/
-uint8 RS485_RX_EN_ReadDataReg(void)
+uint8 QUAD_DATA_6_ReadDataReg(void)
 {
-    return (RS485_RX_EN_DR & RS485_RX_EN_MASK) >> RS485_RX_EN_SHIFT;
+    return (QUAD_DATA_6_DR & QUAD_DATA_6_MASK) >> QUAD_DATA_6_SHIFT;
 }
 
 
 /* If interrupt is connected for this Pins component */ 
-#if defined(RS485_RX_EN_INTSTAT) 
+#if defined(QUAD_DATA_6_INTSTAT) 
 
     /*******************************************************************************
-    * Function Name: RS485_RX_EN_SetInterruptMode
+    * Function Name: QUAD_DATA_6_SetInterruptMode
     ****************************************************************************//**
     *
     * \brief Configures the interrupt mode for each of the Pins component's
@@ -161,12 +161,12 @@ uint8 RS485_RX_EN_ReadDataReg(void)
     * \param position
     *  The pin position as listed in the Pins component. You may OR these to be 
     *  able to configure the interrupt mode of multiple pins within a Pins 
-    *  component. Or you may use RS485_RX_EN_INTR_ALL to configure the
+    *  component. Or you may use QUAD_DATA_6_INTR_ALL to configure the
     *  interrupt mode of all the pins in the Pins component.       
-    *  - RS485_RX_EN_0_INTR       (First pin in the list)
-    *  - RS485_RX_EN_1_INTR       (Second pin in the list)
+    *  - QUAD_DATA_6_0_INTR       (First pin in the list)
+    *  - QUAD_DATA_6_1_INTR       (Second pin in the list)
     *  - ...
-    *  - RS485_RX_EN_INTR_ALL     (All pins in Pins component)
+    *  - QUAD_DATA_6_INTR_ALL     (All pins in Pins component)
     *
     * \param mode
     *  Interrupt mode for the selected pins. Valid options are documented in
@@ -182,19 +182,19 @@ uint8 RS485_RX_EN_ReadDataReg(void)
     *  port.
     *
     * \funcusage
-    *  \snippet RS485_RX_EN_SUT.c usage_RS485_RX_EN_SetInterruptMode
+    *  \snippet QUAD_DATA_6_SUT.c usage_QUAD_DATA_6_SetInterruptMode
     *******************************************************************************/
-    void RS485_RX_EN_SetInterruptMode(uint16 position, uint16 mode)
+    void QUAD_DATA_6_SetInterruptMode(uint16 position, uint16 mode)
     {
-		if((position & RS485_RX_EN_0_INTR) != 0u) 
+		if((position & QUAD_DATA_6_0_INTR) != 0u) 
 		{ 
-			 RS485_RX_EN_0_INTTYPE_REG = (uint8)mode; 
+			 QUAD_DATA_6_0_INTTYPE_REG = (uint8)mode; 
 		}
     }
     
     
     /*******************************************************************************
-    * Function Name: RS485_RX_EN_ClearInterrupt
+    * Function Name: QUAD_DATA_6_ClearInterrupt
     ****************************************************************************//**
     *
     * \brief Clears any active interrupts attached with the component and returns 
@@ -211,11 +211,11 @@ uint8 RS485_RX_EN_ReadDataReg(void)
     *  those associated with the Pins component.
     *
     * \funcusage
-    *  \snippet RS485_RX_EN_SUT.c usage_RS485_RX_EN_ClearInterrupt
+    *  \snippet QUAD_DATA_6_SUT.c usage_QUAD_DATA_6_ClearInterrupt
     *******************************************************************************/
-    uint8 RS485_RX_EN_ClearInterrupt(void)
+    uint8 QUAD_DATA_6_ClearInterrupt(void)
     {
-        return (RS485_RX_EN_INTSTAT & RS485_RX_EN_MASK) >> RS485_RX_EN_SHIFT;
+        return (QUAD_DATA_6_INTSTAT & QUAD_DATA_6_MASK) >> QUAD_DATA_6_SHIFT;
     }
 
 #endif /* If Interrupts Are Enabled for this Pins component */ 

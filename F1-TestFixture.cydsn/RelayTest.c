@@ -22,7 +22,9 @@
 #define TOLERANCE_VOLTAGE   5  
 #define CURRENT_LOAD        9              // (ohms)
 #define TOLERANCE_CURRENT   2 
-#define TIMEOUT_FAIL        50              // Number of 20msec counts before failure timeout
+//#define TIMEOUT_FAIL        50              // Number of 20msec counts before failure timeout
+
+
 
 static RxPacket_RelaySiren rxPacket_Relay;          // Inputs - 'D' relay to controller
 static RxPacket_RelaySiren * pRxPacket_Relay;       // UART_SIREN
@@ -99,6 +101,10 @@ enum MUX_DEMUX_230400_CHANNEL
     STEST_RELAY            
 };
 
+enum DATATYPE_115200         
+{ 
+    RTEST_DLINK
+};
 enum MUX_115200_CHANNEL      
 { 
     RTEST_DLINK1,    
@@ -108,24 +114,16 @@ enum MUX_115200_CHANNEL
 };
 
 // --------------Test steps---------------
-#define NUMBER_TEST_STEPS   18
+#define NUMBER_TEST_STEPS   11
 
 enum TestStep               // *** Need to get muxes setup permanently, 
 { 
     INITIALIZE_TEST, 
-    SIREN_EN,               // *** (Implemented - need hardware to test)
-    TEST_OUTPUTS,           // ---------------------- 230400 TX TESTED      - (needs hardware)
-    DATALINK,               // (***115200 rx tested)
-    //QUAD_PORTS,           // 460800 RX TESTED   460800 TX TESTED      (*** need to implement last 4 channels and test them all)
-        QUAD_PORT_1,
-        QUAD_PORT_2,
-        QUAD_PORT_3,
-        QUAD_PORT_4,
-        QUAD_PORT_5,
-        QUAD_PORT_6,
-        QUAD_PORT_7,
-        QUAD_PORT_8,
-    UART_SIREN,             // 230400 RX_TESTED     - 230400 TX TESTED      - 
+    SIREN_EN,           // COMPLETE
+    TEST_OUTPUTS,           // (***TF connectors are backwards)
+    DATALINK,               // (***relay seems to send this spuratically - timeout takes like 5sec)
+    QUAD_PORTS,         // COMPLETE
+    UART_SIREN,             // (***relay still has 3 payload bytes for 'H' packet)
     INPUTS,                 // 230400 RX_TESTED     - 230400 TX TESTED      - (needs hardware)
     VBATT,                  // 230400 RX_TESTED                             - COMPLETE
     BLOCK_CURRENTS,         // 230400 RX_TESTED     - 230400 TX TESTED      - COMPLETE
@@ -134,6 +132,12 @@ enum TestStep               // *** Need to get muxes setup permanently,
 };
 
 static uint8 RTestStatus[NUMBER_TEST_STEPS];
+static uint16 RTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,50,500,50,50,50,50,50,50,50};
+
+
+    static uint8 testvalue = 0;
+    //uint8 testvalue = RTest_SIREN_EN_Read();
+
 
 //----------------------------------------
 // Main state machine for F1-Relay Test
@@ -147,21 +151,25 @@ uint8 RelayTest(void)
                
         case INITIALIZE_TEST:
         
-            //isr_count = 0;
+//RTest_TimeoutCount[] = {50,50,50,50,50,
+//                        50,50,50,50,50,
+//                        50,50,50,50,50,
+//                        50,50,50};
         
-//            if(_100ms_flag == 1)
-//                LED_EN_Write(0);
-//        
-//            else if(_100ms_flag == 0)
-//                LED_EN_Write(0);
-                
-            //CyDelay(1000);                      // Pause before next test
+            //CyDelay(1000);                                    // Pause before next test
+        for(uint8 i=0;i<NUMBER_TEST_STEPS;i++)
+            RTestStatus[i] = 'I';
+            
+            CurrentTest.Status = 'I';
+            
+//            LED1_Write(0);
+//            LED2_Write(0);
+            CyDelay(1000);
         
             for (uint8 i=0;i<NUMBER_TEST_STEPS;i++)            // Reset Status of aall test steps to 0
                 RTestStatus[i] = '_';
    
-            // Initialize TX_RelaySiren packet
-            pTxPacket_RelaySiren = getTxPacket_RelaySiren();              // Tx - Get pointers to packet 
+            pTxPacket_RelaySiren = getTxPacket_RelaySiren();              // Tx - Initialize TX_RelaySiren packet 
             for(uint8 i;i<79;i++)
                 pTxPacket_RelaySiren->bytes[i] = i;
 
@@ -192,134 +200,82 @@ uint8 RelayTest(void)
             
             
             //CurrentTest.TestStep = SIREN_EN;
-            CurrentTest.TestStep = TEST_OUTPUTS;
+            //CurrentTest.TestStep = TEST_OUTPUTS;
             //CurrentTest.TestStep = DATALINK;
-            //CurrentTest.TestStep = QUAD_PORT_1;
-            //CurrentTest.TestStep = UART_SIREN; 
+            //CurrentTest.TestStep = QUAD_PORTS;
+            CurrentTest.TestStep = UART_SIREN; 
                    
         break;
              
         case SIREN_EN:
-                
-            //RTest_StartAutomatedStep(); 
+                       
+            RTest_StartAutomatedStep(); 
              
-            //while( (!RTest_SIREN_EN_Read()) && (RelayTestStatus[TestState] != 'F') )              // Wait for test to complete or fail          
+            while( (!RTest_SIREN_EN_Read()) && (RTestStatus[CurrentTest.TestStep] != 'F') )              // Wait for test to complete or fail          
             {} 
             
-            //RTest_StopAutomatedStep();
+            RTest_StopAutomatedStep();
             
-            CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = TEST_OUTPUTS;        
+            CyDelay(500);
+            //CurrentTest.TestStep = INITIALIZE_TEST;
+            CurrentTest.TestStep = TEST_OUTPUTS;        
         break;    
               
         case TEST_OUTPUTS:  
                 
             RTest_StartAutomatedStep(); 
             
-            while(!RTest_Test_Outputs())                                                        // Wait for test to complete or fail
-            {}  
-//            while( (!RTest_Test_Outputs()) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
-//            {}   
+            while( (!RTest_Test_Outputs()) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
+            {}   
             
-//            RTest_StopAutomatedStep();
+            RTest_StopAutomatedStep();
 
-            CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = DATALINK;        
+            //CurrentTest.TestStep = INITIALIZE_TEST;
+            CurrentTest.TestStep = DATALINK;        
         break;        
               
         case DATALINK: 
 
-            RTest_StartAutomatedStep();           
-             
-            while( (!RTest_Test_DataLink()) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
-            {}  
+            RTest_StartAutomatedStep();
             
+            while( (!RTest_Test_DataLink()) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
+            {}          
+ 
             RTest_StopAutomatedStep();
             
+            CyDelay(1000);
+
             CurrentTest.TestStep = INITIALIZE_TEST;
             //CurrentTest.TestStep = QUAD_PORT_1;        
         break;  
-              
-        case QUAD_PORT_1: 
+            
+        case QUAD_PORTS: 
                 
             RTest_StartAutomatedStep();  
                 
             DEMUX_CTRL_460800_Write(RTEST_QUAD_TX);             // Select TX xhannel
-            MUX_CTRL_460800_Write(RTEST_QUAD_1);                // Select RX channel
                       
-            while( (!VerifyPacket_460800(CTEST_RTEST_QUAD)) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
+            while( (!RTest_Test_QuadPorts()) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
             {}    
             
             RTest_StopAutomatedStep();
+            
+            CyDelay(1000);
                   
-            CurrentTest.TestStep = QUAD_PORT_2;      
-        break;  
-            
-        case QUAD_PORT_2: 
-                
-            RTest_StartAutomatedStep();  
-                
-            DEMUX_CTRL_460800_Write(RTEST_QUAD_TX);             // Select TX xhannel
-            MUX_CTRL_460800_Write(RTEST_QUAD_2);                // Select RX channel
-                      
-            while( (!VerifyPacket_460800(CTEST_RTEST_QUAD)) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
-            {}    
-            
-            RTest_StopAutomatedStep();
-                  
-            CurrentTest.TestStep = QUAD_PORT_3;      
-        break;  
-            
-        case QUAD_PORT_3: 
-                
-            RTest_StartAutomatedStep();  
-                
-            DEMUX_CTRL_460800_Write(RTEST_QUAD_TX);             // Select TX xhannel
-            MUX_CTRL_460800_Write(RTEST_QUAD_3);                // Select RX channel
-                      
-            while( (!VerifyPacket_460800(CTEST_RTEST_QUAD)) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
-            {}    
-            
-            RTest_StopAutomatedStep();
-                  
-            CurrentTest.TestStep = QUAD_PORT_4;      
-        break;  
-            
-        case QUAD_PORT_4: 
-                
-            RTest_StartAutomatedStep();  
-                
-            DEMUX_CTRL_460800_Write(RTEST_QUAD_TX);             // Select TX xhannel
-            MUX_CTRL_460800_Write(RTEST_QUAD_4);                // Select RX channel
-                      
-            while( (!VerifyPacket_460800(CTEST_RTEST_QUAD)) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
-            {}    
-            
-            RTest_StopAutomatedStep();
-                  
-            //CurrentTest.TestStep = QUAD_PORT_5; 
             CurrentTest.TestStep = INITIALIZE_TEST;
+            //CurrentTest.TestStep = QUAD_PORT_2;      
         break;  
+               
                 
         case UART_SIREN: 
                 
-//            RTestStatus[CurrentTest.TestStep] = 'B';
-//
-//            RTest_20ms_isr_count = 0;
-//            RTest_20ms_isr_EN = 1;       
-            
-            RTest_StartAutomatedStep();
+            //RTest_StartAutomatedStep();
                 
             while( (!RTest_Test_UART_Siren()) && (RTestStatus[CurrentTest.TestStep] != 'F') )
             {}    
             
-            RTest_StopAutomatedStep();
+            //RTest_StopAutomatedStep();
             
-//            RTest_20ms_isr_EN = 0;
-//            
-//            if(RTestStatus[CurrentTest.TestStep] != 'F')                                   // If not failed, then pass
-//                RTestStatus[CurrentTest.TestStep] = 'P';
-                
             CurrentTest.TestStep = INITIALIZE_TEST;  
             //TestState = INPUTS;                
         break;  
@@ -421,19 +377,23 @@ uint8 RTest_Test_Outputs(void)
 {
 
     uint32 OutputsState = 0;
-    static uint32 channel = 0;
+    uint32 testval = 0;
     
     SetRelayOutputs(1);                                                     // Send command to turn on relay outputs
 
     for (uint8 channel=0; channel<32; channel++)                            // Address and read channels '0-31' in hardware
     {
-        selectADCChannelMux(channel);                                       //*** This needs to be fleshed out when hardware arrives
-        //OutputsState = ( RTest_DEMUX_COM | (RTest_DEMUX_COM << channel) )   // Read RTest_INPUT_DEMUX and store each bit in OutputsState
+        selectADCChannelMux(channel);                                       //*** This needs to be fleshed out when hardware arrives 
+        CyDelay(1);
+        testval = RTest_DEMUX_COM_Read();
+
+        OutputsState = ( OutputsState | (testval << channel) );             // Read RTest_INPUT_DEMUX and store each bit in OutputsState   
     }
     
-    SetRelayOutputs(0);                                                     // Send command to turn off relay outputs
+    //SetRelayOutputs(0);                                                     // Send command to turn off relay outputs
     
-    if(OutputsState == 0xFFFFFF)
+    //if(OutputsState == 0xFFFFFF)
+    if(OutputsState == 0x000303)
         return(1);                                                          // If all outputs are turned on, then return pass
     else
         return(0);                                                          // If not pass, then return fail
@@ -447,18 +407,13 @@ uint8 RTest_Test_Outputs(void)
 uint8 RTest_Test_DataLink(void)
 {
     
-//    //*** 230400bps - Send simulated controller packet - (siren packet)
-//    //  (I think this packet should be sent all the time)
-//        pTxPacket_Relay->Payload.Siren1Tone;
-//        pTxPacket_Relay->Payload.Siren2Tone;
-//        pTxPacket_Relay->Payload.SirenEnable;
+    MUX_CTRL_115200_Write(RTEST_DLINK1);            //Select the RTest_RS485_DLink1_RX channel 
+    while( (!VerifyPacket_115200(RTEST_DLINK)) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
+    {}  
     
-//    //MUX_CTRL_115200_Write(RTEST_DLINK1);            //Select the RTest_RS485_DLink1_RX channel 
-//    while( !VerifyPacket_115200(RTEST_DLINK1) )     //Read and verify datalink packet
-//    {}
-//    //MUX_CTRL_115200_Write(RTEST_DLINK2);            //Select the RTest_RS485_DLink1_RX channel 
-//    while( !VerifyPacket_115200(RTEST_DLINK2) )     //Read and verify datalink packet
-//    {}
+    MUX_CTRL_115200_Write(RTEST_DLINK2);            //Select the RTest_RS485_DLink2_RX channel     
+    while( (!VerifyPacket_115200(RTEST_DLINK)) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
+    {}  
     
     return(1);                                      // If both packets get verified, then return pass
 }
@@ -468,54 +423,18 @@ uint8 RTest_Test_DataLink(void)
 *  Read 'L' packet   (relay to quad device)  - verify successful packet reception
 *  Return: Pass/Fail
 *********************************************************************************************/
-//uint8 RTest_Test_QuadPorts(uint8 muxchannel)
-//{
-//    //static uint8 muxchannelsuccess[8] = {0,0,0,0,0,0,0,0};
-//    //uint8 muxchannel = 0;
-//
-//    DEMUX_CTRL_460800_Write(RTEST_QUAD_TX);             // Tx - Select Quad_Tx demux channel
-//    //DEMUX_CTRL_460800_Write(RTEST_QUAD_TX);             // Tx - Select Quad_Tx demux channel
-//    
-////    //*** Select the mux channel to test - need to do all of them sequentially
-////    //MUX_CTRL_460800_Write(0);           // *** just for test
-//////    MUX_CTRL_460800_Write(muxchannel);
-//////    
-//////    if( VerifyPacket_460800(CTEST_RTEST_QUAD) )
-//////            muxchannelsuccess[muxchannel]++;
-////    
-////    for(uint8 muxchannel = 0; muxchannel < 8; muxchannel++)
-////    {
-////        MUX_CTRL_460800_Write(muxchannel);
-////        
-////        RTest_StartAutomatedStep();
-////        
-//////        if( VerifyPacket_460800(CTEST_RTEST_QUAD) )
-//////            muxchannelsuccess[muxchannel]++;
-////            
-//////        if( muxchannelsuccess[muxchannel] > 10)
-//////            muxchannelsuccess[muxchannel] = 0;
-////
-////        
-////        while( !VerifyPacket_460800(CTEST_RTEST_QUAD) )
-////        {}
-////        LED_EN_Write(0);
-////        
-////        RTest_StopAutomatedStep();
-////        
-////        //if(CurrentTest.TestStep =
-//        
-////    }
-////    
-////
-////    
-//////    if(muxchannelsuccess[muxchannel] == )
-////
-////    //return(1);          // If pass return a 1
-////    return(0);          // else
-//    
-//    return( VerifyPacket_460800(CTEST_RTEST_QUAD) );
-//    return( VerifyPacket_460800(CTEST_RTEST_QUAD) );
-//}
+uint8 RTest_Test_QuadPorts(void)
+{
+    for(uint8 i=0;i<8;i++)
+    {
+        MUX_CTRL_460800_Write(RTEST_QUAD_1 + i);                // Select RX channel         
+        while( (!VerifyPacket_460800(CTEST_RTEST_QUAD)) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
+        {}
+    }
+    
+    return(1);
+
+}
 
 //*** This needs some work
 /* 230400bps ********************************************************************************
@@ -529,7 +448,7 @@ uint8 RTest_Test_UART_Siren(void)
 // Then check that the packet going from the relay to the controller    
    
     // test receive from siren
-    //DEMUX_CTRL_230400_Write(RTEST_SIREN);                  // Rx - Select the demux channel
+    DEMUX_CTRL_230400_Write(RTEST_SIREN);                  // Rx - Select the demux channel
 
     pTxPacket_H = getTxPacket_H();                          // Load the packet with data to check for in 'D' packet 
     pTxPacket_H->Payload.SirenFirm_0 = 's';
@@ -541,6 +460,9 @@ uint8 RTest_Test_UART_Siren(void)
     
     // test transmit to controller ***need tx wires on relay to test
     MUX_CTRL_230400_Write(RTEST_CONT);                                  // Rx - Select the mux channel
+    while( (!VerifyPacket_230400(RTEST_CONT)) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
+    {}
+    
     
 //    pRxPacket_Relay = getRxPacket_Relay();                              // Rx - Get pointers to packet      
 //    while(  (pRxPacket_Relay->Payload.SirenFirm_0 != 's' ) &&           // Wait for the packet to be verified
@@ -549,30 +471,17 @@ uint8 RTest_Test_UART_Siren(void)
 //            (pRxPacket_Relay->Payload.Speaker1_Overcurrent != 's' ) &&
 //            (pRxPacket_Relay->Payload.Speaker2_Overcurrent != 's' ) )
 //    {}
-//          
-//    LED_EN_Write(1);
+          
+    LED_EN_Write(1);
 //----------------------------------------------------------------------------------------------
-    
-// ***We need to detect a packet going (from the relay to the siren)
-// Send a 'S' packet (from controller to relay/siren)
-// Read and verify 'S' packets (from relay to siren)
-    
-    //DEMUX_CTRL_230400_Write(RTEST_CONT);                // Tx - Select the demux channel
-    //(no need to load the packet)
-    //CyDelay(100);
-    
-//////    pTxPacket_Relay = getTxPacket_Relay();              // Tx - Get pointers to packet
-//////    pTxPacket_Relay->Payload.SirenFirm_0 = 0;          // Tx - Setup packet with test data
-//////    pTxPacket_Relay->Payload.SirenFirm_1 = 1;
-//////    pTxPacket_Relay->Payload.SirenFirm_2 = 2;
-//////    pTxPacket_Relay->Payload.Speaker1_Overcurrent = 1;
-//////    pTxPacket_Relay->Payload.Speaker2_Overcurrent = 1;
-    
-    //MUX_CTRL_230400_Write(RTEST_SIREN);                                  // Rx - Select the mux channel
-    //CyDelay(100);
-    //return( VerifyPacket_230400(STEST_RELAY) );          // Rx - When packet has been verified, return 'pass'
 
-    return(0);
+    DEMUX_CTRL_230400_Write(RTEST_CONT);                            // Tx - Send a 'S' packet to relay
+    
+    MUX_CTRL_230400_Write(RTEST_SIREN);                             // Rx - Verify a 'S' packet is received from relay
+    while( (!VerifyPacket_230400(STEST_RELAY)) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
+    {}
+
+    return(1);
 }
 
 
@@ -829,8 +738,8 @@ uint8 RTest_BlockCurrent(uint8 block)
 void RTest_10ms_isr(void)                       // Times Quad and Audio packets
 {
 
-//    if(CurrentTest.TestStep == QUAD_PORTS)        // *** moved to 20ms  
-//        sendPacketToRelay_Quad();
+    if(CurrentTest.TestStep == QUAD_PORTS)        // *** moved to 20ms  
+        sendPacketToRelay_Quad();
 
     return;
     
@@ -838,20 +747,14 @@ void RTest_10ms_isr(void)                       // Times Quad and Audio packets
 
 void RTest_20ms_isr(void)                       // Manage Timeout for failure
 {
-        if( (CurrentTest.TestStep == QUAD_PORT_1) ||        // *** send quad packet if needed 
-            (CurrentTest.TestStep == QUAD_PORT_2) ||
-            (CurrentTest.TestStep == QUAD_PORT_3) ||
-            (CurrentTest.TestStep == QUAD_PORT_4) ||
-            (CurrentTest.TestStep == QUAD_PORT_5) ||
-            (CurrentTest.TestStep == QUAD_PORT_6) ||
-            (CurrentTest.TestStep == QUAD_PORT_7) ||
-            (CurrentTest.TestStep == QUAD_PORT_8) )
-        {
-            sendPacketToRelay_Quad();
-        }
+    if(CurrentTest.TestStep == QUAD_PORTS)       // *** send quad packet if needed 
+    {
+        sendPacketToRelay_Quad();
+    }
     
-    RTest_20ms_isr_count++;
-    if(RTest_20ms_isr_count > TIMEOUT_FAIL)
+    RTest_20ms_isr_count++;                                         // 
+    //if(RTest_20ms_isr_count > TIMEOUT_FAIL)
+    if(RTest_20ms_isr_count > RTest_TimeoutCount[CurrentTest.TestStep])
     {
         RTest_20ms_isr_count = 0;
         

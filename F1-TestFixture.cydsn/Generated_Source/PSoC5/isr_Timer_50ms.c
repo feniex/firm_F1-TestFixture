@@ -194,26 +194,31 @@ CY_ISR(isr_Timer_50ms_Interrupt)
         STest_50ms_isr();
     
     // *** Add LED stuff here
-//        if(CurrentTest.Status == 'B')
-//        {
-//            LED1_Write(1);
-//            LED2_Write(1);
-//        }
-//        else if(CurrentTest.Status == 'W')
-//        {
-//            LED1_Write(1);
-//            LED2_Write(1); 
-//        }
-//        else if(CurrentTest.Status == 'P')
-//        {
-//            LED1_Write(1);
-//            LED2_Write(0); 
-//        }
-//        else if(CurrentTest.Status == 'F')
-//        {
-//            LED1_Write(0);
-//            LED2_Write(1); 
-//        }
+        if(CurrentTest.Status == 'B')
+        {
+            LED1_Write(1);
+            LED2_Write(1);
+        }
+        else if(CurrentTest.Status == 'W')
+        {
+            LED1_Write(1);
+            LED2_Write(1); 
+        }
+        else if(CurrentTest.Status == 'P')
+        {
+            LED1_Write(1);
+            LED2_Write(0); 
+        }
+        else if(CurrentTest.Status == 'F')
+        {
+            LED1_Write(0);
+            LED2_Write(1); 
+        }
+        else
+        {
+            LED1_Write(0);
+            LED2_Write(0); 
+        }
         
         
 

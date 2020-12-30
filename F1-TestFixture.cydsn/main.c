@@ -134,7 +134,7 @@ int main()
 static void initializePeripherals(void)
 {
     
-    RS485_RX_EN_Write(1);                       // *** for testing with siren board only
+    //RS485_RX_EN_Write(1);                       // *** for testing with siren board only
     
     //Debouncer_PB
     //isr_PB_Start();
@@ -146,8 +146,8 @@ static void initializePeripherals(void)
     UART_230400_Start();    
     isr_UART_230400_Start();
     //----------Start UART_115200--------
-//    UART_115200_Start();    
-//    isr_UART_115200_Start();
+    UART_115200_Start();    
+    isr_UART_115200_Start();
     //----------Start UART_9600----------
 //    UART_9600_Start();    
 //    isr_UART_9600_Start();

@@ -295,21 +295,13 @@ void ResetPacketSuccess(void)           //*** This can be improved
 
 uint8 VerifyPacket_230400(uint8 PacketType)
 {
-    
-    static uint16 singlepacketsuccess = 0;
-    
-////    if(PacketType == 0)
-//////        MUX_CTRL_460800_Write(0x00);
-////    
-////    if(PacketType == 0)
-////        singlepacketsuccess = packetsuccess[0];
-//////    else if(PacketType == 1)
-//////        singlepacketsuccess = packetsuccess[1];
+
+    if(packetsuccess[PacketType] >= PACKET_VERIFICATION_COUNT)                //maybe we wait until pass here
+    {
+        packetsuccess[PacketType] = 0;
         
-    singlepacketsuccess = packetsuccess[PacketType];
-        
-    if(singlepacketsuccess >= PACKET_VERIFICATION_COUNT)                //maybe we wait until pass here
         return(1);
+    }
     else
         return(0);
        
@@ -356,23 +348,24 @@ void sendPacketToRelaySiren(void)                   //*** This part needs some w
     
     pTxPacket_RelaySiren = getTxPacket_RelaySiren();              // Tx - Get pointers to packet 
     
+    DEMUX_CTRL_230400_Write(RTEST_CONTROLLER);
+    
 //    checkSumRelay = 0;
 //    for(checkSumRelayIterator = 0; checkSumRelayIterator<PacketList[CTEST_RELAY].PAYLOAD_SIZE; checkSumRelayIterator++)     // Calculate and load checksum
 //    {
 //        checkSumRelay ^= pTxPacket_Controller->bytes[checkSumRelayIterator];
 //    }
     
-//        pTxPacket_RelaySiren->Payload.StartByte_FLB = '~';
-//        pTxPacket_RelaySiren->Payload.FLB_PacketType = '3';
-//        pTxPacket_RelaySiren->Payload.StopByte1_FLB = 0x0D;
-//        pTxPacket_RelaySiren->Payload.StopByte2_FLB = 0x0A;    
+        pTxPacket_RelaySiren->Payload.StartByte_FLB = '~';
+        pTxPacket_RelaySiren->Payload.FLB_PacketType = '3';
+        pTxPacket_RelaySiren->Payload.StopByte1_FLB = 0x0D;
+        pTxPacket_RelaySiren->Payload.StopByte2_FLB = 0x0A; 
+    
         pTxPacket_RelaySiren->Payload.StartByte1_Siren = '~';    
         pTxPacket_RelaySiren->Payload.Siren_PacketType = 'S';
-        
-        //pTxPacket_RelaySiren->Payload.Siren1Tone = 0x01;
-        
         pTxPacket_RelaySiren->Payload.StopByte1_Siren = 0x0D;
-        pTxPacket_RelaySiren->Payload.StopByte2_Siren = 0x0A;                       
+        pTxPacket_RelaySiren->Payload.StopByte2_Siren = 0x0A;
+    
         pTxPacket_RelaySiren->Payload.StartByte1_Relay = '~';
         pTxPacket_RelaySiren->Payload.Relay_PacketType = 'P';
         pTxPacket_RelaySiren->Payload.StopByte1_Relay = 0x0D;
