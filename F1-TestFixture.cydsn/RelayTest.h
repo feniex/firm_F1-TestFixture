@@ -41,5 +41,7 @@ void SetRelayOutputs(uint8 enable);
 void RTest_StartAutomatedStep(void);
 void RTest_StopAutomatedStep(void);
 
+void SetRelayInputs(uint8 enable);
+
 
 /* [] END OF FILE */

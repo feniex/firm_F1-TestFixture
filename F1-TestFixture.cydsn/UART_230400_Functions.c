@@ -240,6 +240,7 @@ static void detectPacket(uint8 dataByte)
                 {
                    pRxPacket_RelaySiren = getRxPacket_RelaySiren();
                    memcpy(&pRxPacket_RelaySiren->bytes[0], &packet[2], PacketList[RTEST_CONTROLLER].PAYLOAD_SIZE);
+                   //memcpy(&pRxPacket_Relay->bytes[0], &packet[2], PacketList[RTEST_CONTROLLER].PAYLOAD_SIZE);
                    packetsuccess[RTEST_CONTROLLER]++;   
                 }
                 else if(currentType == RTEST_SIREN)
@@ -406,6 +407,8 @@ void sendPacket_SirenToRelay(void)
     
     static TxPacket_RelaySiren txPacket_RelaySiren;            
     static TxPacket_RelaySiren * pTxPacket_RelaySiren;
+    
+    DEMUX_CTRL_230400_Write(RTEST_SIREN); 
     
     pTxPacket_H = getTxPacket_H();
 

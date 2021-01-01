@@ -93,33 +93,36 @@ uint8 ControllerTest(void)
         
         case INITIALIZE_TEST:
         
+      
+        
+            //TestState = INITIALIZE_TEST;
             TestState = CONFIRM_BOOTUP;
         
         break;
         
         case CONFIRM_BOOTUP:
         
-        //***CTest_SendIgnitionState(IGNITION_ON);                 // Simulate ignition ON
-            
-        //*** need to setup a transmit to controller every 20msec - (this part will need some work still)
-        // (this is causing priority issues and messes up the Rx)
-            
-        // Verify the SOM has booted by verifying a valid packet is being sent (could be any packet coming from the SOM)
-            ResetPacketSuccess();                       // Reset the packetsuccess count
-            while( !VerifyPacket_230400(0) )                   // Wait for 5 successful packets - (this looks for the Relay 'P' packet, it might be better to look for the entire 'I' packet with the checksum)
-            {
-//                LED_EN_Write(0);
-            }
-            
-        // Indicate this step has been passed and move to next step
-//            LED_EN_Write(1);                            
-            //CyDelay(1000);
-//            LED_EN_Write(0);
-            
-            TestState = TEST_POWERMODES;                // Move to the next test step
-            
-        //*** need to add a timeout here - if 5 packets aren't received in a certain time, then move to TestState = FAIL            
-        //  TestState = FAIL;
+            while(1);
+        
+//        //***CTest_SendIgnitionState(IGNITION_ON);                 // Simulate ignition ON
+//            
+//        //*** need to setup a transmit to controller every 20msec - (this part will need some work still)
+//        // (this is causing priority issues and messes up the Rx)
+//            
+//        // Verify the SOM has booted by verifying a valid packet is being sent (could be any packet coming from the SOM)
+//            ResetPacketSuccess();                       // Reset the packetsuccess count
+//            while( !VerifyPacket_230400(0) )                   // Wait for 5 successful packets - (this looks for the Relay 'P' packet, it might be better to look for the entire 'I' packet with the checksum)
+//            {
+////                LED_EN_Write(0);
+//            }
+//            
+//        // Indicate this step has been passed and move to next step
+////            LED_EN_Write(1);                            
+//            //CyDelay(1000);
+////            LED_EN_Write(0);
+        
+            TestState = INITIALIZE_TEST;                // Move to the next test step         
+            //TestState = TEST_POWERMODES;
         
         break;
         

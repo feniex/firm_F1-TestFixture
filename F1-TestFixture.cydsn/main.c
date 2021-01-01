@@ -82,8 +82,8 @@ int main()
     
     for(;;)
     {     
-        //CurrentTest.SelectedTest = CTEST;
-        CurrentTest.SelectedTest = RTEST;
+        CurrentTest.SelectedTest = CTEST;
+        //CurrentTest.SelectedTest = RTEST;
         //CurrentTest.SelectedTest = STEST;
         
         switch(CurrentTest.SelectedTest)
