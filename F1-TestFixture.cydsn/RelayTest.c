@@ -22,9 +22,6 @@
 #define TOLERANCE_VOLTAGE   5  
 #define CURRENT_LOAD        9              // (ohms)
 #define TOLERANCE_CURRENT   2 
-//#define TIMEOUT_FAIL        50              // Number of 20msec counts before failure timeout
-
-
 
 static RxPacket_RelaySiren rxPacket_Relay;          // Inputs - 'D' relay to controller
 static RxPacket_RelaySiren * pRxPacket_Relay;       // UART_SIREN
@@ -118,6 +115,9 @@ enum MUX_115200_CHANNEL
 
 // --------------Test steps---------------
 #define NUMBER_TEST_STEPS   11
+static uint16 RTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,50,500,50,50,50,50,50,50,50};  // Number of 20msec counts before failure timeout, for each step
+
+static uint8 RTestStatus[NUMBER_TEST_STEPS];
 
 enum TestStep               // *** Need to get muxes setup permanently, 
 { 
@@ -134,12 +134,6 @@ enum TestStep               // *** Need to get muxes setup permanently,
     FAIL
 };
 
-static uint8 RTestStatus[NUMBER_TEST_STEPS];
-static uint16 RTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,50,500,50,50,50,50,50,50,50};
-
-
-    static uint8 testvalue = 0;
-    //uint8 testvalue = RTest_SIREN_EN_Read();
 
 
 //----------------------------------------
@@ -147,26 +141,21 @@ static uint16 RTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,50,500,50,50,50,50,
 //----------------------------------------
 uint8 RelayTest(void)
 {
-    //TestState = VBATT;                  //*** Comment this out
     
     switch(CurrentTest.TestStep)
     {   
                
         case INITIALIZE_TEST:
-        
-            for(uint8 i=0;i<NUMBER_TEST_STEPS;i++)
-                RTestStatus[i] = 'I';
+
+//            for(uint8 i=0;i<NUMBER_TEST_STEPS;i++)
+//                RTestStatus[i] = 'I';
             
-            CurrentTest.Status = 'I';
-            
-//            LED1_Write(0);
-//            LED2_Write(0);
-            CyDelay(1000);
+            CurrentTest.Status = 'I';                              
         
-            for (uint8 i=0;i<NUMBER_TEST_STEPS;i++)            // Reset Status of aall test steps to 0
+            for (uint8 i=0;i<NUMBER_TEST_STEPS;i++)                 // Reset Status of aall test steps to 0
                 RTestStatus[i] = '_';
-   
-            pTxPacket_RelaySiren = getTxPacket_RelaySiren();              // Tx - Initialize TX_RelaySiren packet 
+
+            pTxPacket_RelaySiren = getTxPacket_RelaySiren();        // Tx - Initialize TX_RelaySiren packet 
             for(uint8 i;i<79;i++)
                 pTxPacket_RelaySiren->bytes[i] = i;
 
@@ -194,7 +183,8 @@ uint8 RelayTest(void)
             // RTest_HSide6_Write(0);
             // RTest_HSide7_Write(0);
             // RTest_HSide8_Write(0);
-            
+                    
+            CyDelay(1000);
             
             //CurrentTest.TestStep = SIREN_EN;
             //CurrentTest.TestStep = TEST_OUTPUTS;
@@ -716,7 +706,7 @@ void RTest_20ms_isr(void)                       // Manage Timeout for failure
     }
     
     RTest_20ms_isr_count++;                                         // 
-    //if(RTest_20ms_isr_count > TIMEOUT_FAIL)
+
     if(RTest_20ms_isr_count > RTest_TimeoutCount[CurrentTest.TestStep])
     {
         RTest_20ms_isr_count = 0;

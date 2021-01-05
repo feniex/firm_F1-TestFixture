@@ -13,7 +13,7 @@
 
 uint8 ControllerTest(void);
 
-uint8 CTest_VerifyPacket_QUAD(void);
+//uint8 CTest_VerifyPacket_QUAD(void);
 
 uint8 CTest_ReadPushbuttons(void);
 uint8 CTest_ReadPowerMode(void);
@@ -27,6 +27,11 @@ void CTest_20ms_isr(void);
 void CTest_50ms_isr(void);
 
 void CTest_sendDiagPacket(void);
+
+void CTest_StartAutomatedStep(void);
+void CTest_StopAutomatedStep(void);
+
+void CTest_PB_WaitForAction(void);
 
 
 /* [] END OF FILE */

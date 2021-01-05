@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
   27:main.c        **** 
   28:main.c        **** //#include "UART_230400.h"
   29:main.c        **** #include "ControllerTest.h"
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 2
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 2
 
 
   30:main.c        **** #include "RelayTest.h"
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
   34              		.cfi_def_cfa_offset 8
   35              		.cfi_offset 7, -8
   36              		.cfi_offset 14, -4
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 3
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 3
 
 
   37 0002 00AF     		add	r7, sp, #0
@@ -147,8 +147,11 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
   86:main.c        ****         //CurrentTest.SelectedTest = RTEST;
   87:main.c        ****         //CurrentTest.SelectedTest = STEST;
   88:main.c        ****         
-  89:main.c        ****         switch(CurrentTest.SelectedTest)
-  53              		.loc 1 89 0
+  89:main.c        **** //        CTest_USB_5V_EN_Write(0); 
+  90:main.c        **** //        while(1);
+  91:main.c        ****         
+  92:main.c        ****         switch(CurrentTest.SelectedTest)
+  53              		.loc 1 92 0
   54 0010 134B     		ldr	r3, .L10
   55 0012 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
   56 0014 012B     		cmp	r3, #1
@@ -157,90 +160,90 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
   59 001a 15D0     		beq	.L4
   60 001c 002B     		cmp	r3, #0
   61 001e 1DD1     		bne	.L2
-  90:main.c        ****         {
-  91:main.c        ****             case CTEST:
-  92:main.c        ****             
-  93:main.c        ****                 CurrentTest.TestStep = INITIALIZE_TEST;
-  62              		.loc 1 93 0
+  93:main.c        ****         {
+  94:main.c        ****             case CTEST:
+  95:main.c        ****             
+  96:main.c        ****                 CurrentTest.TestStep = INITIALIZE_TEST;
+  62              		.loc 1 96 0
   63 0020 0F4B     		ldr	r3, .L10
   64 0022 0022     		movs	r2, #0
   65 0024 5A70     		strb	r2, [r3, #1]
-  94:main.c        ****                 while(!ControllerTest())
-  66              		.loc 1 94 0
+  97:main.c        ****                 while(!ControllerTest())
+  66              		.loc 1 97 0
   67 0026 00BF     		nop
   68              	.L6:
-  69              		.loc 1 94 0 is_stmt 0 discriminator 1
+  69              		.loc 1 97 0 is_stmt 0 discriminator 1
   70 0028 FFF7FEFF 		bl	ControllerTest
   71 002c 0346     		mov	r3, r0
   72 002e 002B     		cmp	r3, #0
   73 0030 FAD0     		beq	.L6
-  95:main.c        ****                 {}
-  96:main.c        **** 
-  97:main.c        ****             break;
-  74              		.loc 1 97 0 is_stmt 1
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 4
+  98:main.c        ****                 {}
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 4
 
 
+  99:main.c        **** 
+ 100:main.c        ****             break;
+  74              		.loc 1 100 0 is_stmt 1
   75 0032 13E0     		b	.L2
   76              	.L3:
-  98:main.c        ****                 
-  99:main.c        ****             case RTEST:
- 100:main.c        ****             
- 101:main.c        ****                 CurrentTest.TestStep = INITIALIZE_TEST;
-  77              		.loc 1 101 0
+ 101:main.c        ****                 
+ 102:main.c        ****             case RTEST:
+ 103:main.c        ****             
+ 104:main.c        ****                 CurrentTest.TestStep = INITIALIZE_TEST;
+  77              		.loc 1 104 0
   78 0034 0A4B     		ldr	r3, .L10
   79 0036 0022     		movs	r2, #0
   80 0038 5A70     		strb	r2, [r3, #1]
- 102:main.c        ****                 while(!RelayTest())
-  81              		.loc 1 102 0
+ 105:main.c        ****                 while(!RelayTest())
+  81              		.loc 1 105 0
   82 003a 00BF     		nop
   83              	.L7:
-  84              		.loc 1 102 0 is_stmt 0 discriminator 1
+  84              		.loc 1 105 0 is_stmt 0 discriminator 1
   85 003c FFF7FEFF 		bl	RelayTest
   86 0040 0346     		mov	r3, r0
   87 0042 002B     		cmp	r3, #0
   88 0044 FAD0     		beq	.L7
- 103:main.c        ****                 {}
- 104:main.c        **** 
- 105:main.c        ****             break;    
-  89              		.loc 1 105 0 is_stmt 1
+ 106:main.c        ****                 {}
+ 107:main.c        **** 
+ 108:main.c        ****             break;    
+  89              		.loc 1 108 0 is_stmt 1
   90 0046 09E0     		b	.L2
   91              	.L4:
- 106:main.c        ****                 
- 107:main.c        ****             case STEST:
- 108:main.c        ****             
- 109:main.c        ****                 CurrentTest.TestStep = INITIALIZE_TEST;
-  92              		.loc 1 109 0
+ 109:main.c        ****                 
+ 110:main.c        ****             case STEST:
+ 111:main.c        ****             
+ 112:main.c        ****                 CurrentTest.TestStep = INITIALIZE_TEST;
+  92              		.loc 1 112 0
   93 0048 054B     		ldr	r3, .L10
   94 004a 0022     		movs	r2, #0
   95 004c 5A70     		strb	r2, [r3, #1]
- 110:main.c        ****                 while(!SirenTest())
-  96              		.loc 1 110 0
+ 113:main.c        ****                 while(!SirenTest())
+  96              		.loc 1 113 0
   97 004e 00BF     		nop
   98              	.L8:
-  99              		.loc 1 110 0 is_stmt 0 discriminator 1
+  99              		.loc 1 113 0 is_stmt 0 discriminator 1
  100 0050 FFF7FEFF 		bl	SirenTest
  101 0054 0346     		mov	r3, r0
  102 0056 002B     		cmp	r3, #0
  103 0058 FAD0     		beq	.L8
- 111:main.c        ****                 {}
- 112:main.c        **** 
- 113:main.c        ****             break;   
- 104              		.loc 1 113 0 is_stmt 1
+ 114:main.c        ****                 {}
+ 115:main.c        **** 
+ 116:main.c        ****             break;   
+ 104              		.loc 1 116 0 is_stmt 1
  105 005a 00BF     		nop
  106              	.L2:
- 114:main.c        ****         }
- 115:main.c        ****             
- 116:main.c        ****     }
- 107              		.loc 1 116 0 discriminator 1
+ 117:main.c        ****         }
+ 118:main.c        ****             
+ 119:main.c        ****     }
+ 107              		.loc 1 119 0 discriminator 1
  108 005c D5E7     		b	.L9
  109              	.L11:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 5
+
+
  110 005e 00BF     		.align	2
  111              	.L10:
  112 0060 00000000 		.word	CurrentTest
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 5
-
-
  113              		.cfi_endproc
  114              	.LFE63:
  115              		.size	main, .-main
@@ -251,26 +254,26 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  120              		.type	initializePeripherals, %function
  121              	initializePeripherals:
  122              	.LFB64:
- 117:main.c        ****     
- 118:main.c        **** }
- 119:main.c        **** 
- 120:main.c        **** /*******************************************************************************
- 121:main.c        **** * Function Name: initializePeripherals
- 122:main.c        **** ********************************************************************************
- 123:main.c        **** *
- 124:main.c        **** * Summary:
- 125:main.c        **** *  Sets up the watchdog timer, disables, power amplifiers, and enables all ISRs
+ 120:main.c        ****     
+ 121:main.c        **** }
+ 122:main.c        **** 
+ 123:main.c        **** /*******************************************************************************
+ 124:main.c        **** * Function Name: initializePeripherals
+ 125:main.c        **** ********************************************************************************
  126:main.c        **** *
- 127:main.c        **** * Parameters:  
- 128:main.c        **** *   None
+ 127:main.c        **** * Summary:
+ 128:main.c        **** *  Sets up the watchdog timer, disables, power amplifiers, and enables all ISRs
  129:main.c        **** *
- 130:main.c        **** * Return:
+ 130:main.c        **** * Parameters:  
  131:main.c        **** *   None
  132:main.c        **** *
- 133:main.c        **** *******************************************************************************/
- 134:main.c        **** static void initializePeripherals(void)
- 135:main.c        **** {
- 123              		.loc 1 135 0
+ 133:main.c        **** * Return:
+ 134:main.c        **** *   None
+ 135:main.c        **** *
+ 136:main.c        **** *******************************************************************************/
+ 137:main.c        **** static void initializePeripherals(void)
+ 138:main.c        **** {
+ 123              		.loc 1 138 0
  124              		.cfi_startproc
  125              		@ args = 0, pretend = 0, frame = 0
  126              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -280,89 +283,89 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  130              		.cfi_offset 14, -4
  131 0002 00AF     		add	r7, sp, #0
  132              		.cfi_def_cfa_register 7
- 136:main.c        ****     
- 137:main.c        ****     //RS485_RX_EN_Write(1);                       // *** for testing with siren board only
- 138:main.c        ****     
- 139:main.c        ****     //Debouncer_PB
- 140:main.c        ****     //isr_PB_Start();
+ 139:main.c        ****     
+ 140:main.c        ****     //RS485_RX_EN_Write(1);                       // *** for testing with siren board only
  141:main.c        ****     
- 142:main.c        ****     //----------Start UART_460800--------
- 143:main.c        ****     UART_460800_Start();    
- 133              		.loc 1 143 0
+ 142:main.c        ****     //Debouncer_PB
+ 143:main.c        ****     //isr_PB_Start();
+ 144:main.c        ****     
+ 145:main.c        ****     //----------Start UART_460800--------
+ 146:main.c        ****     UART_460800_Start();    
+ 133              		.loc 1 146 0
  134 0004 FFF7FEFF 		bl	UART_460800_Start
- 144:main.c        ****     isr_UART_460800_Start();
- 135              		.loc 1 144 0
+ 147:main.c        ****     isr_UART_460800_Start();
+ 135              		.loc 1 147 0
  136 0008 FFF7FEFF 		bl	isr_UART_460800_Start
- 145:main.c        ****     //----------Start UART_230400--------
- 146:main.c        ****     UART_230400_Start();    
- 137              		.loc 1 146 0
+ 148:main.c        ****     //----------Start UART_230400--------
+ 149:main.c        ****     UART_230400_Start();    
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 6
+
+
+ 137              		.loc 1 149 0
  138 000c FFF7FEFF 		bl	UART_230400_Start
- 147:main.c        ****     isr_UART_230400_Start();
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 6
-
-
- 139              		.loc 1 147 0
+ 150:main.c        ****     isr_UART_230400_Start();
+ 139              		.loc 1 150 0
  140 0010 FFF7FEFF 		bl	isr_UART_230400_Start
- 148:main.c        ****     //----------Start UART_115200--------
- 149:main.c        ****     UART_115200_Start();    
- 141              		.loc 1 149 0
+ 151:main.c        ****     //----------Start UART_115200--------
+ 152:main.c        ****     UART_115200_Start();    
+ 141              		.loc 1 152 0
  142 0014 FFF7FEFF 		bl	UART_115200_Start
- 150:main.c        ****     isr_UART_115200_Start();
- 143              		.loc 1 150 0
+ 153:main.c        ****     isr_UART_115200_Start();
+ 143              		.loc 1 153 0
  144 0018 FFF7FEFF 		bl	isr_UART_115200_Start
- 151:main.c        ****     //----------Start UART_9600----------
- 152:main.c        **** //    UART_9600_Start();    
- 153:main.c        **** //    isr_UART_9600_Start();
- 154:main.c        ****     
- 155:main.c        ****     
- 156:main.c        ****     //UART_1_Start();    
- 157:main.c        ****     //isr_UART_230400_Start();
- 158:main.c        **** 
- 159:main.c        ****     
- 160:main.c        ****     //-----------------------------------
- 161:main.c        ****     
- 162:main.c        ****     Timer_50ms_Start();
- 145              		.loc 1 162 0
- 146 001c FFF7FEFF 		bl	Timer_50ms_Start
- 163:main.c        ****     isr_Timer_50ms_Start();
- 147              		.loc 1 163 0
- 148 0020 FFF7FEFF 		bl	isr_Timer_50ms_Start
+ 154:main.c        ****     //----------Start UART_9600----------
+ 155:main.c        **** //    UART_9600_Start();    
+ 156:main.c        **** //    isr_UART_9600_Start();
+ 157:main.c        ****     
+ 158:main.c        ****     
+ 159:main.c        ****     //UART_1_Start();    
+ 160:main.c        ****     //isr_UART_230400_Start();
+ 161:main.c        **** 
+ 162:main.c        ****     
+ 163:main.c        ****     //-----------------------------------
  164:main.c        ****     
- 165:main.c        ****     Timer_20ms_Start();
- 149              		.loc 1 165 0
- 150 0024 FFF7FEFF 		bl	Timer_20ms_Start
- 166:main.c        ****     isr_Timer_20ms_Start();
- 151              		.loc 1 166 0
- 152 0028 FFF7FEFF 		bl	isr_Timer_20ms_Start
+ 165:main.c        ****     Timer_50ms_Start();
+ 145              		.loc 1 165 0
+ 146 001c FFF7FEFF 		bl	Timer_50ms_Start
+ 166:main.c        ****     isr_Timer_50ms_Start();
+ 147              		.loc 1 166 0
+ 148 0020 FFF7FEFF 		bl	isr_Timer_50ms_Start
  167:main.c        ****     
- 168:main.c        ****     Timer_10ms_Start();
- 153              		.loc 1 168 0
- 154 002c FFF7FEFF 		bl	Timer_10ms_Start
- 169:main.c        ****     isr_Timer_10ms_Start();
- 155              		.loc 1 169 0
- 156 0030 FFF7FEFF 		bl	isr_Timer_10ms_Start
+ 168:main.c        ****     Timer_20ms_Start();
+ 149              		.loc 1 168 0
+ 150 0024 FFF7FEFF 		bl	Timer_20ms_Start
+ 169:main.c        ****     isr_Timer_20ms_Start();
+ 151              		.loc 1 169 0
+ 152 0028 FFF7FEFF 		bl	isr_Timer_20ms_Start
  170:main.c        ****     
- 171:main.c        ****     //WaveDAC_Start();
- 172:main.c        ****     
- 173:main.c        ****     Timer_DAC_Start();
- 157              		.loc 1 173 0
+ 171:main.c        ****     Timer_10ms_Start();
+ 153              		.loc 1 171 0
+ 154 002c FFF7FEFF 		bl	Timer_10ms_Start
+ 172:main.c        ****     isr_Timer_10ms_Start();
+ 155              		.loc 1 172 0
+ 156 0030 FFF7FEFF 		bl	isr_Timer_10ms_Start
+ 173:main.c        ****     
+ 174:main.c        ****     //WaveDAC_Start();
+ 175:main.c        ****     
+ 176:main.c        ****     Timer_DAC_Start();
+ 157              		.loc 1 176 0
  158 0034 FFF7FEFF 		bl	Timer_DAC_Start
- 174:main.c        ****     
- 175:main.c        ****     ADC_AudioStream_Start();
- 159              		.loc 1 175 0
+ 177:main.c        ****     
+ 178:main.c        ****     ADC_AudioStream_Start();
+ 159              		.loc 1 178 0
  160 0038 FFF7FEFF 		bl	ADC_AudioStream_Start
- 176:main.c        ****     isr_ADC_AudioStream_Start();
- 161              		.loc 1 176 0
+ 179:main.c        ****     isr_ADC_AudioStream_Start();
+ 161              		.loc 1 179 0
  162 003c FFF7FEFF 		bl	isr_ADC_AudioStream_Start
- 177:main.c        **** 
- 178:main.c        ****     return;
- 163              		.loc 1 178 0
+ 180:main.c        **** 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 7
+
+
+ 181:main.c        ****     return;
+ 163              		.loc 1 181 0
  164 0040 00BF     		nop
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 7
-
-
- 179:main.c        **** }
- 165              		.loc 1 179 0
+ 182:main.c        **** }
+ 165              		.loc 1 182 0
  166 0042 80BD     		pop	{r7, pc}
  167              		.cfi_endproc
  168              	.LFE64:
@@ -375,10 +378,10 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  175              		.type	StartTimeout, %function
  176              	StartTimeout:
  177              	.LFB65:
- 180:main.c        **** 
- 181:main.c        **** void StartTimeout(void)
- 182:main.c        **** {
- 178              		.loc 1 182 0
+ 183:main.c        **** 
+ 184:main.c        **** void StartTimeout(void)
+ 185:main.c        **** {
+ 178              		.loc 1 185 0
  179              		.cfi_startproc
  180              		@ args = 0, pretend = 0, frame = 0
  181              		@ frame_needed = 1, uses_anonymous_args = 0
@@ -388,13 +391,13 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  185              		.cfi_offset 7, -4
  186 0002 00AF     		add	r7, sp, #0
  187              		.cfi_def_cfa_register 7
- 183:main.c        ****     
- 184:main.c        **** 
- 185:main.c        ****     return;
- 188              		.loc 1 185 0
+ 186:main.c        ****     
+ 187:main.c        **** 
+ 188:main.c        ****     return;
+ 188              		.loc 1 188 0
  189 0004 00BF     		nop
- 186:main.c        **** }
- 190              		.loc 1 186 0
+ 189:main.c        **** }
+ 190              		.loc 1 189 0
  191 0006 BD46     		mov	sp, r7
  192              		.cfi_def_cfa_register 13
  193              		@ sp needed
@@ -413,14 +416,14 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  206              		.type	StopTimeout, %function
  207              	StopTimeout:
  208              	.LFB66:
- 187:main.c        **** 
- 188:main.c        **** void StopTimeout(void)
- 189:main.c        **** {
- 209              		.loc 1 189 0
+ 190:main.c        **** 
+ 191:main.c        **** void StopTimeout(void)
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 8
+
+
+ 192:main.c        **** {
+ 209              		.loc 1 192 0
  210              		.cfi_startproc
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 8
-
-
  211              		@ args = 0, pretend = 0, frame = 0
  212              		@ frame_needed = 1, uses_anonymous_args = 0
  213              		@ link register save eliminated.
@@ -429,13 +432,13 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  216              		.cfi_offset 7, -4
  217 0002 00AF     		add	r7, sp, #0
  218              		.cfi_def_cfa_register 7
- 190:main.c        **** 
- 191:main.c        **** 
- 192:main.c        ****     return;
- 219              		.loc 1 192 0
+ 193:main.c        **** 
+ 194:main.c        **** 
+ 195:main.c        ****     return;
+ 219              		.loc 1 195 0
  220 0004 00BF     		nop
- 193:main.c        **** }
- 221              		.loc 1 193 0
+ 196:main.c        **** }
+ 221              		.loc 1 196 0
  222 0006 BD46     		mov	sp, r7
  223              		.cfi_def_cfa_register 13
  224              		@ sp needed
@@ -475,12 +478,12 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  258 002d 01       		.byte	0x1
  259 002e 08       		.byte	0x8
  260 002f D6000000 		.4byte	.LASF1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 9
+
+
  261 0033 02       		.uleb128 0x2
  262 0034 02       		.byte	0x2
  263 0035 05       		.byte	0x5
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 9
-
-
  264 0036 FF010000 		.4byte	.LASF2
  265 003a 02       		.uleb128 0x2
  266 003b 02       		.byte	0x2
@@ -535,12 +538,12 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  315 0097 72010000 		.4byte	.LASF13
  316 009b 02       		.uleb128 0x2
  317 009c 01       		.byte	0x1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 10
+
+
  318 009d 08       		.byte	0x8
  319 009e DE010000 		.4byte	.LASF14
  320 00a2 02       		.uleb128 0x2
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 10
-
-
  321 00a3 08       		.byte	0x8
  322 00a4 04       		.byte	0x4
  323 00a5 2C020000 		.4byte	.LASF15
@@ -595,12 +598,12 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  372 0109 E4000000 		.4byte	.LASF23
  373 010d 02       		.byte	0x2
  374 010e 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 11
+
+
  375 010f 0A       		.uleb128 0xa
  376 0110 79010000 		.4byte	.LASF24
  377 0114 01       		.byte	0x1
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 11
-
-
  378 0115 4D       		.byte	0x4d
  379 0116 68000000 		.4byte	0x68
  380 011a 00000000 		.4byte	.LFB63
@@ -610,7 +613,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  384 0124 0B       		.uleb128 0xb
  385 0125 A2010000 		.4byte	.LASF35
  386 0129 01       		.byte	0x1
- 387 012a 86       		.byte	0x86
+ 387 012a 89       		.byte	0x89
  388 012b 00000000 		.4byte	.LFB64
  389 012f 44000000 		.4byte	.LFE64-.LFB64
  390 0133 01       		.uleb128 0x1
@@ -618,7 +621,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  392 0135 0C       		.uleb128 0xc
  393 0136 F2010000 		.4byte	.LASF25
  394 013a 01       		.byte	0x1
- 395 013b B5       		.byte	0xb5
+ 395 013b B8       		.byte	0xb8
  396 013c 00000000 		.4byte	.LFB65
  397 0140 0C000000 		.4byte	.LFE65-.LFB65
  398 0144 01       		.uleb128 0x1
@@ -626,7 +629,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  400 0146 0C       		.uleb128 0xc
  401 0147 B7000000 		.4byte	.LASF26
  402 014b 01       		.byte	0x1
- 403 014c BC       		.byte	0xbc
+ 403 014c BF       		.byte	0xbf
  404 014d 00000000 		.4byte	.LFB66
  405 0151 0C000000 		.4byte	.LFE66-.LFB66
  406 0155 01       		.uleb128 0x1
@@ -655,12 +658,12 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  429              		.section	.debug_abbrev,"",%progbits
  430              	.Ldebug_abbrev0:
  431 0000 01       		.uleb128 0x1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 12
+
+
  432 0001 11       		.uleb128 0x11
  433 0002 01       		.byte	0x1
  434 0003 25       		.uleb128 0x25
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 12
-
-
  435 0004 0E       		.uleb128 0xe
  436 0005 13       		.uleb128 0x13
  437 0006 0B       		.uleb128 0xb
@@ -715,12 +718,12 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  486 0037 16       		.uleb128 0x16
  487 0038 00       		.byte	0
  488 0039 03       		.uleb128 0x3
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 13
+
+
  489 003a 0E       		.uleb128 0xe
  490 003b 3A       		.uleb128 0x3a
  491 003c 0B       		.uleb128 0xb
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 13
-
-
  492 003d 3B       		.uleb128 0x3b
  493 003e 05       		.uleb128 0x5
  494 003f 49       		.uleb128 0x49
@@ -775,12 +778,12 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  543 0070 00       		.byte	0
  544 0071 00       		.byte	0
  545 0072 09       		.uleb128 0x9
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 14
+
+
  546 0073 28       		.uleb128 0x28
  547 0074 00       		.byte	0
  548 0075 03       		.uleb128 0x3
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 14
-
-
  549 0076 0E       		.uleb128 0xe
  550 0077 1C       		.uleb128 0x1c
  551 0078 0B       		.uleb128 0xb
@@ -835,12 +838,12 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  600 00ab 00       		.byte	0
  601 00ac 3F       		.uleb128 0x3f
  602 00ad 19       		.uleb128 0x19
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 15
+
+
  603 00ae 03       		.uleb128 0x3
  604 00af 0E       		.uleb128 0xe
  605 00b0 3A       		.uleb128 0x3a
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 15
-
-
  606 00b1 0B       		.uleb128 0xb
  607 00b2 3B       		.uleb128 0x3b
  608 00b3 0B       		.uleb128 0xb
@@ -895,12 +898,12 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  657 00e5 19       		.uleb128 0x19
  658 00e6 02       		.uleb128 0x2
  659 00e7 18       		.uleb128 0x18
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 16
+
+
  660 00e8 00       		.byte	0
  661 00e9 00       		.byte	0
  662 00ea 10       		.uleb128 0x10
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 16
-
-
  663 00eb 34       		.uleb128 0x34
  664 00ec 00       		.byte	0
  665 00ed 03       		.uleb128 0x3
@@ -955,12 +958,12 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  712      00000201 
  712      FB0E0D00 
  712      01010101 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 17
+
+
  713              	.LASF30:
  714 0000 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
  714      43313120 
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 17
-
-
  714      352E342E 
  714      31203230 
  714      31363036 
@@ -1015,12 +1018,12 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  737              	.LASF5:
  738 00ea 6C6F6E67 		.ascii	"long unsigned int\000"
  738      20756E73 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 18
+
+
  738      69676E65 
  738      6420696E 
  738      7400
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 18
-
-
  739              	.LASF29:
  740 00fc 43757272 		.ascii	"CurrentTest\000"
  740      656E7454 
@@ -1075,12 +1078,12 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 1
  759      6572616C 
  760              	.LASF10:
  761 01b8 696E7433 		.ascii	"int32_t\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccwo8A2g.s 			page 19
+
+
  761      325F7400 
  762              	.LASF16:
  763 01c0 73697A65 		.ascii	"sizetype\000"
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1nbc3O.s 			page 19
-
-
  763      74797065 
  763      00
  764              	.LASF6:

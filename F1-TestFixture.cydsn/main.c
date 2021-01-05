@@ -86,6 +86,9 @@ int main()
         //CurrentTest.SelectedTest = RTEST;
         //CurrentTest.SelectedTest = STEST;
         
+//        CTest_USB_5V_EN_Write(0); 
+//        while(1);
+        
         switch(CurrentTest.SelectedTest)
         {
             case CTEST:

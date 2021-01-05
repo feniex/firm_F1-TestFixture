@@ -2,7 +2,7 @@
 --	Conversion of F1-TestFixture.v to vh2:
 --
 --	Cypress Semiconductor - WARP Version 6.3 IR 41
---	Thu Dec 31 14:52:41 2020
+--	Mon Jan 04 10:58:04 2021
 --
 
 USE cypress.cypress.all;
@@ -31,6 +31,12 @@ SIGNAL tmpIO_0__RTest_RS485_CONT_RX_net_0 : bit;
 TERMINAL tmpSIOVREF__RTest_RS485_CONT_RX_net_0 : bit;
 SIGNAL tmpINTERRUPT_0__RTest_RS485_CONT_RX_net_0 : bit;
 SIGNAL Net_5743 : bit;
+SIGNAL tmpOE__CTest_RS485_RELAY_TX_net_0 : bit;
+SIGNAL Net_6244 : bit;
+SIGNAL tmpFB_0__CTest_RS485_RELAY_TX_net_0 : bit;
+SIGNAL tmpIO_0__CTest_RS485_RELAY_TX_net_0 : bit;
+TERMINAL tmpSIOVREF__CTest_RS485_RELAY_TX_net_0 : bit;
+SIGNAL tmpINTERRUPT_0__CTest_RS485_RELAY_TX_net_0 : bit;
 SIGNAL tmpOE__RTest_UART_SIREN_RX_net_0 : bit;
 SIGNAL Net_5985 : bit;
 SIGNAL tmpIO_0__RTest_UART_SIREN_RX_net_0 : bit;
@@ -392,7 +398,6 @@ SIGNAL Net_5977_0 : bit;
 SIGNAL \DEMUX_230400:tmp__DEMUX_230400_1_reg\ : bit;
 SIGNAL \DEMUX_230400:tmp__DEMUX_230400_2_reg\ : bit;
 SIGNAL \DEMUX_230400:tmp__DEMUX_230400_3_reg\ : bit;
-SIGNAL Net_6244 : bit;
 SIGNAL Net_6002 : bit;
 SIGNAL \DEMUX_CTRL_230400:clk\ : bit;
 SIGNAL \DEMUX_CTRL_230400:rst\ : bit;
@@ -1213,6 +1218,7 @@ SIGNAL mywire_1_3 : bit;
 SIGNAL mywire_1_2 : bit;
 SIGNAL mywire_1_1 : bit;
 SIGNAL mywire_1_0 : bit;
+SIGNAL Net_6237 : bit;
 SIGNAL Net_6197 : bit;
 SIGNAL Net_6198 : bit;
 SIGNAL Net_6199 : bit;
@@ -1320,6 +1326,10 @@ SIGNAL \DEMUX_CTRL_460800:control_3\ : bit;
 SIGNAL \DEMUX_CTRL_460800:control_2\ : bit;
 SIGNAL \DEMUX_CTRL_460800:control_1\ : bit;
 SIGNAL \DEMUX_CTRL_460800:control_0\ : bit;
+SIGNAL tmpOE__CTest_RS485_QUAD_RX_net_0 : bit;
+SIGNAL tmpIO_0__CTest_RS485_QUAD_RX_net_0 : bit;
+TERMINAL tmpSIOVREF__CTest_RS485_QUAD_RX_net_0 : bit;
+SIGNAL tmpINTERRUPT_0__CTest_RS485_QUAD_RX_net_0 : bit;
 SIGNAL tmpOE__RTest_RS485_QUAD_TX_net_0 : bit;
 SIGNAL tmpFB_0__RTest_RS485_QUAD_TX_net_0 : bit;
 SIGNAL tmpIO_0__RTest_RS485_QUAD_TX_net_0 : bit;
@@ -1715,6 +1725,8 @@ tmpOE__CTest_USB_DEBUG_RX_net_0 <=  ('1') ;
 
 \UART_230400:BUART:rx_address_detected\\D\ <= ((not \UART_230400:BUART:reset_reg\ and \UART_230400:BUART:rx_address_detected\));
 
+Net_6244 <= ((not \UART_230400:BUART:txn\ and not Net_5977_1 and not Net_5977_0));
+
 Net_6001 <= ((not \UART_230400:BUART:txn\ and not Net_5977_1 and Net_5977_0));
 
 Net_6000 <= ((not \UART_230400:BUART:txn\ and not Net_5977_0 and Net_5977_1));
@@ -1942,9 +1954,10 @@ Net_5518 <= ((not mywire_1_2 and not mywire_1_1 and mywire_1_3 and mywire_1_0 an
 	OR (not mywire_1_3 and mywire_1_2 and mywire_1_1 and mywire_1_0 and Net_6202)
 	OR (not mywire_1_3 and not mywire_1_0 and mywire_1_2 and mywire_1_1 and Net_6201)
 	OR (not mywire_1_3 and not mywire_1_1 and mywire_1_2 and mywire_1_0 and Net_6200)
-	OR (not mywire_1_3 and not mywire_1_1 and not mywire_1_0 and mywire_1_2 and Net_6199)
 	OR (not mywire_1_3 and not mywire_1_2 and mywire_1_1 and mywire_1_0 and Net_6198)
-	OR (not mywire_1_3 and not mywire_1_2 and not mywire_1_0 and mywire_1_1 and Net_6197));
+	OR (not mywire_1_3 and not mywire_1_1 and not mywire_1_0 and mywire_1_2 and Net_6199)
+	OR (not mywire_1_3 and not mywire_1_2 and not mywire_1_0 and mywire_1_1 and Net_6197)
+	OR (not mywire_1_3 and not mywire_1_2 and not mywire_1_1 and not mywire_1_0 and Net_6237));
 
 Net_6210 <= ((not \UART_460800:BUART:txn\ and not Net_5612_1 and Net_5612_0));
 
@@ -2166,6 +2179,76 @@ isr_UART_230400:cy_isr_v1_0
 	GENERIC MAP(int_type=>"10",
 		is_nmi=>'0')
 	PORT MAP(int_signal=>Net_5743);
+CTest_RS485_RELAY_TX:cy_psoc3_pins_v1_10
+	GENERIC MAP(id=>"e84bf01f-e557-4645-8d56-0047233a0aa0",
+		drive_mode=>"110",
+		ibuf_enabled=>"1",
+		init_dr_st=>"0",
+		input_sync=>"1",
+		input_clk_en=>'0',
+		input_sync_mode=>"0",
+		intr_mode=>"00",
+		invert_in_clock=>'0',
+		invert_in_clock_en=>'0',
+		invert_in_reset=>'0',
+		invert_out_clock=>'0',
+		invert_out_clock_en=>'0',
+		invert_out_reset=>'0',
+		io_voltage=>"",
+		layout_mode=>"CONTIGUOUS",
+		output_conn=>"1",
+		output_sync=>"0",
+		output_clk_en=>'0',
+		output_mode=>"0",
+		output_reset=>'0',
+		output_clock_mode=>"0",
+		oe_sync=>"0",
+		oe_conn=>"0",
+		oe_reset=>'0',
+		pin_aliases=>"",
+		pin_mode=>"O",
+		por_state=>4,
+		sio_group_cnt=>0,
+		sio_hifreq=>"00000000",
+		sio_hyst=>"1",
+		sio_ibuf=>"00000000",
+		sio_info=>"00",
+		sio_obuf=>"00000000",
+		sio_refsel=>"00000000",
+		sio_vtrip=>"00000000",
+		sio_vohsel=>"00000000",
+		slew_rate=>"0",
+		spanning=>'0',
+		sw_only=>'0',
+		vtrip=>"10",
+		width=>1,
+		port_alias_required=>'0',
+		port_alias_group=>"",
+		use_annotation=>"0",
+		pa_in_clock=>-1,
+		pa_in_clock_en=>-1,
+		pa_in_reset=>-1,
+		pa_out_clock=>-1,
+		pa_out_clock_en=>-1,
+		pa_out_reset=>-1,
+		ovt_needed=>"0",
+		ovt_slew_control=>"00",
+		ovt_hyst_trim=>"0",
+		input_buffer_sel=>"00")
+	PORT MAP(oe=>(tmpOE__CTest_USB_DEBUG_RX_net_0),
+		y=>Net_6244,
+		fb=>(tmpFB_0__CTest_RS485_RELAY_TX_net_0),
+		analog=>(open),
+		io=>(tmpIO_0__CTest_RS485_RELAY_TX_net_0),
+		siovref=>(tmpSIOVREF__CTest_RS485_RELAY_TX_net_0),
+		annotation=>(open),
+		in_clock=>zero,
+		in_clock_en=>tmpOE__CTest_USB_DEBUG_RX_net_0,
+		in_reset=>zero,
+		out_clock=>zero,
+		out_clock_en=>tmpOE__CTest_USB_DEBUG_RX_net_0,
+		out_reset=>zero,
+		interrupt=>tmpINTERRUPT_0__CTest_RS485_RELAY_TX_net_0);
 RTest_UART_SIREN_RX:cy_psoc3_pins_v1_10
 	GENERIC MAP(id=>"ac2a8c38-5fdc-4dac-a03c-bd0b9574aa12",
 		drive_mode=>"001",
@@ -4239,6 +4322,76 @@ QUAD_DATA_7:cy_psoc3_pins_v1_10
 		clock=>zero,
 		control=>(\DEMUX_CTRL_460800:control_7\, \DEMUX_CTRL_460800:control_6\, \DEMUX_CTRL_460800:control_5\, \DEMUX_CTRL_460800:control_4\,
 			\DEMUX_CTRL_460800:control_3\, \DEMUX_CTRL_460800:control_2\, Net_5612_1, Net_5612_0));
+CTest_RS485_QUAD_RX:cy_psoc3_pins_v1_10
+	GENERIC MAP(id=>"f45bb4cc-2c84-4ea6-96a7-2f85c3898c2e",
+		drive_mode=>"001",
+		ibuf_enabled=>"1",
+		init_dr_st=>"0",
+		input_sync=>"0",
+		input_clk_en=>'0',
+		input_sync_mode=>"0",
+		intr_mode=>"00",
+		invert_in_clock=>'0',
+		invert_in_clock_en=>'0',
+		invert_in_reset=>'0',
+		invert_out_clock=>'0',
+		invert_out_clock_en=>'0',
+		invert_out_reset=>'0',
+		io_voltage=>"",
+		layout_mode=>"CONTIGUOUS",
+		output_conn=>"0",
+		output_sync=>"0",
+		output_clk_en=>'0',
+		output_mode=>"0",
+		output_reset=>'0',
+		output_clock_mode=>"0",
+		oe_sync=>"0",
+		oe_conn=>"0",
+		oe_reset=>'0',
+		pin_aliases=>"",
+		pin_mode=>"I",
+		por_state=>4,
+		sio_group_cnt=>0,
+		sio_hifreq=>"00000000",
+		sio_hyst=>"1",
+		sio_ibuf=>"00000000",
+		sio_info=>"00",
+		sio_obuf=>"00000000",
+		sio_refsel=>"00000000",
+		sio_vtrip=>"00000000",
+		sio_vohsel=>"00000000",
+		slew_rate=>"0",
+		spanning=>'0',
+		sw_only=>'0',
+		vtrip=>"00",
+		width=>1,
+		port_alias_required=>'0',
+		port_alias_group=>"",
+		use_annotation=>"0",
+		pa_in_clock=>-1,
+		pa_in_clock_en=>-1,
+		pa_in_reset=>-1,
+		pa_out_clock=>-1,
+		pa_out_clock_en=>-1,
+		pa_out_reset=>-1,
+		ovt_needed=>"0",
+		ovt_slew_control=>"00",
+		ovt_hyst_trim=>"0",
+		input_buffer_sel=>"00")
+	PORT MAP(oe=>(tmpOE__CTest_USB_DEBUG_RX_net_0),
+		y=>(zero),
+		fb=>Net_6237,
+		analog=>(open),
+		io=>(tmpIO_0__CTest_RS485_QUAD_RX_net_0),
+		siovref=>(tmpSIOVREF__CTest_RS485_QUAD_RX_net_0),
+		annotation=>(open),
+		in_clock=>zero,
+		in_clock_en=>tmpOE__CTest_USB_DEBUG_RX_net_0,
+		in_reset=>zero,
+		out_clock=>zero,
+		out_clock_en=>tmpOE__CTest_USB_DEBUG_RX_net_0,
+		out_reset=>zero,
+		interrupt=>tmpINTERRUPT_0__CTest_RS485_QUAD_RX_net_0);
 RTest_RS485_QUAD_TX:cy_psoc3_pins_v1_10
 	GENERIC MAP(id=>"c6d99bfa-0849-411b-b4aa-979876d01ffb",
 		drive_mode=>"110",

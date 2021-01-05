@@ -24,25 +24,114 @@
 /**********DATA STRUCTURES**********/
 
    
+//// C-Test - Rx from Controller (to Relay)
+//typedef union rxPacket_Controller
+//{
+//    uint8 bytes[8];
+//
+//    struct rxData_Controller
+//    {
+//        uint8 Outputs1_8;
+//        uint8 Outputs9_16;
+//        uint8 Outputs17_24;
+//        uint8 Outputs25_32;
+//        uint8 Input_Logic;
+//        uint8 PowerState;
+//        uint8 Siren_RRB_EN;          
+//        uint8 Siren_EN;
+//    }Payload;
+//}RxPacket_Controller;
+
 // C-Test - Rx from Controller (to Relay)
 typedef union rxPacket_Controller
 {
-    uint8 bytes[8];
+    uint8 bytes[79];
 
     struct rxData_Controller
     {
-        uint8 Outputs1_8;
-        uint8 Outputs9_16;
-        uint8 Outputs17_24;
-        uint8 Outputs25_32;
-        uint8 Input_Logic;
-        uint8 PowerState;
-        uint8 Siren_RRB_EN;          
-        uint8 Siren_EN;
+            uint8 LED_16_R;
+            uint8 LED_16_G;
+            uint8 LED_16_B;            
+            uint8 LED_15_R;
+            uint8 LED_15_G;
+            uint8 LED_15_B;            
+            uint8 LED_14_R;
+            uint8 LED_14_G;
+            uint8 LED_14_B;           
+            uint8 LED_13_R;
+            uint8 LED_13_G;
+            uint8 LED_13_B;                      
+            uint8 LED_12_R;
+            uint8 LED_12_G;
+            uint8 LED_12_B;
+            uint8 LED_11_R;
+            uint8 LED_11_G;
+            uint8 LED_11_B;            
+            uint8 LED_10_R;
+            uint8 LED_10_G;
+            uint8 LED_10_B;            
+            uint8 LED_09_R;
+            uint8 LED_09_G;
+            uint8 LED_09_B;          
+            uint8 LED_08_R;
+            uint8 LED_08_G;
+            uint8 LED_08_B;            
+            uint8 LED_07_R;
+            uint8 LED_07_G;
+            uint8 LED_07_B;            
+            uint8 LED_06_R;
+            uint8 LED_06_G;
+            uint8 LED_06_B;           
+            uint8 LED_05_R;
+            uint8 LED_05_G;
+            uint8 LED_05_B;           
+            uint8 LED_04_R;
+            uint8 LED_04_G;
+            uint8 LED_04_B;  
+            uint8 LED_03_R;
+            uint8 LED_03_G;
+            uint8 LED_03_B;       
+            uint8 LED_02_R;
+            uint8 LED_02_G;
+            uint8 LED_02_B;           
+            uint8 LED_01_R;
+            uint8 LED_01_G;
+            uint8 LED_01_B;           
+            uint8 Buzzer_H;
+            uint8 Buzzer_L;
+            uint8 ScreenBrightness;
+            uint8 controllerSpeakerEnable;
+            uint8 controllerPowerState;
+            uint8 StartByte_FLB;
+            uint8 FLB_PacketType;                   // 3 - Payload byte number 55
+                uint8 WireActivation1;
+                uint8 WireActivation2;
+                uint8 WireActivation3; 
+            uint8 StopByte1_FLB;
+            uint8 StopByte2_FLB;
+            uint8 StartByte1_Siren;
+            uint8 Siren_PacketType;                 // S - Payload byte number 62
+                uint8 Siren1Tone;
+                uint8 Siren2Tone;
+                uint8 DualDelay; 
+            uint8 StopByte1_Siren;
+            uint8 StopByte2_Siren;
+            uint8 StartByte1_Relay;
+            uint8 Relay_PacketType;                 // P - Payload byte number 69
+                uint8 Outputs_1to8;
+                uint8 Outputs_9to16;
+                uint8 Outputs_17to24;
+                uint8 Outputs_25to32;
+                uint8 HiLoInputLogic;
+                uint8 PowerState;
+                uint8 RRB;
+                uint8 SirenEnable;
+            uint8 StopByte1_Relay;
+            uint8 StopByte2_Relay;                    // Payload byte number 79
     }Payload;
 }RxPacket_Controller;
 
-// C-Test - Tx to the Controller (from relay)
+// C-Test - Tx to the Controller (from relay)   - 'D' packet
 typedef union txPacket_Controller                                
 {
     uint8 bytes[15];    
@@ -115,25 +204,94 @@ typedef union rxPacket_RelaySiren
     }Payload;
 }RxPacket_RelaySiren;
 
-//// R-Test - Tx to the Relay (from controller)
-//typedef union txPacket_RelaySiren                                        
+//// C-Test - Rx from Controller (to the relay) - 'I' (including 'P')
+//typedef union rxPacket_RelaySiren                                     
 //{
-//    uint8 bytes[8];    
+//    uint8 bytes[79];    
 //
-//    struct txData
-//    {             
-//        uint8 Outputs_1to8;
-//        uint8 Outputs_9to16;
-//        uint8 Outputs_17to24;
-//        uint8 Outputs_25to32;
-//        uint8 HiLoInputLogic;
-//        uint8 PowerState;
-//        uint8 RRB;
-//        uint8 SirenEnable;
-//               
+//    struct rxData_RelaySiren 
+//    {
+//            uint8 LED_16_R;
+//            uint8 LED_16_G;
+//            uint8 LED_16_B;            
+//            uint8 LED_15_R;
+//            uint8 LED_15_G;
+//            uint8 LED_15_B;            
+//            uint8 LED_14_R;
+//            uint8 LED_14_G;
+//            uint8 LED_14_B;           
+//            uint8 LED_13_R;
+//            uint8 LED_13_G;
+//            uint8 LED_13_B;                      
+//            uint8 LED_12_R;
+//            uint8 LED_12_G;
+//            uint8 LED_12_B;
+//            uint8 LED_11_R;
+//            uint8 LED_11_G;
+//            uint8 LED_11_B;            
+//            uint8 LED_10_R;
+//            uint8 LED_10_G;
+//            uint8 LED_10_B;            
+//            uint8 LED_09_R;
+//            uint8 LED_09_G;
+//            uint8 LED_09_B;          
+//            uint8 LED_08_R;
+//            uint8 LED_08_G;
+//            uint8 LED_08_B;            
+//            uint8 LED_07_R;
+//            uint8 LED_07_G;
+//            uint8 LED_07_B;            
+//            uint8 LED_06_R;
+//            uint8 LED_06_G;
+//            uint8 LED_06_B;           
+//            uint8 LED_05_R;
+//            uint8 LED_05_G;
+//            uint8 LED_05_B;           
+//            uint8 LED_04_R;
+//            uint8 LED_04_G;
+//            uint8 LED_04_B;  
+//            uint8 LED_03_R;
+//            uint8 LED_03_G;
+//            uint8 LED_03_B;       
+//            uint8 LED_02_R;
+//            uint8 LED_02_G;
+//            uint8 LED_02_B;           
+//            uint8 LED_01_R;
+//            uint8 LED_01_G;
+//            uint8 LED_01_B;           
+//            uint8 Buzzer_H;
+//            uint8 Buzzer_L;
+//            uint8 ScreenBrightness;
+//            uint8 controllerSpeakerEnable;
+//            uint8 controllerPowerState;
+//            uint8 StartByte_FLB;
+//            uint8 FLB_PacketType;                   // 3 - Payload byte number 55
+//                uint8 WireActivation1;
+//                uint8 WireActivation2;
+//                uint8 WireActivation3; 
+//            uint8 StopByte1_FLB;
+//            uint8 StopByte2_FLB;
+//            uint8 StartByte1_Siren;
+//            uint8 Siren_PacketType;                 // S - Payload byte number 62
+//                uint8 Siren1Tone;
+//                uint8 Siren2Tone;
+//                uint8 DualDelay; 
+//            uint8 StopByte1_Siren;
+//            uint8 StopByte2_Siren;
+//            uint8 StartByte1_Relay;
+//            uint8 Relay_PacketType;                 // P - Payload byte number 69
+//                uint8 Outputs_1to8;
+//                uint8 Outputs_9to16;
+//                uint8 Outputs_17to24;
+//                uint8 Outputs_25to32;
+//                uint8 HiLoInputLogic;
+//                uint8 PowerState;
+//                uint8 RRB;
+//                uint8 SirenEnable;
+//            uint8 StopByte1_Relay;
+//            uint8 StopByte2_Relay;                    // Payload byte number 79
 //    }Payload;
-//}TxPacket_RelaySiren;
-
+//}RxPacket_RelaySiren;
 
 // RTest/STest Tx to Relay (from Controller)              Packet 'I' - 
     typedef union txPacket_RelaySiren                                         
@@ -297,8 +455,10 @@ uint8 VerifyPacket_230400(uint8 PacketType);
 
 uint8 findpacket(uint8 dataByte);
 
+void sendPacket_RelayToController(void);        // CTest 'D'
 void sendPacket_SirenToRelay(void);
 void sendPacket_RelayToSiren(void);
+
 
 //void CTest_SendIgnitionState(uint8 ignition_state);
 
@@ -310,6 +470,8 @@ Packet_H * getRxPacket_H(void);
 
 TxPacket_RelaySiren * getTxPacket_RelaySiren(void);     // STest Tx - 'I' packet to Siren - enable RRB
 RxPacket_RelaySiren * getRxPacket_RelaySiren(void);     // STest Rx - 'D' packet to Controller - read overload
+
+TxPacket_RelaySiren * getTxPacket_Relay(void);
 
 RxPacket_RelaySiren * getRxPacket_Relay(void);
 

@@ -1,6 +1,6 @@
 // ======================================================================
 // F1-TestFixture.v generated from TopDesign.cysch
-// 12/31/2020 at 14:52
+// 01/04/2021 at 10:58
 // This file is auto generated. ANY EDITS YOU MAKE MAY BE LOST WHEN THIS FILE IS REGENERATED!!!
 // ======================================================================
 
@@ -1628,6 +1628,81 @@ module top ;
 		 (.int_signal(Net_5743));
 
 
+	wire [0:0] tmpOE__CTest_RS485_RELAY_TX_net;
+	wire [0:0] tmpFB_0__CTest_RS485_RELAY_TX_net;
+	wire [0:0] tmpIO_0__CTest_RS485_RELAY_TX_net;
+	wire [0:0] tmpINTERRUPT_0__CTest_RS485_RELAY_TX_net;
+	electrical [0:0] tmpSIOVREF__CTest_RS485_RELAY_TX_net;
+
+	cy_psoc3_pins_v1_10
+		#(.id("e84bf01f-e557-4645-8d56-0047233a0aa0"),
+		  .drive_mode(3'b110),
+		  .ibuf_enabled(1'b1),
+		  .init_dr_st(1'b0),
+		  .input_clk_en(0),
+		  .input_sync(1'b1),
+		  .input_sync_mode(1'b0),
+		  .intr_mode(2'b00),
+		  .invert_in_clock(0),
+		  .invert_in_clock_en(0),
+		  .invert_in_reset(0),
+		  .invert_out_clock(0),
+		  .invert_out_clock_en(0),
+		  .invert_out_reset(0),
+		  .io_voltage(""),
+		  .layout_mode("CONTIGUOUS"),
+		  .oe_conn(1'b0),
+		  .oe_reset(0),
+		  .oe_sync(1'b0),
+		  .output_clk_en(0),
+		  .output_clock_mode(1'b0),
+		  .output_conn(1'b1),
+		  .output_mode(1'b0),
+		  .output_reset(0),
+		  .output_sync(1'b0),
+		  .pa_in_clock(-1),
+		  .pa_in_clock_en(-1),
+		  .pa_in_reset(-1),
+		  .pa_out_clock(-1),
+		  .pa_out_clock_en(-1),
+		  .pa_out_reset(-1),
+		  .pin_aliases(""),
+		  .pin_mode("O"),
+		  .por_state(4),
+		  .sio_group_cnt(0),
+		  .sio_hyst(1'b1),
+		  .sio_ibuf(""),
+		  .sio_info(2'b00),
+		  .sio_obuf(""),
+		  .sio_refsel(""),
+		  .sio_vtrip(""),
+		  .sio_hifreq(""),
+		  .sio_vohsel(""),
+		  .slew_rate(1'b0),
+		  .spanning(0),
+		  .use_annotation(1'b0),
+		  .vtrip(2'b10),
+		  .width(1),
+		  .ovt_hyst_trim(1'b0),
+		  .ovt_needed(1'b0),
+		  .ovt_slew_control(2'b00),
+		  .input_buffer_sel(2'b00))
+		CTest_RS485_RELAY_TX
+		 (.oe(tmpOE__CTest_RS485_RELAY_TX_net),
+		  .y({Net_6244}),
+		  .fb({tmpFB_0__CTest_RS485_RELAY_TX_net[0:0]}),
+		  .io({tmpIO_0__CTest_RS485_RELAY_TX_net[0:0]}),
+		  .siovref(tmpSIOVREF__CTest_RS485_RELAY_TX_net),
+		  .interrupt({tmpINTERRUPT_0__CTest_RS485_RELAY_TX_net[0:0]}),
+		  .in_clock({1'b0}),
+		  .in_clock_en({1'b1}),
+		  .in_reset({1'b0}),
+		  .out_clock({1'b0}),
+		  .out_clock_en({1'b1}),
+		  .out_reset({1'b0}));
+
+	assign tmpOE__CTest_RS485_RELAY_TX_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
+
 	wire [0:0] tmpOE__RTest_UART_SIREN_RX_net;
 	wire [0:0] tmpIO_0__RTest_UART_SIREN_RX_net;
 	wire [0:0] tmpINTERRUPT_0__RTest_UART_SIREN_RX_net;
@@ -2471,10 +2546,10 @@ module top ;
     if (1)
     begin : mux_1
         reg  tmp__mux_1_reg;
-        always @(Net_6197 or Net_6198 or Net_6199 or Net_6200 or Net_6201 or Net_6202 or Net_6193 or Net_6203 or Net_6017 or Net_6017 or Net_6017 or Net_6017 or Net_6017 or Net_6017 or mywire_1)
+        always @(Net_6237 or Net_6197 or Net_6198 or Net_6199 or Net_6200 or Net_6201 or Net_6202 or Net_6193 or Net_6203 or Net_6017 or Net_6017 or Net_6017 or Net_6017 or Net_6017 or Net_6017 or mywire_1)
         begin
             case (mywire_1[3:0])
-                4'b0000 :  tmp__mux_1_reg = 1'b0;
+                4'b0000 :  tmp__mux_1_reg = Net_6237;
                 4'b0001 :  tmp__mux_1_reg = 1'b0;
                 4'b0010 :  tmp__mux_1_reg = Net_6197;
                 4'b0011 :  tmp__mux_1_reg = Net_6198;
@@ -3188,6 +3263,80 @@ module top ;
     defparam DEMUX_CTRL_460800.BusDisplay = 1;
     defparam DEMUX_CTRL_460800.ExtrReset = 0;
     defparam DEMUX_CTRL_460800.NumOutputs = 2;
+
+	wire [0:0] tmpOE__CTest_RS485_QUAD_RX_net;
+	wire [0:0] tmpIO_0__CTest_RS485_QUAD_RX_net;
+	wire [0:0] tmpINTERRUPT_0__CTest_RS485_QUAD_RX_net;
+	electrical [0:0] tmpSIOVREF__CTest_RS485_QUAD_RX_net;
+
+	cy_psoc3_pins_v1_10
+		#(.id("f45bb4cc-2c84-4ea6-96a7-2f85c3898c2e"),
+		  .drive_mode(3'b001),
+		  .ibuf_enabled(1'b1),
+		  .init_dr_st(1'b0),
+		  .input_clk_en(0),
+		  .input_sync(1'b0),
+		  .input_sync_mode(1'b0),
+		  .intr_mode(2'b00),
+		  .invert_in_clock(0),
+		  .invert_in_clock_en(0),
+		  .invert_in_reset(0),
+		  .invert_out_clock(0),
+		  .invert_out_clock_en(0),
+		  .invert_out_reset(0),
+		  .io_voltage(""),
+		  .layout_mode("CONTIGUOUS"),
+		  .oe_conn(1'b0),
+		  .oe_reset(0),
+		  .oe_sync(1'b0),
+		  .output_clk_en(0),
+		  .output_clock_mode(1'b0),
+		  .output_conn(1'b0),
+		  .output_mode(1'b0),
+		  .output_reset(0),
+		  .output_sync(1'b0),
+		  .pa_in_clock(-1),
+		  .pa_in_clock_en(-1),
+		  .pa_in_reset(-1),
+		  .pa_out_clock(-1),
+		  .pa_out_clock_en(-1),
+		  .pa_out_reset(-1),
+		  .pin_aliases(""),
+		  .pin_mode("I"),
+		  .por_state(4),
+		  .sio_group_cnt(0),
+		  .sio_hyst(1'b1),
+		  .sio_ibuf(""),
+		  .sio_info(2'b00),
+		  .sio_obuf(""),
+		  .sio_refsel(""),
+		  .sio_vtrip(""),
+		  .sio_hifreq(""),
+		  .sio_vohsel(""),
+		  .slew_rate(1'b0),
+		  .spanning(0),
+		  .use_annotation(1'b0),
+		  .vtrip(2'b00),
+		  .width(1),
+		  .ovt_hyst_trim(1'b0),
+		  .ovt_needed(1'b0),
+		  .ovt_slew_control(2'b00),
+		  .input_buffer_sel(2'b00))
+		CTest_RS485_QUAD_RX
+		 (.oe(tmpOE__CTest_RS485_QUAD_RX_net),
+		  .y({1'b0}),
+		  .fb({Net_6237}),
+		  .io({tmpIO_0__CTest_RS485_QUAD_RX_net[0:0]}),
+		  .siovref(tmpSIOVREF__CTest_RS485_QUAD_RX_net),
+		  .interrupt({tmpINTERRUPT_0__CTest_RS485_QUAD_RX_net[0:0]}),
+		  .in_clock({1'b0}),
+		  .in_clock_en({1'b1}),
+		  .in_reset({1'b0}),
+		  .out_clock({1'b0}),
+		  .out_clock_en({1'b1}),
+		  .out_reset({1'b0}));
+
+	assign tmpOE__CTest_RS485_QUAD_RX_net = (`CYDEV_CHIP_MEMBER_USED == `CYDEV_CHIP_MEMBER_3A && `CYDEV_CHIP_REVISION_USED < `CYDEV_CHIP_REVISION_3A_ES3) ? ~{1'b1} : {1'b1};
 
 	wire [0:0] tmpOE__RTest_RS485_QUAD_TX_net;
 	wire [0:0] tmpFB_0__RTest_RS485_QUAD_TX_net;

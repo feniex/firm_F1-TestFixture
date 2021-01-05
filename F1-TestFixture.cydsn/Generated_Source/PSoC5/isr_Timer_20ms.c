@@ -181,6 +181,7 @@ CY_ISR(isr_Timer_20ms_Interrupt)
 //        if( PB_NextAction_Read() )
 //            STest_isr_PB();
             
+        CTest_isr_PB();
         STest_isr_PB();
         
 //       isr_count++;

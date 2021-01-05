@@ -64,6 +64,8 @@
 #include "QUAD_DATA_7.h"
 #include "MUX_CTRL_460800.h"
 #include "DEMUX_CTRL_460800.h"
+#include "CTest_RS485_QUAD_RX_aliases.h"
+#include "CTest_RS485_QUAD_RX.h"
 #include "RTest_RS485_QUAD_TX_aliases.h"
 #include "RTest_RS485_QUAD_TX.h"
 #include "Timer_50ms.h"

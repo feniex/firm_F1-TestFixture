@@ -1,5 +1,5 @@
 # F1-TestFixture
-# 2020-12-31 20:52:49Z
+# 2021-01-04 16:58:12Z
 
 # IO_0@[IOP=(1)][IoId=(0)] is reserved: JTAGDebugEnabled
 dont_use_io iocell 1 0
@@ -18,17 +18,19 @@ dont_use_location vidaccell -1 -1 3
 dont_use_location sarcell -1 -1 1
 dont_use_location abufcell -1 -1 1
 dont_use_location abufcell -1 -1 3
+set_location "Net_5518_split" 0 1 0 0
 set_location "ClockBlock" clockblockcell -1 -1 0
 set_io "CTest_USB_DEBUG_RX(0)" iocell 2 6
 set_io "RTest_RS485_CONT_TX(0)" iocell 12 5
 set_io "RTest_RS485_CONT_RX(0)" iocell 12 4
+set_io "CTest_RS485_RELAY_TX(0)" iocell 2 3
 set_io "RTest_UART_SIREN_RX(0)" iocell 4 1
 set_io "CTest_RS485_RELAY_RX(0)" iocell 2 2
 set_io "RTest_UART_SIREN_TX(0)" iocell 4 0
 set_io "RTest_RS485_DLink1_RX(0)" iocell 6 4
 set_io "RTest_RS485_DLink2_RX(0)" iocell 6 5
 set_io "PB_NextAction(0)" iocell 4 3
-set_io "DIAG_UART_TX(0)" iocell 4 6
+set_io "DIAG_UART_TX(0)" iocell 4 7
 set_io "QUAD_DATA_8(0)" iocell 1 6
 set_io "QUAD_DATA_1(0)" iocell 5 7
 set_io "QUAD_DATA_2(0)" iocell 5 6
@@ -37,6 +39,7 @@ set_io "QUAD_DATA_4(0)" iocell 5 4
 set_io "QUAD_DATA_5(0)" iocell 12 7
 set_io "QUAD_DATA_6(0)" iocell 12 6
 set_io "QUAD_DATA_7(0)" iocell 1 7
+set_io "CTest_RS485_QUAD_RX(0)" iocell 2 0
 set_io "RTest_RS485_QUAD_TX(0)" iocell 2 7
 set_io "LED_EN(0)" iocell 0 4
 set_io "RTest_SIREN_EN(0)" iocell 0 0
@@ -61,54 +64,55 @@ set_io "RTest_HSide7(0)" iocell 12 1
 set_io "RTest_HSide8(0)" iocell 12 0
 set_io "CTest_USB_5V_EN(0)" iocell 6 3
 set_io "CTest_CONT_VBATT_EN(0)" iocell 2 4
-set_location "\UART_230400:BUART:counter_load_not\" 0 3 0 0
-set_location "\UART_230400:BUART:tx_status_0\" 2 3 1 1
-set_location "\UART_230400:BUART:tx_status_2\" 3 3 0 3
-set_location "\UART_230400:BUART:rx_counter_load\" 1 5 0 2
-set_location "\UART_230400:BUART:rx_postpoll\" 1 4 1 1
-set_location "\UART_230400:BUART:rx_status_4\" 0 5 0 3
-set_location "\UART_230400:BUART:rx_status_5\" 1 5 0 1
-set_location "Net_6001" 0 5 0 0
-set_location "Net_6000" 0 5 0 1
-set_location "Net_6243" 3 3 1 0
-set_location "\UART_115200:BUART:counter_load_not\" 1 2 0 1
-set_location "\UART_115200:BUART:tx_status_0\" 1 3 0 1
-set_location "\UART_115200:BUART:tx_status_2\" 1 2 1 2
-set_location "\UART_115200:BUART:rx_counter_load\" 1 0 0 3
-set_location "\UART_115200:BUART:rx_postpoll\" 1 1 1 1
-set_location "\UART_115200:BUART:rx_status_4\" 1 2 1 1
-set_location "\UART_115200:BUART:rx_status_5\" 1 0 0 1
-set_location "Net_568" 1 4 1 0
-set_location "Net_822" 0 2 1 1
-set_location "\UART_460800:BUART:counter_load_not\" 1 3 1 2
-set_location "\UART_460800:BUART:tx_status_0\" 2 3 0 2
-set_location "\UART_460800:BUART:tx_status_2\" 2 3 0 1
-set_location "RTest_RS485_CONT_RX(0)_SYNC" 1 4 5 0
-set_location "\UART_460800:BUART:rx_counter_load\" 0 1 0 3
-set_location "\UART_460800:BUART:rx_postpoll\" 0 1 1 0
-set_location "\UART_460800:BUART:rx_status_4\" 0 0 1 0
-set_location "\UART_460800:BUART:rx_status_5\" 0 2 1 2
-set_location "Net_5518" 0 0 0 1
-set_location "Net_6210" 0 4 1 2
+set_location "\UART_230400:BUART:counter_load_not\" 0 3 0 2
+set_location "\UART_230400:BUART:tx_status_0\" 0 4 1 0
+set_location "\UART_230400:BUART:tx_status_2\" 0 4 1 2
+set_location "\UART_230400:BUART:rx_counter_load\" 1 2 1 3
+set_location "\UART_230400:BUART:rx_postpoll\" 1 3 1 0
+set_location "\UART_230400:BUART:rx_status_4\" 1 3 0 0
+set_location "\UART_230400:BUART:rx_status_5\" 1 3 0 3
+set_location "Net_6244" 0 5 0 3
+set_location "Net_6001" 0 5 0 2
+set_location "Net_6000" 0 5 0 0
+set_location "Net_6243" 3 4 0 2
+set_location "\UART_115200:BUART:counter_load_not\" 1 5 1 1
+set_location "\UART_115200:BUART:tx_status_0\" 1 5 0 2
+set_location "\UART_115200:BUART:tx_status_2\" 2 4 0 3
+set_location "\UART_115200:BUART:rx_counter_load\" 1 1 1 3
+set_location "\UART_115200:BUART:rx_postpoll\" 2 0 0 2
+set_location "\UART_115200:BUART:rx_status_4\" 3 0 0 3
+set_location "\UART_115200:BUART:rx_status_5\" 1 0 1 0
+set_location "Net_568" 1 3 0 2
+set_location "Net_822" 2 0 0 1
+set_location "\UART_460800:BUART:counter_load_not\" 1 4 1 2
+set_location "\UART_460800:BUART:tx_status_0\" 2 4 0 1
+set_location "\UART_460800:BUART:tx_status_2\" 3 4 1 3
+set_location "RTest_RS485_CONT_RX(0)_SYNC" 0 3 5 0
+set_location "\UART_460800:BUART:rx_counter_load\" 0 0 0 2
+set_location "\UART_460800:BUART:rx_postpoll\" 0 1 1 1
+set_location "\UART_460800:BUART:rx_status_4\" 0 2 0 2
+set_location "\UART_460800:BUART:rx_status_5\" 1 1 0 0
+set_location "Net_5518" 0 1 1 0
+set_location "Net_6210" 1 1 1 0
 set_location "isr_UART_230400" interrupt -1 -1 9
 set_location "\UART_230400:TXInternalInterrupt\" interrupt -1 -1 2
-set_location "__ONE__" 3 2 1 0
-set_location "\UART_230400:BUART:sTX:TxShifter:u0\" 0 3 2
-set_location "\UART_230400:BUART:sTX:sCLOCK:TxBitClkGen\" 0 4 2
-set_location "\UART_230400:BUART:sTX:TxSts\" 3 3 4
-set_location "\UART_230400:BUART:sRX:RxShifter:u0\" 1 4 2
-set_location "\UART_230400:BUART:sRX:RxBitCounter\" 1 5 7
-set_location "\UART_230400:BUART:sRX:RxSts\" 0 5 4
+set_location "__ONE__" 3 0 0 2
+set_location "\UART_230400:BUART:sTX:TxShifter:u0\" 0 4 2
+set_location "\UART_230400:BUART:sTX:sCLOCK:TxBitClkGen\" 0 3 2
+set_location "\UART_230400:BUART:sTX:TxSts\" 0 4 4
+set_location "\UART_230400:BUART:sRX:RxShifter:u0\" 1 3 2
+set_location "\UART_230400:BUART:sRX:RxBitCounter\" 1 2 7
+set_location "\UART_230400:BUART:sRX:RxSts\" 1 3 4
 set_location "\DEMUX_CTRL_230400:Sync:ctrl_reg\" 0 5 6
 set_location "\UART_115200:TXInternalInterrupt\" interrupt -1 -1 1
-set_location "\UART_115200:BUART:sTX:TxShifter:u0\" 1 3 2
-set_location "\UART_115200:BUART:sTX:sCLOCK:TxBitClkGen\" 0 2 2
-set_location "\UART_115200:BUART:sTX:TxSts\" 1 3 4
-set_location "\UART_115200:BUART:sRX:RxShifter:u0\" 1 1 2
-set_location "\UART_115200:BUART:sRX:RxBitCounter\" 1 0 7
-set_location "\UART_115200:BUART:sRX:RxSts\" 1 2 4
-set_location "\MUX_CTRL_230400:Sync:ctrl_reg\" 1 4 6
-set_location "\MUX_CTRL_115200:Sync:ctrl_reg\" 0 2 6
+set_location "\UART_115200:BUART:sTX:TxShifter:u0\" 1 5 2
+set_location "\UART_115200:BUART:sTX:sCLOCK:TxBitClkGen\" 0 5 2
+set_location "\UART_115200:BUART:sTX:TxSts\" 1 5 4
+set_location "\UART_115200:BUART:sRX:RxShifter:u0\" 2 0 2
+set_location "\UART_115200:BUART:sRX:RxBitCounter\" 2 4 7
+set_location "\UART_115200:BUART:sRX:RxSts\" 2 0 4
+set_location "\MUX_CTRL_230400:Sync:ctrl_reg\" 1 3 6
+set_location "\MUX_CTRL_115200:Sync:ctrl_reg\" 2 0 6
 set_location "isr_UART_115200" interrupt -1 -1 8
 set_location "\Timer_20ms:TimerHW\" timercell -1 -1 1
 set_location "isr_Timer_20ms" interrupt -1 -1 6
@@ -116,14 +120,14 @@ set_location "\Timer_10ms:TimerHW\" timercell -1 -1 0
 set_location "isr_Timer_10ms" interrupt -1 -1 5
 set_location "isr_UART_460800" interrupt -1 -1 10
 set_location "\UART_460800:TXInternalInterrupt\" interrupt -1 -1 3
-set_location "\UART_460800:BUART:sTX:TxShifter:u0\" 2 3 2
-set_location "\UART_460800:BUART:sTX:sCLOCK:TxBitClkGen\" 1 2 2
-set_location "\UART_460800:BUART:sTX:TxSts\" 2 3 4
+set_location "\UART_460800:BUART:sTX:TxShifter:u0\" 2 4 2
+set_location "\UART_460800:BUART:sTX:sCLOCK:TxBitClkGen\" 1 4 2
+set_location "\UART_460800:BUART:sTX:TxSts\" 3 4 4
 set_location "\UART_460800:BUART:sRX:RxShifter:u0\" 0 1 2
-set_location "\UART_460800:BUART:sRX:RxBitCounter\" 0 1 7
+set_location "\UART_460800:BUART:sRX:RxBitCounter\" 0 0 7
 set_location "\UART_460800:BUART:sRX:RxSts\" 0 2 4
-set_location "\MUX_CTRL_460800:Sync:ctrl_reg\" 0 0 6
-set_location "\DEMUX_CTRL_460800:Sync:ctrl_reg\" 0 4 6
+set_location "\MUX_CTRL_460800:Sync:ctrl_reg\" 0 1 6
+set_location "\DEMUX_CTRL_460800:Sync:ctrl_reg\" 1 1 6
 set_location "\Timer_50ms:TimerHW\" timercell -1 -1 2
 set_location "isr_Timer_50ms" interrupt -1 -1 7
 set_location "\WaveDAC:Wave1_DMA\" drqcell -1 -1 0
@@ -133,52 +137,52 @@ set_location "\Timer_DAC:TimerHW\" timercell -1 -1 3
 set_location "isr_ADC_AudioStream" interrupt -1 -1 4
 set_location "\ADC_AudioStream:IRQ\" interrupt -1 -1 0
 set_location "\ADC_AudioStream:ADC_SAR\" sarcell -1 -1 0
-set_location "\UART_230400:BUART:txn\" 0 3 1 0
-set_location "\UART_230400:BUART:tx_state_1\" 0 3 1 1
-set_location "\UART_230400:BUART:tx_state_0\" 2 3 1 0
-set_location "\UART_230400:BUART:tx_state_2\" 0 3 0 3
-set_location "\UART_230400:BUART:tx_bitclk\" 0 3 0 1
-set_location "\UART_230400:BUART:tx_ctrl_mark_last\" 1 1 1 0
-set_location "\UART_230400:BUART:rx_state_0\" 1 4 0 0
-set_location "\UART_230400:BUART:rx_load_fifo\" 1 5 0 3
-set_location "\UART_230400:BUART:rx_state_3\" 1 5 0 0
-set_location "\UART_230400:BUART:rx_state_2\" 1 4 0 1
-set_location "\UART_230400:BUART:rx_bitclk_enable\" 1 5 1 3
-set_location "\UART_230400:BUART:rx_state_stop1_reg\" 1 5 1 2
-set_location "MODIN1_1" 1 5 1 1
-set_location "MODIN1_0" 1 4 1 2
-set_location "\UART_230400:BUART:rx_status_3\" 1 5 1 0
-set_location "\UART_230400:BUART:rx_last\" 1 4 1 3
-set_location "\UART_115200:BUART:txn\" 1 2 1 0
-set_location "\UART_115200:BUART:tx_state_1\" 1 2 0 2
-set_location "\UART_115200:BUART:tx_state_0\" 1 3 0 0
-set_location "\UART_115200:BUART:tx_state_2\" 1 2 0 0
-set_location "\UART_115200:BUART:tx_bitclk\" 1 3 0 3
-set_location "\UART_115200:BUART:tx_ctrl_mark_last\" 1 1 0 3
-set_location "\UART_115200:BUART:rx_state_0\" 1 1 0 0
-set_location "\UART_115200:BUART:rx_load_fifo\" 1 1 0 2
-set_location "\UART_115200:BUART:rx_state_3\" 1 0 0 0
-set_location "\UART_115200:BUART:rx_state_2\" 1 1 0 1
-set_location "\UART_115200:BUART:rx_bitclk_enable\" 1 0 1 3
-set_location "\UART_115200:BUART:rx_state_stop1_reg\" 1 0 0 2
-set_location "MODIN5_1" 1 0 1 1
-set_location "MODIN5_0" 1 0 1 2
-set_location "\UART_115200:BUART:rx_status_3\" 1 0 1 0
-set_location "\UART_115200:BUART:rx_last\" 0 2 1 0
-set_location "\UART_460800:BUART:txn\" 2 3 0 0
-set_location "\UART_460800:BUART:tx_state_1\" 3 3 0 1
-set_location "\UART_460800:BUART:tx_state_0\" 1 3 1 0
-set_location "\UART_460800:BUART:tx_state_2\" 3 3 0 0
-set_location "\UART_460800:BUART:tx_bitclk\" 1 3 1 3
-set_location "\UART_460800:BUART:tx_ctrl_mark_last\" 0 0 1 3
-set_location "\UART_460800:BUART:rx_state_0\" 0 1 0 0
-set_location "\UART_460800:BUART:rx_load_fifo\" 0 1 0 1
-set_location "\UART_460800:BUART:rx_state_3\" 0 2 0 1
-set_location "\UART_460800:BUART:rx_state_2\" 0 2 0 0
-set_location "\UART_460800:BUART:rx_bitclk_enable\" 0 1 1 3
-set_location "\UART_460800:BUART:rx_state_stop1_reg\" 0 2 0 2
-set_location "\UART_460800:BUART:pollcount_1\" 0 1 1 1
-set_location "\UART_460800:BUART:pollcount_0\" 0 1 1 2
-set_location "\UART_460800:BUART:rx_status_3\" 0 1 0 2
-set_location "RTest_UART_SIREN_RX(0)_SYNC" 1 4 5 1
-set_location "\UART_460800:BUART:rx_last\" 0 0 0 0
+set_location "\UART_230400:BUART:txn\" 0 5 1 0
+set_location "\UART_230400:BUART:tx_state_1\" 0 5 1 1
+set_location "\UART_230400:BUART:tx_state_0\" 0 4 1 1
+set_location "\UART_230400:BUART:tx_state_2\" 0 4 0 0
+set_location "\UART_230400:BUART:tx_bitclk\" 0 4 0 2
+set_location "\UART_230400:BUART:tx_ctrl_mark_last\" 1 3 1 1
+set_location "\UART_230400:BUART:rx_state_0\" 1 2 0 0
+set_location "\UART_230400:BUART:rx_load_fifo\" 1 2 0 2
+set_location "\UART_230400:BUART:rx_state_3\" 1 2 1 0
+set_location "\UART_230400:BUART:rx_state_2\" 1 2 0 1
+set_location "\UART_230400:BUART:rx_bitclk_enable\" 0 2 1 0
+set_location "\UART_230400:BUART:rx_state_stop1_reg\" 1 3 1 3
+set_location "MODIN1_1" 0 2 1 1
+set_location "MODIN1_0" 0 2 1 2
+set_location "\UART_230400:BUART:rx_status_3\" 1 3 1 2
+set_location "\UART_230400:BUART:rx_last\" 1 3 0 1
+set_location "\UART_115200:BUART:txn\" 1 5 1 0
+set_location "\UART_115200:BUART:tx_state_1\" 1 4 0 1
+set_location "\UART_115200:BUART:tx_state_0\" 1 5 0 0
+set_location "\UART_115200:BUART:tx_state_2\" 1 4 0 0
+set_location "\UART_115200:BUART:tx_bitclk\" 1 4 0 2
+set_location "\UART_115200:BUART:tx_ctrl_mark_last\" 1 1 1 1
+set_location "\UART_115200:BUART:rx_state_0\" 2 0 1 0
+set_location "\UART_115200:BUART:rx_load_fifo\" 3 0 1 1
+set_location "\UART_115200:BUART:rx_state_3\" 2 0 1 2
+set_location "\UART_115200:BUART:rx_state_2\" 2 0 1 1
+set_location "\UART_115200:BUART:rx_bitclk_enable\" 3 4 1 2
+set_location "\UART_115200:BUART:rx_state_stop1_reg\" 1 1 1 2
+set_location "MODIN5_1" 1 0 1 2
+set_location "MODIN5_0" 2 0 0 3
+set_location "\UART_115200:BUART:rx_status_3\" 1 0 1 3
+set_location "\UART_115200:BUART:rx_last\" 2 0 0 0
+set_location "\UART_460800:BUART:txn\" 2 4 1 0
+set_location "\UART_460800:BUART:tx_state_1\" 1 4 1 3
+set_location "\UART_460800:BUART:tx_state_0\" 2 4 0 0
+set_location "\UART_460800:BUART:tx_state_2\" 1 4 1 0
+set_location "\UART_460800:BUART:tx_bitclk\" 2 4 1 2
+set_location "\UART_460800:BUART:tx_ctrl_mark_last\" 0 2 0 0
+set_location "\UART_460800:BUART:rx_state_0\" 0 0 1 1
+set_location "\UART_460800:BUART:rx_load_fifo\" 0 0 1 2
+set_location "\UART_460800:BUART:rx_state_3\" 0 0 1 3
+set_location "\UART_460800:BUART:rx_state_2\" 0 0 0 1
+set_location "\UART_460800:BUART:rx_bitclk_enable\" 1 0 0 1
+set_location "\UART_460800:BUART:rx_state_stop1_reg\" 0 0 0 0
+set_location "\UART_460800:BUART:pollcount_1\" 0 1 1 3
+set_location "\UART_460800:BUART:pollcount_0\" 1 0 0 0
+set_location "\UART_460800:BUART:rx_status_3\" 0 0 1 0
+set_location "RTest_UART_SIREN_RX(0)_SYNC" 0 3 5 1
+set_location "\UART_460800:BUART:rx_last\" 0 1 1 2

@@ -233,7 +233,7 @@ static void detectPacket(uint8 dataByte)
                 if(currentType == CTEST_RELAY)
                 {
                    pRxPacket_Controller = getRxPacket_Controller();
-                   memcpy(&pRxPacket_Controller->bytes[0], &packet[2], PacketList[CTEST_RELAY].PAYLOAD_SIZE);
+                   memcpy(&pRxPacket_Controller->bytes[69], &packet[2], PacketList[CTEST_RELAY].PAYLOAD_SIZE);
                     packetsuccess[CTEST_RELAY]++;   
                 }
                 else if(currentType == RTEST_CONTROLLER)
@@ -296,6 +296,8 @@ void ResetPacketSuccess(void)           //*** This can be improved
 
 uint8 VerifyPacket_230400(uint8 PacketType)
 {
+    
+    //MUX_CTRL_230400_Write();
 
     if(packetsuccess[PacketType] >= PACKET_VERIFICATION_COUNT)                //maybe we wait until pass here
     {
@@ -332,6 +334,30 @@ uint8 findpacket(uint8 dataByte)
 }
 
 //-----------------------------------TX FUNCTIONS----------------------------------------------
+
+void sendPacket_RelayToController(void)
+{
+    
+    static TxPacket_Controller txPacket_Controller;            
+    static TxPacket_Controller * pTxPacket_Controller;
+    
+    pTxPacket_Controller = getTxPacket_Controller();              // Tx - Get pointers to packet 
+    
+    DEMUX_CTRL_230400_Write(CTEST_RELAY);
+    
+    UART_230400_WriteTxData('~');
+    UART_230400_WriteTxData('D');
+    for(uint8 iterator = 0; iterator<15; iterator++)              // Send entire payload every other send
+    {
+        UART_230400_WriteTxData(pTxPacket_Controller->bytes[iterator]);
+    }
+    UART_230400_WriteTxData('\r');
+    UART_230400_WriteTxData('\n');
+    
+    return;
+    
+}
+
 void sendPacketToRelaySiren(void)                   //*** This part needs some work
 {
     static uint16 iterator = 0;

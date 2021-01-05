@@ -301,6 +301,8 @@ void ResetPacketSuccess_460800(void)           //*** This can be improved
 
 uint8 VerifyPacket_460800(uint8 PacketType)
 {
+    
+    //MUX_CTRL_460800_Write(PacketType);
        
     if(packetsuccess[PacketType] >= PACKET_VERIFICATION_COUNT)                //maybe we wait until pass here
     {
