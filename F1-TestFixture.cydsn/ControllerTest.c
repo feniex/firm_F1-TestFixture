@@ -73,16 +73,16 @@ static uint8 CTestStatus[NUMBER_TEST_STEPS];
 
 enum TestStep           
 { 
-    INITIALIZE_TEST, 
-    CONFIRM_BOOTUP,         // TESTED (needs timeout adjustment)
-    CONFIG_FILE,
-    TEST_POWERMODES,        // (had controller issue) - Tests Vbatt detect, USB_5V detect - (uses input ignition and OBDII ignition also)
-    QUAD_STREAM,            // ***config (need to test)
+    INITIALIZE_TEST,        // COMPLETE
+    CONFIRM_BOOTUP,         // ***TESTED (needs timeout adjustment)
+    CONFIG_FILE,            // COMPLETE
+    TEST_POWERMODES,        // ***(add usb powered only
+    QUAD_STREAM,            // COMPLETE (configfile)
     AUDIO_STREAM,           // (not a priority)
     DEBUG_PORT,             // (not a priority)
-    OBDII,                  // ***config (need to test)
+    OBDII,                  // COMPLETE (configfile)
     LEDS_RGB,               // (need to implement packet on controller side)
-    PUSHBUTTONS,            // ***config (need to test)
+    PUSHBUTTONS,            // COMPLETE (configfile)
 };
 
 
@@ -137,13 +137,14 @@ uint8 ControllerTest(void)
             CyDelay(1000);
       
             //CurrentTest.TestStep = INITIALIZE_TEST;
-            CurrentTest.TestStep = CONFIRM_BOOTUP;
+            //CurrentTest.TestStep = CONFIRM_BOOTUP;
             //CurrentTest.TestStep = TEST_POWERMODES;
-//            CurrentTest.TestStep = DEBUG_PORT;
-//            CurrentTest.TestStep = QUAD_STREAM;
-//            CurrentTest.TestStep = AUDIO_STREAM;
-//            CurrentTest.TestStep = LEDS_RGB;
-//            CurrentTest.TestStep = PUSHBUTTONS;
+            //CurrentTest.TestStep = DEBUG_PORT;
+            //CurrentTest.TestStep = QUAD_STREAM;
+            //CurrentTest.TestStep = AUDIO_STREAM;
+            CurrentTest.TestStep = OBDII;
+            //CurrentTest.TestStep = LEDS_RGB;
+            //CurrentTest.TestStep = PUSHBUTTONS;
         
         break;
         
@@ -173,10 +174,25 @@ uint8 ControllerTest(void)
             CTest_USB_5V_EN_Write(1);
         
             CTest_PB_WaitForAction();
+
+//            while( (CTestStatus[CurrentTest.TestStep] != 'P') && (CTestStatus[CurrentTest.TestStep] != 'F') )
+//            {
+//                //CTest_PlayTestTone();   // Play test tone for 3sec
+//                
+//                if(PB_NextAction_Released) 
+//                {
+//                    //LED_EN_Write(1);
+//                    CTestStatus[CurrentTest.TestStep] = 'P'; 
+//                    PB_NextAction_Released = 0;
+//                }
+//                
+//            }
             
             CTest_CONT_VBATT_EN_Write(1);                           // Enable Vbatt power to controller
             CTest_USB_5V_EN_Write(0);
-
+            
+            CyDelay(1000);
+            
             //CurrentTest.TestStep = INITIALIZE_TEST;                   
             //CurrentTest.TestStep = TEST_POWERMODES;
             CurrentTest.TestStep = QUAD_STREAM;
@@ -233,8 +249,9 @@ uint8 ControllerTest(void)
             
             CyDelay(1000);
             
-            CurrentTest.TestStep = INITIALIZE_TEST;
+            //CurrentTest.TestStep = INITIALIZE_TEST;
             //CurrentTest.TestStep = AUDIO_STREAM;
+            CurrentTest.TestStep = OBDII;
 
         break;
                        
@@ -256,11 +273,21 @@ uint8 ControllerTest(void)
       
         break;  
             
-        case OBDII:  
-                
-            // OBDII - (requires a config file)
-            // Send a known vehicle event
-            // Verify expected response - (corresponding output will be enabled)
+        case OBDII:  // OBDII - configfile - when front driver door is open, turn on outputs 31 and 32
+
+            CTest_StartAutomatedStep();
+
+            MUX_CTRL_230400_Write(CTEST_RELAY);                             // Read a 'I' (includes 'P') packet
+            pRxPacket_Controller = getRxPacket_Controller();    
+            
+            while( ( (pRxPacket_Controller->Payload.Outputs_25to32 >> 6) & 0x03) != 0x03 ) 
+            {
+                sendPacketToController_OBDII();                             // Send 'drivers side door open' command
+            }
+            
+            CTest_StopAutomatedStep();
+            
+            CyDelay(1000);            
             
             CurrentTest.TestStep = INITIALIZE_TEST;
             //CurrentTest.TestStep = LEDS_RGB;
@@ -293,11 +320,18 @@ uint8 ControllerTest(void)
             // wait until all 
 
             CTestStatus[CurrentTest.TestStep] = 'W';
+            CurrentTest.Status = 'W';
             
             while( (!CTest_ReadPushbuttons()) && (CTestStatus[CurrentTest.TestStep] != 'F') )   // Check that the packet is turning all Relay Outputs on
             {}
             
-            CTestStatus[CurrentTest.TestStep] = 'P';
+            if(CTestStatus[CurrentTest.TestStep] != 'F')       // If not failed, then pass
+            {
+                CTestStatus[CurrentTest.TestStep] = 'P';
+                CurrentTest.Status = 'P';
+            }
+            
+            CyDelay(1000);
                 
             CurrentTest.TestStep = INITIALIZE_TEST;
       
@@ -441,6 +475,7 @@ void CTest_isr_PB(void)
     if(PB_NextAction_failcount > 75)                       // If PB is held for (150 * 20msec = 3sec) then fail
     {  
         CTestStatus[CurrentTest.TestStep] = 'F';
+        CurrentTest.Status = 'F';
         PB_NextAction_failcount = 0;
     }
     
@@ -535,6 +570,7 @@ void CTest_PB_WaitForAction(void)
 {
     
     CTestStatus[CurrentTest.TestStep] = 'W';                                        // Set status to 'waiting' until user hits the 'next action' button
+    CurrentTest.Status = 'W';
     
     while( (CTestStatus[CurrentTest.TestStep] != 'P') && (CTestStatus[CurrentTest.TestStep] != 'F') )
     {

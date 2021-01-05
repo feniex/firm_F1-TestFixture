@@ -63,6 +63,8 @@
 #include "QUAD_DATA_7_aliases.h"
 #include "QUAD_DATA_7.h"
 #include "MUX_CTRL_460800.h"
+#include "CTest_RS485_OBDII_TX_aliases.h"
+#include "CTest_RS485_OBDII_TX.h"
 #include "DEMUX_CTRL_460800.h"
 #include "CTest_RS485_QUAD_RX_aliases.h"
 #include "CTest_RS485_QUAD_RX.h"

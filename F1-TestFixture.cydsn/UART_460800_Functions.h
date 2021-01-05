@@ -174,6 +174,25 @@ typedef union rxPacket_QuadSerial
             uint8 SM_ZoneAddress;  
     }Payload;
 }RxPacket_QuadSerial;
+
+//// C-Test/R-Test - Tx - Quad-Serial from Controller (to Relay)
+//typedef union txPacket_OBDII
+//{
+//    uint8 bytes[9];
+//
+//    struct rxData_QuadSerial
+//    {
+//            uint8 SM_Zone1;
+//            uint8 SM_Zone2;
+//            uint8 SM_Zone3;
+//            uint8 SM_Zone4;
+//            uint8 SM_Zone5;
+//            uint8 SM_Zone6;
+//            uint8 SM_Zone7;
+//            uint8 SM_Zone8;
+//            uint8 SM_ZoneAddress;  
+//    }Payload;
+//}RxPacket_QuadSerial;
     
 /**********GLOBAL VARIABLES**********/
 
@@ -187,6 +206,7 @@ void ResetPacketSuccess_460800(void);
 uint8 VerifyPacket_460800(uint8 PacketType);
 void sendPacketToRelay_Quad(void);
 void sendPacketToSiren_Audio(void);
+void sendPacketToController_OBDII(void);
 
 //void CTest_SendIgnitionState(uint8 ignition_state);
 

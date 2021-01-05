@@ -32,6 +32,13 @@
 #define PACKET_VERIFICATION_COUNT   5
 
 /**********DEFINED CONSTANTS**********/
+enum DEMUX_460800_CHANNEL
+{ 
+    CTEST_OBDII_TX,       
+    RTEST_QUAD_TX,       
+    STEST_AUDIO_TX,
+};
+
 enum DataType
 { 
     CTEST_AUDIO,        // This is for both cont and relay tests
@@ -364,6 +371,25 @@ void sendPacketToSiren_Audio(void)
     iterator++;
     if(iterator > 100)
         iterator = 0;
+    
+    return;
+}
+
+void sendPacketToController_OBDII(void)
+{
+    
+    DEMUX_CTRL_460800_Write(CTEST_OBDII_TX);
+    
+    UART_460800_WriteTxData('~');                          // Send 'L' packet 
+    UART_460800_WriteTxData(2);
+    for(uint8 iterator = 0; iterator<7; iterator++)             
+    {
+        UART_460800_WriteTxData(0);
+    }
+    UART_460800_WriteTxData(0x40);      // Send 'drivers side door open' command
+    UART_460800_WriteTxData(0x42);      // Checksum
+    UART_460800_WriteTxData(0x0D);
+    UART_460800_WriteTxData(0x0A);  
     
     return;
 }
