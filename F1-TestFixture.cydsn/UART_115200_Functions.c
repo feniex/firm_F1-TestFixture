@@ -307,13 +307,16 @@ void ResetPacketSuccess_115200(void)           //*** This can be improved
 uint8 VerifyPacket_115200(uint8 PacketType)
 {
     
-    if(packetsuccess[PacketType] >= PACKET_VERIFICATION_COUNT)                //maybe we wait until pass here
+    if(packetsuccess[PacketType] == PACKET_VERIFICATION_COUNT)                //maybe we wait until pass here
     {
         packetsuccess[PacketType] = 0;
         return(1);
     }
-    else
-        return(0);
+    else if(packetsuccess[PacketType] > PACKET_VERIFICATION_COUNT)
+        packetsuccess[PacketType] = 0;
+    
+        
+    return(0);
         
         
 //    if(packetsuccess[PacketType] >= PACKET_VERIFICATION_COUNT)                //maybe we wait until pass here

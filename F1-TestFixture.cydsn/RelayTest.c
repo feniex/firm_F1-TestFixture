@@ -22,6 +22,7 @@
 #define TOLERANCE_VOLTAGE   5  
 #define CURRENT_LOAD        9              // (ohms)
 #define TOLERANCE_CURRENT   2 
+#define CONFIRM_TIME        400            // How many msec to show pass/fail for each step
 
 static RxPacket_RelaySiren rxPacket_Relay;          // Inputs - 'D' relay to controller
 static RxPacket_RelaySiren * pRxPacket_Relay;       // UART_SIREN
@@ -51,10 +52,6 @@ static RxPacket_Quad * pTxPacket_Quad;      //***
 //static RxPacket_RelaySiren * pRxPacket_Relay;      //
 
 //------------GLOABAL variables--------------------
-
-//extern uint16 _100ms_flag;
-//uint16 _100ms_flag = 0;
-//uint16 isr_count;
 
 static uint16 RTest_20ms_isr_count = 0;
 static uint16 RTest_20ms_isr_EN = 0;
@@ -115,23 +112,23 @@ enum MUX_115200_CHANNEL
 
 // --------------Test steps---------------
 #define NUMBER_TEST_STEPS   11
-static uint16 RTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,50,500,50,50,50,50,50,50,50};  // Number of 20msec counts before failure timeout, for each step
+static uint16 RTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,50,200,50,100,100,50,100,15000,50};  // Number of 20msec counts before failure timeout, for each step
 
 static uint8 RTestStatus[NUMBER_TEST_STEPS];
 
 enum TestStep               // *** Need to get muxes setup permanently, 
 { 
-    INITIALIZE_TEST, 
+    INITIALIZE_TEST,    // COMPLETE
     SIREN_EN,           // COMPLETE
-    TEST_OUTPUTS,           // (***TF connectors are backwards)
-    DATALINK,               // (***relay seems to send this spuratically - timeout takes like 5sec)
+    TEST_OUTPUTS,       // COMPLETE
+    DATALINK,           // COMPLETE
     QUAD_PORTS,         // COMPLETE
     UART_SIREN,         // COMPLETE
     INPUTS,             // COMPLETE
     VBATT,              // COMPLETE
-    BLOCK_CURRENTS,         // 230400 RX_TESTED     - 230400 TX TESTED      - COMPLETE
-    GPS,                    // (***230400 rx tested)
-    FAIL
+    BLOCK_CURRENTS,     // COMPLETE
+    GPS,                // COMPLETE
+    PASS                // COMPLETE 
 };
 
 
@@ -147,17 +144,15 @@ uint8 RelayTest(void)
                
         case INITIALIZE_TEST:
 
-//            for(uint8 i=0;i<NUMBER_TEST_STEPS;i++)
-//                RTestStatus[i] = 'I';
-            
-            CurrentTest.Status = 'I';                              
-        
             for (uint8 i=0;i<NUMBER_TEST_STEPS;i++)                 // Reset Status of aall test steps to 0
                 RTestStatus[i] = '_';
+                
+            RTestStatus[CurrentTest.TestStep] = 'I';
+            CurrentTest.Status = 'I'; 
 
             pTxPacket_RelaySiren = getTxPacket_RelaySiren();        // Tx - Initialize TX_RelaySiren packet 
             for(uint8 i;i<79;i++)
-                pTxPacket_RelaySiren->bytes[i] = i;
+                pTxPacket_RelaySiren->bytes[i] = 0;
 
             pTxPacket_RelaySiren->Payload.StartByte_FLB = '~';
             pTxPacket_RelaySiren->Payload.FLB_PacketType = '3';
@@ -183,17 +178,21 @@ uint8 RelayTest(void)
             // RTest_HSide6_Write(0);
             // RTest_HSide7_Write(0);
             // RTest_HSide8_Write(0);
+                
+            RTestStatus[CurrentTest.TestStep] = 'P';
+            CurrentTest.Status = 'P'; 
                     
-            CyDelay(1000);
+            CyDelay(CONFIRM_TIME);
             
-            //CurrentTest.TestStep = SIREN_EN;
+            //CurrentTest.TestStep = INITIALIZE_TEST;
+            CurrentTest.TestStep = SIREN_EN;
             //CurrentTest.TestStep = TEST_OUTPUTS;
             //CurrentTest.TestStep = DATALINK;
             //CurrentTest.TestStep = QUAD_PORTS;
             //CurrentTest.TestStep = UART_SIREN;
             //CurrentTest.TestStep = INPUTS;
             //CurrentTest.TestStep = VBATT; 
-            CurrentTest.TestStep = BLOCK_CURRENTS; 
+            //CurrentTest.TestStep = BLOCK_CURRENTS; 
             //CurrentTest.TestStep = GPS; 
                    
         break;
@@ -207,7 +206,8 @@ uint8 RelayTest(void)
             
             RTest_StopAutomatedStep();
             
-            CyDelay(500);
+            CyDelay(CONFIRM_TIME);
+            
             //CurrentTest.TestStep = INITIALIZE_TEST;
             CurrentTest.TestStep = TEST_OUTPUTS;        
         break;    
@@ -220,6 +220,8 @@ uint8 RelayTest(void)
             {}   
             
             RTest_StopAutomatedStep();
+            
+            CyDelay(CONFIRM_TIME);
 
             //CurrentTest.TestStep = INITIALIZE_TEST;
             CurrentTest.TestStep = DATALINK;        
@@ -234,10 +236,10 @@ uint8 RelayTest(void)
  
             RTest_StopAutomatedStep();
             
-            CyDelay(1000);
+            CyDelay(CONFIRM_TIME);
 
-            CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = QUAD_PORT_1;        
+            //CurrentTest.TestStep = INITIALIZE_TEST;
+            CurrentTest.TestStep = QUAD_PORTS;        
         break;  
             
         case QUAD_PORTS: 
@@ -251,10 +253,10 @@ uint8 RelayTest(void)
             
             RTest_StopAutomatedStep();
             
-            CyDelay(1000);
+            CyDelay(CONFIRM_TIME);
                   
-            CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = QUAD_PORT_2;      
+            //CurrentTest.TestStep = INITIALIZE_TEST;
+            CurrentTest.TestStep = UART_SIREN;      
         break;  
                
                 
@@ -267,10 +269,10 @@ uint8 RelayTest(void)
             
             RTest_StopAutomatedStep();
             
-            CyDelay(1000);
+            CyDelay(CONFIRM_TIME);
             
-            CurrentTest.TestStep = INITIALIZE_TEST;  
-            //TestState = INPUTS;                
+            //CurrentTest.TestStep = INITIALIZE_TEST;  
+            CurrentTest.TestStep = INPUTS;                
         break;  
               
         case INPUTS:          
@@ -282,10 +284,10 @@ uint8 RelayTest(void)
             
             RTest_StopAutomatedStep();
             
-            CyDelay(1000);
+            CyDelay(CONFIRM_TIME);
                 
-            CurrentTest.TestStep = INITIALIZE_TEST;  
-            //CurrentTest.TestStep = VBATT;                
+            //CurrentTest.TestStep = INITIALIZE_TEST;  
+            CurrentTest.TestStep = VBATT;                
         break;          
 
         case VBATT:                                     // Tested and working
@@ -297,47 +299,79 @@ uint8 RelayTest(void)
             
             RTest_StopAutomatedStep();
             
-            CyDelay(1000);
+            CyDelay(CONFIRM_TIME);
              
-            CurrentTest.TestStep = INITIALIZE_TEST; 
-            //CurrentTest.TestStep = BLOCK_CURRENTS;                
+            //CurrentTest.TestStep = INITIALIZE_TEST; 
+            CurrentTest.TestStep = BLOCK_CURRENTS;  
         break; 
          
         case BLOCK_CURRENTS:                            //*** Tested and working
             
             SetRelayOutputs(1);                         // Send command to turn on relay outputs
                 
-            //RTest_StartAutomatedStep();
+            RTest_StartAutomatedStep();
              
             while( (!RTest_Test_BlockCurrents()) && (RTestStatus[CurrentTest.TestStep] != 'F') )
             {} 
             
-            //RTest_StopAutomatedStep();
+            RTest_StopAutomatedStep();
             
-            CyDelay(1000);
+            CyDelay(CONFIRM_TIME);
              
             SetRelayOutputs(0);                         // Send command to turn off relay outputs
+            
+            CyDelay(100);
 
-            CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = GPS;  
+            //CurrentTest.TestStep = INITIALIZE_TEST;
+            CurrentTest.TestStep = GPS;  
         break; 
-    //---------------------------------------------------------------------------------------------------           
+          
         case GPS:         
                 
             RTest_StartAutomatedStep();
+//            RTestStatus[CurrentTest.TestStep] = 'B';
+//            CurrentTest.Status = 'B';
+            
+            MUX_CTRL_230400_Write(RTEST_CONT);
                
-            while( (!RTest_Test_GPS()) && (RTestStatus[CurrentTest.TestStep] != 'F') )
+            while( (!VerifyPacket_GPS()) && (RTestStatus[CurrentTest.TestStep] != 'F') )
             {}        
             
             RTest_StopAutomatedStep();
+//            if(RTestStatus[CurrentTest.TestStep] != 'F')       // If not failed, then pass
+//            {
+//                RTestStatus[CurrentTest.TestStep] = 'P';
+//                CurrentTest.Status = 'P';
+//            }
             
-            CyDelay(1000);
+            CyDelay(CONFIRM_TIME);
              
-            CurrentTest.TestStep = INITIALIZE_TEST;                
+            //CurrentTest.TestStep = INITIALIZE_TEST; 
+            CurrentTest.TestStep = PASS;
         break;   
             
-        case FAIL:  
-        
+        case PASS:  
+            
+            for(uint8 i=0;i<(NUMBER_TEST_STEPS-1);i++)
+            {
+                if(RTestStatus[i] != 'P')
+                {
+                    RTestStatus[CurrentTest.TestStep] = 'f';
+                    CurrentTest.Status = 'f';                      
+                }    
+            }
+ 
+            if(RTestStatus[CurrentTest.TestStep] != 'f')
+            {
+                RTestStatus[CurrentTest.TestStep] = 'p';
+                CurrentTest.Status = 'p'; 
+            }
+            
+            //while(1);
+            
+            CyDelay(1000);
+            CurrentTest.TestStep = INITIALIZE_TEST;
+
         break;          
            
     }
@@ -368,10 +402,9 @@ uint8 RTest_Test_Outputs(void)
         OutputsState = ( OutputsState | (testval << channel) );             // Read RTest_INPUT_DEMUX and store each bit in OutputsState   
     }
     
-    //SetRelayOutputs(0);                                                     // Send command to turn off relay outputs
+    SetRelayOutputs(0);                                                     // Send command to turn off relay outputs
     
-    //if(OutputsState == 0xFFFFFF)
-    if(OutputsState == 0x000303)
+    if(OutputsState == 0xFFFFFFFF)
         return(1);                                                          // If all outputs are turned on, then return pass
     else
         return(0);                                                          // If not pass, then return fail
@@ -391,9 +424,12 @@ uint8 RTest_Test_DataLink(void)
     
     MUX_CTRL_115200_Write(RTEST_DLINK2);            //Select the RTest_RS485_DLink2_RX channel     
     while( (!VerifyPacket_115200(RTEST_DLINK)) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
-    {}  
+    {} 
     
-    return(1);                                      // If both packets get verified, then return pass
+    if(RTestStatus[CurrentTest.TestStep] != 'F')
+        return(1);                                      // If both packets get verified, then return pass
+    else
+        return(0); 
 }
 
 /* 460800bps ********************************************************************************
@@ -540,22 +576,22 @@ uint8 RTest_Test_BlockCurrents(void)
 
 }
 
-/* 230400bps ****************************************************
-*   (wait for the GPS hardware to acquire a signal)
-*   Read the GPS packet - search for the GPS formated data
-*****************************************************************/
-uint8 RTest_Test_GPS(void)
-{
-    
-    static uint8 targetstring[6] = {'$','G','P','M','R','C'};
-
-    //uint8 findpacket(uint8 dataByte) - this should pass the target string
-    //processByteReceivedHandler_230400(&targetstring);
-
-    
-    
-    return(0);
-}
+///* 230400bps ****************************************************
+//*   (wait for the GPS hardware to acquire a signal)
+//*   Read the GPS packet - search for the GPS formated data
+//*****************************************************************/
+//uint8 RTest_Test_GPS(void)
+//{
+//    
+//    //static uint8 targetstring[6] = {'$','G','P','M','R','C'};
+//
+//    uint8 findpacket(uint8 dataByte);  // - this should pass the target string
+//    //processByteReceivedHandler_230400(&targetstring);
+//
+//    
+//    
+//    return(0);
+//}
 
 RxPacket_RelaySiren * getRxPacket_Relay(void)
 {
@@ -632,12 +668,12 @@ void RTest_sendDiagPacket(void)
         RelayTestStatus_display[(i*2) + 1] = ' ';
     }
     
-    DEMUX_CTRL_230400_Write(RTEST_SIREN);
+    //DEMUX_CTRL_115200_Write(RTEST_SIREN);
     
-    UART_230400_PutArray(RelayTestStatus_display, (NUMBER_TEST_STEPS*2) );
+    UART_115200_PutArray(RelayTestStatus_display, (NUMBER_TEST_STEPS*2) );
     
-    UART_230400_PutChar('\r');
-    UART_230400_PutChar('\n');
+    UART_115200_PutChar('\r');
+    UART_115200_PutChar('\n');
     
     return;
 }
@@ -730,9 +766,10 @@ void RTest_20ms_isr(void)                       // Manage Timeout for failure
 void RTest_50ms_isr(void)                       // Times interboard comms, and serial diagnostics
 {
     
-    //RTest_sendDiagPacket();
+    RTest_sendDiagPacket();
     
-    if( (CurrentTest.TestStep == TEST_OUTPUTS) ||
+    if( (CurrentTest.TestStep == INITIALIZE_TEST) ||
+        (CurrentTest.TestStep == TEST_OUTPUTS) ||
         (CurrentTest.TestStep == DATALINK) ||
         (CurrentTest.TestStep == UART_SIREN) ||
         (CurrentTest.TestStep == INPUTS) ||

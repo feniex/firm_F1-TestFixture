@@ -74,17 +74,21 @@ static uint8 CTestStatus[NUMBER_TEST_STEPS];
 enum TestStep           
 { 
     INITIALIZE_TEST,        // COMPLETE
-    CONFIRM_BOOTUP,         // ***TESTED (needs timeout adjustment)
+    CONFIRM_BOOTUP,         // COMPLETE
     CONFIG_FILE,            // COMPLETE
-    TEST_POWERMODES,        // ***(add usb powered only
+    TEST_POWERMODES,        // COMPLETE (resets pushbuttons)  
+    OBDII,                  // COMPLETE (configfile)
+    PUSHBUTTONS,            // COMPLETE (configfile)
     QUAD_STREAM,            // COMPLETE (configfile)
+    LEDS_RGB,               // (need to implement packet on controller side)
     AUDIO_STREAM,           // (not a priority)
     DEBUG_PORT,             // (not a priority)
-    OBDII,                  // COMPLETE (configfile)
-    LEDS_RGB,               // (need to implement packet on controller side)
-    PUSHBUTTONS,            // COMPLETE (configfile)
 };
 
+// Mic port test - could audio stream it
+// Audio circuitry test? - no speaker installed - could audio stream it
+// Screen/Touch test? - no screen installed
+// SlideSwitch test - no slide switch installed
 
 static uint8 CTestStatus[NUMBER_TEST_STEPS];
 
@@ -123,9 +127,8 @@ uint8 ControllerTest(void)
         
             for (uint8 i=0;i<NUMBER_TEST_STEPS;i++)                 // Reset Status of aall test steps to 0
                 CTestStatus[i] = '_';
-        
-//            for(uint8 i=0;i<NUMBER_TEST_STEPS;i++)                  // Set current state to 'Initialize'
-//                CTestStatus[i] = 'I';        
+            
+            CTestStatus[CurrentTest.TestStep] = 'I';
             CurrentTest.Status = 'I';
         
             pTxPacket_Controller = getTxPacket_Controller();        // Tx - Initialize Tx packet, and begin sending 'relay ignition on'
@@ -137,12 +140,12 @@ uint8 ControllerTest(void)
             CyDelay(1000);
       
             //CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = CONFIRM_BOOTUP;
+            CurrentTest.TestStep = CONFIRM_BOOTUP;
             //CurrentTest.TestStep = TEST_POWERMODES;
             //CurrentTest.TestStep = DEBUG_PORT;
             //CurrentTest.TestStep = QUAD_STREAM;
             //CurrentTest.TestStep = AUDIO_STREAM;
-            CurrentTest.TestStep = OBDII;
+            //CurrentTest.TestStep = OBDII;
             //CurrentTest.TestStep = LEDS_RGB;
             //CurrentTest.TestStep = PUSHBUTTONS;
         
@@ -194,84 +197,52 @@ uint8 ControllerTest(void)
             CyDelay(1000);
             
             //CurrentTest.TestStep = INITIALIZE_TEST;                   
-            //CurrentTest.TestStep = TEST_POWERMODES;
-            CurrentTest.TestStep = QUAD_STREAM;
+            CurrentTest.TestStep = TEST_POWERMODES;
         
         break;
         
-        case TEST_POWERMODES:           // Vbatt Detect, USB Detect - 230400bps 
+        case TEST_POWERMODES:   // ***Do we want to test both ignition methods? - only testing relay input ignition right now
+
+            //MUX_CTRL_230400_Write(CTEST_RELAY);
+            //DEMUX_CTRL_230400_Write(CTEST_RELAY);
             
-            //CTestStatus[CurrentTest.TestStep] = 'B';
             CTest_StartAutomatedStep();
-                
-            CTest_CONT_VBATT_EN_Write(1);                           // Set initial power mode conditions
-            CTest_USB_5V_EN_Write(0);     
             
+            // Test LowPower - Ignition-off, Vbatt-on, USB_5V-off
+            CTest_CONT_VBATT_EN_Write(1);                           
+            CTest_USB_5V_EN_Write(0);     
             pTxPacket_Controller = getTxPacket_Controller();        // Tx - Send relay ignition 'off';
-            pTxPacket_Controller->Payload.RelayInputs = 0x00;
-                           
+            pTxPacket_Controller->Payload.RelayInputs = 0x00;              
             pRxPacket_Controller = getRxPacket_Controller();
             while( (pRxPacket_Controller->Payload.PowerState != 0x00) && (CTestStatus[CurrentTest.TestStep] != 'F') )
             {}
             
+            // Test NormalPower - Ignition-on, Vbatt-on, USB_5V-off
             pTxPacket_Controller->Payload.RelayInputs = 0x01;       // Tx - Send relay ignition 'on'
-            
             while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.TestStep] != 'F') )
             {}
-                                   
-            CTest_USB_5V_EN_Write(1);                               // Turn on USB_5V
-
+            
+            // Test LivePower - Ignition-on, Vbatt-on, USB_5V-on
+            CTest_USB_5V_EN_Write(1);                              
             while( (pRxPacket_Controller->Payload.PowerState != 0x02) && (CTestStatus[CurrentTest.TestStep] != 'F') )
             {}
             
+//            // This is not a valid case - Ignition-on, Vbatt-off, USB_5V-on
+//            CTest_USB_5V_EN_Write(1); 
+//            CyDelay(5);
+//            CTest_CONT_VBATT_EN_Write(1);                                                         
+//            while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.TestStep] != 'F') )
+//            {}
+            
             CTest_StopAutomatedStep();
             
             CyDelay(1000);
 
             //CurrentTest.TestStep = INITIALIZE_TEST;
-            CurrentTest.TestStep = QUAD_STREAM;
-            
-        break;
-                
-        case QUAD_STREAM:
-            // Config file should be sending a quad stream based on a pushbutton/slideswitch
-
-            LED_EN_Write(1);        
-        
-            CTest_StartAutomatedStep();
-
-            MUX_CTRL_230400_Write(CTEST_QUAD);
-
-            while( (!VerifyPacket_460800(CTEST_RTEST_QUAD)) && (CTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
-            {}
-            
-            CTest_StopAutomatedStep();
-            
-            CyDelay(1000);
-            
-            //CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = AUDIO_STREAM;
+            //CurrentTest.TestStep = TEST_POWERMODES;
             CurrentTest.TestStep = OBDII;
-
-        break;
-                       
-        case AUDIO_STREAM:
-                
-            // Audio Stream (not a priority)
             
-            CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = DEBUG_PORT;
-                
         break;
-                         
-        case DEBUG_PORT:   
-                
-            // Debug Port (will need hardware to test) 
-            
-            CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = OBDII;
-      
-        break;  
             
         case OBDII:  // OBDII - configfile - when front driver door is open, turn on outputs 31 and 32
 
@@ -289,29 +260,9 @@ uint8 ControllerTest(void)
             
             CyDelay(1000);            
             
-            CurrentTest.TestStep = INITIALIZE_TEST;
+            //CurrentTest.TestStep = INITIALIZE_TEST;
             //CurrentTest.TestStep = LEDS_RGB;
-      
-        break;             
-            
-        case LEDS_RGB:   
-                
-            // Send a 'I' packet upstream to controller to manually control the LEDs
-            // Make them full bright red for 1 sec, then green, then blue
-            
-            pTxPacket_Relay = getTxPacket_Relay();        // Tx - Initialize Tx packet, and begin sending 'relay ignition on'
-
-            pTxPacket_Relay->Payload.LED_01_B = 0xFF;
-            pTxPacket_Relay->Payload.LED_02_B = 0xFF;
-            pTxPacket_Relay->Payload.LED_03_B = 0xFF;
-            pTxPacket_Relay->Payload.LED_04_B = 0xFF;
-            pTxPacket_Relay->Payload.LED_05_B = 0xFF;
-            pTxPacket_Relay->Payload.LED_06_B = 0xFF;
-            pTxPacket_Relay->Payload.LED_07_B = 0xFF;
-            pTxPacket_Relay->Payload.LED_08_B = 0xFF;
-            
-            CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = PUSHBUTTONS;
+            CurrentTest.TestStep = PUSHBUTTONS;
       
         break;  
             
@@ -333,9 +284,76 @@ uint8 ControllerTest(void)
             
             CyDelay(1000);
                 
-            CurrentTest.TestStep = INITIALIZE_TEST;
+            CurrentTest.TestStep = QUAD_STREAM;
       
         break;  
+                
+        case QUAD_STREAM:
+            // Config file should be sending a quad stream based on a pushbutton/slideswitch
+
+            LED_EN_Write(1);        
+        
+            CTest_StartAutomatedStep();
+
+            MUX_CTRL_230400_Write(CTEST_QUAD);
+
+            while( (!VerifyPacket_460800(CTEST_RTEST_QUAD)) && (CTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
+            {}
+            
+            CTest_StopAutomatedStep();
+            
+            CyDelay(1000);
+            
+            //CurrentTest.TestStep = INITIALIZE_TEST;
+            //CurrentTest.TestStep = AUDIO_STREAM;
+            CurrentTest.TestStep = LEDS_RGB;
+
+        break;
+            
+        case LEDS_RGB:   
+                
+            // Send a 'I' packet upstream to controller to manually control the LEDs
+            // Make them full bright red for 1 sec, then green, then blue
+            
+            pTxPacket_Relay = getTxPacket_Relay();        // Tx - Initialize Tx packet, and begin sending 'relay ignition on'
+
+            pTxPacket_Relay->Payload.LED_01_B = 0xFF;
+            pTxPacket_Relay->Payload.LED_02_B = 0xFF;
+            pTxPacket_Relay->Payload.LED_03_B = 0xFF;
+            pTxPacket_Relay->Payload.LED_04_B = 0xFF;
+            pTxPacket_Relay->Payload.LED_05_B = 0xFF;
+            pTxPacket_Relay->Payload.LED_06_B = 0xFF;
+            pTxPacket_Relay->Payload.LED_07_B = 0xFF;
+            pTxPacket_Relay->Payload.LED_08_B = 0xFF;
+            
+            CurrentTest.TestStep = AUDIO_STREAM;
+            //CurrentTest.TestStep = PUSHBUTTONS;
+      
+        break; 
+                       
+        case AUDIO_STREAM:
+                
+            // Audio Stream (not a priority)
+            
+            CurrentTest.TestStep = DEBUG_PORT;
+            //CurrentTest.TestStep = DEBUG_PORT;
+                
+        break;
+                         
+        case DEBUG_PORT:   
+                
+            // Debug Port (will need hardware to test) 
+            
+            CurrentTest.TestStep = INITIALIZE_TEST;
+            //CurrentTest.TestStep = OBDII;
+      
+        break;  
+            
+           
+            
+ 
+            
+
             
     }
     
@@ -577,7 +595,8 @@ void CTest_PB_WaitForAction(void)
         if(PB_NextAction_Released) 
         {
             //LED_EN_Write(1);
-            CTestStatus[CurrentTest.TestStep] = 'P'; 
+            CTestStatus[CurrentTest.TestStep] = 'P';
+            CurrentTest.Status = 'P';
             PB_NextAction_Released = 0;
         }
     } 

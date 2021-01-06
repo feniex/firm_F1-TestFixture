@@ -70,6 +70,8 @@ static uint16 packetsuccess[4] = {0,0,0,0};
 //static uint8 packetsuccess_log[100];
 //static uint8 count = 0;
 
+static uint8 packetsuccess_GPS = 0;
+
 //static RxPacket_DL2 rxPacket_DL2;                    
 //static RxPacket_DL2 * pRxPacket_DL2;      
 //static RxPacket rxPacket;            
@@ -141,8 +143,11 @@ void processByteReceivedHandler(void)
             testbuffer_count = 0;
         
         detectPacket(dataByte);
+        findpacket(dataByte);
         
-//        if(findpacket(dataByte))
+        
+        //if(findpacket(dataByte))
+            //packetsuccess_GPS = 1;
 //            LED_EN_Write(0);
         
     }while(UART_230400_ReadRxStatus() & UART_230400_RX_STS_FIFO_NOTEMPTY);
@@ -312,20 +317,24 @@ uint8 VerifyPacket_230400(uint8 PacketType)
 
 uint8 findpacket(uint8 dataByte)
 {
-    static uint8 targetstring[6] = {'$','G','P','M','R','C'};
+    static uint8 targetstring[6] = {'$','G','P','R','M','C'};
+    //static uint8 targetstring[4] = {0x7D,'o','o',0xFF};
     static uint8 index = 0;
     
     if(dataByte == targetstring[0])         // Detect the first byte of the string and reset index
+    {
         index = 0;
+    }
 
     if(dataByte != targetstring[index])     // If any sequential byte in the string is missed, then return fail       
         index = 0;
 
     index++;
     
-    if(index > 6)                           // If entire string was read without missing a byte, then return pass
+    if(index > 5)                           // If entire string was read without missing a byte, then return pass
     {
         index = 0;
+        packetsuccess_GPS = 1;
         return(1);
     }
     
@@ -383,20 +392,20 @@ void sendPacketToRelaySiren(void)                   //*** This part needs some w
 //        checkSumRelay ^= pTxPacket_Controller->bytes[checkSumRelayIterator];
 //    }
     
-        pTxPacket_RelaySiren->Payload.StartByte_FLB = '~';
-        pTxPacket_RelaySiren->Payload.FLB_PacketType = '3';
-        pTxPacket_RelaySiren->Payload.StopByte1_FLB = 0x0D;
-        pTxPacket_RelaySiren->Payload.StopByte2_FLB = 0x0A; 
-    
-        pTxPacket_RelaySiren->Payload.StartByte1_Siren = '~';    
-        pTxPacket_RelaySiren->Payload.Siren_PacketType = 'S';
-        pTxPacket_RelaySiren->Payload.StopByte1_Siren = 0x0D;
-        pTxPacket_RelaySiren->Payload.StopByte2_Siren = 0x0A;
-    
-        pTxPacket_RelaySiren->Payload.StartByte1_Relay = '~';
-        pTxPacket_RelaySiren->Payload.Relay_PacketType = 'P';
-        pTxPacket_RelaySiren->Payload.StopByte1_Relay = 0x0D;
-        pTxPacket_RelaySiren->Payload.StopByte2_Relay = 0x0A; 
+//        pTxPacket_RelaySiren->Payload.StartByte_FLB = '~';
+//        pTxPacket_RelaySiren->Payload.FLB_PacketType = '3';
+//        pTxPacket_RelaySiren->Payload.StopByte1_FLB = 0x0D;
+//        pTxPacket_RelaySiren->Payload.StopByte2_FLB = 0x0A; 
+//    
+//        pTxPacket_RelaySiren->Payload.StartByte1_Siren = '~';    
+//        pTxPacket_RelaySiren->Payload.Siren_PacketType = 'S';
+//        pTxPacket_RelaySiren->Payload.StopByte1_Siren = 0x0D;
+//        pTxPacket_RelaySiren->Payload.StopByte2_Siren = 0x0A;
+//    
+//        pTxPacket_RelaySiren->Payload.StartByte1_Relay = '~';
+//        pTxPacket_RelaySiren->Payload.Relay_PacketType = 'P';
+//        pTxPacket_RelaySiren->Payload.StopByte1_Relay = 0x0D;
+//        pTxPacket_RelaySiren->Payload.StopByte2_Relay = 0x0A; 
     
         // Specific code for Controller to Relay/Siren packet 
         UART_230400_WriteTxData(0x7E);
@@ -477,6 +486,18 @@ void sendPacket_RelayToSiren(void)
 //    UART_230400_WriteTxData(0x0A);
         
       return;  
+
+}
+
+uint8 VerifyPacket_GPS(void)
+{
+    if(packetsuccess_GPS == 1)
+    {
+        packetsuccess_GPS = 0;
+        return(1);
+    }
+    else   
+        return(0);
 
 }
 

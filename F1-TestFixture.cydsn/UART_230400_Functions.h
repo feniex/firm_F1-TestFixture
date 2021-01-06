@@ -459,6 +459,8 @@ void sendPacket_RelayToController(void);        // CTest 'D'
 void sendPacket_SirenToRelay(void);
 void sendPacket_RelayToSiren(void);
 
+uint8 VerifyPacket_GPS(void);
+
 
 //void CTest_SendIgnitionState(uint8 ignition_state);
 

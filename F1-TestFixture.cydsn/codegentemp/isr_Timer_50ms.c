@@ -33,11 +33,22 @@
     #include "ControllerTest.h"
     #include "RelayTest.h"
     #include "SirenTest.h"
+    
+    #define BLINKTIME   2       // How many 50msec periods of on time
      
     //uint8 SelectedTest;
     //struct structTestInfo CurrentTest;
     
     StructTestInfo CurrentTest;
+    
+    static uint8 blinkcounter = 0;
+    
+    enum DataType
+    { 
+        CTEST, 
+        RTEST,
+        STEST
+    };
 
 /* `#END` */
 
@@ -177,14 +188,7 @@ CY_ISR(isr_Timer_50ms_Interrupt)
     /*  Place your Interrupt code here. */
     /* `#START isr_Timer_50ms_Interrupt` */
     
-    
-    
-//    if(CurrentTest.SelectedTest == 0)
-//        CTest_sendDiagPacket();
-//    else if(CurrentTest.SelectedTest == 1)
-//        RTest_sendDiagPacket();
-//    else if(CurrentTest.SelectedTest == 2)
-//        STest_sendDiagPacket();
+    blinkcounter++;
         
     if(CurrentTest.SelectedTest == 0)
         CTest_50ms_isr();
@@ -194,31 +198,101 @@ CY_ISR(isr_Timer_50ms_Interrupt)
         STest_50ms_isr();
     
     // *** Add LED stuff here
-        if( (CurrentTest.Status == 'I') || (CurrentTest.Status == 'B') )
-        {
-            LED1_Write(1);
-            LED2_Write(1);
-        }
-        else if(CurrentTest.Status == 'W')
+    if( (CurrentTest.Status == 'I') || (CurrentTest.Status == 'B') )
+    {
+        LED1_Write(1);
+        LED2_Write(1);
+    }
+    else if(CurrentTest.Status == 'W')
+    {
+        if(blinkcounter < BLINKTIME)
         {
             LED1_Write(1);
             LED2_Write(1); 
         }
-        else if(CurrentTest.Status == 'P')
-        {
-            LED1_Write(1);
-            LED2_Write(0); 
-        }
-        else if(CurrentTest.Status == 'F')
+        else if( ( blinkcounter > BLINKTIME) && (blinkcounter < (2*BLINKTIME) ) )
         {
             LED1_Write(0);
-            LED2_Write(1); 
+            LED2_Write(0); 
+        }
+        else if( blinkcounter > (2*BLINKTIME) )
+        {
+            blinkcounter = 0;
+        }
+    }
+    else if(CurrentTest.Status == 'P')
+    {
+        if( (CurrentTest.SelectedTest == RTEST) && (CurrentTest.TestStep == 10) )           // If last step of test, then blink green
+        {
+            if(blinkcounter < BLINKTIME)
+            {
+                LED1_Write(1);
+                LED2_Write(0); 
+            }
+            else if( ( blinkcounter > BLINKTIME) && (blinkcounter < (2*BLINKTIME) ) )
+            {
+                LED1_Write(0);
+                LED2_Write(0); 
+            }
+            else if( blinkcounter > (2*BLINKTIME) )
+            {
+                blinkcounter = 0;
+            }    
         }
         else
         {
+            LED1_Write(1);
+            LED2_Write(0); 
+        }   
+    }
+    else if(CurrentTest.Status == 'F')
+    {
+        LED1_Write(0);
+        LED2_Write(1); 
+    }
+    else if(CurrentTest.Status == 'p')
+    {
+        if(blinkcounter < BLINKTIME)
+        {
+            LED1_Write(1);
+            LED2_Write(0); 
+        }
+        else if( ( blinkcounter > BLINKTIME) && (blinkcounter < (2*BLINKTIME) ) )
+        {
             LED1_Write(0);
             LED2_Write(0); 
         }
+        else if( blinkcounter > (2*BLINKTIME) )
+        {
+            blinkcounter = 0;
+        }    
+    }
+    else if(CurrentTest.Status == 'f')
+    {
+        if(blinkcounter < BLINKTIME)
+        {
+            LED1_Write(0);
+            LED2_Write(1); 
+        }
+        else if( ( blinkcounter > BLINKTIME) && (blinkcounter < (2*BLINKTIME) ) )
+        {
+            LED1_Write(0);
+            LED2_Write(0); 
+        }
+        else if( blinkcounter > (2*BLINKTIME) )
+        {
+            blinkcounter = 0;
+        }    
+    }
+    else
+    {
+        LED1_Write(0);
+        LED2_Write(0); 
+    }
+    
+    
+    if(blinkcounter > 100)
+        blinkcounter = 0;
         
         
 

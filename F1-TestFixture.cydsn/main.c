@@ -39,7 +39,6 @@
 
 /**********DEFINED CONSTANTS**********/
 
-//#define CTEST
 enum DataType
 { 
     CTEST, 
@@ -74,6 +73,9 @@ void ProcessFailure(void);
 
 /**********DEFINED FUNCTIONS**********/
 
+static uint8 rs1_value = 0;
+static uint8 rs2_value = 0;
+
 int main()
 {
     initializePeripherals();
@@ -82,12 +84,16 @@ int main()
     
     for(;;)
     {     
-        CurrentTest.SelectedTest = CTEST;
-        //CurrentTest.SelectedTest = RTEST;
-        //CurrentTest.SelectedTest = STEST;
+        rs1_value = RS1_Read();
+        rs2_value = RS2_Read();
         
-//        CTest_USB_5V_EN_Write(0); 
-//        while(1);
+        if( (RS1_Read() == 1) && (RS2_Read() == 0) )
+            CurrentTest.SelectedTest = CTEST;
+        else if( (RS1_Read() == 0) && (RS2_Read() == 0) )
+            CurrentTest.SelectedTest = RTEST;
+        else if( (RS1_Read() == 0) && (RS2_Read() == 1) )
+            CurrentTest.SelectedTest = STEST;
+                    
         
         switch(CurrentTest.SelectedTest)
         {
