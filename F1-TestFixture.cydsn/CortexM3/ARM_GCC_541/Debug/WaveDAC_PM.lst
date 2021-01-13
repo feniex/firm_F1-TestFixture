@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc9JC85s.s 			page 1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccvQPikg.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc9JC85s.s 			page 1
   24:Generated_Source\PSoC5/WaveDAC_PM.c **** *
   25:Generated_Source\PSoC5/WaveDAC_PM.c **** * Summary:
   26:Generated_Source\PSoC5/WaveDAC_PM.c **** *  Stops the component and saves its configuration. Should be called 
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc9JC85s.s 			page 2
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccvQPikg.s 			page 2
 
 
   27:Generated_Source\PSoC5/WaveDAC_PM.c **** *  just prior to entering sleep.
@@ -94,57 +94,45 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc9JC85s.s 			page 1
   47:Generated_Source\PSoC5/WaveDAC_PM.c **** 	WaveDAC_backup.enableState = (WaveDAC_VDAC8_ACT_PWR_EN == 
   48:Generated_Source\PSoC5/WaveDAC_PM.c **** 		(WaveDAC_VDAC8_PWRMGR_REG & WaveDAC_VDAC8_ACT_PWR_EN)) ? 1u : 0u ;
   42              		.loc 1 48 0
-  43 0004 084B     		ldr	r3, .L4
+  43 0004 064B     		ldr	r3, .L2
   44 0006 1B78     		ldrb	r3, [r3]
   45 0008 DBB2     		uxtb	r3, r3
-  46 000a 03F00403 		and	r3, r3, #4
   47:Generated_Source\PSoC5/WaveDAC_PM.c **** 		(WaveDAC_VDAC8_PWRMGR_REG & WaveDAC_VDAC8_ACT_PWR_EN)) ? 1u : 0u ;
-  47              		.loc 1 47 0
-  48 000e 002B     		cmp	r3, #0
-  49 0010 01D0     		beq	.L2
-  47:Generated_Source\PSoC5/WaveDAC_PM.c **** 		(WaveDAC_VDAC8_PWRMGR_REG & WaveDAC_VDAC8_ACT_PWR_EN)) ? 1u : 0u ;
-  50              		.loc 1 47 0 is_stmt 0 discriminator 1
-  51 0012 0122     		movs	r2, #1
-  52 0014 00E0     		b	.L3
-  53              	.L2:
-  47:Generated_Source\PSoC5/WaveDAC_PM.c **** 		(WaveDAC_VDAC8_PWRMGR_REG & WaveDAC_VDAC8_ACT_PWR_EN)) ? 1u : 0u ;
-  54              		.loc 1 47 0 discriminator 2
-  55 0016 0022     		movs	r2, #0
-  56              	.L3:
-  47:Generated_Source\PSoC5/WaveDAC_PM.c **** 		(WaveDAC_VDAC8_PWRMGR_REG & WaveDAC_VDAC8_ACT_PWR_EN)) ? 1u : 0u ;
-  57              		.loc 1 47 0 discriminator 4
-  58 0018 044B     		ldr	r3, .L4+4
-  59 001a 1A70     		strb	r2, [r3]
+  46              		.loc 1 47 0
+  47 000a 03F00103 		and	r3, r3, #1
+  48 000e DAB2     		uxtb	r2, r3
+  49 0010 044B     		ldr	r3, .L2+4
+  50 0012 1A70     		strb	r2, [r3]
   49:Generated_Source\PSoC5/WaveDAC_PM.c **** 	
   50:Generated_Source\PSoC5/WaveDAC_PM.c **** 	WaveDAC_Stop();
-  60              		.loc 1 50 0 is_stmt 1 discriminator 4
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc9JC85s.s 			page 3
-
-
-  61 001c FFF7FEFF 		bl	WaveDAC_Stop
+  51              		.loc 1 50 0
+  52 0014 FFF7FEFF 		bl	WaveDAC_Stop
   51:Generated_Source\PSoC5/WaveDAC_PM.c **** 	WaveDAC_SaveConfig();
-  62              		.loc 1 51 0 discriminator 4
-  63 0020 FFF7FEFF 		bl	WaveDAC_VDAC8_SaveConfig
+  53              		.loc 1 51 0
+  54 0018 FFF7FEFF 		bl	WaveDAC_VDAC8_SaveConfig
   52:Generated_Source\PSoC5/WaveDAC_PM.c **** }
-  64              		.loc 1 52 0 discriminator 4
-  65 0024 00BF     		nop
-  66 0026 80BD     		pop	{r7, pc}
-  67              	.L5:
-  68              		.align	2
-  69              	.L4:
-  70 0028 A8430040 		.word	1073759144
-  71 002c 00000000 		.word	WaveDAC_backup
-  72              		.cfi_endproc
-  73              	.LFE0:
-  74              		.size	WaveDAC_Sleep, .-WaveDAC_Sleep
-  75              		.section	.text.WaveDAC_Wakeup,"ax",%progbits
-  76              		.align	2
-  77              		.global	WaveDAC_Wakeup
-  78              		.thumb
-  79              		.thumb_func
-  80              		.type	WaveDAC_Wakeup, %function
-  81              	WaveDAC_Wakeup:
-  82              	.LFB1:
+  55              		.loc 1 52 0
+  56 001c 00BF     		nop
+  57 001e 80BD     		pop	{r7, pc}
+  58              	.L3:
+  59              		.align	2
+  60              	.L2:
+  61 0020 A8430040 		.word	1073759144
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccvQPikg.s 			page 3
+
+
+  62 0024 00000000 		.word	WaveDAC_backup
+  63              		.cfi_endproc
+  64              	.LFE0:
+  65              		.size	WaveDAC_Sleep, .-WaveDAC_Sleep
+  66              		.section	.text.WaveDAC_Wakeup,"ax",%progbits
+  67              		.align	2
+  68              		.global	WaveDAC_Wakeup
+  69              		.thumb
+  70              		.thumb_func
+  71              		.type	WaveDAC_Wakeup, %function
+  72              	WaveDAC_Wakeup:
+  73              	.LFB1:
   53:Generated_Source\PSoC5/WaveDAC_PM.c **** 
   54:Generated_Source\PSoC5/WaveDAC_PM.c **** 
   55:Generated_Source\PSoC5/WaveDAC_PM.c **** /*******************************************************************************
@@ -171,498 +159,495 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc9JC85s.s 			page 1
   76:Generated_Source\PSoC5/WaveDAC_PM.c **** *******************************************************************************/
   77:Generated_Source\PSoC5/WaveDAC_PM.c **** void WaveDAC_Wakeup(void) 
   78:Generated_Source\PSoC5/WaveDAC_PM.c **** {
-  83              		.loc 1 78 0
-  84              		.cfi_startproc
-  85              		@ args = 0, pretend = 0, frame = 0
-  86              		@ frame_needed = 1, uses_anonymous_args = 0
-  87 0000 80B5     		push	{r7, lr}
-  88              		.cfi_def_cfa_offset 8
-  89              		.cfi_offset 7, -8
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc9JC85s.s 			page 4
-
-
-  90              		.cfi_offset 14, -4
-  91 0002 00AF     		add	r7, sp, #0
-  92              		.cfi_def_cfa_register 7
+  74              		.loc 1 78 0
+  75              		.cfi_startproc
+  76              		@ args = 0, pretend = 0, frame = 0
+  77              		@ frame_needed = 1, uses_anonymous_args = 0
+  78 0000 80B5     		push	{r7, lr}
+  79              		.cfi_def_cfa_offset 8
+  80              		.cfi_offset 7, -8
+  81              		.cfi_offset 14, -4
+  82 0002 00AF     		add	r7, sp, #0
+  83              		.cfi_def_cfa_register 7
   79:Generated_Source\PSoC5/WaveDAC_PM.c **** 	WaveDAC_RestoreConfig();
-  93              		.loc 1 79 0
-  94 0004 FFF7FEFF 		bl	WaveDAC_VDAC8_RestoreConfig
+  84              		.loc 1 79 0
+  85 0004 FFF7FEFF 		bl	WaveDAC_VDAC8_RestoreConfig
   80:Generated_Source\PSoC5/WaveDAC_PM.c **** 
   81:Generated_Source\PSoC5/WaveDAC_PM.c **** 	if(WaveDAC_backup.enableState == 1u)
-  95              		.loc 1 81 0
-  96 0008 034B     		ldr	r3, .L9
-  97 000a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
-  98 000c 012B     		cmp	r3, #1
-  99 000e 01D1     		bne	.L8
+  86              		.loc 1 81 0
+  87 0008 034B     		ldr	r3, .L7
+  88 000a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  89 000c 012B     		cmp	r3, #1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccvQPikg.s 			page 4
+
+
+  90 000e 01D1     		bne	.L6
   82:Generated_Source\PSoC5/WaveDAC_PM.c **** 	{
   83:Generated_Source\PSoC5/WaveDAC_PM.c **** 		WaveDAC_Enable();
- 100              		.loc 1 83 0
- 101 0010 FFF7FEFF 		bl	WaveDAC_Enable
- 102              	.L8:
+  91              		.loc 1 83 0
+  92 0010 FFF7FEFF 		bl	WaveDAC_Enable
+  93              	.L6:
   84:Generated_Source\PSoC5/WaveDAC_PM.c **** 	}
   85:Generated_Source\PSoC5/WaveDAC_PM.c **** }
- 103              		.loc 1 85 0
- 104 0014 00BF     		nop
- 105 0016 80BD     		pop	{r7, pc}
- 106              	.L10:
- 107              		.align	2
- 108              	.L9:
- 109 0018 00000000 		.word	WaveDAC_backup
- 110              		.cfi_endproc
- 111              	.LFE1:
- 112              		.size	WaveDAC_Wakeup, .-WaveDAC_Wakeup
- 113              		.text
- 114              	.Letext0:
- 115              		.file 2 "Generated_Source\\PSoC5\\cytypes.h"
- 116              		.file 3 "Generated_Source\\PSoC5\\WaveDAC.h"
- 117              		.section	.debug_info,"",%progbits
- 118              	.Ldebug_info0:
- 119 0000 FB000000 		.4byte	0xfb
- 120 0004 0400     		.2byte	0x4
- 121 0006 00000000 		.4byte	.Ldebug_abbrev0
- 122 000a 04       		.byte	0x4
- 123 000b 01       		.uleb128 0x1
- 124 000c BD000000 		.4byte	.LASF19
- 125 0010 0C       		.byte	0xc
- 126 0011 5E010000 		.4byte	.LASF20
- 127 0015 6B000000 		.4byte	.LASF21
- 128 0019 00000000 		.4byte	.Ldebug_ranges0+0
- 129 001d 00000000 		.4byte	0
- 130 0021 00000000 		.4byte	.Ldebug_line0
- 131 0025 02       		.uleb128 0x2
- 132 0026 01       		.byte	0x1
- 133 0027 06       		.byte	0x6
- 134 0028 CA010000 		.4byte	.LASF0
- 135 002c 02       		.uleb128 0x2
- 136 002d 01       		.byte	0x1
- 137 002e 08       		.byte	0x8
- 138 002f 4B010000 		.4byte	.LASF1
- 139 0033 02       		.uleb128 0x2
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc9JC85s.s 			page 5
+  94              		.loc 1 85 0
+  95 0014 00BF     		nop
+  96 0016 80BD     		pop	{r7, pc}
+  97              	.L8:
+  98              		.align	2
+  99              	.L7:
+ 100 0018 00000000 		.word	WaveDAC_backup
+ 101              		.cfi_endproc
+ 102              	.LFE1:
+ 103              		.size	WaveDAC_Wakeup, .-WaveDAC_Wakeup
+ 104              		.text
+ 105              	.Letext0:
+ 106              		.file 2 "Generated_Source\\PSoC5\\cytypes.h"
+ 107              		.file 3 "Generated_Source\\PSoC5\\WaveDAC.h"
+ 108              		.section	.debug_info,"",%progbits
+ 109              	.Ldebug_info0:
+ 110 0000 FB000000 		.4byte	0xfb
+ 111 0004 0400     		.2byte	0x4
+ 112 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 113 000a 04       		.byte	0x4
+ 114 000b 01       		.uleb128 0x1
+ 115 000c BD000000 		.4byte	.LASF19
+ 116 0010 0C       		.byte	0xc
+ 117 0011 5E010000 		.4byte	.LASF20
+ 118 0015 6B000000 		.4byte	.LASF21
+ 119 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 120 001d 00000000 		.4byte	0
+ 121 0021 00000000 		.4byte	.Ldebug_line0
+ 122 0025 02       		.uleb128 0x2
+ 123 0026 01       		.byte	0x1
+ 124 0027 06       		.byte	0x6
+ 125 0028 CA010000 		.4byte	.LASF0
+ 126 002c 02       		.uleb128 0x2
+ 127 002d 01       		.byte	0x1
+ 128 002e 08       		.byte	0x8
+ 129 002f 4B010000 		.4byte	.LASF1
+ 130 0033 02       		.uleb128 0x2
+ 131 0034 02       		.byte	0x2
+ 132 0035 05       		.byte	0x5
+ 133 0036 E2010000 		.4byte	.LASF2
+ 134 003a 02       		.uleb128 0x2
+ 135 003b 02       		.byte	0x2
+ 136 003c 07       		.byte	0x7
+ 137 003d B7010000 		.4byte	.LASF3
+ 138 0041 02       		.uleb128 0x2
+ 139 0042 04       		.byte	0x4
+ 140 0043 05       		.byte	0x5
+ 141 0044 82010000 		.4byte	.LASF4
+ 142 0048 02       		.uleb128 0x2
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccvQPikg.s 			page 5
 
 
- 140 0034 02       		.byte	0x2
- 141 0035 05       		.byte	0x5
- 142 0036 E2010000 		.4byte	.LASF2
- 143 003a 02       		.uleb128 0x2
- 144 003b 02       		.byte	0x2
- 145 003c 07       		.byte	0x7
- 146 003d B7010000 		.4byte	.LASF3
- 147 0041 02       		.uleb128 0x2
- 148 0042 04       		.byte	0x4
- 149 0043 05       		.byte	0x5
- 150 0044 82010000 		.4byte	.LASF4
- 151 0048 02       		.uleb128 0x2
- 152 0049 04       		.byte	0x4
- 153 004a 07       		.byte	0x7
- 154 004b 3C000000 		.4byte	.LASF5
- 155 004f 02       		.uleb128 0x2
- 156 0050 08       		.byte	0x8
- 157 0051 05       		.byte	0x5
- 158 0052 00000000 		.4byte	.LASF6
- 159 0056 02       		.uleb128 0x2
- 160 0057 08       		.byte	0x8
- 161 0058 07       		.byte	0x7
- 162 0059 4E000000 		.4byte	.LASF7
- 163 005d 03       		.uleb128 0x3
- 164 005e 04       		.byte	0x4
- 165 005f 05       		.byte	0x5
- 166 0060 696E7400 		.ascii	"int\000"
- 167 0064 02       		.uleb128 0x2
- 168 0065 04       		.byte	0x4
- 169 0066 07       		.byte	0x7
- 170 0067 1A000000 		.4byte	.LASF8
- 171 006b 04       		.uleb128 0x4
- 172 006c 36000000 		.4byte	.LASF12
- 173 0070 02       		.byte	0x2
- 174 0071 E401     		.2byte	0x1e4
- 175 0073 2C000000 		.4byte	0x2c
- 176 0077 02       		.uleb128 0x2
- 177 0078 04       		.byte	0x4
- 178 0079 04       		.byte	0x4
- 179 007a 65000000 		.4byte	.LASF9
- 180 007e 02       		.uleb128 0x2
- 181 007f 08       		.byte	0x8
- 182 0080 04       		.byte	0x4
- 183 0081 9A010000 		.4byte	.LASF10
- 184 0085 02       		.uleb128 0x2
- 185 0086 01       		.byte	0x1
- 186 0087 08       		.byte	0x8
- 187 0088 59010000 		.4byte	.LASF11
- 188 008c 04       		.uleb128 0x4
- 189 008d EC010000 		.4byte	.LASF13
- 190 0091 02       		.byte	0x2
- 191 0092 8E02     		.2byte	0x28e
- 192 0094 98000000 		.4byte	0x98
- 193 0098 05       		.uleb128 0x5
- 194 0099 6B000000 		.4byte	0x6b
- 195 009d 02       		.uleb128 0x2
- 196 009e 08       		.byte	0x8
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc9JC85s.s 			page 6
+ 143 0049 04       		.byte	0x4
+ 144 004a 07       		.byte	0x7
+ 145 004b 3C000000 		.4byte	.LASF5
+ 146 004f 02       		.uleb128 0x2
+ 147 0050 08       		.byte	0x8
+ 148 0051 05       		.byte	0x5
+ 149 0052 00000000 		.4byte	.LASF6
+ 150 0056 02       		.uleb128 0x2
+ 151 0057 08       		.byte	0x8
+ 152 0058 07       		.byte	0x7
+ 153 0059 4E000000 		.4byte	.LASF7
+ 154 005d 03       		.uleb128 0x3
+ 155 005e 04       		.byte	0x4
+ 156 005f 05       		.byte	0x5
+ 157 0060 696E7400 		.ascii	"int\000"
+ 158 0064 02       		.uleb128 0x2
+ 159 0065 04       		.byte	0x4
+ 160 0066 07       		.byte	0x7
+ 161 0067 1A000000 		.4byte	.LASF8
+ 162 006b 04       		.uleb128 0x4
+ 163 006c 36000000 		.4byte	.LASF12
+ 164 0070 02       		.byte	0x2
+ 165 0071 E401     		.2byte	0x1e4
+ 166 0073 2C000000 		.4byte	0x2c
+ 167 0077 02       		.uleb128 0x2
+ 168 0078 04       		.byte	0x4
+ 169 0079 04       		.byte	0x4
+ 170 007a 65000000 		.4byte	.LASF9
+ 171 007e 02       		.uleb128 0x2
+ 172 007f 08       		.byte	0x8
+ 173 0080 04       		.byte	0x4
+ 174 0081 9A010000 		.4byte	.LASF10
+ 175 0085 02       		.uleb128 0x2
+ 176 0086 01       		.byte	0x1
+ 177 0087 08       		.byte	0x8
+ 178 0088 59010000 		.4byte	.LASF11
+ 179 008c 04       		.uleb128 0x4
+ 180 008d EC010000 		.4byte	.LASF13
+ 181 0091 02       		.byte	0x2
+ 182 0092 8E02     		.2byte	0x28e
+ 183 0094 98000000 		.4byte	0x98
+ 184 0098 05       		.uleb128 0x5
+ 185 0099 6B000000 		.4byte	0x6b
+ 186 009d 02       		.uleb128 0x2
+ 187 009e 08       		.byte	0x8
+ 188 009f 04       		.byte	0x4
+ 189 00a0 D6010000 		.4byte	.LASF14
+ 190 00a4 02       		.uleb128 0x2
+ 191 00a5 04       		.byte	0x4
+ 192 00a6 07       		.byte	0x7
+ 193 00a7 F1010000 		.4byte	.LASF15
+ 194 00ab 06       		.uleb128 0x6
+ 195 00ac 01       		.byte	0x1
+ 196 00ad 03       		.byte	0x3
+ 197 00ae 5D       		.byte	0x5d
+ 198 00af C0000000 		.4byte	0xc0
+ 199 00b3 07       		.uleb128 0x7
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccvQPikg.s 			page 6
 
 
- 197 009f 04       		.byte	0x4
- 198 00a0 D6010000 		.4byte	.LASF14
- 199 00a4 02       		.uleb128 0x2
- 200 00a5 04       		.byte	0x4
- 201 00a6 07       		.byte	0x7
- 202 00a7 F1010000 		.4byte	.LASF15
- 203 00ab 06       		.uleb128 0x6
- 204 00ac 01       		.byte	0x1
- 205 00ad 03       		.byte	0x3
- 206 00ae 5D       		.byte	0x5d
- 207 00af C0000000 		.4byte	0xc0
- 208 00b3 07       		.uleb128 0x7
- 209 00b4 0E000000 		.4byte	.LASF22
- 210 00b8 03       		.byte	0x3
- 211 00b9 5F       		.byte	0x5f
- 212 00ba 6B000000 		.4byte	0x6b
- 213 00be 00       		.byte	0
- 214 00bf 00       		.byte	0
- 215 00c0 08       		.uleb128 0x8
- 216 00c1 A1010000 		.4byte	.LASF16
- 217 00c5 03       		.byte	0x3
- 218 00c6 60       		.byte	0x60
- 219 00c7 AB000000 		.4byte	0xab
- 220 00cb 09       		.uleb128 0x9
- 221 00cc AF000000 		.4byte	.LASF17
- 222 00d0 01       		.byte	0x1
- 223 00d1 2B       		.byte	0x2b
- 224 00d2 00000000 		.4byte	.LFB0
- 225 00d6 30000000 		.4byte	.LFE0-.LFB0
- 226 00da 01       		.uleb128 0x1
- 227 00db 9C       		.byte	0x9c
- 228 00dc 09       		.uleb128 0x9
- 229 00dd 8B010000 		.4byte	.LASF18
- 230 00e1 01       		.byte	0x1
- 231 00e2 4D       		.byte	0x4d
- 232 00e3 00000000 		.4byte	.LFB1
- 233 00e7 1C000000 		.4byte	.LFE1-.LFB1
- 234 00eb 01       		.uleb128 0x1
- 235 00ec 9C       		.byte	0x9c
- 236 00ed 0A       		.uleb128 0xa
- 237 00ee 27000000 		.4byte	.LASF23
- 238 00f2 01       		.byte	0x1
- 239 00f3 12       		.byte	0x12
- 240 00f4 C0000000 		.4byte	0xc0
- 241 00f8 05       		.uleb128 0x5
- 242 00f9 03       		.byte	0x3
- 243 00fa 00000000 		.4byte	WaveDAC_backup
- 244 00fe 00       		.byte	0
- 245              		.section	.debug_abbrev,"",%progbits
- 246              	.Ldebug_abbrev0:
- 247 0000 01       		.uleb128 0x1
- 248 0001 11       		.uleb128 0x11
- 249 0002 01       		.byte	0x1
- 250 0003 25       		.uleb128 0x25
- 251 0004 0E       		.uleb128 0xe
- 252 0005 13       		.uleb128 0x13
- 253 0006 0B       		.uleb128 0xb
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc9JC85s.s 			page 7
+ 200 00b4 0E000000 		.4byte	.LASF22
+ 201 00b8 03       		.byte	0x3
+ 202 00b9 5F       		.byte	0x5f
+ 203 00ba 6B000000 		.4byte	0x6b
+ 204 00be 00       		.byte	0
+ 205 00bf 00       		.byte	0
+ 206 00c0 08       		.uleb128 0x8
+ 207 00c1 A1010000 		.4byte	.LASF16
+ 208 00c5 03       		.byte	0x3
+ 209 00c6 60       		.byte	0x60
+ 210 00c7 AB000000 		.4byte	0xab
+ 211 00cb 09       		.uleb128 0x9
+ 212 00cc AF000000 		.4byte	.LASF17
+ 213 00d0 01       		.byte	0x1
+ 214 00d1 2B       		.byte	0x2b
+ 215 00d2 00000000 		.4byte	.LFB0
+ 216 00d6 28000000 		.4byte	.LFE0-.LFB0
+ 217 00da 01       		.uleb128 0x1
+ 218 00db 9C       		.byte	0x9c
+ 219 00dc 09       		.uleb128 0x9
+ 220 00dd 8B010000 		.4byte	.LASF18
+ 221 00e1 01       		.byte	0x1
+ 222 00e2 4D       		.byte	0x4d
+ 223 00e3 00000000 		.4byte	.LFB1
+ 224 00e7 1C000000 		.4byte	.LFE1-.LFB1
+ 225 00eb 01       		.uleb128 0x1
+ 226 00ec 9C       		.byte	0x9c
+ 227 00ed 0A       		.uleb128 0xa
+ 228 00ee 27000000 		.4byte	.LASF23
+ 229 00f2 01       		.byte	0x1
+ 230 00f3 12       		.byte	0x12
+ 231 00f4 C0000000 		.4byte	0xc0
+ 232 00f8 05       		.uleb128 0x5
+ 233 00f9 03       		.byte	0x3
+ 234 00fa 00000000 		.4byte	WaveDAC_backup
+ 235 00fe 00       		.byte	0
+ 236              		.section	.debug_abbrev,"",%progbits
+ 237              	.Ldebug_abbrev0:
+ 238 0000 01       		.uleb128 0x1
+ 239 0001 11       		.uleb128 0x11
+ 240 0002 01       		.byte	0x1
+ 241 0003 25       		.uleb128 0x25
+ 242 0004 0E       		.uleb128 0xe
+ 243 0005 13       		.uleb128 0x13
+ 244 0006 0B       		.uleb128 0xb
+ 245 0007 03       		.uleb128 0x3
+ 246 0008 0E       		.uleb128 0xe
+ 247 0009 1B       		.uleb128 0x1b
+ 248 000a 0E       		.uleb128 0xe
+ 249 000b 55       		.uleb128 0x55
+ 250 000c 17       		.uleb128 0x17
+ 251 000d 11       		.uleb128 0x11
+ 252 000e 01       		.uleb128 0x1
+ 253 000f 10       		.uleb128 0x10
+ 254 0010 17       		.uleb128 0x17
+ 255 0011 00       		.byte	0
+ 256 0012 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccvQPikg.s 			page 7
 
 
- 254 0007 03       		.uleb128 0x3
- 255 0008 0E       		.uleb128 0xe
- 256 0009 1B       		.uleb128 0x1b
- 257 000a 0E       		.uleb128 0xe
- 258 000b 55       		.uleb128 0x55
- 259 000c 17       		.uleb128 0x17
- 260 000d 11       		.uleb128 0x11
- 261 000e 01       		.uleb128 0x1
- 262 000f 10       		.uleb128 0x10
- 263 0010 17       		.uleb128 0x17
- 264 0011 00       		.byte	0
- 265 0012 00       		.byte	0
- 266 0013 02       		.uleb128 0x2
- 267 0014 24       		.uleb128 0x24
- 268 0015 00       		.byte	0
- 269 0016 0B       		.uleb128 0xb
- 270 0017 0B       		.uleb128 0xb
- 271 0018 3E       		.uleb128 0x3e
- 272 0019 0B       		.uleb128 0xb
- 273 001a 03       		.uleb128 0x3
- 274 001b 0E       		.uleb128 0xe
- 275 001c 00       		.byte	0
- 276 001d 00       		.byte	0
- 277 001e 03       		.uleb128 0x3
- 278 001f 24       		.uleb128 0x24
- 279 0020 00       		.byte	0
- 280 0021 0B       		.uleb128 0xb
- 281 0022 0B       		.uleb128 0xb
- 282 0023 3E       		.uleb128 0x3e
- 283 0024 0B       		.uleb128 0xb
- 284 0025 03       		.uleb128 0x3
- 285 0026 08       		.uleb128 0x8
- 286 0027 00       		.byte	0
- 287 0028 00       		.byte	0
- 288 0029 04       		.uleb128 0x4
- 289 002a 16       		.uleb128 0x16
- 290 002b 00       		.byte	0
- 291 002c 03       		.uleb128 0x3
- 292 002d 0E       		.uleb128 0xe
- 293 002e 3A       		.uleb128 0x3a
- 294 002f 0B       		.uleb128 0xb
- 295 0030 3B       		.uleb128 0x3b
- 296 0031 05       		.uleb128 0x5
- 297 0032 49       		.uleb128 0x49
- 298 0033 13       		.uleb128 0x13
- 299 0034 00       		.byte	0
- 300 0035 00       		.byte	0
- 301 0036 05       		.uleb128 0x5
- 302 0037 35       		.uleb128 0x35
- 303 0038 00       		.byte	0
- 304 0039 49       		.uleb128 0x49
- 305 003a 13       		.uleb128 0x13
- 306 003b 00       		.byte	0
- 307 003c 00       		.byte	0
- 308 003d 06       		.uleb128 0x6
- 309 003e 13       		.uleb128 0x13
- 310 003f 01       		.byte	0x1
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc9JC85s.s 			page 8
+ 257 0013 02       		.uleb128 0x2
+ 258 0014 24       		.uleb128 0x24
+ 259 0015 00       		.byte	0
+ 260 0016 0B       		.uleb128 0xb
+ 261 0017 0B       		.uleb128 0xb
+ 262 0018 3E       		.uleb128 0x3e
+ 263 0019 0B       		.uleb128 0xb
+ 264 001a 03       		.uleb128 0x3
+ 265 001b 0E       		.uleb128 0xe
+ 266 001c 00       		.byte	0
+ 267 001d 00       		.byte	0
+ 268 001e 03       		.uleb128 0x3
+ 269 001f 24       		.uleb128 0x24
+ 270 0020 00       		.byte	0
+ 271 0021 0B       		.uleb128 0xb
+ 272 0022 0B       		.uleb128 0xb
+ 273 0023 3E       		.uleb128 0x3e
+ 274 0024 0B       		.uleb128 0xb
+ 275 0025 03       		.uleb128 0x3
+ 276 0026 08       		.uleb128 0x8
+ 277 0027 00       		.byte	0
+ 278 0028 00       		.byte	0
+ 279 0029 04       		.uleb128 0x4
+ 280 002a 16       		.uleb128 0x16
+ 281 002b 00       		.byte	0
+ 282 002c 03       		.uleb128 0x3
+ 283 002d 0E       		.uleb128 0xe
+ 284 002e 3A       		.uleb128 0x3a
+ 285 002f 0B       		.uleb128 0xb
+ 286 0030 3B       		.uleb128 0x3b
+ 287 0031 05       		.uleb128 0x5
+ 288 0032 49       		.uleb128 0x49
+ 289 0033 13       		.uleb128 0x13
+ 290 0034 00       		.byte	0
+ 291 0035 00       		.byte	0
+ 292 0036 05       		.uleb128 0x5
+ 293 0037 35       		.uleb128 0x35
+ 294 0038 00       		.byte	0
+ 295 0039 49       		.uleb128 0x49
+ 296 003a 13       		.uleb128 0x13
+ 297 003b 00       		.byte	0
+ 298 003c 00       		.byte	0
+ 299 003d 06       		.uleb128 0x6
+ 300 003e 13       		.uleb128 0x13
+ 301 003f 01       		.byte	0x1
+ 302 0040 0B       		.uleb128 0xb
+ 303 0041 0B       		.uleb128 0xb
+ 304 0042 3A       		.uleb128 0x3a
+ 305 0043 0B       		.uleb128 0xb
+ 306 0044 3B       		.uleb128 0x3b
+ 307 0045 0B       		.uleb128 0xb
+ 308 0046 01       		.uleb128 0x1
+ 309 0047 13       		.uleb128 0x13
+ 310 0048 00       		.byte	0
+ 311 0049 00       		.byte	0
+ 312 004a 07       		.uleb128 0x7
+ 313 004b 0D       		.uleb128 0xd
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccvQPikg.s 			page 8
 
 
- 311 0040 0B       		.uleb128 0xb
- 312 0041 0B       		.uleb128 0xb
- 313 0042 3A       		.uleb128 0x3a
- 314 0043 0B       		.uleb128 0xb
- 315 0044 3B       		.uleb128 0x3b
- 316 0045 0B       		.uleb128 0xb
- 317 0046 01       		.uleb128 0x1
- 318 0047 13       		.uleb128 0x13
- 319 0048 00       		.byte	0
- 320 0049 00       		.byte	0
- 321 004a 07       		.uleb128 0x7
- 322 004b 0D       		.uleb128 0xd
- 323 004c 00       		.byte	0
- 324 004d 03       		.uleb128 0x3
- 325 004e 0E       		.uleb128 0xe
- 326 004f 3A       		.uleb128 0x3a
- 327 0050 0B       		.uleb128 0xb
- 328 0051 3B       		.uleb128 0x3b
- 329 0052 0B       		.uleb128 0xb
- 330 0053 49       		.uleb128 0x49
- 331 0054 13       		.uleb128 0x13
- 332 0055 38       		.uleb128 0x38
- 333 0056 0B       		.uleb128 0xb
- 334 0057 00       		.byte	0
- 335 0058 00       		.byte	0
- 336 0059 08       		.uleb128 0x8
- 337 005a 16       		.uleb128 0x16
- 338 005b 00       		.byte	0
- 339 005c 03       		.uleb128 0x3
- 340 005d 0E       		.uleb128 0xe
- 341 005e 3A       		.uleb128 0x3a
- 342 005f 0B       		.uleb128 0xb
- 343 0060 3B       		.uleb128 0x3b
- 344 0061 0B       		.uleb128 0xb
- 345 0062 49       		.uleb128 0x49
- 346 0063 13       		.uleb128 0x13
- 347 0064 00       		.byte	0
- 348 0065 00       		.byte	0
- 349 0066 09       		.uleb128 0x9
- 350 0067 2E       		.uleb128 0x2e
- 351 0068 00       		.byte	0
- 352 0069 3F       		.uleb128 0x3f
- 353 006a 19       		.uleb128 0x19
- 354 006b 03       		.uleb128 0x3
- 355 006c 0E       		.uleb128 0xe
- 356 006d 3A       		.uleb128 0x3a
- 357 006e 0B       		.uleb128 0xb
- 358 006f 3B       		.uleb128 0x3b
- 359 0070 0B       		.uleb128 0xb
- 360 0071 27       		.uleb128 0x27
- 361 0072 19       		.uleb128 0x19
- 362 0073 11       		.uleb128 0x11
- 363 0074 01       		.uleb128 0x1
- 364 0075 12       		.uleb128 0x12
- 365 0076 06       		.uleb128 0x6
- 366 0077 40       		.uleb128 0x40
- 367 0078 18       		.uleb128 0x18
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc9JC85s.s 			page 9
+ 314 004c 00       		.byte	0
+ 315 004d 03       		.uleb128 0x3
+ 316 004e 0E       		.uleb128 0xe
+ 317 004f 3A       		.uleb128 0x3a
+ 318 0050 0B       		.uleb128 0xb
+ 319 0051 3B       		.uleb128 0x3b
+ 320 0052 0B       		.uleb128 0xb
+ 321 0053 49       		.uleb128 0x49
+ 322 0054 13       		.uleb128 0x13
+ 323 0055 38       		.uleb128 0x38
+ 324 0056 0B       		.uleb128 0xb
+ 325 0057 00       		.byte	0
+ 326 0058 00       		.byte	0
+ 327 0059 08       		.uleb128 0x8
+ 328 005a 16       		.uleb128 0x16
+ 329 005b 00       		.byte	0
+ 330 005c 03       		.uleb128 0x3
+ 331 005d 0E       		.uleb128 0xe
+ 332 005e 3A       		.uleb128 0x3a
+ 333 005f 0B       		.uleb128 0xb
+ 334 0060 3B       		.uleb128 0x3b
+ 335 0061 0B       		.uleb128 0xb
+ 336 0062 49       		.uleb128 0x49
+ 337 0063 13       		.uleb128 0x13
+ 338 0064 00       		.byte	0
+ 339 0065 00       		.byte	0
+ 340 0066 09       		.uleb128 0x9
+ 341 0067 2E       		.uleb128 0x2e
+ 342 0068 00       		.byte	0
+ 343 0069 3F       		.uleb128 0x3f
+ 344 006a 19       		.uleb128 0x19
+ 345 006b 03       		.uleb128 0x3
+ 346 006c 0E       		.uleb128 0xe
+ 347 006d 3A       		.uleb128 0x3a
+ 348 006e 0B       		.uleb128 0xb
+ 349 006f 3B       		.uleb128 0x3b
+ 350 0070 0B       		.uleb128 0xb
+ 351 0071 27       		.uleb128 0x27
+ 352 0072 19       		.uleb128 0x19
+ 353 0073 11       		.uleb128 0x11
+ 354 0074 01       		.uleb128 0x1
+ 355 0075 12       		.uleb128 0x12
+ 356 0076 06       		.uleb128 0x6
+ 357 0077 40       		.uleb128 0x40
+ 358 0078 18       		.uleb128 0x18
+ 359 0079 9642     		.uleb128 0x2116
+ 360 007b 19       		.uleb128 0x19
+ 361 007c 00       		.byte	0
+ 362 007d 00       		.byte	0
+ 363 007e 0A       		.uleb128 0xa
+ 364 007f 34       		.uleb128 0x34
+ 365 0080 00       		.byte	0
+ 366 0081 03       		.uleb128 0x3
+ 367 0082 0E       		.uleb128 0xe
+ 368 0083 3A       		.uleb128 0x3a
+ 369 0084 0B       		.uleb128 0xb
+ 370 0085 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccvQPikg.s 			page 9
 
 
- 368 0079 9642     		.uleb128 0x2116
- 369 007b 19       		.uleb128 0x19
- 370 007c 00       		.byte	0
- 371 007d 00       		.byte	0
- 372 007e 0A       		.uleb128 0xa
- 373 007f 34       		.uleb128 0x34
- 374 0080 00       		.byte	0
- 375 0081 03       		.uleb128 0x3
- 376 0082 0E       		.uleb128 0xe
- 377 0083 3A       		.uleb128 0x3a
- 378 0084 0B       		.uleb128 0xb
- 379 0085 3B       		.uleb128 0x3b
- 380 0086 0B       		.uleb128 0xb
- 381 0087 49       		.uleb128 0x49
- 382 0088 13       		.uleb128 0x13
- 383 0089 02       		.uleb128 0x2
- 384 008a 18       		.uleb128 0x18
- 385 008b 00       		.byte	0
- 386 008c 00       		.byte	0
- 387 008d 00       		.byte	0
- 388              		.section	.debug_aranges,"",%progbits
- 389 0000 24000000 		.4byte	0x24
- 390 0004 0200     		.2byte	0x2
- 391 0006 00000000 		.4byte	.Ldebug_info0
- 392 000a 04       		.byte	0x4
- 393 000b 00       		.byte	0
- 394 000c 0000     		.2byte	0
- 395 000e 0000     		.2byte	0
- 396 0010 00000000 		.4byte	.LFB0
- 397 0014 30000000 		.4byte	.LFE0-.LFB0
- 398 0018 00000000 		.4byte	.LFB1
- 399 001c 1C000000 		.4byte	.LFE1-.LFB1
- 400 0020 00000000 		.4byte	0
- 401 0024 00000000 		.4byte	0
- 402              		.section	.debug_ranges,"",%progbits
- 403              	.Ldebug_ranges0:
- 404 0000 00000000 		.4byte	.LFB0
- 405 0004 30000000 		.4byte	.LFE0
- 406 0008 00000000 		.4byte	.LFB1
- 407 000c 1C000000 		.4byte	.LFE1
- 408 0010 00000000 		.4byte	0
- 409 0014 00000000 		.4byte	0
- 410              		.section	.debug_line,"",%progbits
- 411              	.Ldebug_line0:
- 412 0000 9F000000 		.section	.debug_str,"MS",%progbits,1
- 412      02005400 
- 412      00000201 
- 412      FB0E0D00 
- 412      01010101 
- 413              	.LASF6:
- 414 0000 6C6F6E67 		.ascii	"long long int\000"
- 414      206C6F6E 
- 414      6720696E 
- 414      7400
- 415              	.LASF22:
- 416 000e 656E6162 		.ascii	"enableState\000"
- 416      6C655374 
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc9JC85s.s 			page 10
+ 371 0086 0B       		.uleb128 0xb
+ 372 0087 49       		.uleb128 0x49
+ 373 0088 13       		.uleb128 0x13
+ 374 0089 02       		.uleb128 0x2
+ 375 008a 18       		.uleb128 0x18
+ 376 008b 00       		.byte	0
+ 377 008c 00       		.byte	0
+ 378 008d 00       		.byte	0
+ 379              		.section	.debug_aranges,"",%progbits
+ 380 0000 24000000 		.4byte	0x24
+ 381 0004 0200     		.2byte	0x2
+ 382 0006 00000000 		.4byte	.Ldebug_info0
+ 383 000a 04       		.byte	0x4
+ 384 000b 00       		.byte	0
+ 385 000c 0000     		.2byte	0
+ 386 000e 0000     		.2byte	0
+ 387 0010 00000000 		.4byte	.LFB0
+ 388 0014 28000000 		.4byte	.LFE0-.LFB0
+ 389 0018 00000000 		.4byte	.LFB1
+ 390 001c 1C000000 		.4byte	.LFE1-.LFB1
+ 391 0020 00000000 		.4byte	0
+ 392 0024 00000000 		.4byte	0
+ 393              		.section	.debug_ranges,"",%progbits
+ 394              	.Ldebug_ranges0:
+ 395 0000 00000000 		.4byte	.LFB0
+ 396 0004 28000000 		.4byte	.LFE0
+ 397 0008 00000000 		.4byte	.LFB1
+ 398 000c 1C000000 		.4byte	.LFE1
+ 399 0010 00000000 		.4byte	0
+ 400 0014 00000000 		.4byte	0
+ 401              		.section	.debug_line,"",%progbits
+ 402              	.Ldebug_line0:
+ 403 0000 82000000 		.section	.debug_str,"MS",%progbits,1
+ 403      02005400 
+ 403      00000201 
+ 403      FB0E0D00 
+ 403      01010101 
+ 404              	.LASF6:
+ 405 0000 6C6F6E67 		.ascii	"long long int\000"
+ 405      206C6F6E 
+ 405      6720696E 
+ 405      7400
+ 406              	.LASF22:
+ 407 000e 656E6162 		.ascii	"enableState\000"
+ 407      6C655374 
+ 407      61746500 
+ 408              	.LASF8:
+ 409 001a 756E7369 		.ascii	"unsigned int\000"
+ 409      676E6564 
+ 409      20696E74 
+ 409      00
+ 410              	.LASF23:
+ 411 0027 57617665 		.ascii	"WaveDAC_backup\000"
+ 411      4441435F 
+ 411      6261636B 
+ 411      757000
+ 412              	.LASF12:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccvQPikg.s 			page 10
 
 
- 416      61746500 
- 417              	.LASF8:
- 418 001a 756E7369 		.ascii	"unsigned int\000"
- 418      676E6564 
- 418      20696E74 
- 418      00
- 419              	.LASF23:
- 420 0027 57617665 		.ascii	"WaveDAC_backup\000"
- 420      4441435F 
- 420      6261636B 
- 420      757000
- 421              	.LASF12:
- 422 0036 75696E74 		.ascii	"uint8\000"
- 422      3800
- 423              	.LASF5:
- 424 003c 6C6F6E67 		.ascii	"long unsigned int\000"
- 424      20756E73 
- 424      69676E65 
- 424      6420696E 
- 424      7400
- 425              	.LASF7:
- 426 004e 6C6F6E67 		.ascii	"long long unsigned int\000"
- 426      206C6F6E 
- 426      6720756E 
- 426      7369676E 
- 426      65642069 
- 427              	.LASF9:
- 428 0065 666C6F61 		.ascii	"float\000"
- 428      7400
- 429              	.LASF21:
- 430 006b 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\firm_F1-TestFixture\\"
- 430      73657273 
- 430      5C6D6172 
- 430      74686E69 
- 430      636B5C44 
- 431 009a 46312D54 		.ascii	"F1-TestFixture.cydsn\000"
- 431      65737446 
- 431      69787475 
- 431      72652E63 
- 431      7964736E 
- 432              	.LASF17:
- 433 00af 57617665 		.ascii	"WaveDAC_Sleep\000"
- 433      4441435F 
- 433      536C6565 
- 433      7000
- 434              	.LASF19:
- 435 00bd 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 435      43313120 
- 435      352E342E 
- 435      31203230 
- 435      31363036 
- 436 00f0 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 436      20726576 
- 436      6973696F 
- 436      6E203233 
- 436      37373135 
- 437 0123 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc9JC85s.s 			page 11
+ 413 0036 75696E74 		.ascii	"uint8\000"
+ 413      3800
+ 414              	.LASF5:
+ 415 003c 6C6F6E67 		.ascii	"long unsigned int\000"
+ 415      20756E73 
+ 415      69676E65 
+ 415      6420696E 
+ 415      7400
+ 416              	.LASF7:
+ 417 004e 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 417      206C6F6E 
+ 417      6720756E 
+ 417      7369676E 
+ 417      65642069 
+ 418              	.LASF9:
+ 419 0065 666C6F61 		.ascii	"float\000"
+ 419      7400
+ 420              	.LASF21:
+ 421 006b 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\firm_F1-TestFixture\\"
+ 421      73657273 
+ 421      5C6D6172 
+ 421      74686E69 
+ 421      636B5C44 
+ 422 009a 46312D54 		.ascii	"F1-TestFixture.cydsn\000"
+ 422      65737446 
+ 422      69787475 
+ 422      72652E63 
+ 422      7964736E 
+ 423              	.LASF17:
+ 424 00af 57617665 		.ascii	"WaveDAC_Sleep\000"
+ 424      4441435F 
+ 424      536C6565 
+ 424      7000
+ 425              	.LASF19:
+ 426 00bd 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 426      43313120 
+ 426      352E342E 
+ 426      31203230 
+ 426      31363036 
+ 427 00f0 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 427      20726576 
+ 427      6973696F 
+ 427      6E203233 
+ 427      37373135 
+ 428 0123 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 428      66756E63 
+ 428      74696F6E 
+ 428      2D736563 
+ 428      74696F6E 
+ 429              	.LASF1:
+ 430 014b 756E7369 		.ascii	"unsigned char\000"
+ 430      676E6564 
+ 430      20636861 
+ 430      7200
+ 431              	.LASF11:
+ 432 0159 63686172 		.ascii	"char\000"
+ 432      00
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccvQPikg.s 			page 11
 
 
- 437      66756E63 
- 437      74696F6E 
- 437      2D736563 
- 437      74696F6E 
- 438              	.LASF1:
- 439 014b 756E7369 		.ascii	"unsigned char\000"
- 439      676E6564 
- 439      20636861 
- 439      7200
- 440              	.LASF11:
- 441 0159 63686172 		.ascii	"char\000"
- 441      00
- 442              	.LASF20:
- 443 015e 47656E65 		.ascii	"Generated_Source\\PSoC5\\WaveDAC_PM.c\000"
- 443      72617465 
- 443      645F536F 
- 443      75726365 
- 443      5C50536F 
- 444              	.LASF4:
- 445 0182 6C6F6E67 		.ascii	"long int\000"
- 445      20696E74 
- 445      00
- 446              	.LASF18:
- 447 018b 57617665 		.ascii	"WaveDAC_Wakeup\000"
- 447      4441435F 
- 447      57616B65 
- 447      757000
- 448              	.LASF10:
- 449 019a 646F7562 		.ascii	"double\000"
- 449      6C6500
- 450              	.LASF16:
- 451 01a1 57617665 		.ascii	"WaveDAC_BACKUP_STRUCT\000"
- 451      4441435F 
- 451      4241434B 
- 451      55505F53 
- 451      54525543 
- 452              	.LASF3:
- 453 01b7 73686F72 		.ascii	"short unsigned int\000"
- 453      7420756E 
- 453      7369676E 
- 453      65642069 
- 453      6E7400
- 454              	.LASF0:
- 455 01ca 7369676E 		.ascii	"signed char\000"
- 455      65642063 
- 455      68617200 
- 456              	.LASF14:
- 457 01d6 6C6F6E67 		.ascii	"long double\000"
- 457      20646F75 
- 457      626C6500 
- 458              	.LASF2:
- 459 01e2 73686F72 		.ascii	"short int\000"
- 459      7420696E 
- 459      7400
- 460              	.LASF13:
- 461 01ec 72656738 		.ascii	"reg8\000"
- 461      00
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc9JC85s.s 			page 12
-
-
- 462              	.LASF15:
- 463 01f1 73697A65 		.ascii	"sizetype\000"
- 463      74797065 
- 463      00
- 464              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ 433              	.LASF20:
+ 434 015e 47656E65 		.ascii	"Generated_Source\\PSoC5\\WaveDAC_PM.c\000"
+ 434      72617465 
+ 434      645F536F 
+ 434      75726365 
+ 434      5C50536F 
+ 435              	.LASF4:
+ 436 0182 6C6F6E67 		.ascii	"long int\000"
+ 436      20696E74 
+ 436      00
+ 437              	.LASF18:
+ 438 018b 57617665 		.ascii	"WaveDAC_Wakeup\000"
+ 438      4441435F 
+ 438      57616B65 
+ 438      757000
+ 439              	.LASF10:
+ 440 019a 646F7562 		.ascii	"double\000"
+ 440      6C6500
+ 441              	.LASF16:
+ 442 01a1 57617665 		.ascii	"WaveDAC_BACKUP_STRUCT\000"
+ 442      4441435F 
+ 442      4241434B 
+ 442      55505F53 
+ 442      54525543 
+ 443              	.LASF3:
+ 444 01b7 73686F72 		.ascii	"short unsigned int\000"
+ 444      7420756E 
+ 444      7369676E 
+ 444      65642069 
+ 444      6E7400
+ 445              	.LASF0:
+ 446 01ca 7369676E 		.ascii	"signed char\000"
+ 446      65642063 
+ 446      68617200 
+ 447              	.LASF14:
+ 448 01d6 6C6F6E67 		.ascii	"long double\000"
+ 448      20646F75 
+ 448      626C6500 
+ 449              	.LASF2:
+ 450 01e2 73686F72 		.ascii	"short int\000"
+ 450      7420696E 
+ 450      7400
+ 451              	.LASF13:
+ 452 01ec 72656738 		.ascii	"reg8\000"
+ 452      00
+ 453              	.LASF15:
+ 454 01f1 73697A65 		.ascii	"sizetype\000"
+ 454      74797065 
+ 454      00
+ 455              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

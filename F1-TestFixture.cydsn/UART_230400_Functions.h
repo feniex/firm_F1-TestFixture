@@ -456,6 +456,7 @@ uint8 VerifyPacket_230400(uint8 PacketType);
 uint8 findpacket(uint8 dataByte);
 
 void sendPacket_RelayToController(void);        // CTest 'D'
+void sendPacket_RelayToController_Test(void);   // CTest 'I' (to control LEDs RGB)
 void sendPacket_SirenToRelay(void);
 void sendPacket_RelayToSiren(void);
 

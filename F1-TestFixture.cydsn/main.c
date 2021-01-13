@@ -94,7 +94,9 @@ int main()
         else if( (RS1_Read() == 0) && (RS2_Read() == 1) )
             CurrentTest.SelectedTest = STEST;
                     
+        //CurrentTest.SelectedTest = STEST;
         
+    
         switch(CurrentTest.SelectedTest)
         {
             case CTEST:
@@ -181,8 +183,8 @@ static void initializePeripherals(void)
     
     Timer_DAC_Start();
     
-    ADC_AudioStream_Start();
-    isr_ADC_AudioStream_Start();
+    //ADC_AudioStream_Start();
+    //isr_ADC_AudioStream_Start();
 
     return;
 }

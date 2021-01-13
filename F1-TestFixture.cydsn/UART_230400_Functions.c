@@ -367,6 +367,29 @@ void sendPacket_RelayToController(void)
     
 }
 
+void sendPacket_RelayToController_Test(void)
+{
+    
+    static TxPacket_RelaySiren txPacket_Relay;            
+    static TxPacket_RelaySiren * pTxPacket_Relay;
+           
+    pTxPacket_Relay = getTxPacket_Relay();                      // Tx - Get pointers to packet 
+    
+    DEMUX_CTRL_230400_Write(CTEST_RELAY);
+    
+    UART_230400_WriteTxData('~');
+    UART_230400_WriteTxData('I');
+    for(uint8 iterator = 0; iterator<79; iterator++)              // Send entire payload every other send
+    {
+        UART_230400_WriteTxData(pTxPacket_Relay->bytes[iterator]);
+    }
+    UART_230400_WriteTxData('\r');
+    UART_230400_WriteTxData('\n');
+    
+    return;
+    
+}
+
 void sendPacketToRelaySiren(void)                   //*** This part needs some work
 {
     static uint16 iterator = 0;
@@ -384,13 +407,7 @@ void sendPacketToRelaySiren(void)                   //*** This part needs some w
     
     pTxPacket_RelaySiren = getTxPacket_RelaySiren();              // Tx - Get pointers to packet 
     
-    DEMUX_CTRL_230400_Write(RTEST_CONTROLLER);
-    
-//    checkSumRelay = 0;
-//    for(checkSumRelayIterator = 0; checkSumRelayIterator<PacketList[CTEST_RELAY].PAYLOAD_SIZE; checkSumRelayIterator++)     // Calculate and load checksum
-//    {
-//        checkSumRelay ^= pTxPacket_Controller->bytes[checkSumRelayIterator];
-//    }
+    //DEMUX_CTRL_230400_Write(STEST_RELAY);
     
 //        pTxPacket_RelaySiren->Payload.StartByte_FLB = '~';
 //        pTxPacket_RelaySiren->Payload.FLB_PacketType = '3';
@@ -407,16 +424,12 @@ void sendPacketToRelaySiren(void)                   //*** This part needs some w
 //        pTxPacket_RelaySiren->Payload.StopByte1_Relay = 0x0D;
 //        pTxPacket_RelaySiren->Payload.StopByte2_Relay = 0x0A; 
     
-        // Specific code for Controller to Relay/Siren packet 
         UART_230400_WriteTxData(0x7E);
         UART_230400_WriteTxData('I');
         for(iterator = 0; iterator<79; iterator++)              // Send entire payload every other send
         {
             UART_230400_WriteTxData(pTxPacket_RelaySiren->bytes[iterator]);
-            //UART_230400_WriteTxData(iterator);
         }
-//       
-//        UART_230400_WriteTxData(checkSumRelay);
         UART_230400_WriteTxData(0x0D);
         UART_230400_WriteTxData(0x0A);
         

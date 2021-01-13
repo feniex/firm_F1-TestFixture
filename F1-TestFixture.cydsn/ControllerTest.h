@@ -22,6 +22,8 @@ void CTest_SendIgnitionState(uint8 ignition_state);
 
 void sendDataToController(void);
 
+void CTest_isr_PB(void);
+
 //void CTest_10ms_isr(void);
 void CTest_20ms_isr(void);
 void CTest_50ms_isr(void);

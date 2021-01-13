@@ -66,8 +66,8 @@ enum MUX_DEMUX_230400_CHANNEL
 };
 
 // --------------Test steps---------------
-#define NUMBER_TEST_STEPS       10
-static uint16 CTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,1500,100,50,50,50,50,50,50};    // Number of 20msec counts before failure timeout, for each step
+#define NUMBER_TEST_STEPS       11
+static uint16 CTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,1500,100,50,50,50,50,50,50,50};    // Number of 20msec counts before failure timeout, for each step
 
 static uint8 CTestStatus[NUMBER_TEST_STEPS];
 
@@ -83,6 +83,7 @@ enum TestStep
     LEDS_RGB,               // (need to implement packet on controller side)
     AUDIO_STREAM,           // (not a priority)
     DEBUG_PORT,             // (not a priority)
+    PASS
 };
 
 // Mic port test - could audio stream it
@@ -140,13 +141,13 @@ uint8 ControllerTest(void)
             CyDelay(1000);
       
             //CurrentTest.TestStep = INITIALIZE_TEST;
-            CurrentTest.TestStep = CONFIRM_BOOTUP;
+            //CurrentTest.TestStep = CONFIRM_BOOTUP;
             //CurrentTest.TestStep = TEST_POWERMODES;
             //CurrentTest.TestStep = DEBUG_PORT;
             //CurrentTest.TestStep = QUAD_STREAM;
             //CurrentTest.TestStep = AUDIO_STREAM;
             //CurrentTest.TestStep = OBDII;
-            //CurrentTest.TestStep = LEDS_RGB;
+            CurrentTest.TestStep = LEDS_RGB;
             //CurrentTest.TestStep = PUSHBUTTONS;
         
         break;
@@ -306,7 +307,8 @@ uint8 ControllerTest(void)
             
             //CurrentTest.TestStep = INITIALIZE_TEST;
             //CurrentTest.TestStep = AUDIO_STREAM;
-            CurrentTest.TestStep = LEDS_RGB;
+            //CurrentTest.TestStep = LEDS_RGB;
+            CurrentTest.TestStep = PASS;
 
         break;
             
@@ -315,8 +317,39 @@ uint8 ControllerTest(void)
             // Send a 'I' packet upstream to controller to manually control the LEDs
             // Make them full bright red for 1 sec, then green, then blue
             
-            pTxPacket_Relay = getTxPacket_Relay();        // Tx - Initialize Tx packet, and begin sending 'relay ignition on'
+            //DEMUX_CTRL_230400_Write(CTEST_RELAY);
+            
+            pTxPacket_Relay = getTxPacket_Relay();       
 
+            pTxPacket_Relay->Payload.LED_01_R = 0xFF;
+            pTxPacket_Relay->Payload.LED_02_R = 0xFF;
+            pTxPacket_Relay->Payload.LED_03_R = 0xFF;
+            pTxPacket_Relay->Payload.LED_04_R = 0xFF;
+            pTxPacket_Relay->Payload.LED_05_R = 0xFF;
+            pTxPacket_Relay->Payload.LED_06_R = 0xFF;
+            pTxPacket_Relay->Payload.LED_07_R = 0xFF;
+            pTxPacket_Relay->Payload.LED_08_R = 0xFF;
+            
+            pTxPacket_Relay->Payload.LED_01_B = 0x00;
+            pTxPacket_Relay->Payload.LED_02_B = 0x00;
+            pTxPacket_Relay->Payload.LED_03_B = 0x00;
+            pTxPacket_Relay->Payload.LED_04_B = 0x00;
+            pTxPacket_Relay->Payload.LED_05_B = 0x00;
+            pTxPacket_Relay->Payload.LED_06_B = 0x00;
+            pTxPacket_Relay->Payload.LED_07_B = 0x00;
+            pTxPacket_Relay->Payload.LED_08_B = 0x00;
+            
+            CyDelay(1000);
+           
+            pTxPacket_Relay->Payload.LED_01_R = 0x00;
+            pTxPacket_Relay->Payload.LED_02_R = 0x00;
+            pTxPacket_Relay->Payload.LED_03_R = 0x00;
+            pTxPacket_Relay->Payload.LED_04_R = 0x00;
+            pTxPacket_Relay->Payload.LED_05_R = 0x00;
+            pTxPacket_Relay->Payload.LED_06_R = 0x00;
+            pTxPacket_Relay->Payload.LED_07_R = 0x00;
+            pTxPacket_Relay->Payload.LED_08_R = 0x00;
+            
             pTxPacket_Relay->Payload.LED_01_B = 0xFF;
             pTxPacket_Relay->Payload.LED_02_B = 0xFF;
             pTxPacket_Relay->Payload.LED_03_B = 0xFF;
@@ -326,7 +359,10 @@ uint8 ControllerTest(void)
             pTxPacket_Relay->Payload.LED_07_B = 0xFF;
             pTxPacket_Relay->Payload.LED_08_B = 0xFF;
             
-            CurrentTest.TestStep = AUDIO_STREAM;
+            CyDelay(1000);
+            
+            CurrentTest.TestStep = LEDS_RGB;
+            //CurrentTest.TestStep = AUDIO_STREAM;
             //CurrentTest.TestStep = PUSHBUTTONS;
       
         break; 
@@ -335,6 +371,7 @@ uint8 ControllerTest(void)
                 
             // Audio Stream (not a priority)
             
+            //CurrentTest.TestStep = DEBUG_PORT;
             CurrentTest.TestStep = DEBUG_PORT;
             //CurrentTest.TestStep = DEBUG_PORT;
                 
@@ -348,6 +385,17 @@ uint8 ControllerTest(void)
             //CurrentTest.TestStep = OBDII;
       
         break;  
+            
+        case PASS:   
+                 
+            CTestStatus[CurrentTest.TestStep] = 'p';
+            CurrentTest.Status = 'p';
+            
+            while(1);
+            
+            //CurrentTest.TestStep = INITIALIZE_TEST;
+      
+        break; 
             
            
             
@@ -545,12 +593,14 @@ void CTest_50ms_isr(void)
     CTest_sendDiagPacket();                                 // Send diagnostic packet to terminal
 
     if( (CurrentTest.TestStep == INITIALIZE_TEST) ||      // Send packet to controller if it applies to this step
-            (CurrentTest.TestStep == CONFIRM_BOOTUP) || //)//||
-            (CurrentTest.TestStep == TEST_POWERMODES) )//||
-//            (TestState == INPUTS) ||
-//            (CurrentTest.TestStep == BLOCK_CURRENTS) )
+        (CurrentTest.TestStep == CONFIRM_BOOTUP) || 
+        (CurrentTest.TestStep == TEST_POWERMODES) )
     {      
         sendPacket_RelayToController();
+    }
+    if(CurrentTest.TestStep == LEDS_RGB)
+    {      
+        sendPacket_RelayToController_Test();
     }
     
     return;    

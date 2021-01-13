@@ -177,23 +177,10 @@ CY_ISR(isr_Timer_20ms_Interrupt)
         CTest_20ms_isr();
         RTest_20ms_isr();
         STest_20ms_isr();
-        
-//        if( PB_NextAction_Read() )
-//            STest_isr_PB();
             
         CTest_isr_PB();
         STest_isr_PB();
         
-//       isr_count++;
-//        if(isr_count > 5)
-//        {
-//            _100ms_flag++;
-////            sendPacketToRelaySiren();
-//            isr_count = 0;
-//        }
-     
-//            //sendPacketToRelay_Quad();   // 460800 - TX
-//    //sendPacketToRelaySiren();   // 230400 - TX
 
     /* `#END` */
 }

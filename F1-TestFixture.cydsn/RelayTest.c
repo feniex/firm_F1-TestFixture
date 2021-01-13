@@ -127,7 +127,7 @@ enum TestStep               // *** Need to get muxes setup permanently,
     INPUTS,             // COMPLETE
     VBATT,              // COMPLETE
     BLOCK_CURRENTS,     // COMPLETE
-    GPS,                // COMPLETE
+    GPS,                // (passing all the time right now)
     PASS                // COMPLETE 
 };
 
@@ -224,6 +224,7 @@ uint8 RelayTest(void)
             CyDelay(CONFIRM_TIME);
 
             //CurrentTest.TestStep = INITIALIZE_TEST;
+            //CurrentTest.TestStep = TEST_OUTPUTS;
             CurrentTest.TestStep = DATALINK;        
         break;        
               
@@ -272,7 +273,8 @@ uint8 RelayTest(void)
             CyDelay(CONFIRM_TIME);
             
             //CurrentTest.TestStep = INITIALIZE_TEST;  
-            CurrentTest.TestStep = INPUTS;                
+            CurrentTest.TestStep = INPUTS;    
+            //CurrentTest.TestStep = UART_SIREN;  
         break;  
               
         case INPUTS:          
@@ -323,7 +325,8 @@ uint8 RelayTest(void)
             CyDelay(100);
 
             //CurrentTest.TestStep = INITIALIZE_TEST;
-            CurrentTest.TestStep = GPS;  
+            //CurrentTest.TestStep = GPS;
+            CurrentTest.TestStep = PASS;
         break; 
           
         case GPS:         
@@ -352,7 +355,7 @@ uint8 RelayTest(void)
             
         case PASS:  
             
-            for(uint8 i=0;i<(NUMBER_TEST_STEPS-1);i++)
+            for(uint8 i=0;i<(NUMBER_TEST_STEPS-2);i++)
             {
                 if(RTestStatus[i] != 'P')
                 {
@@ -367,7 +370,10 @@ uint8 RelayTest(void)
                 CurrentTest.Status = 'p'; 
             }
             
-            //while(1);
+            while(PB_NextAction_Read() != 1){};
+
+            RTestStatus[CurrentTest.TestStep] = 'r';
+            CurrentTest.Status = 'r'; 
             
             CyDelay(1000);
             CurrentTest.TestStep = INITIALIZE_TEST;
@@ -392,7 +398,7 @@ uint8 RTest_Test_Outputs(void)
     uint32 testval = 0;
     
     SetRelayOutputs(1);                                                     // Send command to turn on relay outputs
-
+    //while(1);
     for (uint8 channel=0; channel<32; channel++)                            // Address and read channels '0-31' in hardware
     {
         selectADCChannelMux(channel);                                       //*** This needs to be fleshed out when hardware arrives 
@@ -402,7 +408,7 @@ uint8 RTest_Test_Outputs(void)
         OutputsState = ( OutputsState | (testval << channel) );             // Read RTest_INPUT_DEMUX and store each bit in OutputsState   
     }
     
-    SetRelayOutputs(0);                                                     // Send command to turn off relay outputs
+    //SetRelayOutputs(0);                                                     // Send command to turn off relay outputs
     
     if(OutputsState == 0xFFFFFFFF)
         return(1);                                                          // If all outputs are turned on, then return pass
@@ -478,11 +484,11 @@ uint8 RTest_Test_UART_Siren(void)
     {}
           
 
-    DEMUX_CTRL_230400_Write(RTEST_CONT);                            // Tx - Send a 'S' packet to relay (from controller)
+    //DEMUX_CTRL_230400_Write(RTEST_CONT);                            // Tx - Send a 'S' packet to relay (from controller)
     
-    MUX_CTRL_230400_Write(RTEST_SIREN);                             // Rx - Verify a 'S' packet is received from relay (by siren)
-    while( (!VerifyPacket_230400(STEST_RELAY)) && (RTestStatus[CurrentTest.TestStep] != 'F') )
-    {}
+//    MUX_CTRL_230400_Write(RTEST_SIREN);                             // Rx - Verify a 'S' packet is received from relay (by siren)
+//    while( (!VerifyPacket_230400(STEST_RELAY)) && (RTestStatus[CurrentTest.TestStep] != 'F') )
+//    {}
 
     return(1);
 }
@@ -792,7 +798,7 @@ void RTest_50ms_isr(void)                       // Times interboard comms, and s
 void SetRelayOutputs(uint8 enable)
 {
     
-    //DEMUX_CTRL_230400_Write(RTEST_CONT);                        // Tx - Select the demux channel
+    DEMUX_CTRL_230400_Write(RTEST_CONT);                        // Tx - Select the demux channel
     pTxPacket_RelaySiren = getTxPacket_RelaySiren();            // Tx - Get pointers to packet   
     
     if(enable == 1)

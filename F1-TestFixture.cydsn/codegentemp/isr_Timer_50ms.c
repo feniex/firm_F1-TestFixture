@@ -196,24 +196,32 @@ CY_ISR(isr_Timer_50ms_Interrupt)
         RTest_50ms_isr();
     else if(CurrentTest.SelectedTest == 2)
         STest_50ms_isr();
+        
+        
+//    LED1_Write(0);  // Red
+//    LED2_Write(0);  // Amber
+//    LED3_Write(1);  // Green
     
     // *** Add LED stuff here
     if( (CurrentTest.Status == 'I') || (CurrentTest.Status == 'B') )
     {
-        LED1_Write(1);
+        LED1_Write(0);
         LED2_Write(1);
+        LED3_Write(0); 
     }
     else if(CurrentTest.Status == 'W')
     {
         if(blinkcounter < BLINKTIME)
         {
-            LED1_Write(1);
+            LED1_Write(0);
             LED2_Write(1); 
+            LED3_Write(0); 
         }
         else if( ( blinkcounter > BLINKTIME) && (blinkcounter < (2*BLINKTIME) ) )
         {
             LED1_Write(0);
             LED2_Write(0); 
+            LED3_Write(0); 
         }
         else if( blinkcounter > (2*BLINKTIME) )
         {
@@ -226,13 +234,15 @@ CY_ISR(isr_Timer_50ms_Interrupt)
         {
             if(blinkcounter < BLINKTIME)
             {
-                LED1_Write(1);
+                LED1_Write(0); 
                 LED2_Write(0); 
+                LED3_Write(1); 
             }
             else if( ( blinkcounter > BLINKTIME) && (blinkcounter < (2*BLINKTIME) ) )
             {
-                LED1_Write(0);
+                LED1_Write(0); 
                 LED2_Write(0); 
+                LED3_Write(0); 
             }
             else if( blinkcounter > (2*BLINKTIME) )
             {
@@ -241,26 +251,30 @@ CY_ISR(isr_Timer_50ms_Interrupt)
         }
         else
         {
-            LED1_Write(1);
-            LED2_Write(0); 
+            LED1_Write(0);
+            LED2_Write(0);
+            LED3_Write(1); 
         }   
     }
     else if(CurrentTest.Status == 'F')
     {
-        LED1_Write(0);
-        LED2_Write(1); 
+        LED1_Write(1);
+        LED2_Write(0); 
+        LED3_Write(0); 
     }
     else if(CurrentTest.Status == 'p')
     {
         if(blinkcounter < BLINKTIME)
         {
-            LED1_Write(1);
-            LED2_Write(0); 
+            LED1_Write(0);
+            LED2_Write(0);
+            LED3_Write(1); 
         }
         else if( ( blinkcounter > BLINKTIME) && (blinkcounter < (2*BLINKTIME) ) )
         {
             LED1_Write(0);
             LED2_Write(0); 
+            LED3_Write(0); 
         }
         else if( blinkcounter > (2*BLINKTIME) )
         {
@@ -271,13 +285,34 @@ CY_ISR(isr_Timer_50ms_Interrupt)
     {
         if(blinkcounter < BLINKTIME)
         {
-            LED1_Write(0);
-            LED2_Write(1); 
+            LED1_Write(1);
+            LED2_Write(0);
+            LED3_Write(0); 
         }
         else if( ( blinkcounter > BLINKTIME) && (blinkcounter < (2*BLINKTIME) ) )
         {
             LED1_Write(0);
             LED2_Write(0); 
+            LED3_Write(0); 
+        }
+        else if( blinkcounter > (2*BLINKTIME) )
+        {
+            blinkcounter = 0;
+        }    
+    }
+    else if(CurrentTest.Status == 'r')          // reset
+    {
+        if(blinkcounter < BLINKTIME)
+        {
+            LED1_Write(1);
+            LED2_Write(1);
+            LED3_Write(1); 
+        }
+        else if( ( blinkcounter > BLINKTIME) && (blinkcounter < (2*BLINKTIME) ) )
+        {
+            LED1_Write(0);
+            LED2_Write(0); 
+            LED3_Write(0); 
         }
         else if( blinkcounter > (2*BLINKTIME) )
         {
@@ -287,7 +322,8 @@ CY_ISR(isr_Timer_50ms_Interrupt)
     else
     {
         LED1_Write(0);
-        LED2_Write(0); 
+        LED2_Write(0);
+        LED3_Write(0); 
     }
     
     
