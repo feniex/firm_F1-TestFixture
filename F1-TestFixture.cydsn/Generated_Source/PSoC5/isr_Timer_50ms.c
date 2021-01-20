@@ -203,7 +203,7 @@ CY_ISR(isr_Timer_50ms_Interrupt)
 //    LED3_Write(1);  // Green
     
     // *** Add LED stuff here
-    if( (CurrentTest.Status == 'I') || (CurrentTest.Status == 'B') )
+    if( (CurrentTest.Status == 'I') || (CurrentTest.Status == 'B') || (CurrentTest.Status == 'U') )
     {
         LED1_Write(0);
         LED2_Write(1);

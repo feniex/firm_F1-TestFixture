@@ -372,10 +372,18 @@ void sendPacket_RelayToController_Test(void)
     
     static TxPacket_RelaySiren txPacket_Relay;            
     static TxPacket_RelaySiren * pTxPacket_Relay;
+    
+    static uint8 iteratorChecksum = 0;
+    static uint8 checksum = 0;
            
     pTxPacket_Relay = getTxPacket_Relay();                      // Tx - Get pointers to packet 
     
     DEMUX_CTRL_230400_Write(CTEST_RELAY);
+    
+    for(iteratorChecksum = 0; iteratorChecksum<80; iteratorChecksum++)          // Calculate checksum
+    {
+        checksum ^= pTxPacket_Relay->bytes[iteratorChecksum];
+    }
     
     UART_230400_WriteTxData('~');
     UART_230400_WriteTxData('I');
@@ -383,6 +391,7 @@ void sendPacket_RelayToController_Test(void)
     {
         UART_230400_WriteTxData(pTxPacket_Relay->bytes[iterator]);
     }
+    UART_230400_WriteTxData(checksum);
     UART_230400_WriteTxData('\r');
     UART_230400_WriteTxData('\n');
     

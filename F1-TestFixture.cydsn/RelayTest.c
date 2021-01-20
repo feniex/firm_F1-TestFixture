@@ -116,7 +116,7 @@ static uint16 RTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,50,200,50,100,100,5
 
 static uint8 RTestStatus[NUMBER_TEST_STEPS];
 
-enum TestStep               // *** Need to get muxes setup permanently, 
+enum TestStep               // *** (relay firmware needs the 'H' packet payload count updated)
 { 
     INITIALIZE_TEST,    // COMPLETE
     SIREN_EN,           // COMPLETE
@@ -127,7 +127,7 @@ enum TestStep               // *** Need to get muxes setup permanently,
     INPUTS,             // COMPLETE
     VBATT,              // COMPLETE
     BLOCK_CURRENTS,     // COMPLETE
-    GPS,                // (passing all the time right now)
+    GPS,                // (passing when disconnected right now)
     PASS                // COMPLETE 
 };
 

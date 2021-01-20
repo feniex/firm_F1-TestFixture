@@ -38,7 +38,7 @@ enum DEMUX_460800_CHANNEL
 
 // --------------Test steps---------------
 #define NUMBER_TEST_STEPS 11
-static uint16 STest_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,300,50,50,50,50,50,50,50,50};  // Number of 20msec counts before failure timeout, for each step
+static uint16 STest_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,300,50,50,50,50,50,50,100,50};  // Number of 20msec counts before failure timeout, for each step
 
 enum TestStep
 { 
@@ -51,7 +51,7 @@ enum TestStep
     MIC,                        // (not working ???) 
     AUDIO_STREAM,               // (exclude)
     FLASH,                      // COMPLETE
-    OVERLOAD,                   // (230400 rx tested) (siren does not seem to be sending data during overload - not getting set flags)
+    OVERLOAD,                   // ***(siren gets stuck in while loop when overload happens, overload reads correct when it exits, but then gets reset before it sends again)
     PASS                        // ------------------------------------------------
 };
 // Test UART to and from relay  // RX TESTED(not implemented in this test yet)    -
@@ -70,6 +70,9 @@ static TxPacket_RelaySiren * pTxPacket_RelaySiren;      //
 static RxPacket_RelaySiren rxPacket_RelaySiren;         // SetRelayOutputs - 'D' - relay to controller
 static RxPacket_RelaySiren * pRxPacket_RelaySiren;      // 
 
+static Packet_H rxPacket_H;                             // SetRelayOutputs - 'H' - siren to relay
+static Packet_H * pRxPacket_H;                          // 
+
 uint8 SirenTest(void)
 {
 
@@ -85,6 +88,9 @@ uint8 SirenTest(void)
             CurrentTest.Status = 'I';
             
             STest_SIREN_EN_Write(1);                    // Enable Siren
+            
+            Overload1_Write(0);
+            Overload2_Write(0); 
             
 //            WaveDAC_Start();
 //            
@@ -163,7 +169,7 @@ uint8 SirenTest(void)
             
             STestStatus[CurrentTest.TestStep] = 'B';            // Let tone play for 3sec
             CurrentTest.Status = 'B'; 
-            CyDelay(3000);
+            CyDelay(1000);
         
             PB_WaitForAction();
             
@@ -185,7 +191,7 @@ uint8 SirenTest(void)
             
             STestStatus[CurrentTest.TestStep] = 'B';            // Let tone play for 3sec
             CurrentTest.Status = 'B'; 
-            CyDelay(3000);
+            CyDelay(1000);
              
             PB_WaitForAction();                         
             
@@ -301,7 +307,7 @@ uint8 SirenTest(void)
             
             STestStatus[CurrentTest.TestStep] = 'B';            // Let tone play for 3sec
             CurrentTest.Status = 'B'; 
-            CyDelay(3000);
+            CyDelay(1000);
             
             PB_WaitForAction();
             
@@ -316,85 +322,80 @@ uint8 SirenTest(void)
                 
         break;  
              
-        case OVERLOAD:                                      // Automated -                              
-            // *** note - the overload channels are backwards
-            // ***Turn on relays to short the speaker outputs for Amp1
+        case OVERLOAD:                                                             
             
-            MUX_CTRL_230400_Write(STEST_RELAY); 
-            DEMUX_CTRL_230400_Write(STEST_RELAY); 
+            MUX_CTRL_230400_Write(STEST_RELAY);     // Rx - 'H' packet
+            DEMUX_CTRL_230400_Write(STEST_RELAY);   // Tx - 'S' packet
             
             //PB_WaitForAction();
             
             StartAutomatedStep();
             
-            //Overload1_Write(1);             // This is for amp2
-            Overload2_Write(1);                 // This is for amp1
+            Overload1_Write(0);                
+            Overload2_Write(1);                
             
-            //while(1);
+            CyDelay(100);
+            
+            pTxPacket_RelaySiren = getTxPacket_RelaySiren();                // 230400 - 'S' - Send a command to enable Wail tone on Amp1
+            pTxPacket_RelaySiren->Payload.Siren1Tone = 0; 
+            pTxPacket_RelaySiren->Payload.Siren2Tone = 1;     
+            
+            CyDelay(100);
+            
+            pRxPacket_H = getRxPacket_H();                                  // Read 'H' packet, wait for overload to be triggered  
+                
+            while( (pRxPacket_H->Payload.Speaker2_Overcurrent != 1) && (STestStatus[CurrentTest.TestStep] != 'F') )
+            {}
+                
+            StopAutomatedStep();
+            
+            Overload1_Write(0);               
+            Overload2_Write(0);
+                
             CyDelay(1000);
             
-                pTxPacket_RelaySiren = getTxPacket_RelaySiren();                // 230400 - 'S' - Send a command to enable Wail tone on Amp1
-                pTxPacket_RelaySiren->Payload.Siren2Tone = 1;     
+            Overload1_Write(0);                                 // Turn everything off
+            Overload2_Write(0);
+            pTxPacket_RelaySiren->Payload.Siren1Tone = 0;  
+            pTxPacket_RelaySiren->Payload.Siren2Tone = 0; 
                 
-                pRxPacket_RelaySiren = getRxPacket_RelaySiren();                // Read 'D' packet, wait for overload to be triggered   
-////                while( (pRxPacket_RelaySiren->Payload.Speaker2_Overcurrent != 1) && (STestStatus[CurrentTest.TestStep] != 'F') )
-////                {}
-////                if( (pRxPacket_RelaySiren->Payload.Speaker1_Overcurrent != 0) || (pRxPacket_RelaySiren->Payload.Speaker2_Overcurrent != 0))
-////                    LED_EN_Write(0);
-//                 
-//                // *** this packet gets sent only once per second
-//                while( (pRxPacket_RelaySiren->Payload.Speaker1_Overcurrent == 0) && (pRxPacket_RelaySiren->Payload.Speaker2_Overcurrent == 0))
-//                {
-//                    LED_EN_Write(0);
-//                    
-//                }
-//                
-//                //LED_EN_Write(0);
-                
-                StopAutomatedStep();
-                
-//                STestStatus[CurrentTest.TestStep] = 'P'; 
-//                CurrentTest.Status = 'P'; 
-//                
-//                CyDelay(5000);
-                
-                CyDelay(1000);
-                
-                Overload1_Write(0);
-                Overload2_Write(0);
-                
-                pTxPacket_RelaySiren->Payload.Siren2Tone = 0;  
-                
-            //StopAutomatedStep();
+            //--------------------------------------
             
-//            // *** need to set the LED_MODE to busy
-//            //STestStatus[CurrentTest.TestStep] = 'B';
-//            //CyDelay(16000);      
-//            while(pRxPacket_RelaySiren->Payload.Speaker1_Overcurrent != 0) // Wait for the previous overload fault to clear
-//            {}
-//            // ***Turn on relays to short the speaker outputs for Amp2
-//            
-//            //PB_WaitForAction();
-//            
-//            StartAutomatedStep();
-//            
-//                pTxPacket_RelaySiren = getTxPacket_RelaySiren();                // 230400 - 'S' - Send a command to enable Wail tone on Amp2
-//                pTxPacket_RelaySiren->Payload.Siren1Tone = 1;     
-//                
-//                pRxPacket_RelaySiren = getRxPacket_RelaySiren();                // Read 'D' packet, wait for overload to be triggered   
-//                while( (pRxPacket_RelaySiren->Payload.Speaker1_Overcurrent != 1) && (STestStatus[CurrentTest.TestStep] != 'F') )
-//                {}    
-//                
-//                pTxPacket_RelaySiren->Payload.Siren1Tone = 0;  
-//                
-//            StopAutomatedStep();
-//            
-//            //CyDelay(16000);                                                  // Wait for the previous overload fault to clear
-//            while(pRxPacket_RelaySiren->Payload.Speaker2_Overcurrent != 0) // Wait for the previous overload fault to clear
-//            {}
+            STestStatus[CurrentTest.TestStep] = 'B';
+            CurrentTest.Status = 'B';
+            while( (pRxPacket_H->Payload.Speaker1_Overcurrent != 0) || (pRxPacket_H->Payload.Speaker2_Overcurrent != 0) )
+            {}
+            
+            //--------------------------------------
+            //PB_WaitForAction();
+            
+            StartAutomatedStep();
+            
+            Overload1_Write(1);               
+            Overload2_Write(0);              
+            
+            CyDelay(100);
+            
+            pTxPacket_RelaySiren = getTxPacket_RelaySiren();                // 230400 - 'S' - Send a command to enable Wail tone on Amp1
+            pTxPacket_RelaySiren->Payload.Siren1Tone = 1;     
+            pTxPacket_RelaySiren->Payload.Siren2Tone = 0;    
+            
+            CyDelay(100);
+            
+            pRxPacket_H = getRxPacket_H();                                  // Read 'H' packet, wait for overload to be triggered  
                 
-            STestStatus[CurrentTest.TestStep] = 'P';        
-            CurrentTest.Status = 'P'; 
+            while( (pRxPacket_H->Payload.Speaker1_Overcurrent != 1) && (STestStatus[CurrentTest.TestStep] != 'F') )
+            {}
+                
+            StopAutomatedStep();
+            
+            Overload1_Write(0);                                 // Turn everything off
+            Overload2_Write(0);
+                
+            CyDelay(1000);
+            
+            pTxPacket_RelaySiren->Payload.Siren1Tone = 0; 
+            pTxPacket_RelaySiren->Payload.Siren2Tone = 0; 
             
             //CurrentTest.TestStep = OVERLOAD;
             CurrentTest.TestStep = PASS;
@@ -424,6 +425,10 @@ uint8 SirenTest(void)
             CurrentTest.Status = 'r'; 
             
             CyDelay(1000);
+            
+            while( (pRxPacket_H->Payload.Speaker1_Overcurrent != 0) || (pRxPacket_H->Payload.Speaker2_Overcurrent != 0) )
+            {}
+            
             CurrentTest.TestStep = INITIALIZE_TEST;
             
         break;          

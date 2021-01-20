@@ -10,6 +10,14 @@
  * ========================================
 */
 
+/* F1-Controller Test ***********************************************************
+*  - Designed to test a F1-Controller PCBA with a SOM installed (w OS and image)   
+*  - Requires a configfile (for Desktop Software) that consists of:
+*       - PB 1-16 turn on Outputs 1-16 (toggle)
+*       - PB 1 sends Quad packet (any packet)
+*       - OBDII turns on Output 32
+*********************************************************************************/
+
 #include <project.h>
 #include "CommonVariables.h"
 #include "ControllerTest.h"
@@ -17,6 +25,7 @@
 #include "UART_230400_Functions.h"
 
 #define DEBOUNCE_COUNT      2           // (5 * 20msec)
+#define CONFIRM_TIME        100
 
 
 static RxPacket_Controller rxPacket_Controller;         // 'I' (includes 'P') packet (controller to relay) - Pushbuttons         
@@ -28,12 +37,23 @@ static TxPacket_Controller * pTxPacket_Controller;
 static TxPacket_RelaySiren txPacket_Relay;              // 'I' packet (relay to controller) - LEDS_RGB     
 static TxPacket_RelaySiren * pTxPacket_Relay;
 
+static TxPacket_Intermotive txPacket_Intermotive;       // Intermotive Packet - for ignition and OBDII test
+static TxPacket_Intermotive * pTxPacket_Intermotive;    // 
+
 
 static uint16 CTest_20ms_isr_count = 0;         // Test step timeout variables
 static uint16 CTest_20ms_isr_EN = 0;
 
 static uint8 PB_NextAction_Pressed = 0;         // Pushbutton 
 static uint8 PB_NextAction_Released = 0;
+
+enum LEDColor
+{ 
+    RED,       
+    BLUE,  
+    GREEN,
+    OFF
+};
 
 
 enum DATA_TYPE_460800
@@ -67,7 +87,7 @@ enum MUX_DEMUX_230400_CHANNEL
 
 // --------------Test steps---------------
 #define NUMBER_TEST_STEPS       11
-static uint16 CTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,1500,100,50,50,50,50,50,50,50};    // Number of 20msec counts before failure timeout, for each step
+static uint16 CTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,2000,100,50,50,50,50,50,50,50,50};    // Number of 20msec counts before failure timeout, for each step
 
 static uint8 CTestStatus[NUMBER_TEST_STEPS];
 
@@ -76,78 +96,49 @@ enum TestStep
     INITIALIZE_TEST,        // COMPLETE
     CONFIRM_BOOTUP,         // COMPLETE
     CONFIG_FILE,            // COMPLETE
-    TEST_POWERMODES,        // COMPLETE (resets pushbuttons)  
-    OBDII,                  // COMPLETE (configfile)
+    TEST_POWERMODES,        // COMPLETE (***not testing usb power only)(resets pushbuttons) 
+    OBDII,                  // COMPLETE (configfile) (***this is already tested by using it for ignition)
     PUSHBUTTONS,            // COMPLETE (configfile)
     QUAD_STREAM,            // COMPLETE (configfile)
-    LEDS_RGB,               // (need to implement packet on controller side)
-    AUDIO_STREAM,           // (not a priority)
-    DEBUG_PORT,             // (not a priority)
-    PASS
+    LEDS_RGB,               // COMPLETE (***leds take up to 5 seconds to turn on)
+    AUDIO_STREAM,           // (not included)
+    DEBUG_PORT,             // (not included)
+    PASS                    // COMPLETE
 };
 
-// Mic port test - could audio stream it
-// Audio circuitry test? - no speaker installed - could audio stream it
-// Screen/Touch test? - no screen installed
-// SlideSwitch test - no slide switch installed
 
 static uint8 CTestStatus[NUMBER_TEST_STEPS];
-
-//static uint8 TestState = INITIALIZE_TEST;
-
-// Should have SOM installed (maybe with test software embedded)
-// Controller should already be programmed with a test config file
-
-
 
 uint8 ControllerTest(void)
 {
     
     switch(CurrentTest.TestStep)
     {   
-        
-        //----------------Set Default States----------------------------
-        // Controller should be powered only by Vbatt at this time, with ignition ON
-        //  - Enable Vbatt
-        //  - Disable USB_5V
-        //  - Send packet simulating ignition ON event
-        //--------------------------------------------------------------
-        
-        
-        // *** Wire up the boards so that they are powered through ech other, simultaneously
-        // ***Try new programmer on existing boards (maybe change micros on one or both)
-        // ***Setup a controller with a relay normally - see it working and load a config file
-        // ***Config file needs to: 
-        // ***
-        // ***See that the controller powers up through the TF and cable - start talking testing from here
-        
+       
         case INITIALIZE_TEST:
         
             CTest_CONT_VBATT_EN_Write(1);                           // Enable Vbatt power to controller
             CTest_USB_5V_EN_Write(0);
-        
+
             for (uint8 i=0;i<NUMBER_TEST_STEPS;i++)                 // Reset Status of aall test steps to 0
                 CTestStatus[i] = '_';
             
             CTestStatus[CurrentTest.TestStep] = 'I';
             CurrentTest.Status = 'I';
-        
-            pTxPacket_Controller = getTxPacket_Controller();        // Tx - Initialize Tx packet, and begin sending 'relay ignition on'
-//            if( PB_NextAction_Read())
-                pTxPacket_Controller->Payload.RelayInputs = 0x01;
-//            else
-//                pTxPacket_Controller->Payload.RelayInputs = 0x00;
 
-            CyDelay(1000);
+            CyDelay(CONFIRM_TIME);
+            
+//            CTestStatus[CurrentTest.TestStep] = 'P';
+//            CurrentTest.Status = 'P';
       
             //CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = CONFIRM_BOOTUP;
+            CurrentTest.TestStep = CONFIRM_BOOTUP;
             //CurrentTest.TestStep = TEST_POWERMODES;
             //CurrentTest.TestStep = DEBUG_PORT;
             //CurrentTest.TestStep = QUAD_STREAM;
             //CurrentTest.TestStep = AUDIO_STREAM;
-            //CurrentTest.TestStep = OBDII;
-            CurrentTest.TestStep = LEDS_RGB;
+            //CurrentTest.TestStep = OBDII;     
+            //CurrentTest.TestStep = LEDS_RGB;
             //CurrentTest.TestStep = PUSHBUTTONS;
         
         break;
@@ -163,103 +154,144 @@ uint8 ControllerTest(void)
             
             CTest_StopAutomatedStep();
             
-            CyDelay(1000);
+            CyDelay(CONFIRM_TIME);
 
             //CurrentTest.TestStep = INITIALIZE_TEST; 
             CurrentTest.TestStep = CONFIG_FILE;
             //CurrentTest.TestStep = TEST_POWERMODES;
             //CurrentTest.TestStep = QUAD_STREAM;
+            //CurrentTest.TestStep = LEDS_RGB;
         
         break;
             
-        case CONFIG_FILE:       // User must manually load config file using desktop software
-        
-            CTest_CONT_VBATT_EN_Write(1);                           // Enable Vbatt power to controller
-            CTest_USB_5V_EN_Write(1);
-        
+        case CONFIG_FILE:   // configfile
+            
+            pTxPacket_Intermotive = getTxPacket_Intermotive();   // Send ignition on signal (OBDII)
+            pTxPacket_Intermotive->Payload.Data5 = 0x02; 
+            
             CTest_PB_WaitForAction();
-
-//            while( (CTestStatus[CurrentTest.TestStep] != 'P') && (CTestStatus[CurrentTest.TestStep] != 'F') )
-//            {
-//                //CTest_PlayTestTone();   // Play test tone for 3sec
-//                
-//                if(PB_NextAction_Released) 
-//                {
-//                    //LED_EN_Write(1);
-//                    CTestStatus[CurrentTest.TestStep] = 'P'; 
-//                    PB_NextAction_Released = 0;
-//                }
-//                
-//            }
-            
-            CTest_CONT_VBATT_EN_Write(1);                           // Enable Vbatt power to controller
-            CTest_USB_5V_EN_Write(0);
-            
-            CyDelay(1000);
+ 
+            CyDelay(CONFIRM_TIME);
             
             //CurrentTest.TestStep = INITIALIZE_TEST;                   
             CurrentTest.TestStep = TEST_POWERMODES;
+            //CurrentTest.TestStep = QUAD_STREAM;
+            //CurrentTest.TestStep = LEDS_RGB;
         
         break;
         
-        case TEST_POWERMODES:   // ***Do we want to test both ignition methods? - only testing relay input ignition right now
+        case TEST_POWERMODES:  // Test Vbatt detect and USB detect
 
-            //MUX_CTRL_230400_Write(CTEST_RELAY);
-            //DEMUX_CTRL_230400_Write(CTEST_RELAY);
+            MUX_CTRL_230400_Write(CTEST_RELAY);
+            
+            pRxPacket_Controller = getRxPacket_Controller();        // 'I' packet - check powermode
+            pTxPacket_Intermotive = getTxPacket_Intermotive();      // '1' packet - set ignition 
+            //pTxPacket_Controller = getTxPacket_Controller();      // 'D' packet - set ignition (not used)
+            
+ 
+//            //CTest_StartAutomatedStep();
+//            //CTest_PB_WaitForAction();
+//         
+//            /**** Live Power Mode (Normal Mode) - Vbatt-on, USB_5V-on, Ignition-on ***/
+//            CTest_CONT_VBATT_EN_Write(1);                   
+//            CTest_USB_5V_EN_Write(1);
+//            pTxPacket_Intermotive->Payload.Data5 = 0x02;
+////            while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.TestStep] != 'F') )
+////            {}
+//            CyDelay(1000);
+//            CTest_PB_WaitForAction();
+//            
+////            CTest_CONT_VBATT_EN_Write(1);                   
+////            CTest_USB_5V_EN_Write(1);
+////            pTxPacket_Intermotive->Payload.Data5 = 0x00;
+////            CyDelay(1000);
+//
+//            /**** Low Power Mode (USB Power Only) - Vbatt-off, USB_5V-on, Ignition-off ***/
+//            CTest_CONT_VBATT_EN_Write(0);               
+//            CTest_USB_5V_EN_Write(1);
+//            pTxPacket_Intermotive->Payload.Data5 = 0x00;    
+////            while( (pRxPacket_Controller->Payload.PowerState != 0x00) && (CTestStatus[CurrentTest.TestStep] != 'F') )
+////            {}
+//            CyDelay(1000);             
+//            CTest_PB_WaitForAction();
+//            
+//            /**** Normal Power Mode - Vbatt-on, USB_5V-on, Ignition-on ***/
+//            CTest_CONT_VBATT_EN_Write(1);                                       
+//            CTest_USB_5V_EN_Write(1);
+//            pTxPacket_Intermotive->Payload.Data5 = 0x02;
+//            
+//            CyDelay(1000);   
+//            CTest_PB_WaitForAction();
+//            
+//            CTest_CONT_VBATT_EN_Write(1);                                    
+//            CTest_USB_5V_EN_Write(0);
+//            pTxPacket_Intermotive->Payload.Data5 = 0x02;
+////            while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.TestStep] != 'F') )
+////            {}
+//            CyDelay(1000);
+//            CTest_PB_WaitForAction();
+//            
+//            //CTest_StopAutomatedStep();
             
             CTest_StartAutomatedStep();
-            
-            // Test LowPower - Ignition-off, Vbatt-on, USB_5V-off
-            CTest_CONT_VBATT_EN_Write(1);                           
-            CTest_USB_5V_EN_Write(0);     
-            pTxPacket_Controller = getTxPacket_Controller();        // Tx - Send relay ignition 'off';
-            pTxPacket_Controller->Payload.RelayInputs = 0x00;              
-            pRxPacket_Controller = getRxPacket_Controller();
+            //CTest_PB_WaitForAction();
+         
+            /**** Low Power Mode - Vbatt-on, USB_5V-off, Ignition-off ***/
+            CTest_CONT_VBATT_EN_Write(1);                   
+            CTest_USB_5V_EN_Write(0);
+            pTxPacket_Intermotive->Payload.Data5 = 0x00;
             while( (pRxPacket_Controller->Payload.PowerState != 0x00) && (CTestStatus[CurrentTest.TestStep] != 'F') )
             {}
+//            CyDelay(1000);
+            //CTest_PB_WaitForAction();
             
-            // Test NormalPower - Ignition-on, Vbatt-on, USB_5V-off
-            pTxPacket_Controller->Payload.RelayInputs = 0x01;       // Tx - Send relay ignition 'on'
+            /**** Low Power Mode (USB Power Only) - Vbatt-on, USB_5V-on, Ignition-on ***/
+            CTest_CONT_VBATT_EN_Write(1);               
+            CTest_USB_5V_EN_Write(1);
+            pTxPacket_Intermotive->Payload.Data5 = 0x02;    
             while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.TestStep] != 'F') )
             {}
+//            CyDelay(1000);             
+            //CTest_PB_WaitForAction();
             
-            // Test LivePower - Ignition-on, Vbatt-on, USB_5V-on
-            CTest_USB_5V_EN_Write(1);                              
-            while( (pRxPacket_Controller->Payload.PowerState != 0x02) && (CTestStatus[CurrentTest.TestStep] != 'F') )
+            /**** Normal Power Mode - Vbatt-on, USB_5V-on, Ignition-on ***/
+            CTest_CONT_VBATT_EN_Write(1);                                       
+            CTest_USB_5V_EN_Write(0);
+            pTxPacket_Intermotive->Payload.Data5 = 0x02;
+            while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.TestStep] != 'F') )
             {}
-            
-//            // This is not a valid case - Ignition-on, Vbatt-off, USB_5V-on
-//            CTest_USB_5V_EN_Write(1); 
-//            CyDelay(5);
-//            CTest_CONT_VBATT_EN_Write(1);                                                         
-//            while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.TestStep] != 'F') )
-//            {}
+//            CyDelay(1000);
+            //CTest_PB_WaitForAction();
             
             CTest_StopAutomatedStep();
             
-            CyDelay(1000);
+            CyDelay(CONFIRM_TIME);
 
             //CurrentTest.TestStep = INITIALIZE_TEST;
             //CurrentTest.TestStep = TEST_POWERMODES;
             CurrentTest.TestStep = OBDII;
+            //CurrentTest.TestStep = PASS;
             
         break;
             
-        case OBDII:  // OBDII - configfile - when front driver door is open, turn on outputs 31 and 32
+        case OBDII: //configfile
+            
+//            pTxPacket_Intermotive = getTxPacket_Intermotive(); 
+//            pTxPacket_Intermotive->Payload.Data5 = 0x00; 
 
             CTest_StartAutomatedStep();
 
             MUX_CTRL_230400_Write(CTEST_RELAY);                             // Read a 'I' (includes 'P') packet
             pRxPacket_Controller = getRxPacket_Controller();    
             
-            while( ( (pRxPacket_Controller->Payload.Outputs_25to32 >> 6) & 0x03) != 0x03 ) 
+            while( ( !(pRxPacket_Controller->Payload.Outputs_25to32 >> 7) ) && (CTestStatus[CurrentTest.TestStep] != 'F') )
             {
                 sendPacketToController_OBDII();                             // Send 'drivers side door open' command
             }
             
             CTest_StopAutomatedStep();
             
-            CyDelay(1000);            
+            CyDelay(CONFIRM_TIME);            
             
             //CurrentTest.TestStep = INITIALIZE_TEST;
             //CurrentTest.TestStep = LEDS_RGB;
@@ -267,9 +299,7 @@ uint8 ControllerTest(void)
       
         break;  
             
-        case PUSHBUTTONS:  
-            // configfile - Controller should have the config file setup to turn on all outputs with each pushbutton
-            // wait until all 
+        case PUSHBUTTONS:  // configfile - Controller should have the config file setup to turn on all outputs with each pushbutton
 
             CTestStatus[CurrentTest.TestStep] = 'W';
             CurrentTest.Status = 'W';
@@ -283,126 +313,142 @@ uint8 ControllerTest(void)
                 CurrentTest.Status = 'P';
             }
             
-            CyDelay(1000);
+            CyDelay(CONFIRM_TIME);
                 
             CurrentTest.TestStep = QUAD_STREAM;
+            //CurrentTest.TestStep = PASS;
       
         break;  
                 
-        case QUAD_STREAM:
-            // Config file should be sending a quad stream based on a pushbutton/slideswitch
-
-            LED_EN_Write(1);        
+        case QUAD_STREAM:   // configfile     
         
             CTest_StartAutomatedStep();
 
-            MUX_CTRL_230400_Write(CTEST_QUAD);
+            MUX_CTRL_460800_Write(CTEST_QUAD);
 
             while( (!VerifyPacket_460800(CTEST_RTEST_QUAD)) && (CTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
             {}
             
             CTest_StopAutomatedStep();
             
-            CyDelay(1000);
+            CyDelay(CONFIRM_TIME);
             
             //CurrentTest.TestStep = INITIALIZE_TEST;
             //CurrentTest.TestStep = AUDIO_STREAM;
-            //CurrentTest.TestStep = LEDS_RGB;
-            CurrentTest.TestStep = PASS;
+            //CurrentTest.TestStep = QUAD_STREAM;
+            CurrentTest.TestStep = LEDS_RGB;
+            //CurrentTest.TestStep = PASS;
 
         break;
             
         case LEDS_RGB:   
-                
-            // Send a 'I' packet upstream to controller to manually control the LEDs
-            // Make them full bright red for 1 sec, then green, then blue
             
-            //DEMUX_CTRL_230400_Write(CTEST_RELAY);
+//            pTxPacket_Intermotive = getTxPacket_Intermotive();   
+//            pTxPacket_Intermotive->Payload.Data5 = 0x02; 
             
-            pTxPacket_Relay = getTxPacket_Relay();       
+//            CTestStatus[CurrentTest.TestStep] = 'B';
+//            CurrentTest.Status = 'B';
+            
+        CTest_PB_WaitForAction();
+            setLEDs(RED);
 
-            pTxPacket_Relay->Payload.LED_01_R = 0xFF;
-            pTxPacket_Relay->Payload.LED_02_R = 0xFF;
-            pTxPacket_Relay->Payload.LED_03_R = 0xFF;
-            pTxPacket_Relay->Payload.LED_04_R = 0xFF;
-            pTxPacket_Relay->Payload.LED_05_R = 0xFF;
-            pTxPacket_Relay->Payload.LED_06_R = 0xFF;
-            pTxPacket_Relay->Payload.LED_07_R = 0xFF;
-            pTxPacket_Relay->Payload.LED_08_R = 0xFF;
+            CTestStatus[CurrentTest.TestStep] = 'B';
+            CurrentTest.Status = 'B';            
+            //while(pRxPacket_Controller->Payload.LED_01_R != 0xFF){};
+            CyDelay(5000);
             
-            pTxPacket_Relay->Payload.LED_01_B = 0x00;
-            pTxPacket_Relay->Payload.LED_02_B = 0x00;
-            pTxPacket_Relay->Payload.LED_03_B = 0x00;
-            pTxPacket_Relay->Payload.LED_04_B = 0x00;
-            pTxPacket_Relay->Payload.LED_05_B = 0x00;
-            pTxPacket_Relay->Payload.LED_06_B = 0x00;
-            pTxPacket_Relay->Payload.LED_07_B = 0x00;
-            pTxPacket_Relay->Payload.LED_08_B = 0x00;
-            
-            CyDelay(1000);
+        CTest_PB_WaitForAction();    
+            setLEDs(BLUE);
            
-            pTxPacket_Relay->Payload.LED_01_R = 0x00;
-            pTxPacket_Relay->Payload.LED_02_R = 0x00;
-            pTxPacket_Relay->Payload.LED_03_R = 0x00;
-            pTxPacket_Relay->Payload.LED_04_R = 0x00;
-            pTxPacket_Relay->Payload.LED_05_R = 0x00;
-            pTxPacket_Relay->Payload.LED_06_R = 0x00;
-            pTxPacket_Relay->Payload.LED_07_R = 0x00;
-            pTxPacket_Relay->Payload.LED_08_R = 0x00;
+            CTestStatus[CurrentTest.TestStep] = 'B';
+            CurrentTest.Status = 'B';            
+            //while(pRxPacket_Controller->Payload.LED_01_B != 0xFF){};
+            CyDelay(5000);
             
-            pTxPacket_Relay->Payload.LED_01_B = 0xFF;
-            pTxPacket_Relay->Payload.LED_02_B = 0xFF;
-            pTxPacket_Relay->Payload.LED_03_B = 0xFF;
-            pTxPacket_Relay->Payload.LED_04_B = 0xFF;
-            pTxPacket_Relay->Payload.LED_05_B = 0xFF;
-            pTxPacket_Relay->Payload.LED_06_B = 0xFF;
-            pTxPacket_Relay->Payload.LED_07_B = 0xFF;
-            pTxPacket_Relay->Payload.LED_08_B = 0xFF;
+        CTest_PB_WaitForAction();
+            setLEDs(GREEN);
             
-            CyDelay(1000);
+            CTestStatus[CurrentTest.TestStep] = 'B';
+            CurrentTest.Status = 'B';
+            //while(pRxPacket_Controller->Payload.LED_01_G != 0xFF){};
+            CyDelay(5000);
             
-            CurrentTest.TestStep = LEDS_RGB;
-            //CurrentTest.TestStep = AUDIO_STREAM;
+        CTest_PB_WaitForAction();
+            setLEDs(OFF);
+            
+            CTestStatus[CurrentTest.TestStep] = 'B';
+            CurrentTest.Status = 'B';
+            //while( (pRxPacket_Controller->Payload.LED_01_R != 0x00) && (pRxPacket_Controller->Payload.LED_01_G != 0x00) && (pRxPacket_Controller->Payload.LED_01_B != 0x00) ){};
+            CyDelay(5000);
+            
+        CTest_PB_WaitForAction();
+
+            CTestStatus[CurrentTest.TestStep] = 'P';
+            CurrentTest.Status = 'P';
+            
+            CyDelay(CONFIRM_TIME);
+            
+            //CurrentTest.TestStep = LEDS_RGB;
+            CurrentTest.TestStep = AUDIO_STREAM;
             //CurrentTest.TestStep = PUSHBUTTONS;
       
         break; 
                        
-        case AUDIO_STREAM:
-                
-            // Audio Stream (not a priority)
+        case AUDIO_STREAM:  // (not a priority)
             
-            //CurrentTest.TestStep = DEBUG_PORT;
+            CTestStatus[CurrentTest.TestStep] = 'U';           
+            CurrentTest.Status = 'U'; 
+            CyDelay(CONFIRM_TIME);
+//            CTestStatus[CurrentTest.TestStep] = 'P';
+//            CurrentTest.Status = 'P';
+//            CyDelay(CONFIRM_TIME);
+            
             CurrentTest.TestStep = DEBUG_PORT;
-            //CurrentTest.TestStep = DEBUG_PORT;
                 
         break;
                          
-        case DEBUG_PORT:   
-                
-            // Debug Port (will need hardware to test) 
+        case DEBUG_PORT:    // (not a priority)    
             
-            CurrentTest.TestStep = INITIALIZE_TEST;
+            CTestStatus[CurrentTest.TestStep] = 'U';           
+            CurrentTest.Status = 'U'; 
+            CyDelay(CONFIRM_TIME);
+//            CTestStatus[CurrentTest.TestStep] = 'P';
+//            CurrentTest.Status = 'P';
+//            CyDelay(CONFIRM_TIME);
+            
+            //CurrentTest.TestStep = INITIALIZE_TEST;
             //CurrentTest.TestStep = OBDII;
+            CurrentTest.TestStep = PASS;
       
         break;  
             
         case PASS:   
-                 
-            CTestStatus[CurrentTest.TestStep] = 'p';
-            CurrentTest.Status = 'p';
+
+            for(uint8 i=0;i<(NUMBER_TEST_STEPS-1);i++)
+            {
+                if( (CTestStatus[i] != 'P') && (CTestStatus[i] != 'U') && (CTestStatus[i] != 'I') )
+                {
+                    CTestStatus[CurrentTest.TestStep] = 'f';
+                    CurrentTest.Status = 'f';                      
+                }    
+            }
+ 
+            if(CTestStatus[CurrentTest.TestStep] != 'f')
+            {
+                CTestStatus[CurrentTest.TestStep] = 'p';
+                CurrentTest.Status = 'p'; 
+            }
             
-            while(1);
+            while(PB_NextAction_Read() != 1){};
+
+            CTestStatus[CurrentTest.TestStep] = 'r';
+            CurrentTest.Status = 'r'; 
             
-            //CurrentTest.TestStep = INITIALIZE_TEST;
+            CyDelay(1000);
+            CurrentTest.TestStep = INITIALIZE_TEST;
       
         break; 
-            
-           
-            
- 
-            
-
-            
+       
     }
     
     return(0);
@@ -417,9 +463,9 @@ uint8 CTest_ReadPushbuttons()
     pRxPacket_Controller = getRxPacket_Controller();    
     
     if( (pRxPacket_Controller->Payload.Outputs_1to8 == 0xFF) &&
-        (pRxPacket_Controller->Payload.Outputs_9to16 == 0xFF) &&
-        (pRxPacket_Controller->Payload.Outputs_17to24 == 0xFF) &&
-        (pRxPacket_Controller->Payload.Outputs_25to32 == 0xFF) )
+        (pRxPacket_Controller->Payload.Outputs_9to16 == 0xFF) ) //&&
+//        (pRxPacket_Controller->Payload.Outputs_17to24 == 0xFF) &&
+//        (pRxPacket_Controller->Payload.Outputs_25to32 == 0xFF) )
     {
         return(1);
     } 
@@ -590,16 +636,26 @@ void CTest_20ms_isr(void)
 void CTest_50ms_isr(void)
 {
     
-    CTest_sendDiagPacket();                                 // Send diagnostic packet to terminal
+    CTest_sendDiagPacket();                             // Send diagnostic packet to terminal
+//    pRxPacket_Controller = getRxPacket_Controller();  
+//    UART_115200_WriteTxData(pRxPacket_Controller->Payload.PowerState + 48);
+//    UART_115200_WriteTxData('\r');
+//    UART_115200_WriteTxData('\n');
+    
+    
+    sendPacket_OBDII();
 
-    if( (CurrentTest.TestStep == INITIALIZE_TEST) ||      // Send packet to controller if it applies to this step
+    if( (CurrentTest.TestStep == INITIALIZE_TEST) ||    // Send packet to controller if it applies to this step
         (CurrentTest.TestStep == CONFIRM_BOOTUP) || 
-        (CurrentTest.TestStep == TEST_POWERMODES) )
+        (CurrentTest.TestStep == CONFIG_FILE) ||
+        (CurrentTest.TestStep == TEST_POWERMODES) )     // This is just to test relay ignition signal
     {      
+        //sendPacket_OBDII();
         sendPacket_RelayToController();
     }
     if(CurrentTest.TestStep == LEDS_RGB)
     {      
+        //sendIgnition_OBDII();
         sendPacket_RelayToController_Test();
     }
     
@@ -652,6 +708,238 @@ void CTest_PB_WaitForAction(void)
     } 
 
     LED_EN_Write(0);    // ***not sure why this seems to be needed to make it work
+    
+    return;
+}
+
+TxPacket_Intermotive * getTxPacket_Intermotive()          // CTest Tx - Intermotive packet sent to controller
+{
+    pTxPacket_Intermotive = &txPacket_Intermotive;
+    
+    return pTxPacket_Intermotive;
+}
+
+void setLEDs(uint8 color)
+{
+    
+    pTxPacket_Relay = getTxPacket_Relay();
+    pRxPacket_Controller = getRxPacket_Controller();
+    
+    if(color == RED)
+    {
+        pTxPacket_Relay->Payload.LED_01_R = 0xFF;
+        pTxPacket_Relay->Payload.LED_02_R = 0xFF;
+        pTxPacket_Relay->Payload.LED_03_R = 0xFF;
+        pTxPacket_Relay->Payload.LED_04_R = 0xFF;
+        pTxPacket_Relay->Payload.LED_05_R = 0xFF;
+        pTxPacket_Relay->Payload.LED_06_R = 0xFF;
+        pTxPacket_Relay->Payload.LED_07_R = 0xFF;
+        pTxPacket_Relay->Payload.LED_08_R = 0xFF;
+        pTxPacket_Relay->Payload.LED_09_R = 0xFF;
+        pTxPacket_Relay->Payload.LED_10_R = 0xFF;
+        pTxPacket_Relay->Payload.LED_11_R = 0xFF;
+        pTxPacket_Relay->Payload.LED_12_R = 0xFF;
+        pTxPacket_Relay->Payload.LED_13_R = 0xFF;
+        pTxPacket_Relay->Payload.LED_14_R = 0xFF;
+        pTxPacket_Relay->Payload.LED_15_R = 0xFF;
+        pTxPacket_Relay->Payload.LED_16_R = 0xFF;
+        
+        pTxPacket_Relay->Payload.LED_01_B = 0x00;
+        pTxPacket_Relay->Payload.LED_02_B = 0x00;
+        pTxPacket_Relay->Payload.LED_03_B = 0x00;
+        pTxPacket_Relay->Payload.LED_04_B = 0x00;
+        pTxPacket_Relay->Payload.LED_05_B = 0x00;
+        pTxPacket_Relay->Payload.LED_06_B = 0x00;
+        pTxPacket_Relay->Payload.LED_07_B = 0x00;
+        pTxPacket_Relay->Payload.LED_08_B = 0x00;
+        pTxPacket_Relay->Payload.LED_09_B = 0x00;
+        pTxPacket_Relay->Payload.LED_10_B = 0x00;
+        pTxPacket_Relay->Payload.LED_11_B = 0x00;
+        pTxPacket_Relay->Payload.LED_12_B = 0x00;
+        pTxPacket_Relay->Payload.LED_13_B = 0x00;
+        pTxPacket_Relay->Payload.LED_14_B = 0x00;
+        pTxPacket_Relay->Payload.LED_15_B = 0x00;
+        pTxPacket_Relay->Payload.LED_16_B = 0x00;
+        
+        pTxPacket_Relay->Payload.LED_01_G = 0x00;
+        pTxPacket_Relay->Payload.LED_02_G = 0x00;
+        pTxPacket_Relay->Payload.LED_03_G = 0x00;
+        pTxPacket_Relay->Payload.LED_04_G = 0x00;
+        pTxPacket_Relay->Payload.LED_05_G = 0x00;
+        pTxPacket_Relay->Payload.LED_06_G = 0x00;
+        pTxPacket_Relay->Payload.LED_07_G = 0x00;
+        pTxPacket_Relay->Payload.LED_08_G = 0x00;
+        pTxPacket_Relay->Payload.LED_09_G = 0x00;
+        pTxPacket_Relay->Payload.LED_10_G = 0x00;
+        pTxPacket_Relay->Payload.LED_11_G = 0x00;
+        pTxPacket_Relay->Payload.LED_12_G = 0x00;
+        pTxPacket_Relay->Payload.LED_13_G = 0x00;
+        pTxPacket_Relay->Payload.LED_14_G = 0x00;
+        pTxPacket_Relay->Payload.LED_15_G = 0x00;
+        pTxPacket_Relay->Payload.LED_16_G = 0x00;
+    }
+    
+    else if(color == BLUE)
+    {
+        pTxPacket_Relay->Payload.LED_01_R = 0x00;
+        pTxPacket_Relay->Payload.LED_02_R = 0x00;
+        pTxPacket_Relay->Payload.LED_03_R = 0x00;
+        pTxPacket_Relay->Payload.LED_04_R = 0x00;
+        pTxPacket_Relay->Payload.LED_05_R = 0x00;
+        pTxPacket_Relay->Payload.LED_06_R = 0x00;
+        pTxPacket_Relay->Payload.LED_07_R = 0x00;
+        pTxPacket_Relay->Payload.LED_08_R = 0x00;
+        pTxPacket_Relay->Payload.LED_09_R = 0x00;
+        pTxPacket_Relay->Payload.LED_10_R = 0x00;
+        pTxPacket_Relay->Payload.LED_11_R = 0x00;
+        pTxPacket_Relay->Payload.LED_12_R = 0x00;
+        pTxPacket_Relay->Payload.LED_13_R = 0x00;
+        pTxPacket_Relay->Payload.LED_14_R = 0x00;
+        pTxPacket_Relay->Payload.LED_15_R = 0x00;
+        pTxPacket_Relay->Payload.LED_16_R = 0x00;
+        
+        pTxPacket_Relay->Payload.LED_01_B = 0xFF;
+        pTxPacket_Relay->Payload.LED_02_B = 0xFF;
+        pTxPacket_Relay->Payload.LED_03_B = 0xFF;
+        pTxPacket_Relay->Payload.LED_04_B = 0xFF;
+        pTxPacket_Relay->Payload.LED_05_B = 0xFF;
+        pTxPacket_Relay->Payload.LED_06_B = 0xFF;
+        pTxPacket_Relay->Payload.LED_07_B = 0xFF;
+        pTxPacket_Relay->Payload.LED_08_B = 0xFF;
+        pTxPacket_Relay->Payload.LED_09_B = 0xFF;
+        pTxPacket_Relay->Payload.LED_10_B = 0xFF;
+        pTxPacket_Relay->Payload.LED_11_B = 0xFF;
+        pTxPacket_Relay->Payload.LED_12_B = 0xFF;
+        pTxPacket_Relay->Payload.LED_13_B = 0xFF;
+        pTxPacket_Relay->Payload.LED_14_B = 0xFF;
+        pTxPacket_Relay->Payload.LED_15_B = 0xFF;
+        pTxPacket_Relay->Payload.LED_16_B = 0xFF;
+        
+        pTxPacket_Relay->Payload.LED_01_G = 0x00;
+        pTxPacket_Relay->Payload.LED_02_G = 0x00;
+        pTxPacket_Relay->Payload.LED_03_G = 0x00;
+        pTxPacket_Relay->Payload.LED_04_G = 0x00;
+        pTxPacket_Relay->Payload.LED_05_G = 0x00;
+        pTxPacket_Relay->Payload.LED_06_G = 0x00;
+        pTxPacket_Relay->Payload.LED_07_G = 0x00;
+        pTxPacket_Relay->Payload.LED_08_G = 0x00;
+        pTxPacket_Relay->Payload.LED_09_G = 0x00;
+        pTxPacket_Relay->Payload.LED_10_G = 0x00;
+        pTxPacket_Relay->Payload.LED_11_G = 0x00;
+        pTxPacket_Relay->Payload.LED_12_G = 0x00;
+        pTxPacket_Relay->Payload.LED_13_G = 0x00;
+        pTxPacket_Relay->Payload.LED_14_G = 0x00;
+        pTxPacket_Relay->Payload.LED_15_G = 0x00;
+        pTxPacket_Relay->Payload.LED_16_G = 0x00;
+    }
+    
+    else if(color == GREEN)
+    {
+        pTxPacket_Relay->Payload.LED_01_R = 0x00;
+        pTxPacket_Relay->Payload.LED_02_R = 0x00;
+        pTxPacket_Relay->Payload.LED_03_R = 0x00;
+        pTxPacket_Relay->Payload.LED_04_R = 0x00;
+        pTxPacket_Relay->Payload.LED_05_R = 0x00;
+        pTxPacket_Relay->Payload.LED_06_R = 0x00;
+        pTxPacket_Relay->Payload.LED_07_R = 0x00;
+        pTxPacket_Relay->Payload.LED_08_R = 0x00;
+        pTxPacket_Relay->Payload.LED_09_R = 0x00;
+        pTxPacket_Relay->Payload.LED_10_R = 0x00;
+        pTxPacket_Relay->Payload.LED_11_R = 0x00;
+        pTxPacket_Relay->Payload.LED_12_R = 0x00;
+        pTxPacket_Relay->Payload.LED_13_R = 0x00;
+        pTxPacket_Relay->Payload.LED_14_R = 0x00;
+        pTxPacket_Relay->Payload.LED_15_R = 0x00;
+        pTxPacket_Relay->Payload.LED_16_R = 0x00;
+        
+        pTxPacket_Relay->Payload.LED_01_B = 0x00;
+        pTxPacket_Relay->Payload.LED_02_B = 0x00;
+        pTxPacket_Relay->Payload.LED_03_B = 0x00;
+        pTxPacket_Relay->Payload.LED_04_B = 0x00;
+        pTxPacket_Relay->Payload.LED_05_B = 0x00;
+        pTxPacket_Relay->Payload.LED_06_B = 0x00;
+        pTxPacket_Relay->Payload.LED_07_B = 0x00;
+        pTxPacket_Relay->Payload.LED_08_B = 0x00;
+        pTxPacket_Relay->Payload.LED_09_B = 0x00;
+        pTxPacket_Relay->Payload.LED_10_B = 0x00;
+        pTxPacket_Relay->Payload.LED_11_B = 0x00;
+        pTxPacket_Relay->Payload.LED_12_B = 0x00;
+        pTxPacket_Relay->Payload.LED_13_B = 0x00;
+        pTxPacket_Relay->Payload.LED_14_B = 0x00;
+        pTxPacket_Relay->Payload.LED_15_B = 0x00;
+        pTxPacket_Relay->Payload.LED_16_B = 0x00;
+        
+        pTxPacket_Relay->Payload.LED_01_G = 0xFF;
+        pTxPacket_Relay->Payload.LED_02_G = 0xFF;
+        pTxPacket_Relay->Payload.LED_03_G = 0xFF;
+        pTxPacket_Relay->Payload.LED_04_G = 0xFF;
+        pTxPacket_Relay->Payload.LED_05_G = 0xFF;
+        pTxPacket_Relay->Payload.LED_06_G = 0xFF;
+        pTxPacket_Relay->Payload.LED_07_G = 0xFF;
+        pTxPacket_Relay->Payload.LED_08_G = 0xFF;
+        pTxPacket_Relay->Payload.LED_09_G = 0xFF;
+        pTxPacket_Relay->Payload.LED_10_G = 0xFF;
+        pTxPacket_Relay->Payload.LED_11_G = 0xFF;
+        pTxPacket_Relay->Payload.LED_12_G = 0xFF;
+        pTxPacket_Relay->Payload.LED_13_G = 0xFF;
+        pTxPacket_Relay->Payload.LED_14_G = 0xFF;
+        pTxPacket_Relay->Payload.LED_15_G = 0xFF;
+        pTxPacket_Relay->Payload.LED_16_G = 0xFF;
+    }
+    
+    else
+    {
+        pTxPacket_Relay->Payload.LED_01_R = 0x00;
+        pTxPacket_Relay->Payload.LED_02_R = 0x00;
+        pTxPacket_Relay->Payload.LED_03_R = 0x00;
+        pTxPacket_Relay->Payload.LED_04_R = 0x00;
+        pTxPacket_Relay->Payload.LED_05_R = 0x00;
+        pTxPacket_Relay->Payload.LED_06_R = 0x00;
+        pTxPacket_Relay->Payload.LED_07_R = 0x00;
+        pTxPacket_Relay->Payload.LED_08_R = 0x00;
+        pTxPacket_Relay->Payload.LED_09_R = 0x00;
+        pTxPacket_Relay->Payload.LED_10_R = 0x00;
+        pTxPacket_Relay->Payload.LED_11_R = 0x00;
+        pTxPacket_Relay->Payload.LED_12_R = 0x00;
+        pTxPacket_Relay->Payload.LED_13_R = 0x00;
+        pTxPacket_Relay->Payload.LED_14_R = 0x00;
+        pTxPacket_Relay->Payload.LED_15_R = 0x00;
+        pTxPacket_Relay->Payload.LED_16_R = 0x00;
+        
+        pTxPacket_Relay->Payload.LED_01_B = 0x00;
+        pTxPacket_Relay->Payload.LED_02_B = 0x00;
+        pTxPacket_Relay->Payload.LED_03_B = 0x00;
+        pTxPacket_Relay->Payload.LED_04_B = 0x00;
+        pTxPacket_Relay->Payload.LED_05_B = 0x00;
+        pTxPacket_Relay->Payload.LED_06_B = 0x00;
+        pTxPacket_Relay->Payload.LED_07_B = 0x00;
+        pTxPacket_Relay->Payload.LED_08_B = 0x00;
+        pTxPacket_Relay->Payload.LED_09_B = 0x00;
+        pTxPacket_Relay->Payload.LED_10_B = 0x00;
+        pTxPacket_Relay->Payload.LED_11_B = 0x00;
+        pTxPacket_Relay->Payload.LED_12_B = 0x00;
+        pTxPacket_Relay->Payload.LED_13_B = 0x00;
+        pTxPacket_Relay->Payload.LED_14_B = 0x00;
+        pTxPacket_Relay->Payload.LED_15_B = 0x00;
+        pTxPacket_Relay->Payload.LED_16_B = 0x00;
+        
+        pTxPacket_Relay->Payload.LED_01_G = 0x00;
+        pTxPacket_Relay->Payload.LED_02_G = 0x00;
+        pTxPacket_Relay->Payload.LED_03_G = 0x00;
+        pTxPacket_Relay->Payload.LED_04_G = 0x00;
+        pTxPacket_Relay->Payload.LED_05_G = 0x00;
+        pTxPacket_Relay->Payload.LED_06_G = 0x00;
+        pTxPacket_Relay->Payload.LED_07_G = 0x00;
+        pTxPacket_Relay->Payload.LED_08_G = 0x00;
+        pTxPacket_Relay->Payload.LED_09_G = 0x00;
+        pTxPacket_Relay->Payload.LED_10_G = 0x00;
+        pTxPacket_Relay->Payload.LED_11_G = 0x00;
+        pTxPacket_Relay->Payload.LED_12_G = 0x00;
+        pTxPacket_Relay->Payload.LED_13_G = 0x00;
+        pTxPacket_Relay->Payload.LED_14_G = 0x00;
+        pTxPacket_Relay->Payload.LED_15_G = 0x00;
+        pTxPacket_Relay->Payload.LED_16_G = 0x00;
+    }
     
     return;
 }

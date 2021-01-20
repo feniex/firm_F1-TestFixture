@@ -394,5 +394,65 @@ void sendPacketToController_OBDII(void)
     return;
 }
 
+//void sendIgnition_OBDII(uint8 key_position)     // On or off
+//{
+//    
+//    DEMUX_CTRL_460800_Write(CTEST_OBDII_TX);
+//    
+//    uint8 bytetosend = 0;
+//    //bytetosend = key_position;
+//    //bytetosend = (key_position | 0x08);
+//    
+//    if(key_position == 1)
+//        bytetosend = 0x02;
+//    else
+//        bytetosend = 0x00;
+//    
+//    UART_460800_WriteTxData('~');                          // Send 'L' packet 
+//    UART_460800_WriteTxData(1);
+//    for(uint8 iterator = 0; iterator<5; iterator++)             
+//    {
+//        UART_460800_WriteTxData(0);
+//    }
+//    UART_460800_WriteTxData(bytetosend);            // Send 'drivers side door open' command
+//    for(uint8 iterator = 6; iterator<8; iterator++)             
+//    {
+//        UART_460800_WriteTxData(0);
+//    }
+//    UART_460800_WriteTxData(bytetosend ^ 0x01);      // Checksum
+//    UART_460800_WriteTxData(0x0D);
+//    UART_460800_WriteTxData(0x0A);  
+//    
+//    return;
+//}
+
+void sendPacket_OBDII(void)     // On or off
+{
+    
+    static TxPacket_Intermotive txPacket_Intermotive;       // Intermotive Packet - for ignition and OBDII test
+    static TxPacket_Intermotive * pTxPacket_Intermotive;    // 
+    
+    DEMUX_CTRL_460800_Write(CTEST_OBDII_TX);
+    
+    pTxPacket_Intermotive = getTxPacket_Intermotive();        // Tx - Send relay ignition 'off';
+    
+    uint8 Checksum_Calc = 0x01;    // Header ID       
+    for(uint8 i = 0; i<8; i++)
+        Checksum_Calc ^= pTxPacket_Intermotive->bytes[i];
+        
+    pTxPacket_Intermotive->Payload.Checksum = Checksum_Calc;
+
+    UART_460800_WriteTxData('~');                         
+    UART_460800_WriteTxData(1);
+    for(uint8 iterator = 0; iterator<9; iterator++)             
+    {
+        UART_460800_WriteTxData(pTxPacket_Intermotive->bytes[iterator]);
+    }
+    UART_460800_WriteTxData(0x0D);
+    UART_460800_WriteTxData(0x0A);  // 13th byte 
+    
+    return;
+}
+
 
 /* [] END OF FILE */

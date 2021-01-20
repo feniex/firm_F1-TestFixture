@@ -35,5 +35,7 @@ void CTest_StopAutomatedStep(void);
 
 void CTest_PB_WaitForAction(void);
 
+void setLEDs(uint8 color);
+
 
 /* [] END OF FILE */

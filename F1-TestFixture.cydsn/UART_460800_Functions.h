@@ -175,24 +175,41 @@ typedef union rxPacket_QuadSerial
     }Payload;
 }RxPacket_QuadSerial;
 
-//// C-Test/R-Test - Tx - Quad-Serial from Controller (to Relay)
+// C-Test - Tx - OBDII Intermotive packet - '1' packet for 'ignition'
+typedef union txPacket_Intermotive
+{
+    uint8 bytes[9];
+
+    struct txData_Intermotive
+    {
+        uint8 Data0;
+        uint8 Data1;
+        uint8 Data2;
+        uint8 Data3;
+        uint8 Data4;
+        uint8 Data5;
+        uint8 Data6;
+        uint8 Data7;
+        uint8 Checksum;
+    }Payload;
+}TxPacket_Intermotive;
 //typedef union txPacket_OBDII
 //{
 //    uint8 bytes[9];
 //
-//    struct rxData_QuadSerial
+//    struct txData_Intermotive
 //    {
-//            uint8 SM_Zone1;
-//            uint8 SM_Zone2;
-//            uint8 SM_Zone3;
-//            uint8 SM_Zone4;
-//            uint8 SM_Zone5;
-//            uint8 SM_Zone6;
-//            uint8 SM_Zone7;
-//            uint8 SM_Zone8;
-//            uint8 SM_ZoneAddress;  
+//        uint8 Data0;
+//        uint8 Data1;
+//        uint8 Data2;
+//        uint8 Data3;
+//        uint8 Data4;
+//        uint8 Data5;
+//        uint8 Data6;
+//        uint8 Data7;
+//        uint8 Checksum;
 //    }Payload;
-//}RxPacket_QuadSerial;
+//}TxPacket_Intermotive;
     
 /**********GLOBAL VARIABLES**********/
 
@@ -207,11 +224,14 @@ uint8 VerifyPacket_460800(uint8 PacketType);
 void sendPacketToRelay_Quad(void);
 void sendPacketToSiren_Audio(void);
 void sendPacketToController_OBDII(void);
+void sendPacket_OBDII(void);
 
 //void CTest_SendIgnitionState(uint8 ignition_state);
 
 RxPacket_Quad * getRxPacket_Quad(void);
 //RxPacket_QuadSerial * getRxPacket_QuadSerial(void);
+
+TxPacket_Intermotive * getTxPacket_Intermotive(void);
 
 
 /* [] END OF FILE */
