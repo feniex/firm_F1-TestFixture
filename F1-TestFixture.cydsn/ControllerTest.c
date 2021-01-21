@@ -155,12 +155,19 @@ uint8 ControllerTest(void)
             CTest_StopAutomatedStep();
             
             CyDelay(CONFIRM_TIME);
-
-            //CurrentTest.TestStep = INITIALIZE_TEST; 
-            CurrentTest.TestStep = CONFIG_FILE;
-            //CurrentTest.TestStep = TEST_POWERMODES;
-            //CurrentTest.TestStep = QUAD_STREAM;
-            //CurrentTest.TestStep = LEDS_RGB;
+            
+            if(CTestStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
+            {
+                //CurrentTest.TestStep = INITIALIZE_TEST;
+                CurrentTest.TestStep = CONFIG_FILE;
+                //CurrentTest.TestStep = TEST_POWERMODES;
+                //CurrentTest.TestStep = QUAD_STREAM;
+                //CurrentTest.TestStep = LEDS_RGB;
+            }
         
         break;
             
@@ -188,7 +195,6 @@ uint8 ControllerTest(void)
             pTxPacket_Intermotive = getTxPacket_Intermotive();      // '1' packet - set ignition 
             //pTxPacket_Controller = getTxPacket_Controller();      // 'D' packet - set ignition (not used)
             
- 
 //            //CTest_StartAutomatedStep();
 //            //CTest_PB_WaitForAction();
 //         
@@ -266,11 +272,18 @@ uint8 ControllerTest(void)
             CTest_StopAutomatedStep();
             
             CyDelay(CONFIRM_TIME);
-
-            //CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = TEST_POWERMODES;
-            CurrentTest.TestStep = OBDII;
-            //CurrentTest.TestStep = PASS;
+            
+            if(CTestStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
+            {
+                //CurrentTest.TestStep = INITIALIZE_TEST;
+                //CurrentTest.TestStep = TEST_POWERMODES;
+                CurrentTest.TestStep = OBDII;
+                //CurrentTest.TestStep = PASS;
+            }
             
         break;
             
@@ -291,11 +304,18 @@ uint8 ControllerTest(void)
             
             CTest_StopAutomatedStep();
             
-            CyDelay(CONFIRM_TIME);            
+            CyDelay(CONFIRM_TIME);    
             
-            //CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = LEDS_RGB;
-            CurrentTest.TestStep = PUSHBUTTONS;
+            if(CTestStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
+            {
+                //CurrentTest.TestStep = INITIALIZE_TEST;
+                //CurrentTest.TestStep = LEDS_RGB;
+                CurrentTest.TestStep = PUSHBUTTONS;
+            }
       
         break;  
             
@@ -314,9 +334,16 @@ uint8 ControllerTest(void)
             }
             
             CyDelay(CONFIRM_TIME);
-                
-            CurrentTest.TestStep = QUAD_STREAM;
-            //CurrentTest.TestStep = PASS;
+            
+            if(CTestStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
+            {    
+                CurrentTest.TestStep = QUAD_STREAM;
+                //CurrentTest.TestStep = PASS;
+            }
       
         break;  
                 
@@ -333,64 +360,63 @@ uint8 ControllerTest(void)
             
             CyDelay(CONFIRM_TIME);
             
-            //CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = AUDIO_STREAM;
-            //CurrentTest.TestStep = QUAD_STREAM;
-            CurrentTest.TestStep = LEDS_RGB;
-            //CurrentTest.TestStep = PASS;
+            if(CTestStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
+            {
+                //CurrentTest.TestStep = INITIALIZE_TEST;
+                //CurrentTest.TestStep = AUDIO_STREAM;
+                //CurrentTest.TestStep = QUAD_STREAM;
+                CurrentTest.TestStep = LEDS_RGB;
+                //CurrentTest.TestStep = PASS;
+            }
 
         break;
             
         case LEDS_RGB:   
             
-//            pTxPacket_Intermotive = getTxPacket_Intermotive();   
-//            pTxPacket_Intermotive->Payload.Data5 = 0x02; 
-            
-//            CTestStatus[CurrentTest.TestStep] = 'B';
-//            CurrentTest.Status = 'B';
-            
-        CTest_PB_WaitForAction();
+            //CTest_PB_WaitForAction();
             setLEDs(RED);
-
             CTestStatus[CurrentTest.TestStep] = 'B';
             CurrentTest.Status = 'B';            
-            //while(pRxPacket_Controller->Payload.LED_01_R != 0xFF){};
             CyDelay(5000);
+            CTest_PB_WaitForAction();  
             
-        CTest_PB_WaitForAction();    
             setLEDs(BLUE);
-           
             CTestStatus[CurrentTest.TestStep] = 'B';
             CurrentTest.Status = 'B';            
-            //while(pRxPacket_Controller->Payload.LED_01_B != 0xFF){};
             CyDelay(5000);
+            CTest_PB_WaitForAction();
             
-        CTest_PB_WaitForAction();
             setLEDs(GREEN);
-            
             CTestStatus[CurrentTest.TestStep] = 'B';
             CurrentTest.Status = 'B';
-            //while(pRxPacket_Controller->Payload.LED_01_G != 0xFF){};
             CyDelay(5000);
+            CTest_PB_WaitForAction();
             
-        CTest_PB_WaitForAction();
             setLEDs(OFF);
-            
             CTestStatus[CurrentTest.TestStep] = 'B';
             CurrentTest.Status = 'B';
-            //while( (pRxPacket_Controller->Payload.LED_01_R != 0x00) && (pRxPacket_Controller->Payload.LED_01_G != 0x00) && (pRxPacket_Controller->Payload.LED_01_B != 0x00) ){};
             CyDelay(5000);
-            
-        CTest_PB_WaitForAction();
+//            CTest_PB_WaitForAction();
 
             CTestStatus[CurrentTest.TestStep] = 'P';
             CurrentTest.Status = 'P';
             
             CyDelay(CONFIRM_TIME);
             
-            //CurrentTest.TestStep = LEDS_RGB;
-            CurrentTest.TestStep = AUDIO_STREAM;
-            //CurrentTest.TestStep = PUSHBUTTONS;
+            if(CTestStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
+            {
+                //CurrentTest.TestStep = LEDS_RGB;
+                CurrentTest.TestStep = AUDIO_STREAM;
+                //CurrentTest.TestStep = PUSHBUTTONS;
+            }
       
         break; 
                        
@@ -439,13 +465,12 @@ uint8 ControllerTest(void)
                 CurrentTest.Status = 'p'; 
             }
             
-            while(PB_NextAction_Read() != 1){};
-
-            CTestStatus[CurrentTest.TestStep] = 'r';
-            CurrentTest.Status = 'r'; 
-            
-            CyDelay(1000);
-            CurrentTest.TestStep = INITIALIZE_TEST;
+            while(1);
+//            while(PB_NextAction_Read() != 1){};
+//            CTestStatus[CurrentTest.TestStep] = 'r';
+//            CurrentTest.Status = 'r'; 
+//            CyDelay(1000);
+//            CurrentTest.TestStep = INITIALIZE_TEST;
       
         break; 
        
@@ -589,6 +614,7 @@ void CTest_isr_PB(void)
         CTestStatus[CurrentTest.TestStep] = 'F';
         CurrentTest.Status = 'F';
         PB_NextAction_failcount = 0;
+        
     }
     
 
