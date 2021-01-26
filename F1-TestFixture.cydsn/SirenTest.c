@@ -18,7 +18,7 @@
 
 //#define TIMEOUT_FAIL        50        // Number of 20msec counts before failure timeout
 #define DEBOUNCE_COUNT      2           // (5 * 20msec)
-#define CONFIRM_TIME        1000         // How many msec to show pass/fail for each step
+#define CONFIRM_TIME        100         // How many msec to show pass/fail for each step
 
 enum MUX_DEMUX_230400_CHANNEL              
 { 
@@ -419,17 +419,16 @@ uint8 SirenTest(void)
                 CurrentTest.Status = 'p'; 
             }
             
-            while(PB_NextAction_Read() != 1){};
-
-            STestStatus[CurrentTest.TestStep] = 'r';
-            CurrentTest.Status = 'r'; 
+            while(1);
             
-            CyDelay(1000);
-            
-            while( (pRxPacket_H->Payload.Speaker1_Overcurrent != 0) || (pRxPacket_H->Payload.Speaker2_Overcurrent != 0) )
-            {}
-            
-            CurrentTest.TestStep = INITIALIZE_TEST;
+//            while(PB_NextAction_Read() != 1){};
+//            STestStatus[CurrentTest.TestStep] = 'r';
+//            CurrentTest.Status = 'r'; 
+//            CyDelay(1000);
+//            while( (pRxPacket_H->Payload.Speaker1_Overcurrent != 0) || (pRxPacket_H->Payload.Speaker2_Overcurrent != 0) )
+//            {}
+//            
+//            CurrentTest.TestStep = INITIALIZE_TEST;
             
         break;          
            

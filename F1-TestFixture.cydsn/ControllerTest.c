@@ -95,7 +95,7 @@ enum TestStep
 { 
     INITIALIZE_TEST,        // COMPLETE
     CONFIRM_BOOTUP,         // COMPLETE
-    CONFIG_FILE,            // COMPLETE
+    CONFIG_FILE,            // COMPLETE (unused - the config file does not need to be manually programmed)
     TEST_POWERMODES,        // COMPLETE (***not testing usb power only)(resets pushbuttons) 
     OBDII,                  // COMPLETE (configfile) (***this is already tested by using it for ignition)
     PUSHBUTTONS,            // COMPLETE (configfile)
@@ -154,6 +154,9 @@ uint8 ControllerTest(void)
             
             CTest_StopAutomatedStep();
             
+            pTxPacket_Intermotive = getTxPacket_Intermotive();   // Send ignition on signal (OBDII)
+            pTxPacket_Intermotive->Payload.Data5 = 0x02; 
+            
             CyDelay(CONFIRM_TIME);
             
             if(CTestStatus[CurrentTest.TestStep] == 'F')
@@ -171,12 +174,13 @@ uint8 ControllerTest(void)
         
         break;
             
-        case CONFIG_FILE:   // configfile
+        case CONFIG_FILE:   // configfile is already programmed to the SOM by default
             
-            pTxPacket_Intermotive = getTxPacket_Intermotive();   // Send ignition on signal (OBDII)
-            pTxPacket_Intermotive->Payload.Data5 = 0x02; 
-            
-            CTest_PB_WaitForAction();
+            CTestStatus[CurrentTest.TestStep] = 'U';           
+            CurrentTest.Status = 'U'; 
+//            pTxPacket_Intermotive = getTxPacket_Intermotive();   // Send ignition on signal (OBDII)
+//            pTxPacket_Intermotive->Payload.Data5 = 0x02; 
+//            CTest_PB_WaitForAction();
  
             CyDelay(CONFIRM_TIME);
             
