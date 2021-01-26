@@ -43,15 +43,15 @@ static uint16 STest_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,300,50,50,50,50,50,
 enum TestStep
 { 
     INITIALIZE_TEST,            // ------------------------------------------------ 
-    UART_RX,                    // (no action)
+    UART_RX,                    // (not used)(we know this works if any of the test steps pass)
     UART_TX,                    // COMPLETE
     AMP1,                       // COMPLETE
     AMP2,                       // COMPLETE
-    RRB,                        // (exclude - need speaker to hear it)
-    MIC,                        // (not working ???) 
-    AUDIO_STREAM,               // (exclude)
-    FLASH,                      // COMPLETE
-    OVERLOAD,                   // ***(siren gets stuck in while loop when overload happens, overload reads correct when it exits, but then gets reset before it sends again)
+    RRB,                        // (not used)(must have an external speaker to hear these tones)
+    MIC,                        // (not used)(never got working well) 
+    AUDIO_STREAM,               // (not used)
+    FLASH,                      // COMPLETE (not used)(must have an external speaker to hear these tones)
+    OVERLOAD,                   // COMPLETE
     PASS                        // ------------------------------------------------
 };
 // Test UART to and from relay  // RX TESTED(not implemented in this test yet)    -
@@ -299,22 +299,47 @@ uint8 SirenTest(void)
         break;  
                
         case FLASH:                                         // Manual - 
+            
+            STestStatus[CurrentTest.TestStep] = 'U';           
+            CurrentTest.Status = 'U'; 
+            
+            /*this is test code to scroll through tones with PB*/
+//            DEMUX_CTRL_230400_Write(STEST_RELAY);             // 230400 - 'S' - Send a command to play an audio tone          
+//            pTxPacket_RelaySiren = getTxPacket_RelaySiren();    
+//            
+//            uint8 sirentonenum = 0;
+//            while(1)
+//            {
+//            pTxPacket_RelaySiren->Payload.Siren1Tone = sirentonenum; 
+//            pTxPacket_RelaySiren->Payload.Siren2Tone = sirentonenum; 
+//            
+//            STestStatus[CurrentTest.TestStep] = 'B';            // Let tone play for 3sec
+//            CurrentTest.Status = 'B'; 
+//            CyDelay(1000);
+//            
+//            PB_WaitForAction();
+//            
+//            sirentonenum++;
+//            if(sirentonenum >30)
+//                sirentonenum = 0;
+//            }
                         
-            DEMUX_CTRL_230400_Write(STEST_RELAY);             // 230400 - 'S' - Send a command to play an audio tone          
-            pTxPacket_RelaySiren = getTxPacket_RelaySiren();    
-            pTxPacket_RelaySiren->Payload.Siren1Tone = 22; 
-            pTxPacket_RelaySiren->Payload.Siren2Tone = 22; 
-            
-            STestStatus[CurrentTest.TestStep] = 'B';            // Let tone play for 3sec
-            CurrentTest.Status = 'B'; 
-            CyDelay(1000);
-            
-            PB_WaitForAction();
-            
-            pTxPacket_RelaySiren->Payload.Siren1Tone = 0; 
-            pTxPacket_RelaySiren->Payload.Siren2Tone = 0; 
-            
-            CyDelay(CONFIRM_TIME);
+            /*this is the actual code*/
+//            DEMUX_CTRL_230400_Write(STEST_RELAY);             // 230400 - 'S' - Send a command to play an audio tone          
+//            pTxPacket_RelaySiren = getTxPacket_RelaySiren();    
+//            pTxPacket_RelaySiren->Payload.Siren1Tone = 22; 
+//            pTxPacket_RelaySiren->Payload.Siren2Tone = 22; 
+//            
+//            STestStatus[CurrentTest.TestStep] = 'B';            // Let tone play for 3sec
+//            CurrentTest.Status = 'B'; 
+//            CyDelay(1000);
+//            
+//            PB_WaitForAction();
+//            
+//            pTxPacket_RelaySiren->Payload.Siren1Tone = 0; 
+//            pTxPacket_RelaySiren->Payload.Siren2Tone = 0; 
+//            
+//            CyDelay(CONFIRM_TIME);
             
             CurrentTest.TestStep = OVERLOAD;
             //CurrentTest.TestStep = FLASH;
