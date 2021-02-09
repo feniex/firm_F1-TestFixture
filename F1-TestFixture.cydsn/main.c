@@ -35,7 +35,8 @@
 //#define TIMEOUT 100
 #define INITIALIZE_TEST     0;
 
-
+#define PCBA_TESTFIXTURE    0
+#define FINAL_TESTFIXTURE    1
 
 /**********DEFINED CONSTANTS**********/
 
@@ -43,7 +44,9 @@ enum DataType
 { 
     CTEST, 
     RTEST,
-    STEST
+    STEST,
+    CTEST_COMPLETE,
+    RTEST_COMPLETE
 };
 
 /**********DATA STRUCTURES**********/
@@ -72,31 +75,48 @@ void StopTimeout(void);
 void ProcessFailure(void);
 
 /**********DEFINED FUNCTIONS**********/
+uint8 TESTFIXTURE_TYPE = 0;
+
 
 static uint8 rs1_value = 0;
 static uint8 rs2_value = 0;
 
+
 int main()
 {
+    TESTFIXTURE_TYPE = FINAL_TESTFIXTURE;                    //*** Define testfixture hardware type
+    
     initializePeripherals();
     CyGlobalIntEnable; /* Enable global interrupts. */ 
-    
     
     for(;;)
     {     
         rs1_value = RS1_Read();
         rs2_value = RS2_Read();
         
-        if( (RS1_Read() == 1) && (RS2_Read() == 0) )
-            CurrentTest.SelectedTest = CTEST;
-        else if( (RS1_Read() == 0) && (RS2_Read() == 0) )
-            CurrentTest.SelectedTest = RTEST;
-        else if( (RS1_Read() == 0) && (RS2_Read() == 1) )
-            CurrentTest.SelectedTest = STEST;
+        if(TESTFIXTURE_TYPE == PCBA_TESTFIXTURE)
+        {
+            if( (RS1_Read() == 1) && (RS2_Read() == 0) )
+                CurrentTest.SelectedTest = CTEST;
+            else if( (RS1_Read() == 0) && (RS2_Read() == 0) )
+                CurrentTest.SelectedTest = RTEST;
+            else if( (RS1_Read() == 0) && (RS2_Read() == 1) )
+                CurrentTest.SelectedTest = STEST;
+        }
+        else if(TESTFIXTURE_TYPE == FINAL_TESTFIXTURE)
+        {
+            if( (RS1_Read() == 1) && (RS2_Read() == 0) )
+                CurrentTest.SelectedTest = CTEST_COMPLETE;
+            else if( (RS1_Read() == 0) && (RS2_Read() == 0) )
+                CurrentTest.SelectedTest = RTEST_COMPLETE;
+//            else if( (RS1_Read() == 0) && (RS2_Read() == 1) )
+//                CurrentTest.SelectedTest = STEST;
+        }
                     
         //CurrentTest.SelectedTest = STEST;
+        CurrentTest.SelectedTest = RTEST_COMPLETE;
         
-    
+
         switch(CurrentTest.SelectedTest)
         {
             case CTEST:
@@ -122,6 +142,23 @@ int main()
                 {}
 
             break;   
+                
+            case CTEST_COMPLETE:
+            
+                CurrentTest.TestStep = INITIALIZE_TEST;
+                while(!ControllerTest_Complete())
+                {}
+
+            break;   
+                
+            case RTEST_COMPLETE:                            // Test 
+            
+                CurrentTest.TestStep = INITIALIZE_TEST;
+                while(!RelayTest_Complete())
+                {}
+
+            break; 
+                
         }
             
     }
@@ -145,11 +182,6 @@ int main()
 static void initializePeripherals(void)
 {
     
-    //RS485_RX_EN_Write(1);                       // *** for testing with siren board only
-    
-    //Debouncer_PB
-    //isr_PB_Start();
-    
     //----------Start UART_460800--------
     UART_460800_Start();    
     isr_UART_460800_Start();
@@ -163,11 +195,6 @@ static void initializePeripherals(void)
 //    UART_9600_Start();    
 //    isr_UART_9600_Start();
     
-    
-    //UART_1_Start();    
-    //isr_UART_230400_Start();
-
-    
     //-----------------------------------
     
     Timer_50ms_Start();
@@ -179,9 +206,9 @@ static void initializePeripherals(void)
     Timer_10ms_Start();
     isr_Timer_10ms_Start();
     
-    //WaveDAC_Start();
+    WaveDAC_Start();
     
-    Timer_DAC_Start();
+//    Timer_DAC_Start();
     
     //ADC_AudioStream_Start();
     //isr_ADC_AudioStream_Start();

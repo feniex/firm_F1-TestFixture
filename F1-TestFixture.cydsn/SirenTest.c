@@ -1,7 +1,6 @@
 /* ========================================
  *
- * Copyright YOUR COMPANY, THE YEAR
- * All Rights Reserved
+ * Copyright YOUR COMPANY, THE YEAR * All Rights Reserved
  * UNPUBLISHED, LICENSED SOFTWARE.
  *
  * CONFIDENTIAL AND PROPRIETARY INFORMATION
@@ -213,7 +212,7 @@ uint8 SirenTest(void)
 //            pTxPacket_RelaySiren = getTxPacket_RelaySiren();    
 //            pTxPacket_RelaySiren->Payload.RRB = 0x01;  
 //            
-//            STest_PlayTestTone();                               // Play test tone for 3sec
+            //STest_PlayTestTone();                               // Play test tone for 3sec
 
 ////            while( (STestStatus[CurrentTest.TestStep] != 'P') && (STestStatus[CurrentTest.TestStep] != 'F') )
 ////            {
@@ -665,18 +664,18 @@ void STest_PlayTestTone(void)
     STestStatus[CurrentTest.TestStep] = 'B';            // Set status to 'busy' until all 3 freqs play
     CurrentTest.Status = 'B';
     
-    //WaveDAC_Start();                                  // Turn on DAC
+    WaveDAC_Start();                                  // Turn on DAC
     
 //    Timer_DAC_WritePeriod(5);     //~8.5kHz    // Send a 1V 200Hz PWM (using DAC) for 1sec, then 1kHz, then 10kHz - through the RRB of the Siren
-//    CyDelay(1000);
-    Timer_DAC_WritePeriod(50);    // ~1kHz
+    CyDelay(1000);
+//    Timer_DAC_WritePeriod(50);    // ~1kHz
     CyDelay(1000);
 //    Timer_DAC_WritePeriod(500);     // ~100Hz
-//    CyDelay(1000);
+    CyDelay(1000);
     
     //pTxPacket_RelaySiren->Payload.RRB = 0x00;           // Turn off RRB
     
-    //WaveDAC_Stop();                                   // Turn off DAC
+    WaveDAC_Stop();                                   // Turn off DAC
     
     return;
 }

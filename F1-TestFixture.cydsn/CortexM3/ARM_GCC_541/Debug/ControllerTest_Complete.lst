@@ -1,0 +1,4495 @@
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 1
+
+
+   1              		.syntax unified
+   2              		.cpu cortex-m3
+   3              		.fpu softvfp
+   4              		.eabi_attribute 20, 1
+   5              		.eabi_attribute 21, 1
+   6              		.eabi_attribute 23, 3
+   7              		.eabi_attribute 24, 1
+   8              		.eabi_attribute 25, 1
+   9              		.eabi_attribute 26, 1
+  10              		.eabi_attribute 30, 6
+  11              		.eabi_attribute 34, 1
+  12              		.eabi_attribute 18, 4
+  13              		.thumb
+  14              		.syntax unified
+  15              		.file	"ControllerTest_Complete.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.comm	Test,3,4
+  20              		.bss
+  21              		.align	2
+  22              	rxPacket_Controller:
+  23 0000 00000000 		.space	79
+  23      00000000 
+  23      00000000 
+  23      00000000 
+  23      00000000 
+  24 004f 00       		.align	2
+  25              	pRxPacket_Controller:
+  26 0050 00000000 		.space	4
+  27              		.align	2
+  28              	txPacket_Controller:
+  29 0054 00000000 		.space	15
+  29      00000000 
+  29      00000000 
+  29      000000
+  30 0063 00       		.align	2
+  31              	pTxPacket_Controller:
+  32 0064 00000000 		.space	4
+  33              		.align	2
+  34              	txPacket_Relay:
+  35 0068 00000000 		.space	79
+  35      00000000 
+  35      00000000 
+  35      00000000 
+  35      00000000 
+  36 00b7 00       		.align	2
+  37              	pTxPacket_Relay:
+  38 00b8 00000000 		.space	4
+  39              		.align	2
+  40              	txPacket_Intermotive:
+  41 00bc 00000000 		.space	9
+  41      00000000 
+  41      00
+  42 00c5 000000   		.align	2
+  43              	pTxPacket_Intermotive:
+  44 00c8 00000000 		.space	4
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 2
+
+
+  45              		.align	1
+  46              	CTest_20ms_isr_count:
+  47 00cc 0000     		.space	2
+  48              		.align	1
+  49              	CTest_20ms_isr_EN:
+  50 00ce 0000     		.space	2
+  51              	PB_NextAction_Pressed:
+  52 00d0 00       		.space	1
+  53              	PB_NextAction_Released:
+  54 00d1 00       		.space	1
+  55              		.data
+  56              		.align	2
+  57              		.type	CTest_TimeoutCount, %object
+  58              		.size	CTest_TimeoutCount, 22
+  59              	CTest_TimeoutCount:
+  60 0000 3200     		.short	50
+  61 0002 D007     		.short	2000
+  62 0004 6400     		.short	100
+  63 0006 3200     		.short	50
+  64 0008 3200     		.short	50
+  65 000a 3200     		.short	50
+  66 000c 3200     		.short	50
+  67 000e 3200     		.short	50
+  68 0010 3200     		.short	50
+  69 0012 3200     		.short	50
+  70 0014 3200     		.short	50
+  71              		.bss
+  72 00d2 0000     		.align	2
+  73              	CTestStatus:
+  74 00d4 00000000 		.space	11
+  74      00000000 
+  74      000000
+  75              		.section	.text.ControllerTest_Complete,"ax",%progbits
+  76              		.align	2
+  77              		.global	ControllerTest_Complete
+  78              		.thumb
+  79              		.thumb_func
+  80              		.type	ControllerTest_Complete, %function
+  81              	ControllerTest_Complete:
+  82              	.LFB63:
+  83              		.file 1 "ControllerTest_Complete.c"
+   1:ControllerTest_Complete.c **** /* ========================================
+   2:ControllerTest_Complete.c ****  *
+   3:ControllerTest_Complete.c ****  * Copyright YOUR COMPANY, THE YEAR
+   4:ControllerTest_Complete.c ****  * All Rights Reserved
+   5:ControllerTest_Complete.c ****  * UNPUBLISHED, LICENSED SOFTWARE.
+   6:ControllerTest_Complete.c ****  *
+   7:ControllerTest_Complete.c ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
+   8:ControllerTest_Complete.c ****  * WHICH IS THE PROPERTY OF your company.
+   9:ControllerTest_Complete.c ****  *
+  10:ControllerTest_Complete.c ****  * ========================================
+  11:ControllerTest_Complete.c **** */
+  12:ControllerTest_Complete.c **** 
+  13:ControllerTest_Complete.c **** /* F1-Controller Test ***********************************************************
+  14:ControllerTest_Complete.c **** *  - Designed to test a F1-Controller PCBA with a SOM installed (w OS and image)   
+  15:ControllerTest_Complete.c **** *  - Requires a configfile (for Desktop Software) that consists of:
+  16:ControllerTest_Complete.c **** *       - PB 1-16 turn on Outputs 1-16 (toggle)
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 3
+
+
+  17:ControllerTest_Complete.c **** *       - PB 1 sends Quad packet (any packet)
+  18:ControllerTest_Complete.c **** *       - OBDII turns on Output 32
+  19:ControllerTest_Complete.c **** *********************************************************************************/
+  20:ControllerTest_Complete.c **** 
+  21:ControllerTest_Complete.c **** #include <project.h>
+  22:ControllerTest_Complete.c **** #include "CommonVariables.h"
+  23:ControllerTest_Complete.c **** #include "ControllerTest.h"
+  24:ControllerTest_Complete.c **** #include "UART_460800_Functions.h"
+  25:ControllerTest_Complete.c **** #include "UART_230400_Functions.h"
+  26:ControllerTest_Complete.c **** 
+  27:ControllerTest_Complete.c **** #define DEBOUNCE_COUNT      2           // (5 * 20msec)
+  28:ControllerTest_Complete.c **** #define CONFIRM_TIME        100
+  29:ControllerTest_Complete.c **** 
+  30:ControllerTest_Complete.c **** 
+  31:ControllerTest_Complete.c **** static RxPacket_Controller rxPacket_Controller;         // 'I' (includes 'P') packet (controller to
+  32:ControllerTest_Complete.c **** static RxPacket_Controller * pRxPacket_Controller;
+  33:ControllerTest_Complete.c **** 
+  34:ControllerTest_Complete.c **** static TxPacket_Controller txPacket_Controller;         // 'D' packet (relay to controller) - Initi
+  35:ControllerTest_Complete.c **** static TxPacket_Controller * pTxPacket_Controller;
+  36:ControllerTest_Complete.c **** 
+  37:ControllerTest_Complete.c **** static TxPacket_RelaySiren txPacket_Relay;              // 'I' packet (relay to controller) - LEDS_
+  38:ControllerTest_Complete.c **** static TxPacket_RelaySiren * pTxPacket_Relay;
+  39:ControllerTest_Complete.c **** 
+  40:ControllerTest_Complete.c **** static TxPacket_Intermotive txPacket_Intermotive;       // Intermotive Packet - for ignition and OB
+  41:ControllerTest_Complete.c **** static TxPacket_Intermotive * pTxPacket_Intermotive;    // 
+  42:ControllerTest_Complete.c **** 
+  43:ControllerTest_Complete.c **** 
+  44:ControllerTest_Complete.c **** static uint16 CTest_20ms_isr_count = 0;         // Test step timeout variables
+  45:ControllerTest_Complete.c **** static uint16 CTest_20ms_isr_EN = 0;
+  46:ControllerTest_Complete.c **** 
+  47:ControllerTest_Complete.c **** static uint8 PB_NextAction_Pressed = 0;         // Pushbutton 
+  48:ControllerTest_Complete.c **** static uint8 PB_NextAction_Released = 0;
+  49:ControllerTest_Complete.c **** 
+  50:ControllerTest_Complete.c **** enum LEDColor
+  51:ControllerTest_Complete.c **** { 
+  52:ControllerTest_Complete.c ****     RED,       
+  53:ControllerTest_Complete.c ****     BLUE,  
+  54:ControllerTest_Complete.c ****     GREEN,
+  55:ControllerTest_Complete.c ****     OFF
+  56:ControllerTest_Complete.c **** };
+  57:ControllerTest_Complete.c **** 
+  58:ControllerTest_Complete.c **** 
+  59:ControllerTest_Complete.c **** enum DATA_TYPE_460800
+  60:ControllerTest_Complete.c **** { 
+  61:ControllerTest_Complete.c ****     CTEST_AUDIO,        // This is for both cont and relay tests
+  62:ControllerTest_Complete.c ****     CTEST_RTEST_QUAD   // CTest/RTest - quad normal - (controller to relay, relay to quad)
+  63:ControllerTest_Complete.c **** //    CTEST_A,            //*** needs to  (*** not used - only need to look for 'L' packet)
+  64:ControllerTest_Complete.c **** //    QTEST_QUAD          // (*** not used - Quad-Controller packets - type 'C')
+  65:ControllerTest_Complete.c **** };
+  66:ControllerTest_Complete.c **** 
+  67:ControllerTest_Complete.c **** enum MUX_460800_CHANNEL
+  68:ControllerTest_Complete.c **** { 
+  69:ControllerTest_Complete.c ****     CTEST_QUAD,  
+  70:ControllerTest_Complete.c ****     CTEST_AUDIOSTREAM,
+  71:ControllerTest_Complete.c ****     //QTEST_QUAD             
+  72:ControllerTest_Complete.c **** };
+  73:ControllerTest_Complete.c **** enum DEMUX_460800_CHANNEL
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 4
+
+
+  74:ControllerTest_Complete.c **** { 
+  75:ControllerTest_Complete.c ****     CTEST_OBDII_TX,       
+  76:ControllerTest_Complete.c ****     RTEST_QUAD_TX,       
+  77:ControllerTest_Complete.c ****     STEST_AUDIO_TX,
+  78:ControllerTest_Complete.c **** };
+  79:ControllerTest_Complete.c **** 
+  80:ControllerTest_Complete.c **** enum MUX_DEMUX_230400_CHANNEL              
+  81:ControllerTest_Complete.c **** { 
+  82:ControllerTest_Complete.c ****     CTEST_RELAY, 
+  83:ControllerTest_Complete.c ****     RTEST_CONT,
+  84:ControllerTest_Complete.c ****     RTEST_SIREN,
+  85:ControllerTest_Complete.c ****     STEST_RELAY            
+  86:ControllerTest_Complete.c **** };
+  87:ControllerTest_Complete.c **** 
+  88:ControllerTest_Complete.c **** // --------------Test steps---------------
+  89:ControllerTest_Complete.c **** #define NUMBER_TEST_STEPS       11
+  90:ControllerTest_Complete.c **** static uint16 CTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,2000,100,50,50,50,50,50,50,50,50};    // 
+  91:ControllerTest_Complete.c **** 
+  92:ControllerTest_Complete.c **** static uint8 CTestStatus[NUMBER_TEST_STEPS];
+  93:ControllerTest_Complete.c **** 
+  94:ControllerTest_Complete.c **** enum TestStep           
+  95:ControllerTest_Complete.c **** { 
+  96:ControllerTest_Complete.c ****     INITIALIZE_TEST,        // COMPLETE
+  97:ControllerTest_Complete.c ****     CONFIRM_BOOTUP,         // COMPLETE
+  98:ControllerTest_Complete.c ****     CONFIG_FILE,            // COMPLETE (unused - the config file does not need to be manually prog
+  99:ControllerTest_Complete.c ****     TEST_POWERMODES,        // COMPLETE (***not testing usb power only)(resets pushbuttons) 
+ 100:ControllerTest_Complete.c ****     OBDII,                  // COMPLETE (configfile) (***this is already tested by using it for ign
+ 101:ControllerTest_Complete.c ****                         // Add the touchscreen and slideswitch stuff here
+ 102:ControllerTest_Complete.c ****     PUSHBUTTONS,            // COMPLETE (configfile)
+ 103:ControllerTest_Complete.c ****                         // Verify button beep with this step
+ 104:ControllerTest_Complete.c ****     QUAD_STREAM,            // COMPLETE (configfile)
+ 105:ControllerTest_Complete.c ****     LEDS_RGB,               // COMPLETE (***leds take up to 5 seconds to turn on)
+ 106:ControllerTest_Complete.c ****     AUDIO_STREAM,           // (not included)
+ 107:ControllerTest_Complete.c ****     DEBUG_PORT,             // (not included)
+ 108:ControllerTest_Complete.c ****     PASS                    // COMPLETE
+ 109:ControllerTest_Complete.c **** };
+ 110:ControllerTest_Complete.c **** 
+ 111:ControllerTest_Complete.c **** 
+ 112:ControllerTest_Complete.c **** static uint8 CTestStatus[NUMBER_TEST_STEPS];
+ 113:ControllerTest_Complete.c **** 
+ 114:ControllerTest_Complete.c **** uint8 ControllerTest_Complete(void)
+ 115:ControllerTest_Complete.c **** {
+  84              		.loc 1 115 0
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 8
+  87              		@ frame_needed = 1, uses_anonymous_args = 0
+  88 0000 80B5     		push	{r7, lr}
+  89              		.cfi_def_cfa_offset 8
+  90              		.cfi_offset 7, -8
+  91              		.cfi_offset 14, -4
+  92 0002 82B0     		sub	sp, sp, #8
+  93              		.cfi_def_cfa_offset 16
+  94 0004 00AF     		add	r7, sp, #0
+  95              		.cfi_def_cfa_register 7
+ 116:ControllerTest_Complete.c ****     
+ 117:ControllerTest_Complete.c ****     switch(CurrentTest.TestStep)
+  96              		.loc 1 117 0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 5
+
+
+  97 0006 AA4B     		ldr	r3, .L50
+  98 0008 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+  99 000a 0A2B     		cmp	r3, #10
+ 100 000c 00F23282 		bhi	.L2
+ 101 0010 01A2     		adr	r2, .L4
+ 102 0012 52F823F0 		ldr	pc, [r2, r3, lsl #2]
+ 103 0016 00BF     		.p2align 2
+ 104              	.L4:
+ 105 0018 45000000 		.word	.L3+1
+ 106 001c 8B000000 		.word	.L5+1
+ 107 0020 EB000000 		.word	.L6+1
+ 108 0024 0B010000 		.word	.L7+1
+ 109 0028 E1010000 		.word	.L8+1
+ 110 002c 3F020000 		.word	.L9+1
+ 111 0030 C1020000 		.word	.L10+1
+ 112 0034 0F030000 		.word	.L11+1
+ 113 0038 D1030000 		.word	.L12+1
+ 114 003c F1030000 		.word	.L13+1
+ 115 0040 11040000 		.word	.L14+1
+ 116              		.p2align 1
+ 117              	.L3:
+ 118:ControllerTest_Complete.c ****     {   
+ 119:ControllerTest_Complete.c ****        
+ 120:ControllerTest_Complete.c ****         case INITIALIZE_TEST:
+ 121:ControllerTest_Complete.c ****         
+ 122:ControllerTest_Complete.c ****             CTest_CONT_VBATT_EN_Write(1);                           // Enable Vbatt power to contro
+ 118              		.loc 1 122 0
+ 119 0044 0120     		movs	r0, #1
+ 120 0046 FFF7FEFF 		bl	CTest_CONT_VBATT_EN_Write
+ 123:ControllerTest_Complete.c ****             CTest_USB_5V_EN_Write(0);
+ 121              		.loc 1 123 0
+ 122 004a 0020     		movs	r0, #0
+ 123 004c FFF7FEFF 		bl	CTest_USB_5V_EN_Write
+ 124              	.LBB2:
+ 124:ControllerTest_Complete.c **** 
+ 125:ControllerTest_Complete.c ****             for (uint8 i=0;i<NUMBER_TEST_STEPS;i++)                 // Reset Status of aall test st
+ 125              		.loc 1 125 0
+ 126 0050 0023     		movs	r3, #0
+ 127 0052 FB71     		strb	r3, [r7, #7]
+ 128 0054 06E0     		b	.L15
+ 129              	.L16:
+ 126:ControllerTest_Complete.c ****                 CTestStatus[i] = '_';
+ 130              		.loc 1 126 0 discriminator 3
+ 131 0056 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 132 0058 964A     		ldr	r2, .L50+4
+ 133 005a 5F21     		movs	r1, #95
+ 134 005c D154     		strb	r1, [r2, r3]
+ 125:ControllerTest_Complete.c ****                 CTestStatus[i] = '_';
+ 135              		.loc 1 125 0 discriminator 3
+ 136 005e FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 137 0060 0133     		adds	r3, r3, #1
+ 138 0062 FB71     		strb	r3, [r7, #7]
+ 139              	.L15:
+ 125:ControllerTest_Complete.c ****                 CTestStatus[i] = '_';
+ 140              		.loc 1 125 0 is_stmt 0 discriminator 1
+ 141 0064 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 142 0066 0A2B     		cmp	r3, #10
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 6
+
+
+ 143 0068 F5D9     		bls	.L16
+ 144              	.LBE2:
+ 127:ControllerTest_Complete.c ****             
+ 128:ControllerTest_Complete.c ****             CTestStatus[CurrentTest.TestStep] = 'I';
+ 145              		.loc 1 128 0 is_stmt 1
+ 146 006a 914B     		ldr	r3, .L50
+ 147 006c 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 148 006e 1A46     		mov	r2, r3
+ 149 0070 904B     		ldr	r3, .L50+4
+ 150 0072 4921     		movs	r1, #73
+ 151 0074 9954     		strb	r1, [r3, r2]
+ 129:ControllerTest_Complete.c ****             CurrentTest.Status = 'I';
+ 152              		.loc 1 129 0
+ 153 0076 8E4B     		ldr	r3, .L50
+ 154 0078 4922     		movs	r2, #73
+ 155 007a 9A70     		strb	r2, [r3, #2]
+ 130:ControllerTest_Complete.c **** 
+ 131:ControllerTest_Complete.c ****             CyDelay(CONFIRM_TIME);
+ 156              		.loc 1 131 0
+ 157 007c 6420     		movs	r0, #100
+ 158 007e FFF7FEFF 		bl	CyDelay
+ 132:ControllerTest_Complete.c ****             
+ 133:ControllerTest_Complete.c **** //            CTestStatus[CurrentTest.TestStep] = 'P';
+ 134:ControllerTest_Complete.c **** //            CurrentTest.Status = 'P';
+ 135:ControllerTest_Complete.c ****       
+ 136:ControllerTest_Complete.c ****             //CurrentTest.TestStep = INITIALIZE_TEST;
+ 137:ControllerTest_Complete.c ****             CurrentTest.TestStep = CONFIRM_BOOTUP;
+ 159              		.loc 1 137 0
+ 160 0082 8B4B     		ldr	r3, .L50
+ 161 0084 0122     		movs	r2, #1
+ 162 0086 5A70     		strb	r2, [r3, #1]
+ 138:ControllerTest_Complete.c ****             //CurrentTest.TestStep = TEST_POWERMODES;
+ 139:ControllerTest_Complete.c ****             //CurrentTest.TestStep = DEBUG_PORT;
+ 140:ControllerTest_Complete.c ****             //CurrentTest.TestStep = QUAD_STREAM;
+ 141:ControllerTest_Complete.c ****             //CurrentTest.TestStep = AUDIO_STREAM;
+ 142:ControllerTest_Complete.c ****             //CurrentTest.TestStep = OBDII;     
+ 143:ControllerTest_Complete.c ****             //CurrentTest.TestStep = LEDS_RGB;
+ 144:ControllerTest_Complete.c ****             //CurrentTest.TestStep = PUSHBUTTONS;
+ 145:ControllerTest_Complete.c ****         
+ 146:ControllerTest_Complete.c ****         break;
+ 163              		.loc 1 146 0
+ 164 0088 F4E1     		b	.L2
+ 165              	.L5:
+ 147:ControllerTest_Complete.c ****         
+ 148:ControllerTest_Complete.c ****         case CONFIRM_BOOTUP:
+ 149:ControllerTest_Complete.c ****         
+ 150:ControllerTest_Complete.c ****             CTest_StartAutomatedStep();
+ 166              		.loc 1 150 0
+ 167 008a FFF7FEFF 		bl	CTest_StartAutomatedStep
+ 151:ControllerTest_Complete.c **** 
+ 152:ControllerTest_Complete.c ****             MUX_CTRL_230400_Write(CTEST_RELAY);
+ 168              		.loc 1 152 0
+ 169 008e 0020     		movs	r0, #0
+ 170 0090 FFF7FEFF 		bl	MUX_CTRL_230400_Write
+ 153:ControllerTest_Complete.c **** 
+ 154:ControllerTest_Complete.c ****             while( (!VerifyPacket_230400(CTEST_RELAY)) && (CTestStatus[CurrentTest.TestStep] != 'F'
+ 171              		.loc 1 154 0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 7
+
+
+ 172 0094 00BF     		nop
+ 173              	.L18:
+ 174              		.loc 1 154 0 is_stmt 0 discriminator 2
+ 175 0096 0020     		movs	r0, #0
+ 176 0098 FFF7FEFF 		bl	VerifyPacket_230400
+ 177 009c 0346     		mov	r3, r0
+ 178 009e 002B     		cmp	r3, #0
+ 179 00a0 06D1     		bne	.L17
+ 180              		.loc 1 154 0 discriminator 1
+ 181 00a2 834B     		ldr	r3, .L50
+ 182 00a4 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 183 00a6 1A46     		mov	r2, r3
+ 184 00a8 824B     		ldr	r3, .L50+4
+ 185 00aa 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 186 00ac 462B     		cmp	r3, #70
+ 187 00ae F2D1     		bne	.L18
+ 188              	.L17:
+ 155:ControllerTest_Complete.c ****             {} 
+ 156:ControllerTest_Complete.c ****             
+ 157:ControllerTest_Complete.c ****             CTest_StopAutomatedStep();
+ 189              		.loc 1 157 0 is_stmt 1
+ 190 00b0 FFF7FEFF 		bl	CTest_StopAutomatedStep
+ 158:ControllerTest_Complete.c ****             
+ 159:ControllerTest_Complete.c ****             pTxPacket_Intermotive = getTxPacket_Intermotive();   // Send ignition on signal (OBDII)
+ 191              		.loc 1 159 0
+ 192 00b4 FFF7FEFF 		bl	getTxPacket_Intermotive
+ 193 00b8 0246     		mov	r2, r0
+ 194 00ba 7F4B     		ldr	r3, .L50+8
+ 195 00bc 1A60     		str	r2, [r3]
+ 160:ControllerTest_Complete.c ****             pTxPacket_Intermotive->Payload.Data5 = 0x02; 
+ 196              		.loc 1 160 0
+ 197 00be 7E4B     		ldr	r3, .L50+8
+ 198 00c0 1B68     		ldr	r3, [r3]
+ 199 00c2 0222     		movs	r2, #2
+ 200 00c4 5A71     		strb	r2, [r3, #5]
+ 161:ControllerTest_Complete.c ****             
+ 162:ControllerTest_Complete.c ****             CyDelay(CONFIRM_TIME);
+ 201              		.loc 1 162 0
+ 202 00c6 6420     		movs	r0, #100
+ 203 00c8 FFF7FEFF 		bl	CyDelay
+ 163:ControllerTest_Complete.c ****             
+ 164:ControllerTest_Complete.c ****             if(CTestStatus[CurrentTest.TestStep] == 'F')
+ 204              		.loc 1 164 0
+ 205 00cc 784B     		ldr	r3, .L50
+ 206 00ce 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 207 00d0 1A46     		mov	r2, r3
+ 208 00d2 784B     		ldr	r3, .L50+4
+ 209 00d4 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 210 00d6 462B     		cmp	r3, #70
+ 211 00d8 03D1     		bne	.L19
+ 165:ControllerTest_Complete.c ****             {
+ 166:ControllerTest_Complete.c ****                 CurrentTest.TestStep = PASS;
+ 212              		.loc 1 166 0
+ 213 00da 754B     		ldr	r3, .L50
+ 214 00dc 0A22     		movs	r2, #10
+ 215 00de 5A70     		strb	r2, [r3, #1]
+ 167:ControllerTest_Complete.c ****             }
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 8
+
+
+ 168:ControllerTest_Complete.c ****             else
+ 169:ControllerTest_Complete.c ****             {
+ 170:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = INITIALIZE_TEST;
+ 171:ControllerTest_Complete.c ****                 CurrentTest.TestStep = CONFIG_FILE;
+ 172:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = TEST_POWERMODES;
+ 173:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = QUAD_STREAM;
+ 174:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = LEDS_RGB;
+ 175:ControllerTest_Complete.c ****             }
+ 176:ControllerTest_Complete.c ****         
+ 177:ControllerTest_Complete.c ****         break;
+ 216              		.loc 1 177 0
+ 217 00e0 C8E1     		b	.L2
+ 218              	.L19:
+ 171:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = TEST_POWERMODES;
+ 219              		.loc 1 171 0
+ 220 00e2 734B     		ldr	r3, .L50
+ 221 00e4 0222     		movs	r2, #2
+ 222 00e6 5A70     		strb	r2, [r3, #1]
+ 223              		.loc 1 177 0
+ 224 00e8 C4E1     		b	.L2
+ 225              	.L6:
+ 178:ControllerTest_Complete.c ****             
+ 179:ControllerTest_Complete.c ****         case CONFIG_FILE:   // configfile is already programmed to the SOM by default
+ 180:ControllerTest_Complete.c ****             
+ 181:ControllerTest_Complete.c ****             CTestStatus[CurrentTest.TestStep] = 'U';           
+ 226              		.loc 1 181 0
+ 227 00ea 714B     		ldr	r3, .L50
+ 228 00ec 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 229 00ee 1A46     		mov	r2, r3
+ 230 00f0 704B     		ldr	r3, .L50+4
+ 231 00f2 5521     		movs	r1, #85
+ 232 00f4 9954     		strb	r1, [r3, r2]
+ 182:ControllerTest_Complete.c ****             CurrentTest.Status = 'U'; 
+ 233              		.loc 1 182 0
+ 234 00f6 6E4B     		ldr	r3, .L50
+ 235 00f8 5522     		movs	r2, #85
+ 236 00fa 9A70     		strb	r2, [r3, #2]
+ 183:ControllerTest_Complete.c **** //            pTxPacket_Intermotive = getTxPacket_Intermotive();   // Send ignition on signal (OBDI
+ 184:ControllerTest_Complete.c **** //            pTxPacket_Intermotive->Payload.Data5 = 0x02; 
+ 185:ControllerTest_Complete.c **** //            CTest_PB_WaitForAction();
+ 186:ControllerTest_Complete.c ****  
+ 187:ControllerTest_Complete.c ****             CyDelay(CONFIRM_TIME);
+ 237              		.loc 1 187 0
+ 238 00fc 6420     		movs	r0, #100
+ 239 00fe FFF7FEFF 		bl	CyDelay
+ 188:ControllerTest_Complete.c ****             
+ 189:ControllerTest_Complete.c ****             //CurrentTest.TestStep = INITIALIZE_TEST;                   
+ 190:ControllerTest_Complete.c ****             CurrentTest.TestStep = TEST_POWERMODES;
+ 240              		.loc 1 190 0
+ 241 0102 6B4B     		ldr	r3, .L50
+ 242 0104 0322     		movs	r2, #3
+ 243 0106 5A70     		strb	r2, [r3, #1]
+ 191:ControllerTest_Complete.c ****             //CurrentTest.TestStep = QUAD_STREAM;
+ 192:ControllerTest_Complete.c ****             //CurrentTest.TestStep = LEDS_RGB;
+ 193:ControllerTest_Complete.c ****         
+ 194:ControllerTest_Complete.c ****         break;
+ 244              		.loc 1 194 0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 9
+
+
+ 245 0108 B4E1     		b	.L2
+ 246              	.L7:
+ 195:ControllerTest_Complete.c ****         
+ 196:ControllerTest_Complete.c ****         case TEST_POWERMODES:  // Test Vbatt detect and USB detect
+ 197:ControllerTest_Complete.c **** 
+ 198:ControllerTest_Complete.c ****             MUX_CTRL_230400_Write(CTEST_RELAY);
+ 247              		.loc 1 198 0
+ 248 010a 0020     		movs	r0, #0
+ 249 010c FFF7FEFF 		bl	MUX_CTRL_230400_Write
+ 199:ControllerTest_Complete.c ****             
+ 200:ControllerTest_Complete.c ****             pRxPacket_Controller = getRxPacket_Controller();        // 'I' packet - check powermode
+ 250              		.loc 1 200 0
+ 251 0110 FFF7FEFF 		bl	getRxPacket_Controller
+ 252 0114 0246     		mov	r2, r0
+ 253 0116 694B     		ldr	r3, .L50+12
+ 254 0118 1A60     		str	r2, [r3]
+ 201:ControllerTest_Complete.c ****             pTxPacket_Intermotive = getTxPacket_Intermotive();      // '1' packet - set ignition 
+ 255              		.loc 1 201 0
+ 256 011a FFF7FEFF 		bl	getTxPacket_Intermotive
+ 257 011e 0246     		mov	r2, r0
+ 258 0120 654B     		ldr	r3, .L50+8
+ 259 0122 1A60     		str	r2, [r3]
+ 202:ControllerTest_Complete.c ****             //pTxPacket_Controller = getTxPacket_Controller();      // 'D' packet - set ignition (n
+ 203:ControllerTest_Complete.c ****             
+ 204:ControllerTest_Complete.c **** //            //CTest_StartAutomatedStep();
+ 205:ControllerTest_Complete.c **** //            //CTest_PB_WaitForAction();
+ 206:ControllerTest_Complete.c **** //         
+ 207:ControllerTest_Complete.c **** //            /**** Live Power Mode (Normal Mode) - Vbatt-on, USB_5V-on, Ignition-on ***/
+ 208:ControllerTest_Complete.c **** //            CTest_CONT_VBATT_EN_Write(1);                   
+ 209:ControllerTest_Complete.c **** //            CTest_USB_5V_EN_Write(1);
+ 210:ControllerTest_Complete.c **** //            pTxPacket_Intermotive->Payload.Data5 = 0x02;
+ 211:ControllerTest_Complete.c **** ////            while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTe
+ 212:ControllerTest_Complete.c **** ////            {}
+ 213:ControllerTest_Complete.c **** //            CyDelay(1000);
+ 214:ControllerTest_Complete.c **** //            CTest_PB_WaitForAction();
+ 215:ControllerTest_Complete.c **** //            
+ 216:ControllerTest_Complete.c **** ////            CTest_CONT_VBATT_EN_Write(1);                   
+ 217:ControllerTest_Complete.c **** ////            CTest_USB_5V_EN_Write(1);
+ 218:ControllerTest_Complete.c **** ////            pTxPacket_Intermotive->Payload.Data5 = 0x00;
+ 219:ControllerTest_Complete.c **** ////            CyDelay(1000);
+ 220:ControllerTest_Complete.c **** //
+ 221:ControllerTest_Complete.c **** //            /**** Low Power Mode (USB Power Only) - Vbatt-off, USB_5V-on, Ignition-off ***/
+ 222:ControllerTest_Complete.c **** //            CTest_CONT_VBATT_EN_Write(0);               
+ 223:ControllerTest_Complete.c **** //            CTest_USB_5V_EN_Write(1);
+ 224:ControllerTest_Complete.c **** //            pTxPacket_Intermotive->Payload.Data5 = 0x00;    
+ 225:ControllerTest_Complete.c **** ////            while( (pRxPacket_Controller->Payload.PowerState != 0x00) && (CTestStatus[CurrentTe
+ 226:ControllerTest_Complete.c **** ////            {}
+ 227:ControllerTest_Complete.c **** //            CyDelay(1000);             
+ 228:ControllerTest_Complete.c **** //            CTest_PB_WaitForAction();
+ 229:ControllerTest_Complete.c **** //            
+ 230:ControllerTest_Complete.c **** //            /**** Normal Power Mode - Vbatt-on, USB_5V-on, Ignition-on ***/
+ 231:ControllerTest_Complete.c **** //            CTest_CONT_VBATT_EN_Write(1);                                       
+ 232:ControllerTest_Complete.c **** //            CTest_USB_5V_EN_Write(1);
+ 233:ControllerTest_Complete.c **** //            pTxPacket_Intermotive->Payload.Data5 = 0x02;
+ 234:ControllerTest_Complete.c **** //            
+ 235:ControllerTest_Complete.c **** //            CyDelay(1000);   
+ 236:ControllerTest_Complete.c **** //            CTest_PB_WaitForAction();
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 10
+
+
+ 237:ControllerTest_Complete.c **** //            
+ 238:ControllerTest_Complete.c **** //            CTest_CONT_VBATT_EN_Write(1);                                    
+ 239:ControllerTest_Complete.c **** //            CTest_USB_5V_EN_Write(0);
+ 240:ControllerTest_Complete.c **** //            pTxPacket_Intermotive->Payload.Data5 = 0x02;
+ 241:ControllerTest_Complete.c **** ////            while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTe
+ 242:ControllerTest_Complete.c **** ////            {}
+ 243:ControllerTest_Complete.c **** //            CyDelay(1000);
+ 244:ControllerTest_Complete.c **** //            CTest_PB_WaitForAction();
+ 245:ControllerTest_Complete.c **** //            
+ 246:ControllerTest_Complete.c **** //            //CTest_StopAutomatedStep();
+ 247:ControllerTest_Complete.c ****             
+ 248:ControllerTest_Complete.c ****             CTest_StartAutomatedStep();
+ 260              		.loc 1 248 0
+ 261 0124 FFF7FEFF 		bl	CTest_StartAutomatedStep
+ 249:ControllerTest_Complete.c ****             //CTest_PB_WaitForAction();
+ 250:ControllerTest_Complete.c ****          
+ 251:ControllerTest_Complete.c ****             /**** Low Power Mode - Vbatt-on, USB_5V-off, Ignition-off ***/
+ 252:ControllerTest_Complete.c ****             CTest_CONT_VBATT_EN_Write(1);                   
+ 262              		.loc 1 252 0
+ 263 0128 0120     		movs	r0, #1
+ 264 012a FFF7FEFF 		bl	CTest_CONT_VBATT_EN_Write
+ 253:ControllerTest_Complete.c ****             CTest_USB_5V_EN_Write(0);
+ 265              		.loc 1 253 0
+ 266 012e 0020     		movs	r0, #0
+ 267 0130 FFF7FEFF 		bl	CTest_USB_5V_EN_Write
+ 254:ControllerTest_Complete.c ****             pTxPacket_Intermotive->Payload.Data5 = 0x00;
+ 268              		.loc 1 254 0
+ 269 0134 604B     		ldr	r3, .L50+8
+ 270 0136 1B68     		ldr	r3, [r3]
+ 271 0138 0022     		movs	r2, #0
+ 272 013a 5A71     		strb	r2, [r3, #5]
+ 255:ControllerTest_Complete.c ****             while( (pRxPacket_Controller->Payload.PowerState != 0x00) && (CTestStatus[CurrentTest.T
+ 273              		.loc 1 255 0
+ 274 013c 00BF     		nop
+ 275              	.L22:
+ 276              		.loc 1 255 0 is_stmt 0 discriminator 2
+ 277 013e 5F4B     		ldr	r3, .L50+12
+ 278 0140 1B68     		ldr	r3, [r3]
+ 279 0142 93F84A30 		ldrb	r3, [r3, #74]	@ zero_extendqisi2
+ 280 0146 002B     		cmp	r3, #0
+ 281 0148 06D0     		beq	.L21
+ 282              		.loc 1 255 0 discriminator 1
+ 283 014a 594B     		ldr	r3, .L50
+ 284 014c 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 285 014e 1A46     		mov	r2, r3
+ 286 0150 584B     		ldr	r3, .L50+4
+ 287 0152 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 288 0154 462B     		cmp	r3, #70
+ 289 0156 F2D1     		bne	.L22
+ 290              	.L21:
+ 256:ControllerTest_Complete.c ****             {}
+ 257:ControllerTest_Complete.c **** //            CyDelay(1000);
+ 258:ControllerTest_Complete.c ****             //CTest_PB_WaitForAction();
+ 259:ControllerTest_Complete.c ****             
+ 260:ControllerTest_Complete.c ****             /**** Low Power Mode (USB Power Only) - Vbatt-on, USB_5V-on, Ignition-on ***/
+ 261:ControllerTest_Complete.c ****             CTest_CONT_VBATT_EN_Write(1);               
+ 291              		.loc 1 261 0 is_stmt 1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 11
+
+
+ 292 0158 0120     		movs	r0, #1
+ 293 015a FFF7FEFF 		bl	CTest_CONT_VBATT_EN_Write
+ 262:ControllerTest_Complete.c ****             CTest_USB_5V_EN_Write(1);
+ 294              		.loc 1 262 0
+ 295 015e 0120     		movs	r0, #1
+ 296 0160 FFF7FEFF 		bl	CTest_USB_5V_EN_Write
+ 263:ControllerTest_Complete.c ****             pTxPacket_Intermotive->Payload.Data5 = 0x02;    
+ 297              		.loc 1 263 0
+ 298 0164 544B     		ldr	r3, .L50+8
+ 299 0166 1B68     		ldr	r3, [r3]
+ 300 0168 0222     		movs	r2, #2
+ 301 016a 5A71     		strb	r2, [r3, #5]
+ 264:ControllerTest_Complete.c ****             while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.T
+ 302              		.loc 1 264 0
+ 303 016c 00BF     		nop
+ 304              	.L24:
+ 305              		.loc 1 264 0 is_stmt 0 discriminator 2
+ 306 016e 534B     		ldr	r3, .L50+12
+ 307 0170 1B68     		ldr	r3, [r3]
+ 308 0172 93F84A30 		ldrb	r3, [r3, #74]	@ zero_extendqisi2
+ 309 0176 012B     		cmp	r3, #1
+ 310 0178 06D0     		beq	.L23
+ 311              		.loc 1 264 0 discriminator 1
+ 312 017a 4D4B     		ldr	r3, .L50
+ 313 017c 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 314 017e 1A46     		mov	r2, r3
+ 315 0180 4C4B     		ldr	r3, .L50+4
+ 316 0182 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 317 0184 462B     		cmp	r3, #70
+ 318 0186 F2D1     		bne	.L24
+ 319              	.L23:
+ 265:ControllerTest_Complete.c ****             {}
+ 266:ControllerTest_Complete.c **** //            CyDelay(1000);             
+ 267:ControllerTest_Complete.c ****             //CTest_PB_WaitForAction();
+ 268:ControllerTest_Complete.c ****             
+ 269:ControllerTest_Complete.c ****             /**** Normal Power Mode - Vbatt-on, USB_5V-on, Ignition-on ***/
+ 270:ControllerTest_Complete.c ****             CTest_CONT_VBATT_EN_Write(1);                                       
+ 320              		.loc 1 270 0 is_stmt 1
+ 321 0188 0120     		movs	r0, #1
+ 322 018a FFF7FEFF 		bl	CTest_CONT_VBATT_EN_Write
+ 271:ControllerTest_Complete.c ****             CTest_USB_5V_EN_Write(0);
+ 323              		.loc 1 271 0
+ 324 018e 0020     		movs	r0, #0
+ 325 0190 FFF7FEFF 		bl	CTest_USB_5V_EN_Write
+ 272:ControllerTest_Complete.c ****             pTxPacket_Intermotive->Payload.Data5 = 0x02;
+ 326              		.loc 1 272 0
+ 327 0194 484B     		ldr	r3, .L50+8
+ 328 0196 1B68     		ldr	r3, [r3]
+ 329 0198 0222     		movs	r2, #2
+ 330 019a 5A71     		strb	r2, [r3, #5]
+ 273:ControllerTest_Complete.c ****             while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.T
+ 331              		.loc 1 273 0
+ 332 019c 00BF     		nop
+ 333              	.L26:
+ 334              		.loc 1 273 0 is_stmt 0 discriminator 2
+ 335 019e 474B     		ldr	r3, .L50+12
+ 336 01a0 1B68     		ldr	r3, [r3]
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 12
+
+
+ 337 01a2 93F84A30 		ldrb	r3, [r3, #74]	@ zero_extendqisi2
+ 338 01a6 012B     		cmp	r3, #1
+ 339 01a8 06D0     		beq	.L25
+ 340              		.loc 1 273 0 discriminator 1
+ 341 01aa 414B     		ldr	r3, .L50
+ 342 01ac 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 343 01ae 1A46     		mov	r2, r3
+ 344 01b0 404B     		ldr	r3, .L50+4
+ 345 01b2 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 346 01b4 462B     		cmp	r3, #70
+ 347 01b6 F2D1     		bne	.L26
+ 348              	.L25:
+ 274:ControllerTest_Complete.c ****             {}
+ 275:ControllerTest_Complete.c **** //            CyDelay(1000);
+ 276:ControllerTest_Complete.c ****             //CTest_PB_WaitForAction();
+ 277:ControllerTest_Complete.c ****             
+ 278:ControllerTest_Complete.c ****             CTest_StopAutomatedStep();
+ 349              		.loc 1 278 0 is_stmt 1
+ 350 01b8 FFF7FEFF 		bl	CTest_StopAutomatedStep
+ 279:ControllerTest_Complete.c ****             
+ 280:ControllerTest_Complete.c ****             CyDelay(CONFIRM_TIME);
+ 351              		.loc 1 280 0
+ 352 01bc 6420     		movs	r0, #100
+ 353 01be FFF7FEFF 		bl	CyDelay
+ 281:ControllerTest_Complete.c ****             
+ 282:ControllerTest_Complete.c ****             if(CTestStatus[CurrentTest.TestStep] == 'F')
+ 354              		.loc 1 282 0
+ 355 01c2 3B4B     		ldr	r3, .L50
+ 356 01c4 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 357 01c6 1A46     		mov	r2, r3
+ 358 01c8 3A4B     		ldr	r3, .L50+4
+ 359 01ca 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 360 01cc 462B     		cmp	r3, #70
+ 361 01ce 03D1     		bne	.L27
+ 283:ControllerTest_Complete.c ****             {
+ 284:ControllerTest_Complete.c ****                 CurrentTest.TestStep = PASS;
+ 362              		.loc 1 284 0
+ 363 01d0 374B     		ldr	r3, .L50
+ 364 01d2 0A22     		movs	r2, #10
+ 365 01d4 5A70     		strb	r2, [r3, #1]
+ 285:ControllerTest_Complete.c ****             }
+ 286:ControllerTest_Complete.c ****             else
+ 287:ControllerTest_Complete.c ****             {
+ 288:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = INITIALIZE_TEST;
+ 289:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = TEST_POWERMODES;
+ 290:ControllerTest_Complete.c ****                 CurrentTest.TestStep = OBDII;
+ 291:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = PASS;
+ 292:ControllerTest_Complete.c ****             }
+ 293:ControllerTest_Complete.c ****             
+ 294:ControllerTest_Complete.c ****         break;
+ 366              		.loc 1 294 0
+ 367 01d6 4DE1     		b	.L2
+ 368              	.L27:
+ 290:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = PASS;
+ 369              		.loc 1 290 0
+ 370 01d8 354B     		ldr	r3, .L50
+ 371 01da 0422     		movs	r2, #4
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 13
+
+
+ 372 01dc 5A70     		strb	r2, [r3, #1]
+ 373              		.loc 1 294 0
+ 374 01de 49E1     		b	.L2
+ 375              	.L8:
+ 295:ControllerTest_Complete.c ****             
+ 296:ControllerTest_Complete.c ****         case OBDII: //configfile
+ 297:ControllerTest_Complete.c ****             
+ 298:ControllerTest_Complete.c **** //            pTxPacket_Intermotive = getTxPacket_Intermotive(); 
+ 299:ControllerTest_Complete.c **** //            pTxPacket_Intermotive->Payload.Data5 = 0x00; 
+ 300:ControllerTest_Complete.c **** 
+ 301:ControllerTest_Complete.c ****             CTest_StartAutomatedStep();
+ 376              		.loc 1 301 0
+ 377 01e0 FFF7FEFF 		bl	CTest_StartAutomatedStep
+ 302:ControllerTest_Complete.c **** 
+ 303:ControllerTest_Complete.c ****             MUX_CTRL_230400_Write(CTEST_RELAY);                             // Read a 'I' (includes
+ 378              		.loc 1 303 0
+ 379 01e4 0020     		movs	r0, #0
+ 380 01e6 FFF7FEFF 		bl	MUX_CTRL_230400_Write
+ 304:ControllerTest_Complete.c ****             pRxPacket_Controller = getRxPacket_Controller();    
+ 381              		.loc 1 304 0
+ 382 01ea FFF7FEFF 		bl	getRxPacket_Controller
+ 383 01ee 0246     		mov	r2, r0
+ 384 01f0 324B     		ldr	r3, .L50+12
+ 385 01f2 1A60     		str	r2, [r3]
+ 305:ControllerTest_Complete.c ****             
+ 306:ControllerTest_Complete.c ****             while( ( !(pRxPacket_Controller->Payload.Outputs_25to32 >> 7) ) && (CTestStatus[Current
+ 386              		.loc 1 306 0
+ 387 01f4 01E0     		b	.L29
+ 388              	.L31:
+ 307:ControllerTest_Complete.c ****             {
+ 308:ControllerTest_Complete.c ****                 sendPacketToController_OBDII();                             // Send 'drivers side d
+ 389              		.loc 1 308 0
+ 390 01f6 FFF7FEFF 		bl	sendPacketToController_OBDII
+ 391              	.L29:
+ 306:ControllerTest_Complete.c ****             {
+ 392              		.loc 1 306 0
+ 393 01fa 304B     		ldr	r3, .L50+12
+ 394 01fc 1B68     		ldr	r3, [r3]
+ 395 01fe 93F84830 		ldrb	r3, [r3, #72]	@ zero_extendqisi2
+ 396 0202 5BB2     		sxtb	r3, r3
+ 397 0204 002B     		cmp	r3, #0
+ 398 0206 06DB     		blt	.L30
+ 306:ControllerTest_Complete.c ****             {
+ 399              		.loc 1 306 0 is_stmt 0 discriminator 1
+ 400 0208 294B     		ldr	r3, .L50
+ 401 020a 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 402 020c 1A46     		mov	r2, r3
+ 403 020e 294B     		ldr	r3, .L50+4
+ 404 0210 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 405 0212 462B     		cmp	r3, #70
+ 406 0214 EFD1     		bne	.L31
+ 407              	.L30:
+ 309:ControllerTest_Complete.c ****             }
+ 310:ControllerTest_Complete.c ****             
+ 311:ControllerTest_Complete.c ****             CTest_StopAutomatedStep();
+ 408              		.loc 1 311 0 is_stmt 1
+ 409 0216 FFF7FEFF 		bl	CTest_StopAutomatedStep
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 14
+
+
+ 312:ControllerTest_Complete.c ****             
+ 313:ControllerTest_Complete.c ****             CyDelay(CONFIRM_TIME);    
+ 410              		.loc 1 313 0
+ 411 021a 6420     		movs	r0, #100
+ 412 021c FFF7FEFF 		bl	CyDelay
+ 314:ControllerTest_Complete.c ****             
+ 315:ControllerTest_Complete.c ****             if(CTestStatus[CurrentTest.TestStep] == 'F')
+ 413              		.loc 1 315 0
+ 414 0220 234B     		ldr	r3, .L50
+ 415 0222 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 416 0224 1A46     		mov	r2, r3
+ 417 0226 234B     		ldr	r3, .L50+4
+ 418 0228 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 419 022a 462B     		cmp	r3, #70
+ 420 022c 03D1     		bne	.L32
+ 316:ControllerTest_Complete.c ****             {
+ 317:ControllerTest_Complete.c ****                 CurrentTest.TestStep = PASS;
+ 421              		.loc 1 317 0
+ 422 022e 204B     		ldr	r3, .L50
+ 423 0230 0A22     		movs	r2, #10
+ 424 0232 5A70     		strb	r2, [r3, #1]
+ 318:ControllerTest_Complete.c ****             }
+ 319:ControllerTest_Complete.c ****             else
+ 320:ControllerTest_Complete.c ****             {
+ 321:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = INITIALIZE_TEST;
+ 322:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = LEDS_RGB;
+ 323:ControllerTest_Complete.c ****                 CurrentTest.TestStep = PUSHBUTTONS;
+ 324:ControllerTest_Complete.c ****             }
+ 325:ControllerTest_Complete.c ****       
+ 326:ControllerTest_Complete.c ****         break;  
+ 425              		.loc 1 326 0
+ 426 0234 1EE1     		b	.L2
+ 427              	.L32:
+ 323:ControllerTest_Complete.c ****             }
+ 428              		.loc 1 323 0
+ 429 0236 1E4B     		ldr	r3, .L50
+ 430 0238 0522     		movs	r2, #5
+ 431 023a 5A70     		strb	r2, [r3, #1]
+ 432              		.loc 1 326 0
+ 433 023c 1AE1     		b	.L2
+ 434              	.L9:
+ 327:ControllerTest_Complete.c ****             
+ 328:ControllerTest_Complete.c ****         case PUSHBUTTONS:  // configfile - Controller should have the config file setup to turn on 
+ 329:ControllerTest_Complete.c **** 
+ 330:ControllerTest_Complete.c ****             CTestStatus[CurrentTest.TestStep] = 'W';
+ 435              		.loc 1 330 0
+ 436 023e 1C4B     		ldr	r3, .L50
+ 437 0240 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 438 0242 1A46     		mov	r2, r3
+ 439 0244 1B4B     		ldr	r3, .L50+4
+ 440 0246 5721     		movs	r1, #87
+ 441 0248 9954     		strb	r1, [r3, r2]
+ 331:ControllerTest_Complete.c ****             CurrentTest.Status = 'W';
+ 442              		.loc 1 331 0
+ 443 024a 194B     		ldr	r3, .L50
+ 444 024c 5722     		movs	r2, #87
+ 445 024e 9A70     		strb	r2, [r3, #2]
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 15
+
+
+ 332:ControllerTest_Complete.c ****             
+ 333:ControllerTest_Complete.c ****             while( (!CTest_ReadPushbuttons()) && (CTestStatus[CurrentTest.TestStep] != 'F') )   // 
+ 446              		.loc 1 333 0
+ 447 0250 00BF     		nop
+ 448              	.L35:
+ 449              		.loc 1 333 0 is_stmt 0 discriminator 2
+ 450 0252 FFF7FEFF 		bl	CTest_ReadPushbuttons
+ 451 0256 0346     		mov	r3, r0
+ 452 0258 002B     		cmp	r3, #0
+ 453 025a 06D1     		bne	.L34
+ 454              		.loc 1 333 0 discriminator 1
+ 455 025c 144B     		ldr	r3, .L50
+ 456 025e 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 457 0260 1A46     		mov	r2, r3
+ 458 0262 144B     		ldr	r3, .L50+4
+ 459 0264 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 460 0266 462B     		cmp	r3, #70
+ 461 0268 F3D1     		bne	.L35
+ 462              	.L34:
+ 334:ControllerTest_Complete.c ****             {}
+ 335:ControllerTest_Complete.c ****             
+ 336:ControllerTest_Complete.c ****             if(CTestStatus[CurrentTest.TestStep] != 'F')       // If not failed, then pass
+ 463              		.loc 1 336 0 is_stmt 1
+ 464 026a 114B     		ldr	r3, .L50
+ 465 026c 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 466 026e 1A46     		mov	r2, r3
+ 467 0270 104B     		ldr	r3, .L50+4
+ 468 0272 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 469 0274 462B     		cmp	r3, #70
+ 470 0276 08D0     		beq	.L36
+ 337:ControllerTest_Complete.c ****             {
+ 338:ControllerTest_Complete.c ****                 CTestStatus[CurrentTest.TestStep] = 'P';
+ 471              		.loc 1 338 0
+ 472 0278 0D4B     		ldr	r3, .L50
+ 473 027a 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 474 027c 1A46     		mov	r2, r3
+ 475 027e 0D4B     		ldr	r3, .L50+4
+ 476 0280 5021     		movs	r1, #80
+ 477 0282 9954     		strb	r1, [r3, r2]
+ 339:ControllerTest_Complete.c ****                 CurrentTest.Status = 'P';
+ 478              		.loc 1 339 0
+ 479 0284 0A4B     		ldr	r3, .L50
+ 480 0286 5022     		movs	r2, #80
+ 481 0288 9A70     		strb	r2, [r3, #2]
+ 482              	.L36:
+ 340:ControllerTest_Complete.c ****             }
+ 341:ControllerTest_Complete.c ****             
+ 342:ControllerTest_Complete.c ****             CyDelay(CONFIRM_TIME);
+ 483              		.loc 1 342 0
+ 484 028a 6420     		movs	r0, #100
+ 485 028c FFF7FEFF 		bl	CyDelay
+ 343:ControllerTest_Complete.c ****             
+ 344:ControllerTest_Complete.c ****             if(CTestStatus[CurrentTest.TestStep] == 'F')
+ 486              		.loc 1 344 0
+ 487 0290 074B     		ldr	r3, .L50
+ 488 0292 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 489 0294 1A46     		mov	r2, r3
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 16
+
+
+ 490 0296 074B     		ldr	r3, .L50+4
+ 491 0298 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 492 029a 462B     		cmp	r3, #70
+ 493 029c 03D1     		bne	.L37
+ 345:ControllerTest_Complete.c ****             {
+ 346:ControllerTest_Complete.c ****                 CurrentTest.TestStep = PASS;
+ 494              		.loc 1 346 0
+ 495 029e 044B     		ldr	r3, .L50
+ 496 02a0 0A22     		movs	r2, #10
+ 497 02a2 5A70     		strb	r2, [r3, #1]
+ 347:ControllerTest_Complete.c ****             }
+ 348:ControllerTest_Complete.c ****             else
+ 349:ControllerTest_Complete.c ****             {    
+ 350:ControllerTest_Complete.c ****                 CurrentTest.TestStep = QUAD_STREAM;
+ 351:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = PASS;
+ 352:ControllerTest_Complete.c ****             }
+ 353:ControllerTest_Complete.c ****       
+ 354:ControllerTest_Complete.c ****         break;  
+ 498              		.loc 1 354 0
+ 499 02a4 E6E0     		b	.L2
+ 500              	.L37:
+ 350:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = PASS;
+ 501              		.loc 1 350 0
+ 502 02a6 024B     		ldr	r3, .L50
+ 503 02a8 0622     		movs	r2, #6
+ 504 02aa 5A70     		strb	r2, [r3, #1]
+ 505              		.loc 1 354 0
+ 506 02ac E2E0     		b	.L2
+ 507              	.L51:
+ 508 02ae 00BF     		.align	2
+ 509              	.L50:
+ 510 02b0 00000000 		.word	CurrentTest
+ 511 02b4 D4000000 		.word	CTestStatus
+ 512 02b8 C8000000 		.word	pTxPacket_Intermotive
+ 513 02bc 50000000 		.word	pRxPacket_Controller
+ 514              	.L10:
+ 355:ControllerTest_Complete.c ****                 
+ 356:ControllerTest_Complete.c ****         case QUAD_STREAM:   // configfile     
+ 357:ControllerTest_Complete.c ****         
+ 358:ControllerTest_Complete.c ****             CTest_StartAutomatedStep();
+ 515              		.loc 1 358 0
+ 516 02c0 FFF7FEFF 		bl	CTest_StartAutomatedStep
+ 359:ControllerTest_Complete.c **** 
+ 360:ControllerTest_Complete.c ****             MUX_CTRL_460800_Write(CTEST_QUAD);
+ 517              		.loc 1 360 0
+ 518 02c4 0020     		movs	r0, #0
+ 519 02c6 FFF7FEFF 		bl	MUX_CTRL_460800_Write
+ 361:ControllerTest_Complete.c **** 
+ 362:ControllerTest_Complete.c ****             while( (!VerifyPacket_460800(CTEST_RTEST_QUAD)) && (CTestStatus[CurrentTest.TestStep] !
+ 520              		.loc 1 362 0
+ 521 02ca 00BF     		nop
+ 522              	.L40:
+ 523              		.loc 1 362 0 is_stmt 0 discriminator 2
+ 524 02cc 0120     		movs	r0, #1
+ 525 02ce FFF7FEFF 		bl	VerifyPacket_460800
+ 526 02d2 0346     		mov	r3, r0
+ 527 02d4 002B     		cmp	r3, #0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 17
+
+
+ 528 02d6 06D1     		bne	.L39
+ 529              		.loc 1 362 0 discriminator 1
+ 530 02d8 694B     		ldr	r3, .L52
+ 531 02da 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 532 02dc 1A46     		mov	r2, r3
+ 533 02de 694B     		ldr	r3, .L52+4
+ 534 02e0 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 535 02e2 462B     		cmp	r3, #70
+ 536 02e4 F2D1     		bne	.L40
+ 537              	.L39:
+ 363:ControllerTest_Complete.c ****             {}
+ 364:ControllerTest_Complete.c ****             
+ 365:ControllerTest_Complete.c ****             CTest_StopAutomatedStep();
+ 538              		.loc 1 365 0 is_stmt 1
+ 539 02e6 FFF7FEFF 		bl	CTest_StopAutomatedStep
+ 366:ControllerTest_Complete.c ****             
+ 367:ControllerTest_Complete.c ****             CyDelay(CONFIRM_TIME);
+ 540              		.loc 1 367 0
+ 541 02ea 6420     		movs	r0, #100
+ 542 02ec FFF7FEFF 		bl	CyDelay
+ 368:ControllerTest_Complete.c ****             
+ 369:ControllerTest_Complete.c ****             if(CTestStatus[CurrentTest.TestStep] == 'F')
+ 543              		.loc 1 369 0
+ 544 02f0 634B     		ldr	r3, .L52
+ 545 02f2 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 546 02f4 1A46     		mov	r2, r3
+ 547 02f6 634B     		ldr	r3, .L52+4
+ 548 02f8 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 549 02fa 462B     		cmp	r3, #70
+ 550 02fc 03D1     		bne	.L41
+ 370:ControllerTest_Complete.c ****             {
+ 371:ControllerTest_Complete.c ****                 CurrentTest.TestStep = PASS;
+ 551              		.loc 1 371 0
+ 552 02fe 604B     		ldr	r3, .L52
+ 553 0300 0A22     		movs	r2, #10
+ 554 0302 5A70     		strb	r2, [r3, #1]
+ 372:ControllerTest_Complete.c ****             }
+ 373:ControllerTest_Complete.c ****             else
+ 374:ControllerTest_Complete.c ****             {
+ 375:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = INITIALIZE_TEST;
+ 376:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = AUDIO_STREAM;
+ 377:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = QUAD_STREAM;
+ 378:ControllerTest_Complete.c ****                 CurrentTest.TestStep = LEDS_RGB;
+ 379:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = PASS;
+ 380:ControllerTest_Complete.c ****             }
+ 381:ControllerTest_Complete.c **** 
+ 382:ControllerTest_Complete.c ****         break;
+ 555              		.loc 1 382 0
+ 556 0304 B6E0     		b	.L2
+ 557              	.L41:
+ 378:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = PASS;
+ 558              		.loc 1 378 0
+ 559 0306 5E4B     		ldr	r3, .L52
+ 560 0308 0722     		movs	r2, #7
+ 561 030a 5A70     		strb	r2, [r3, #1]
+ 562              		.loc 1 382 0
+ 563 030c B2E0     		b	.L2
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 18
+
+
+ 564              	.L11:
+ 383:ControllerTest_Complete.c ****             
+ 384:ControllerTest_Complete.c ****         case LEDS_RGB:   
+ 385:ControllerTest_Complete.c ****             
+ 386:ControllerTest_Complete.c ****             //CTest_PB_WaitForAction();
+ 387:ControllerTest_Complete.c ****             setLEDs(RED);
+ 565              		.loc 1 387 0
+ 566 030e 0020     		movs	r0, #0
+ 567 0310 FFF7FEFF 		bl	setLEDs
+ 388:ControllerTest_Complete.c ****             CTestStatus[CurrentTest.TestStep] = 'B';
+ 568              		.loc 1 388 0
+ 569 0314 5A4B     		ldr	r3, .L52
+ 570 0316 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 571 0318 1A46     		mov	r2, r3
+ 572 031a 5A4B     		ldr	r3, .L52+4
+ 573 031c 4221     		movs	r1, #66
+ 574 031e 9954     		strb	r1, [r3, r2]
+ 389:ControllerTest_Complete.c ****             CurrentTest.Status = 'B';            
+ 575              		.loc 1 389 0
+ 576 0320 574B     		ldr	r3, .L52
+ 577 0322 4222     		movs	r2, #66
+ 578 0324 9A70     		strb	r2, [r3, #2]
+ 390:ControllerTest_Complete.c ****             CyDelay(5000);
+ 579              		.loc 1 390 0
+ 580 0326 41F28830 		movw	r0, #5000
+ 581 032a FFF7FEFF 		bl	CyDelay
+ 391:ControllerTest_Complete.c ****             CTest_PB_WaitForAction();  
+ 582              		.loc 1 391 0
+ 583 032e FFF7FEFF 		bl	CTest_PB_WaitForAction
+ 392:ControllerTest_Complete.c ****             
+ 393:ControllerTest_Complete.c ****             setLEDs(BLUE);
+ 584              		.loc 1 393 0
+ 585 0332 0120     		movs	r0, #1
+ 586 0334 FFF7FEFF 		bl	setLEDs
+ 394:ControllerTest_Complete.c ****             CTestStatus[CurrentTest.TestStep] = 'B';
+ 587              		.loc 1 394 0
+ 588 0338 514B     		ldr	r3, .L52
+ 589 033a 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 590 033c 1A46     		mov	r2, r3
+ 591 033e 514B     		ldr	r3, .L52+4
+ 592 0340 4221     		movs	r1, #66
+ 593 0342 9954     		strb	r1, [r3, r2]
+ 395:ControllerTest_Complete.c ****             CurrentTest.Status = 'B';            
+ 594              		.loc 1 395 0
+ 595 0344 4E4B     		ldr	r3, .L52
+ 596 0346 4222     		movs	r2, #66
+ 597 0348 9A70     		strb	r2, [r3, #2]
+ 396:ControllerTest_Complete.c ****             CyDelay(5000);
+ 598              		.loc 1 396 0
+ 599 034a 41F28830 		movw	r0, #5000
+ 600 034e FFF7FEFF 		bl	CyDelay
+ 397:ControllerTest_Complete.c ****             CTest_PB_WaitForAction();
+ 601              		.loc 1 397 0
+ 602 0352 FFF7FEFF 		bl	CTest_PB_WaitForAction
+ 398:ControllerTest_Complete.c ****             
+ 399:ControllerTest_Complete.c ****             setLEDs(GREEN);
+ 603              		.loc 1 399 0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 19
+
+
+ 604 0356 0220     		movs	r0, #2
+ 605 0358 FFF7FEFF 		bl	setLEDs
+ 400:ControllerTest_Complete.c ****             CTestStatus[CurrentTest.TestStep] = 'B';
+ 606              		.loc 1 400 0
+ 607 035c 484B     		ldr	r3, .L52
+ 608 035e 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 609 0360 1A46     		mov	r2, r3
+ 610 0362 484B     		ldr	r3, .L52+4
+ 611 0364 4221     		movs	r1, #66
+ 612 0366 9954     		strb	r1, [r3, r2]
+ 401:ControllerTest_Complete.c ****             CurrentTest.Status = 'B';
+ 613              		.loc 1 401 0
+ 614 0368 454B     		ldr	r3, .L52
+ 615 036a 4222     		movs	r2, #66
+ 616 036c 9A70     		strb	r2, [r3, #2]
+ 402:ControllerTest_Complete.c ****             CyDelay(5000);
+ 617              		.loc 1 402 0
+ 618 036e 41F28830 		movw	r0, #5000
+ 619 0372 FFF7FEFF 		bl	CyDelay
+ 403:ControllerTest_Complete.c ****             CTest_PB_WaitForAction();
+ 620              		.loc 1 403 0
+ 621 0376 FFF7FEFF 		bl	CTest_PB_WaitForAction
+ 404:ControllerTest_Complete.c ****             
+ 405:ControllerTest_Complete.c ****             setLEDs(OFF);
+ 622              		.loc 1 405 0
+ 623 037a 0320     		movs	r0, #3
+ 624 037c FFF7FEFF 		bl	setLEDs
+ 406:ControllerTest_Complete.c ****             CTestStatus[CurrentTest.TestStep] = 'B';
+ 625              		.loc 1 406 0
+ 626 0380 3F4B     		ldr	r3, .L52
+ 627 0382 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 628 0384 1A46     		mov	r2, r3
+ 629 0386 3F4B     		ldr	r3, .L52+4
+ 630 0388 4221     		movs	r1, #66
+ 631 038a 9954     		strb	r1, [r3, r2]
+ 407:ControllerTest_Complete.c ****             CurrentTest.Status = 'B';
+ 632              		.loc 1 407 0
+ 633 038c 3C4B     		ldr	r3, .L52
+ 634 038e 4222     		movs	r2, #66
+ 635 0390 9A70     		strb	r2, [r3, #2]
+ 408:ControllerTest_Complete.c ****             CyDelay(5000);
+ 636              		.loc 1 408 0
+ 637 0392 41F28830 		movw	r0, #5000
+ 638 0396 FFF7FEFF 		bl	CyDelay
+ 409:ControllerTest_Complete.c **** //            CTest_PB_WaitForAction();
+ 410:ControllerTest_Complete.c **** 
+ 411:ControllerTest_Complete.c ****             CTestStatus[CurrentTest.TestStep] = 'P';
+ 639              		.loc 1 411 0
+ 640 039a 394B     		ldr	r3, .L52
+ 641 039c 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 642 039e 1A46     		mov	r2, r3
+ 643 03a0 384B     		ldr	r3, .L52+4
+ 644 03a2 5021     		movs	r1, #80
+ 645 03a4 9954     		strb	r1, [r3, r2]
+ 412:ControllerTest_Complete.c ****             CurrentTest.Status = 'P';
+ 646              		.loc 1 412 0
+ 647 03a6 364B     		ldr	r3, .L52
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 20
+
+
+ 648 03a8 5022     		movs	r2, #80
+ 649 03aa 9A70     		strb	r2, [r3, #2]
+ 413:ControllerTest_Complete.c ****             
+ 414:ControllerTest_Complete.c ****             CyDelay(CONFIRM_TIME);
+ 650              		.loc 1 414 0
+ 651 03ac 6420     		movs	r0, #100
+ 652 03ae FFF7FEFF 		bl	CyDelay
+ 415:ControllerTest_Complete.c ****             
+ 416:ControllerTest_Complete.c ****             if(CTestStatus[CurrentTest.TestStep] == 'F')
+ 653              		.loc 1 416 0
+ 654 03b2 334B     		ldr	r3, .L52
+ 655 03b4 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 656 03b6 1A46     		mov	r2, r3
+ 657 03b8 324B     		ldr	r3, .L52+4
+ 658 03ba 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 659 03bc 462B     		cmp	r3, #70
+ 660 03be 03D1     		bne	.L43
+ 417:ControllerTest_Complete.c ****             {
+ 418:ControllerTest_Complete.c ****                 CurrentTest.TestStep = PASS;
+ 661              		.loc 1 418 0
+ 662 03c0 2F4B     		ldr	r3, .L52
+ 663 03c2 0A22     		movs	r2, #10
+ 664 03c4 5A70     		strb	r2, [r3, #1]
+ 419:ControllerTest_Complete.c ****             }
+ 420:ControllerTest_Complete.c ****             else
+ 421:ControllerTest_Complete.c ****             {
+ 422:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = LEDS_RGB;
+ 423:ControllerTest_Complete.c ****                 CurrentTest.TestStep = AUDIO_STREAM;
+ 424:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = PUSHBUTTONS;
+ 425:ControllerTest_Complete.c ****             }
+ 426:ControllerTest_Complete.c ****       
+ 427:ControllerTest_Complete.c ****         break; 
+ 665              		.loc 1 427 0
+ 666 03c6 55E0     		b	.L2
+ 667              	.L43:
+ 423:ControllerTest_Complete.c ****                 //CurrentTest.TestStep = PUSHBUTTONS;
+ 668              		.loc 1 423 0
+ 669 03c8 2D4B     		ldr	r3, .L52
+ 670 03ca 0822     		movs	r2, #8
+ 671 03cc 5A70     		strb	r2, [r3, #1]
+ 672              		.loc 1 427 0
+ 673 03ce 51E0     		b	.L2
+ 674              	.L12:
+ 428:ControllerTest_Complete.c ****                        
+ 429:ControllerTest_Complete.c ****         case AUDIO_STREAM:  // (not a priority)
+ 430:ControllerTest_Complete.c ****             
+ 431:ControllerTest_Complete.c ****             CTestStatus[CurrentTest.TestStep] = 'U';           
+ 675              		.loc 1 431 0
+ 676 03d0 2B4B     		ldr	r3, .L52
+ 677 03d2 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 678 03d4 1A46     		mov	r2, r3
+ 679 03d6 2B4B     		ldr	r3, .L52+4
+ 680 03d8 5521     		movs	r1, #85
+ 681 03da 9954     		strb	r1, [r3, r2]
+ 432:ControllerTest_Complete.c ****             CurrentTest.Status = 'U'; 
+ 682              		.loc 1 432 0
+ 683 03dc 284B     		ldr	r3, .L52
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 21
+
+
+ 684 03de 5522     		movs	r2, #85
+ 685 03e0 9A70     		strb	r2, [r3, #2]
+ 433:ControllerTest_Complete.c ****             CyDelay(CONFIRM_TIME);
+ 686              		.loc 1 433 0
+ 687 03e2 6420     		movs	r0, #100
+ 688 03e4 FFF7FEFF 		bl	CyDelay
+ 434:ControllerTest_Complete.c **** //            CTestStatus[CurrentTest.TestStep] = 'P';
+ 435:ControllerTest_Complete.c **** //            CurrentTest.Status = 'P';
+ 436:ControllerTest_Complete.c **** //            CyDelay(CONFIRM_TIME);
+ 437:ControllerTest_Complete.c ****             
+ 438:ControllerTest_Complete.c ****             CurrentTest.TestStep = DEBUG_PORT;
+ 689              		.loc 1 438 0
+ 690 03e8 254B     		ldr	r3, .L52
+ 691 03ea 0922     		movs	r2, #9
+ 692 03ec 5A70     		strb	r2, [r3, #1]
+ 439:ControllerTest_Complete.c ****                 
+ 440:ControllerTest_Complete.c ****         break;
+ 693              		.loc 1 440 0
+ 694 03ee 41E0     		b	.L2
+ 695              	.L13:
+ 441:ControllerTest_Complete.c ****                          
+ 442:ControllerTest_Complete.c ****         case DEBUG_PORT:    // (not a priority)    
+ 443:ControllerTest_Complete.c ****             
+ 444:ControllerTest_Complete.c ****             CTestStatus[CurrentTest.TestStep] = 'U';           
+ 696              		.loc 1 444 0
+ 697 03f0 234B     		ldr	r3, .L52
+ 698 03f2 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 699 03f4 1A46     		mov	r2, r3
+ 700 03f6 234B     		ldr	r3, .L52+4
+ 701 03f8 5521     		movs	r1, #85
+ 702 03fa 9954     		strb	r1, [r3, r2]
+ 445:ControllerTest_Complete.c ****             CurrentTest.Status = 'U'; 
+ 703              		.loc 1 445 0
+ 704 03fc 204B     		ldr	r3, .L52
+ 705 03fe 5522     		movs	r2, #85
+ 706 0400 9A70     		strb	r2, [r3, #2]
+ 446:ControllerTest_Complete.c ****             CyDelay(CONFIRM_TIME);
+ 707              		.loc 1 446 0
+ 708 0402 6420     		movs	r0, #100
+ 709 0404 FFF7FEFF 		bl	CyDelay
+ 447:ControllerTest_Complete.c **** //            CTestStatus[CurrentTest.TestStep] = 'P';
+ 448:ControllerTest_Complete.c **** //            CurrentTest.Status = 'P';
+ 449:ControllerTest_Complete.c **** //            CyDelay(CONFIRM_TIME);
+ 450:ControllerTest_Complete.c ****             
+ 451:ControllerTest_Complete.c ****             //CurrentTest.TestStep = INITIALIZE_TEST;
+ 452:ControllerTest_Complete.c ****             //CurrentTest.TestStep = OBDII;
+ 453:ControllerTest_Complete.c ****             CurrentTest.TestStep = PASS;
+ 710              		.loc 1 453 0
+ 711 0408 1D4B     		ldr	r3, .L52
+ 712 040a 0A22     		movs	r2, #10
+ 713 040c 5A70     		strb	r2, [r3, #1]
+ 454:ControllerTest_Complete.c ****       
+ 455:ControllerTest_Complete.c ****         break;  
+ 714              		.loc 1 455 0
+ 715 040e 31E0     		b	.L2
+ 716              	.L14:
+ 717              	.LBB3:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 22
+
+
+ 456:ControllerTest_Complete.c ****             
+ 457:ControllerTest_Complete.c ****         case PASS:   
+ 458:ControllerTest_Complete.c **** 
+ 459:ControllerTest_Complete.c ****             for(uint8 i=0;i<(NUMBER_TEST_STEPS-1);i++)
+ 718              		.loc 1 459 0
+ 719 0410 0023     		movs	r3, #0
+ 720 0412 BB71     		strb	r3, [r7, #6]
+ 721 0414 1AE0     		b	.L45
+ 722              	.L47:
+ 460:ControllerTest_Complete.c ****             {
+ 461:ControllerTest_Complete.c ****                 if( (CTestStatus[i] != 'P') && (CTestStatus[i] != 'U') && (CTestStatus[i] != 'I') )
+ 723              		.loc 1 461 0
+ 724 0416 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 725 0418 1A4A     		ldr	r2, .L52+4
+ 726 041a D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
+ 727 041c 502B     		cmp	r3, #80
+ 728 041e 12D0     		beq	.L46
+ 729              		.loc 1 461 0 is_stmt 0 discriminator 1
+ 730 0420 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 731 0422 184A     		ldr	r2, .L52+4
+ 732 0424 D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
+ 733 0426 552B     		cmp	r3, #85
+ 734 0428 0DD0     		beq	.L46
+ 735              		.loc 1 461 0 discriminator 2
+ 736 042a BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 737 042c 154A     		ldr	r2, .L52+4
+ 738 042e D35C     		ldrb	r3, [r2, r3]	@ zero_extendqisi2
+ 739 0430 492B     		cmp	r3, #73
+ 740 0432 08D0     		beq	.L46
+ 462:ControllerTest_Complete.c ****                 {
+ 463:ControllerTest_Complete.c ****                     CTestStatus[CurrentTest.TestStep] = 'f';
+ 741              		.loc 1 463 0 is_stmt 1
+ 742 0434 124B     		ldr	r3, .L52
+ 743 0436 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 744 0438 1A46     		mov	r2, r3
+ 745 043a 124B     		ldr	r3, .L52+4
+ 746 043c 6621     		movs	r1, #102
+ 747 043e 9954     		strb	r1, [r3, r2]
+ 464:ControllerTest_Complete.c ****                     CurrentTest.Status = 'f';                      
+ 748              		.loc 1 464 0
+ 749 0440 0F4B     		ldr	r3, .L52
+ 750 0442 6622     		movs	r2, #102
+ 751 0444 9A70     		strb	r2, [r3, #2]
+ 752              	.L46:
+ 459:ControllerTest_Complete.c ****             {
+ 753              		.loc 1 459 0 discriminator 2
+ 754 0446 BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 755 0448 0133     		adds	r3, r3, #1
+ 756 044a BB71     		strb	r3, [r7, #6]
+ 757              	.L45:
+ 459:ControllerTest_Complete.c ****             {
+ 758              		.loc 1 459 0 is_stmt 0 discriminator 1
+ 759 044c BB79     		ldrb	r3, [r7, #6]	@ zero_extendqisi2
+ 760 044e 092B     		cmp	r3, #9
+ 761 0450 E1D9     		bls	.L47
+ 762              	.LBE3:
+ 465:ControllerTest_Complete.c ****                 }    
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 23
+
+
+ 466:ControllerTest_Complete.c ****             }
+ 467:ControllerTest_Complete.c ****  
+ 468:ControllerTest_Complete.c ****             if(CTestStatus[CurrentTest.TestStep] != 'f')
+ 763              		.loc 1 468 0 is_stmt 1
+ 764 0452 0B4B     		ldr	r3, .L52
+ 765 0454 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 766 0456 1A46     		mov	r2, r3
+ 767 0458 0A4B     		ldr	r3, .L52+4
+ 768 045a 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 769 045c 662B     		cmp	r3, #102
+ 770 045e 08D0     		beq	.L48
+ 469:ControllerTest_Complete.c ****             {
+ 470:ControllerTest_Complete.c ****                 CTestStatus[CurrentTest.TestStep] = 'p';
+ 771              		.loc 1 470 0
+ 772 0460 074B     		ldr	r3, .L52
+ 773 0462 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 774 0464 1A46     		mov	r2, r3
+ 775 0466 074B     		ldr	r3, .L52+4
+ 776 0468 7021     		movs	r1, #112
+ 777 046a 9954     		strb	r1, [r3, r2]
+ 471:ControllerTest_Complete.c ****                 CurrentTest.Status = 'p'; 
+ 778              		.loc 1 471 0
+ 779 046c 044B     		ldr	r3, .L52
+ 780 046e 7022     		movs	r2, #112
+ 781 0470 9A70     		strb	r2, [r3, #2]
+ 782              	.L48:
+ 472:ControllerTest_Complete.c ****             }
+ 473:ControllerTest_Complete.c ****             
+ 474:ControllerTest_Complete.c ****             while(1);
+ 783              		.loc 1 474 0 discriminator 1
+ 784 0472 FEE7     		b	.L48
+ 785              	.L2:
+ 475:ControllerTest_Complete.c **** //            while(PB_NextAction_Read() != 1){};
+ 476:ControllerTest_Complete.c **** //            CTestStatus[CurrentTest.TestStep] = 'r';
+ 477:ControllerTest_Complete.c **** //            CurrentTest.Status = 'r'; 
+ 478:ControllerTest_Complete.c **** //            CyDelay(1000);
+ 479:ControllerTest_Complete.c **** //            CurrentTest.TestStep = INITIALIZE_TEST;
+ 480:ControllerTest_Complete.c ****       
+ 481:ControllerTest_Complete.c ****         break; 
+ 482:ControllerTest_Complete.c ****        
+ 483:ControllerTest_Complete.c ****     }
+ 484:ControllerTest_Complete.c ****     
+ 485:ControllerTest_Complete.c ****     return(0);
+ 786              		.loc 1 485 0
+ 787 0474 0023     		movs	r3, #0
+ 486:ControllerTest_Complete.c **** }
+ 788              		.loc 1 486 0
+ 789 0476 1846     		mov	r0, r3
+ 790 0478 0837     		adds	r7, r7, #8
+ 791              		.cfi_def_cfa_offset 8
+ 792 047a BD46     		mov	sp, r7
+ 793              		.cfi_def_cfa_register 13
+ 794              		@ sp needed
+ 795 047c 80BD     		pop	{r7, pc}
+ 796              	.L53:
+ 797 047e 00BF     		.align	2
+ 798              	.L52:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 24
+
+
+ 799 0480 00000000 		.word	CurrentTest
+ 800 0484 D4000000 		.word	CTestStatus
+ 801              		.cfi_endproc
+ 802              	.LFE63:
+ 803              		.size	ControllerTest_Complete, .-ControllerTest_Complete
+ 804              		.text
+ 805              	.Letext0:
+ 806              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 807              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 808              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 809              		.file 5 "CommonVariables.h"
+ 810              		.file 6 "UART_460800_Functions.h"
+ 811              		.file 7 "UART_230400_Functions.h"
+ 812              		.file 8 "Generated_Source\\PSoC5/core_cm3.h"
+ 813              		.section	.debug_info,"",%progbits
+ 814              	.Ldebug_info0:
+ 815 0000 6A0D0000 		.4byte	0xd6a
+ 816 0004 0400     		.2byte	0x4
+ 817 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 818 000a 04       		.byte	0x4
+ 819 000b 01       		.uleb128 0x1
+ 820 000c 91000000 		.4byte	.LASF178
+ 821 0010 0C       		.byte	0xc
+ 822 0011 AB050000 		.4byte	.LASF179
+ 823 0015 1F090000 		.4byte	.LASF180
+ 824 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 825 001d 00000000 		.4byte	0
+ 826 0021 00000000 		.4byte	.Ldebug_line0
+ 827 0025 02       		.uleb128 0x2
+ 828 0026 01       		.byte	0x1
+ 829 0027 06       		.byte	0x6
+ 830 0028 B0010000 		.4byte	.LASF0
+ 831 002c 02       		.uleb128 0x2
+ 832 002d 01       		.byte	0x1
+ 833 002e 08       		.byte	0x8
+ 834 002f D6050000 		.4byte	.LASF1
+ 835 0033 02       		.uleb128 0x2
+ 836 0034 02       		.byte	0x2
+ 837 0035 05       		.byte	0x5
+ 838 0036 26060000 		.4byte	.LASF2
+ 839 003a 02       		.uleb128 0x2
+ 840 003b 02       		.byte	0x2
+ 841 003c 07       		.byte	0x7
+ 842 003d E3030000 		.4byte	.LASF3
+ 843 0041 03       		.uleb128 0x3
+ 844 0042 46010000 		.4byte	.LASF9
+ 845 0046 02       		.byte	0x2
+ 846 0047 3F       		.byte	0x3f
+ 847 0048 4C000000 		.4byte	0x4c
+ 848 004c 02       		.uleb128 0x2
+ 849 004d 04       		.byte	0x4
+ 850 004e 05       		.byte	0x5
+ 851 004f 1D020000 		.4byte	.LASF4
+ 852 0053 02       		.uleb128 0x2
+ 853 0054 04       		.byte	0x4
+ 854 0055 07       		.byte	0x7
+ 855 0056 57030000 		.4byte	.LASF5
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 25
+
+
+ 856 005a 02       		.uleb128 0x2
+ 857 005b 08       		.byte	0x8
+ 858 005c 05       		.byte	0x5
+ 859 005d A2010000 		.4byte	.LASF6
+ 860 0061 02       		.uleb128 0x2
+ 861 0062 08       		.byte	0x8
+ 862 0063 07       		.byte	0x7
+ 863 0064 F4010000 		.4byte	.LASF7
+ 864 0068 04       		.uleb128 0x4
+ 865 0069 04       		.byte	0x4
+ 866 006a 05       		.byte	0x5
+ 867 006b 696E7400 		.ascii	"int\000"
+ 868 006f 02       		.uleb128 0x2
+ 869 0070 04       		.byte	0x4
+ 870 0071 07       		.byte	0x7
+ 871 0072 F4020000 		.4byte	.LASF8
+ 872 0076 03       		.uleb128 0x3
+ 873 0077 CE050000 		.4byte	.LASF10
+ 874 007b 03       		.byte	0x3
+ 875 007c 2C       		.byte	0x2c
+ 876 007d 41000000 		.4byte	0x41
+ 877 0081 05       		.uleb128 0x5
+ 878 0082 2F020000 		.4byte	.LASF11
+ 879 0086 04       		.byte	0x4
+ 880 0087 E401     		.2byte	0x1e4
+ 881 0089 2C000000 		.4byte	0x2c
+ 882 008d 05       		.uleb128 0x5
+ 883 008e 14000000 		.4byte	.LASF12
+ 884 0092 04       		.byte	0x4
+ 885 0093 E501     		.2byte	0x1e5
+ 886 0095 3A000000 		.4byte	0x3a
+ 887 0099 02       		.uleb128 0x2
+ 888 009a 04       		.byte	0x4
+ 889 009b 04       		.byte	0x4
+ 890 009c 73050000 		.4byte	.LASF13
+ 891 00a0 02       		.uleb128 0x2
+ 892 00a1 08       		.byte	0x8
+ 893 00a2 04       		.byte	0x4
+ 894 00a3 45020000 		.4byte	.LASF14
+ 895 00a7 02       		.uleb128 0x2
+ 896 00a8 01       		.byte	0x1
+ 897 00a9 08       		.byte	0x8
+ 898 00aa 0B070000 		.4byte	.LASF15
+ 899 00ae 02       		.uleb128 0x2
+ 900 00af 08       		.byte	0x8
+ 901 00b0 04       		.byte	0x4
+ 902 00b1 FF060000 		.4byte	.LASF16
+ 903 00b5 02       		.uleb128 0x2
+ 904 00b6 04       		.byte	0x4
+ 905 00b7 07       		.byte	0x7
+ 906 00b8 C1040000 		.4byte	.LASF17
+ 907 00bc 06       		.uleb128 0x6
+ 908 00bd BA080000 		.4byte	.LASF22
+ 909 00c1 03       		.byte	0x3
+ 910 00c2 05       		.byte	0x5
+ 911 00c3 10       		.byte	0x10
+ 912 00c4 ED000000 		.4byte	0xed
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 26
+
+
+ 913 00c8 07       		.uleb128 0x7
+ 914 00c9 9D060000 		.4byte	.LASF18
+ 915 00cd 05       		.byte	0x5
+ 916 00ce 12       		.byte	0x12
+ 917 00cf 81000000 		.4byte	0x81
+ 918 00d3 00       		.byte	0
+ 919 00d4 07       		.uleb128 0x7
+ 920 00d5 62060000 		.4byte	.LASF19
+ 921 00d9 05       		.byte	0x5
+ 922 00da 13       		.byte	0x13
+ 923 00db 81000000 		.4byte	0x81
+ 924 00df 01       		.byte	0x1
+ 925 00e0 07       		.uleb128 0x7
+ 926 00e1 06090000 		.4byte	.LASF20
+ 927 00e5 05       		.byte	0x5
+ 928 00e6 14       		.byte	0x14
+ 929 00e7 81000000 		.4byte	0x81
+ 930 00eb 02       		.byte	0x2
+ 931 00ec 00       		.byte	0
+ 932 00ed 03       		.uleb128 0x3
+ 933 00ee 79050000 		.4byte	.LASF21
+ 934 00f2 05       		.byte	0x5
+ 935 00f3 18       		.byte	0x18
+ 936 00f4 BC000000 		.4byte	0xbc
+ 937 00f8 08       		.uleb128 0x8
+ 938 00f9 81000000 		.4byte	0x81
+ 939 00fd 08010000 		.4byte	0x108
+ 940 0101 09       		.uleb128 0x9
+ 941 0102 B5000000 		.4byte	0xb5
+ 942 0106 08       		.byte	0x8
+ 943 0107 00       		.byte	0
+ 944 0108 06       		.uleb128 0x6
+ 945 0109 48080000 		.4byte	.LASF23
+ 946 010d 09       		.byte	0x9
+ 947 010e 06       		.byte	0x6
+ 948 010f B7       		.byte	0xb7
+ 949 0110 81010000 		.4byte	0x181
+ 950 0114 07       		.uleb128 0x7
+ 951 0115 F6030000 		.4byte	.LASF24
+ 952 0119 06       		.byte	0x6
+ 953 011a B9       		.byte	0xb9
+ 954 011b 81000000 		.4byte	0x81
+ 955 011f 00       		.byte	0
+ 956 0120 07       		.uleb128 0x7
+ 957 0121 FC030000 		.4byte	.LASF25
+ 958 0125 06       		.byte	0x6
+ 959 0126 BA       		.byte	0xba
+ 960 0127 81000000 		.4byte	0x81
+ 961 012b 01       		.byte	0x1
+ 962 012c 07       		.uleb128 0x7
+ 963 012d 02040000 		.4byte	.LASF26
+ 964 0131 06       		.byte	0x6
+ 965 0132 BB       		.byte	0xbb
+ 966 0133 81000000 		.4byte	0x81
+ 967 0137 02       		.byte	0x2
+ 968 0138 07       		.uleb128 0x7
+ 969 0139 08040000 		.4byte	.LASF27
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 27
+
+
+ 970 013d 06       		.byte	0x6
+ 971 013e BC       		.byte	0xbc
+ 972 013f 81000000 		.4byte	0x81
+ 973 0143 03       		.byte	0x3
+ 974 0144 07       		.uleb128 0x7
+ 975 0145 0E040000 		.4byte	.LASF28
+ 976 0149 06       		.byte	0x6
+ 977 014a BD       		.byte	0xbd
+ 978 014b 81000000 		.4byte	0x81
+ 979 014f 04       		.byte	0x4
+ 980 0150 07       		.uleb128 0x7
+ 981 0151 14040000 		.4byte	.LASF29
+ 982 0155 06       		.byte	0x6
+ 983 0156 BE       		.byte	0xbe
+ 984 0157 81000000 		.4byte	0x81
+ 985 015b 05       		.byte	0x5
+ 986 015c 07       		.uleb128 0x7
+ 987 015d 1A040000 		.4byte	.LASF30
+ 988 0161 06       		.byte	0x6
+ 989 0162 BF       		.byte	0xbf
+ 990 0163 81000000 		.4byte	0x81
+ 991 0167 06       		.byte	0x6
+ 992 0168 07       		.uleb128 0x7
+ 993 0169 20040000 		.4byte	.LASF31
+ 994 016d 06       		.byte	0x6
+ 995 016e C0       		.byte	0xc0
+ 996 016f 81000000 		.4byte	0x81
+ 997 0173 07       		.byte	0x7
+ 998 0174 07       		.uleb128 0x7
+ 999 0175 71070000 		.4byte	.LASF32
+ 1000 0179 06       		.byte	0x6
+ 1001 017a C1       		.byte	0xc1
+ 1002 017b 81000000 		.4byte	0x81
+ 1003 017f 08       		.byte	0x8
+ 1004 0180 00       		.byte	0
+ 1005 0181 0A       		.uleb128 0xa
+ 1006 0182 AC040000 		.4byte	.LASF115
+ 1007 0186 09       		.byte	0x9
+ 1008 0187 06       		.byte	0x6
+ 1009 0188 B3       		.byte	0xb3
+ 1010 0189 A4010000 		.4byte	0x1a4
+ 1011 018d 0B       		.uleb128 0xb
+ 1012 018e A3020000 		.4byte	.LASF33
+ 1013 0192 06       		.byte	0x6
+ 1014 0193 B5       		.byte	0xb5
+ 1015 0194 F8000000 		.4byte	0xf8
+ 1016 0198 0B       		.uleb128 0xb
+ 1017 0199 6C040000 		.4byte	.LASF34
+ 1018 019d 06       		.byte	0x6
+ 1019 019e C2       		.byte	0xc2
+ 1020 019f 08010000 		.4byte	0x108
+ 1021 01a3 00       		.byte	0
+ 1022 01a4 03       		.uleb128 0x3
+ 1023 01a5 76020000 		.4byte	.LASF35
+ 1024 01a9 06       		.byte	0x6
+ 1025 01aa C3       		.byte	0xc3
+ 1026 01ab 81010000 		.4byte	0x181
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 28
+
+
+ 1027 01af 06       		.uleb128 0x6
+ 1028 01b0 CD020000 		.4byte	.LASF36
+ 1029 01b4 4F       		.byte	0x4f
+ 1030 01b5 07       		.byte	0x7
+ 1031 01b6 32       		.byte	0x32
+ 1032 01b7 70050000 		.4byte	0x570
+ 1033 01bb 07       		.uleb128 0x7
+ 1034 01bc 9A030000 		.4byte	.LASF37
+ 1035 01c0 07       		.byte	0x7
+ 1036 01c1 34       		.byte	0x34
+ 1037 01c2 81000000 		.4byte	0x81
+ 1038 01c6 00       		.byte	0
+ 1039 01c7 07       		.uleb128 0x7
+ 1040 01c8 EE040000 		.4byte	.LASF38
+ 1041 01cc 07       		.byte	0x7
+ 1042 01cd 35       		.byte	0x35
+ 1043 01ce 81000000 		.4byte	0x81
+ 1044 01d2 01       		.byte	0x1
+ 1045 01d3 07       		.uleb128 0x7
+ 1046 01d4 01030000 		.4byte	.LASF39
+ 1047 01d8 07       		.byte	0x7
+ 1048 01d9 36       		.byte	0x36
+ 1049 01da 81000000 		.4byte	0x81
+ 1050 01de 02       		.byte	0x2
+ 1051 01df 07       		.uleb128 0x7
+ 1052 01e0 0F050000 		.4byte	.LASF40
+ 1053 01e4 07       		.byte	0x7
+ 1054 01e5 37       		.byte	0x37
+ 1055 01e6 81000000 		.4byte	0x81
+ 1056 01ea 03       		.byte	0x3
+ 1057 01eb 07       		.uleb128 0x7
+ 1058 01ec F7040000 		.4byte	.LASF41
+ 1059 01f0 07       		.byte	0x7
+ 1060 01f1 38       		.byte	0x38
+ 1061 01f2 81000000 		.4byte	0x81
+ 1062 01f6 04       		.byte	0x4
+ 1063 01f7 07       		.uleb128 0x7
+ 1064 01f8 E5040000 		.4byte	.LASF42
+ 1065 01fc 07       		.byte	0x7
+ 1066 01fd 39       		.byte	0x39
+ 1067 01fe 81000000 		.4byte	0x81
+ 1068 0202 05       		.byte	0x5
+ 1069 0203 07       		.uleb128 0x7
+ 1070 0204 B3060000 		.4byte	.LASF43
+ 1071 0208 07       		.byte	0x7
+ 1072 0209 3A       		.byte	0x3a
+ 1073 020a 81000000 		.4byte	0x81
+ 1074 020e 06       		.byte	0x6
+ 1075 020f 07       		.uleb128 0x7
+ 1076 0210 94060000 		.4byte	.LASF44
+ 1077 0214 07       		.byte	0x7
+ 1078 0215 3B       		.byte	0x3b
+ 1079 0216 81000000 		.4byte	0x81
+ 1080 021a 07       		.byte	0x7
+ 1081 021b 07       		.uleb128 0x7
+ 1082 021c 6B060000 		.4byte	.LASF45
+ 1083 0220 07       		.byte	0x7
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 29
+
+
+ 1084 0221 3C       		.byte	0x3c
+ 1085 0222 81000000 		.4byte	0x81
+ 1086 0226 08       		.byte	0x8
+ 1087 0227 07       		.uleb128 0x7
+ 1088 0228 D2080000 		.4byte	.LASF46
+ 1089 022c 07       		.byte	0x7
+ 1090 022d 3D       		.byte	0x3d
+ 1091 022e 81000000 		.4byte	0x81
+ 1092 0232 09       		.byte	0x9
+ 1093 0233 07       		.uleb128 0x7
+ 1094 0234 9B080000 		.4byte	.LASF47
+ 1095 0238 07       		.byte	0x7
+ 1096 0239 3E       		.byte	0x3e
+ 1097 023a 81000000 		.4byte	0x81
+ 1098 023e 0A       		.byte	0xa
+ 1099 023f 07       		.uleb128 0x7
+ 1100 0240 86040000 		.4byte	.LASF48
+ 1101 0244 07       		.byte	0x7
+ 1102 0245 3F       		.byte	0x3f
+ 1103 0246 81000000 		.4byte	0x81
+ 1104 024a 0B       		.byte	0xb
+ 1105 024b 07       		.uleb128 0x7
+ 1106 024c 34010000 		.4byte	.LASF49
+ 1107 0250 07       		.byte	0x7
+ 1108 0251 40       		.byte	0x40
+ 1109 0252 81000000 		.4byte	0x81
+ 1110 0256 0C       		.byte	0xc
+ 1111 0257 07       		.uleb128 0x7
+ 1112 0258 88000000 		.4byte	.LASF50
+ 1113 025c 07       		.byte	0x7
+ 1114 025d 41       		.byte	0x41
+ 1115 025e 81000000 		.4byte	0x81
+ 1116 0262 0D       		.byte	0xd
+ 1117 0263 07       		.uleb128 0x7
+ 1118 0264 26050000 		.4byte	.LASF51
+ 1119 0268 07       		.byte	0x7
+ 1120 0269 42       		.byte	0x42
+ 1121 026a 81000000 		.4byte	0x81
+ 1122 026e 0E       		.byte	0xe
+ 1123 026f 07       		.uleb128 0x7
+ 1124 0270 A9020000 		.4byte	.LASF52
+ 1125 0274 07       		.byte	0x7
+ 1126 0275 43       		.byte	0x43
+ 1127 0276 81000000 		.4byte	0x81
+ 1128 027a 0F       		.byte	0xf
+ 1129 027b 07       		.uleb128 0x7
+ 1130 027c D1010000 		.4byte	.LASF53
+ 1131 0280 07       		.byte	0x7
+ 1132 0281 44       		.byte	0x44
+ 1133 0282 81000000 		.4byte	0x81
+ 1134 0286 10       		.byte	0x10
+ 1135 0287 07       		.uleb128 0x7
+ 1136 0288 4C020000 		.4byte	.LASF54
+ 1137 028c 07       		.byte	0x7
+ 1138 028d 45       		.byte	0x45
+ 1139 028e 81000000 		.4byte	0x81
+ 1140 0292 11       		.byte	0x11
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 30
+
+
+ 1141 0293 07       		.uleb128 0x7
+ 1142 0294 63040000 		.4byte	.LASF55
+ 1143 0298 07       		.byte	0x7
+ 1144 0299 46       		.byte	0x46
+ 1145 029a 81000000 		.4byte	0x81
+ 1146 029e 12       		.byte	0x12
+ 1147 029f 07       		.uleb128 0x7
+ 1148 02a0 40040000 		.4byte	.LASF56
+ 1149 02a4 07       		.byte	0x7
+ 1150 02a5 47       		.byte	0x47
+ 1151 02a6 81000000 		.4byte	0x81
+ 1152 02aa 13       		.byte	0x13
+ 1153 02ab 07       		.uleb128 0x7
+ 1154 02ac 26040000 		.4byte	.LASF57
+ 1155 02b0 07       		.byte	0x7
+ 1156 02b1 48       		.byte	0x48
+ 1157 02b2 81000000 		.4byte	0x81
+ 1158 02b6 14       		.byte	0x14
+ 1159 02b7 07       		.uleb128 0x7
+ 1160 02b8 F0080000 		.4byte	.LASF58
+ 1161 02bc 07       		.byte	0x7
+ 1162 02bd 49       		.byte	0x49
+ 1163 02be 81000000 		.4byte	0x81
+ 1164 02c2 15       		.byte	0x15
+ 1165 02c3 07       		.uleb128 0x7
+ 1166 02c4 DB080000 		.4byte	.LASF59
+ 1167 02c8 07       		.byte	0x7
+ 1168 02c9 4A       		.byte	0x4a
+ 1169 02ca 81000000 		.4byte	0x81
+ 1170 02ce 16       		.byte	0x16
+ 1171 02cf 07       		.uleb128 0x7
+ 1172 02d0 C9080000 		.4byte	.LASF60
+ 1173 02d4 07       		.byte	0x7
+ 1174 02d5 4B       		.byte	0x4b
+ 1175 02d6 81000000 		.4byte	0x81
+ 1176 02da 17       		.byte	0x17
+ 1177 02db 07       		.uleb128 0x7
+ 1178 02dc 5C010000 		.4byte	.LASF61
+ 1179 02e0 07       		.byte	0x7
+ 1180 02e1 4C       		.byte	0x4c
+ 1181 02e2 81000000 		.4byte	0x81
+ 1182 02e6 18       		.byte	0x18
+ 1183 02e7 07       		.uleb128 0x7
+ 1184 02e8 3D010000 		.4byte	.LASF62
+ 1185 02ec 07       		.byte	0x7
+ 1186 02ed 4D       		.byte	0x4d
+ 1187 02ee 81000000 		.4byte	0x81
+ 1188 02f2 19       		.byte	0x19
+ 1189 02f3 07       		.uleb128 0x7
+ 1190 02f4 1F010000 		.4byte	.LASF63
+ 1191 02f8 07       		.byte	0x7
+ 1192 02f9 4E       		.byte	0x4e
+ 1193 02fa 81000000 		.4byte	0x81
+ 1194 02fe 1A       		.byte	0x1a
+ 1195 02ff 07       		.uleb128 0x7
+ 1196 0300 DF020000 		.4byte	.LASF64
+ 1197 0304 07       		.byte	0x7
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 31
+
+
+ 1198 0305 4F       		.byte	0x4f
+ 1199 0306 81000000 		.4byte	0x81
+ 1200 030a 1B       		.byte	0x1b
+ 1201 030b 07       		.uleb128 0x7
+ 1202 030c B2020000 		.4byte	.LASF65
+ 1203 0310 07       		.byte	0x7
+ 1204 0311 50       		.byte	0x50
+ 1205 0312 81000000 		.4byte	0x81
+ 1206 0316 1C       		.byte	0x1c
+ 1207 0317 07       		.uleb128 0x7
+ 1208 0318 9A020000 		.4byte	.LASF66
+ 1209 031c 07       		.byte	0x7
+ 1210 031d 51       		.byte	0x51
+ 1211 031e 81000000 		.4byte	0x81
+ 1212 0322 1D       		.byte	0x1d
+ 1213 0323 07       		.uleb128 0x7
+ 1214 0324 7D040000 		.4byte	.LASF67
+ 1215 0328 07       		.byte	0x7
+ 1216 0329 52       		.byte	0x52
+ 1217 032a 81000000 		.4byte	0x81
+ 1218 032e 1E       		.byte	0x1e
+ 1219 032f 07       		.uleb128 0x7
+ 1220 0330 74040000 		.4byte	.LASF68
+ 1221 0334 07       		.byte	0x7
+ 1222 0335 53       		.byte	0x53
+ 1223 0336 81000000 		.4byte	0x81
+ 1224 033a 1F       		.byte	0x1f
+ 1225 033b 07       		.uleb128 0x7
+ 1226 033c 5A040000 		.4byte	.LASF69
+ 1227 0340 07       		.byte	0x7
+ 1228 0341 54       		.byte	0x54
+ 1229 0342 81000000 		.4byte	0x81
+ 1230 0346 20       		.byte	0x20
+ 1231 0347 07       		.uleb128 0x7
+ 1232 0348 06060000 		.4byte	.LASF70
+ 1233 034c 07       		.byte	0x7
+ 1234 034d 55       		.byte	0x55
+ 1235 034e 81000000 		.4byte	0x81
+ 1236 0352 21       		.byte	0x21
+ 1237 0353 07       		.uleb128 0x7
+ 1238 0354 C5050000 		.4byte	.LASF71
+ 1239 0358 07       		.byte	0x7
+ 1240 0359 56       		.byte	0x56
+ 1241 035a 81000000 		.4byte	0x81
+ 1242 035e 22       		.byte	0x22
+ 1243 035f 07       		.uleb128 0x7
+ 1244 0360 AA060000 		.4byte	.LASF72
+ 1245 0364 07       		.byte	0x7
+ 1246 0365 57       		.byte	0x57
+ 1247 0366 81000000 		.4byte	0x81
+ 1248 036a 23       		.byte	0x23
+ 1249 036b 07       		.uleb128 0x7
+ 1250 036c DE070000 		.4byte	.LASF73
+ 1251 0370 07       		.byte	0x7
+ 1252 0371 58       		.byte	0x58
+ 1253 0372 81000000 		.4byte	0x81
+ 1254 0376 24       		.byte	0x24
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 32
+
+
+ 1255 0377 07       		.uleb128 0x7
+ 1256 0378 8B070000 		.4byte	.LASF74
+ 1257 037c 07       		.byte	0x7
+ 1258 037d 59       		.byte	0x59
+ 1259 037e 81000000 		.4byte	0x81
+ 1260 0382 25       		.byte	0x25
+ 1261 0383 07       		.uleb128 0x7
+ 1262 0384 68070000 		.4byte	.LASF75
+ 1263 0388 07       		.byte	0x7
+ 1264 0389 5A       		.byte	0x5a
+ 1265 038a 81000000 		.4byte	0x81
+ 1266 038e 26       		.byte	0x26
+ 1267 038f 07       		.uleb128 0x7
+ 1268 0390 1B000000 		.4byte	.LASF76
+ 1269 0394 07       		.byte	0x7
+ 1270 0395 5B       		.byte	0x5b
+ 1271 0396 81000000 		.4byte	0x81
+ 1272 039a 27       		.byte	0x27
+ 1273 039b 07       		.uleb128 0x7
+ 1274 039c 8C090000 		.4byte	.LASF77
+ 1275 03a0 07       		.byte	0x7
+ 1276 03a1 5C       		.byte	0x5c
+ 1277 03a2 81000000 		.4byte	0x81
+ 1278 03a6 28       		.byte	0x28
+ 1279 03a7 07       		.uleb128 0x7
+ 1280 03a8 7E090000 		.4byte	.LASF78
+ 1281 03ac 07       		.byte	0x7
+ 1282 03ad 5D       		.byte	0x5d
+ 1283 03ae 81000000 		.4byte	0x81
+ 1284 03b2 29       		.byte	0x29
+ 1285 03b3 07       		.uleb128 0x7
+ 1286 03b4 26020000 		.4byte	.LASF79
+ 1287 03b8 07       		.byte	0x7
+ 1288 03b9 5E       		.byte	0x5e
+ 1289 03ba 81000000 		.4byte	0x81
+ 1290 03be 2A       		.byte	0x2a
+ 1291 03bf 07       		.uleb128 0x7
+ 1292 03c0 14020000 		.4byte	.LASF80
+ 1293 03c4 07       		.byte	0x7
+ 1294 03c5 5F       		.byte	0x5f
+ 1295 03c6 81000000 		.4byte	0x81
+ 1296 03ca 2B       		.byte	0x2b
+ 1297 03cb 07       		.uleb128 0x7
+ 1298 03cc 0B020000 		.4byte	.LASF81
+ 1299 03d0 07       		.byte	0x7
+ 1300 03d1 60       		.byte	0x60
+ 1301 03d2 81000000 		.4byte	0x81
+ 1302 03d6 2C       		.byte	0x2c
+ 1303 03d7 07       		.uleb128 0x7
+ 1304 03d8 CE030000 		.4byte	.LASF82
+ 1305 03dc 07       		.byte	0x7
+ 1306 03dd 61       		.byte	0x61
+ 1307 03de 81000000 		.4byte	0x81
+ 1308 03e2 2D       		.byte	0x2d
+ 1309 03e3 07       		.uleb128 0x7
+ 1310 03e4 91030000 		.4byte	.LASF83
+ 1311 03e8 07       		.byte	0x7
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 33
+
+
+ 1312 03e9 62       		.byte	0x62
+ 1313 03ea 81000000 		.4byte	0x81
+ 1314 03ee 2E       		.byte	0x2e
+ 1315 03ef 07       		.uleb128 0x7
+ 1316 03f0 24000000 		.4byte	.LASF84
+ 1317 03f4 07       		.byte	0x7
+ 1318 03f5 63       		.byte	0x63
+ 1319 03f6 81000000 		.4byte	0x81
+ 1320 03fa 2F       		.byte	0x2f
+ 1321 03fb 07       		.uleb128 0x7
+ 1322 03fc 55020000 		.4byte	.LASF85
+ 1323 0400 07       		.byte	0x7
+ 1324 0401 64       		.byte	0x64
+ 1325 0402 81000000 		.4byte	0x81
+ 1326 0406 30       		.byte	0x30
+ 1327 0407 07       		.uleb128 0x7
+ 1328 0408 94070000 		.4byte	.LASF86
+ 1329 040c 07       		.byte	0x7
+ 1330 040d 65       		.byte	0x65
+ 1331 040e 81000000 		.4byte	0x81
+ 1332 0412 31       		.byte	0x31
+ 1333 0413 07       		.uleb128 0x7
+ 1334 0414 8A080000 		.4byte	.LASF87
+ 1335 0418 07       		.byte	0x7
+ 1336 0419 66       		.byte	0x66
+ 1337 041a 81000000 		.4byte	0x81
+ 1338 041e 32       		.byte	0x32
+ 1339 041f 07       		.uleb128 0x7
+ 1340 0420 5E020000 		.4byte	.LASF88
+ 1341 0424 07       		.byte	0x7
+ 1342 0425 67       		.byte	0x67
+ 1343 0426 81000000 		.4byte	0x81
+ 1344 042a 33       		.byte	0x33
+ 1345 042b 07       		.uleb128 0x7
+ 1346 042c AE030000 		.4byte	.LASF89
+ 1347 0430 07       		.byte	0x7
+ 1348 0431 68       		.byte	0x68
+ 1349 0432 81000000 		.4byte	0x81
+ 1350 0436 34       		.byte	0x34
+ 1351 0437 07       		.uleb128 0x7
+ 1352 0438 18050000 		.4byte	.LASF90
+ 1353 043c 07       		.byte	0x7
+ 1354 043d 69       		.byte	0x69
+ 1355 043e 81000000 		.4byte	0x81
+ 1356 0442 35       		.byte	0x35
+ 1357 0443 07       		.uleb128 0x7
+ 1358 0444 9C050000 		.4byte	.LASF91
+ 1359 0448 07       		.byte	0x7
+ 1360 0449 6A       		.byte	0x6a
+ 1361 044a 81000000 		.4byte	0x81
+ 1362 044e 36       		.byte	0x36
+ 1363 044f 07       		.uleb128 0x7
+ 1364 0450 F7070000 		.4byte	.LASF92
+ 1365 0454 07       		.byte	0x7
+ 1366 0455 6B       		.byte	0x6b
+ 1367 0456 81000000 		.4byte	0x81
+ 1368 045a 37       		.byte	0x37
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 34
+
+
+ 1369 045b 07       		.uleb128 0x7
+ 1370 045c 07080000 		.4byte	.LASF93
+ 1371 0460 07       		.byte	0x7
+ 1372 0461 6C       		.byte	0x6c
+ 1373 0462 81000000 		.4byte	0x81
+ 1374 0466 38       		.byte	0x38
+ 1375 0467 07       		.uleb128 0x7
+ 1376 0468 17080000 		.4byte	.LASF94
+ 1377 046c 07       		.byte	0x7
+ 1378 046d 6D       		.byte	0x6d
+ 1379 046e 81000000 		.4byte	0x81
+ 1380 0472 39       		.byte	0x39
+ 1381 0473 07       		.uleb128 0x7
+ 1382 0474 49030000 		.4byte	.LASF95
+ 1383 0478 07       		.byte	0x7
+ 1384 0479 6E       		.byte	0x6e
+ 1385 047a 81000000 		.4byte	0x81
+ 1386 047e 3A       		.byte	0x3a
+ 1387 047f 07       		.uleb128 0x7
+ 1388 0480 6E000000 		.4byte	.LASF96
+ 1389 0484 07       		.byte	0x7
+ 1390 0485 6F       		.byte	0x6f
+ 1391 0486 81000000 		.4byte	0x81
+ 1392 048a 3B       		.byte	0x3b
+ 1393 048b 07       		.uleb128 0x7
+ 1394 048c 2F040000 		.4byte	.LASF97
+ 1395 0490 07       		.byte	0x7
+ 1396 0491 70       		.byte	0x70
+ 1397 0492 81000000 		.4byte	0x81
+ 1398 0496 3C       		.byte	0x3c
+ 1399 0497 07       		.uleb128 0x7
+ 1400 0498 2C030000 		.4byte	.LASF98
+ 1401 049c 07       		.byte	0x7
+ 1402 049d 71       		.byte	0x71
+ 1403 049e 81000000 		.4byte	0x81
+ 1404 04a2 3D       		.byte	0x3d
+ 1405 04a3 07       		.uleb128 0x7
+ 1406 04a4 CF060000 		.4byte	.LASF99
+ 1407 04a8 07       		.byte	0x7
+ 1408 04a9 72       		.byte	0x72
+ 1409 04aa 81000000 		.4byte	0x81
+ 1410 04ae 3E       		.byte	0x3e
+ 1411 04af 07       		.uleb128 0x7
+ 1412 04b0 A3030000 		.4byte	.LASF100
+ 1413 04b4 07       		.byte	0x7
+ 1414 04b5 73       		.byte	0x73
+ 1415 04b6 81000000 		.4byte	0x81
+ 1416 04ba 3F       		.byte	0x3f
+ 1417 04bb 07       		.uleb128 0x7
+ 1418 04bc EA010000 		.4byte	.LASF101
+ 1419 04c0 07       		.byte	0x7
+ 1420 04c1 74       		.byte	0x74
+ 1421 04c2 81000000 		.4byte	0x81
+ 1422 04c6 40       		.byte	0x40
+ 1423 04c7 07       		.uleb128 0x7
+ 1424 04c8 E7070000 		.4byte	.LASF102
+ 1425 04cc 07       		.byte	0x7
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 35
+
+
+ 1426 04cd 75       		.byte	0x75
+ 1427 04ce 81000000 		.4byte	0x81
+ 1428 04d2 41       		.byte	0x41
+ 1429 04d3 07       		.uleb128 0x7
+ 1430 04d4 75030000 		.4byte	.LASF103
+ 1431 04d8 07       		.byte	0x7
+ 1432 04d9 76       		.byte	0x76
+ 1433 04da 81000000 		.4byte	0x81
+ 1434 04de 42       		.byte	0x42
+ 1435 04df 07       		.uleb128 0x7
+ 1436 04e0 7A070000 		.4byte	.LASF104
+ 1437 04e4 07       		.byte	0x7
+ 1438 04e5 77       		.byte	0x77
+ 1439 04e6 81000000 		.4byte	0x81
+ 1440 04ea 43       		.byte	0x43
+ 1441 04eb 07       		.uleb128 0x7
+ 1442 04ec 49040000 		.4byte	.LASF105
+ 1443 04f0 07       		.byte	0x7
+ 1444 04f1 78       		.byte	0x78
+ 1445 04f2 81000000 		.4byte	0x81
+ 1446 04f6 44       		.byte	0x44
+ 1447 04f7 07       		.uleb128 0x7
+ 1448 04f8 0A030000 		.4byte	.LASF106
+ 1449 04fc 07       		.byte	0x7
+ 1450 04fd 79       		.byte	0x79
+ 1451 04fe 81000000 		.4byte	0x81
+ 1452 0502 45       		.byte	0x45
+ 1453 0503 07       		.uleb128 0x7
+ 1454 0504 E6060000 		.4byte	.LASF107
+ 1455 0508 07       		.byte	0x7
+ 1456 0509 7A       		.byte	0x7a
+ 1457 050a 81000000 		.4byte	0x81
+ 1458 050e 46       		.byte	0x46
+ 1459 050f 07       		.uleb128 0x7
+ 1460 0510 8B020000 		.4byte	.LASF108
+ 1461 0514 07       		.byte	0x7
+ 1462 0515 7B       		.byte	0x7b
+ 1463 0516 81000000 		.4byte	0x81
+ 1464 051a 47       		.byte	0x47
+ 1465 051b 07       		.uleb128 0x7
+ 1466 051c 2F050000 		.4byte	.LASF109
+ 1467 0520 07       		.byte	0x7
+ 1468 0521 7C       		.byte	0x7c
+ 1469 0522 81000000 		.4byte	0x81
+ 1470 0526 48       		.byte	0x48
+ 1471 0527 07       		.uleb128 0x7
+ 1472 0528 00050000 		.4byte	.LASF110
+ 1473 052c 07       		.byte	0x7
+ 1474 052d 7D       		.byte	0x7d
+ 1475 052e 81000000 		.4byte	0x81
+ 1476 0532 49       		.byte	0x49
+ 1477 0533 07       		.uleb128 0x7
+ 1478 0534 C3030000 		.4byte	.LASF111
+ 1479 0538 07       		.byte	0x7
+ 1480 0539 7E       		.byte	0x7e
+ 1481 053a 81000000 		.4byte	0x81
+ 1482 053e 4A       		.byte	0x4a
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 36
+
+
+ 1483 053f 0C       		.uleb128 0xc
+ 1484 0540 52524200 		.ascii	"RRB\000"
+ 1485 0544 07       		.byte	0x7
+ 1486 0545 7F       		.byte	0x7f
+ 1487 0546 81000000 		.4byte	0x81
+ 1488 054a 4B       		.byte	0x4b
+ 1489 054b 07       		.uleb128 0x7
+ 1490 054c DA060000 		.4byte	.LASF112
+ 1491 0550 07       		.byte	0x7
+ 1492 0551 80       		.byte	0x80
+ 1493 0552 81000000 		.4byte	0x81
+ 1494 0556 4C       		.byte	0x4c
+ 1495 0557 07       		.uleb128 0x7
+ 1496 0558 35020000 		.4byte	.LASF113
+ 1497 055c 07       		.byte	0x7
+ 1498 055d 81       		.byte	0x81
+ 1499 055e 81000000 		.4byte	0x81
+ 1500 0562 4D       		.byte	0x4d
+ 1501 0563 07       		.uleb128 0x7
+ 1502 0564 84060000 		.4byte	.LASF114
+ 1503 0568 07       		.byte	0x7
+ 1504 0569 82       		.byte	0x82
+ 1505 056a 81000000 		.4byte	0x81
+ 1506 056e 4E       		.byte	0x4e
+ 1507 056f 00       		.byte	0
+ 1508 0570 0A       		.uleb128 0xa
+ 1509 0571 88050000 		.4byte	.LASF116
+ 1510 0575 4F       		.byte	0x4f
+ 1511 0576 07       		.byte	0x7
+ 1512 0577 2E       		.byte	0x2e
+ 1513 0578 93050000 		.4byte	0x593
+ 1514 057c 0B       		.uleb128 0xb
+ 1515 057d A3020000 		.4byte	.LASF33
+ 1516 0581 07       		.byte	0x7
+ 1517 0582 30       		.byte	0x30
+ 1518 0583 93050000 		.4byte	0x593
+ 1519 0587 0B       		.uleb128 0xb
+ 1520 0588 6C040000 		.4byte	.LASF34
+ 1521 058c 07       		.byte	0x7
+ 1522 058d 83       		.byte	0x83
+ 1523 058e AF010000 		.4byte	0x1af
+ 1524 0592 00       		.byte	0
+ 1525 0593 08       		.uleb128 0x8
+ 1526 0594 81000000 		.4byte	0x81
+ 1527 0598 A3050000 		.4byte	0x5a3
+ 1528 059c 09       		.uleb128 0x9
+ 1529 059d B5000000 		.4byte	0xb5
+ 1530 05a1 4E       		.byte	0x4e
+ 1531 05a2 00       		.byte	0
+ 1532 05a3 03       		.uleb128 0x3
+ 1533 05a4 8F040000 		.4byte	.LASF117
+ 1534 05a8 07       		.byte	0x7
+ 1535 05a9 84       		.byte	0x84
+ 1536 05aa 70050000 		.4byte	0x570
+ 1537 05ae 06       		.uleb128 0x6
+ 1538 05af D3040000 		.4byte	.LASF118
+ 1539 05b3 0F       		.byte	0xf
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 37
+
+
+ 1540 05b4 07       		.byte	0x7
+ 1541 05b5 8B       		.byte	0x8b
+ 1542 05b6 6F060000 		.4byte	0x66f
+ 1543 05ba 07       		.uleb128 0x7
+ 1544 05bb 10070000 		.4byte	.LASF119
+ 1545 05bf 07       		.byte	0x7
+ 1546 05c0 8D       		.byte	0x8d
+ 1547 05c1 81000000 		.4byte	0x81
+ 1548 05c5 00       		.byte	0
+ 1549 05c6 07       		.uleb128 0x7
+ 1550 05c7 1F070000 		.4byte	.LASF120
+ 1551 05cb 07       		.byte	0x7
+ 1552 05cc 8E       		.byte	0x8e
+ 1553 05cd 81000000 		.4byte	0x81
+ 1554 05d1 01       		.byte	0x1
+ 1555 05d2 07       		.uleb128 0x7
+ 1556 05d3 2E070000 		.4byte	.LASF121
+ 1557 05d7 07       		.byte	0x7
+ 1558 05d8 8F       		.byte	0x8f
+ 1559 05d9 81000000 		.4byte	0x81
+ 1560 05dd 02       		.byte	0x2
+ 1561 05de 07       		.uleb128 0x7
+ 1562 05df 3D070000 		.4byte	.LASF122
+ 1563 05e3 07       		.byte	0x7
+ 1564 05e4 90       		.byte	0x90
+ 1565 05e5 81000000 		.4byte	0x81
+ 1566 05e9 03       		.byte	0x3
+ 1567 05ea 07       		.uleb128 0x7
+ 1568 05eb F9080000 		.4byte	.LASF123
+ 1569 05ef 07       		.byte	0x7
+ 1570 05f0 91       		.byte	0x91
+ 1571 05f1 81000000 		.4byte	0x81
+ 1572 05f5 04       		.byte	0x4
+ 1573 05f6 07       		.uleb128 0x7
+ 1574 05f7 17030000 		.4byte	.LASF124
+ 1575 05fb 07       		.byte	0x7
+ 1576 05fc 92       		.byte	0x92
+ 1577 05fd 81000000 		.4byte	0x81
+ 1578 0601 05       		.byte	0x5
+ 1579 0602 07       		.uleb128 0x7
+ 1580 0603 5E050000 		.4byte	.LASF125
+ 1581 0607 07       		.byte	0x7
+ 1582 0608 93       		.byte	0x93
+ 1583 0609 81000000 		.4byte	0x81
+ 1584 060d 06       		.byte	0x6
+ 1585 060e 07       		.uleb128 0x7
+ 1586 060f 3D030000 		.4byte	.LASF126
+ 1587 0613 07       		.byte	0x7
+ 1588 0614 94       		.byte	0x94
+ 1589 0615 81000000 		.4byte	0x81
+ 1590 0619 07       		.byte	0x7
+ 1591 061a 07       		.uleb128 0x7
+ 1592 061b 69030000 		.4byte	.LASF127
+ 1593 061f 07       		.byte	0x7
+ 1594 0620 95       		.byte	0x95
+ 1595 0621 81000000 		.4byte	0x81
+ 1596 0625 08       		.byte	0x8
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 38
+
+
+ 1597 0626 07       		.uleb128 0x7
+ 1598 0627 C1020000 		.4byte	.LASF128
+ 1599 062b 07       		.byte	0x7
+ 1600 062c 96       		.byte	0x96
+ 1601 062d 81000000 		.4byte	0x81
+ 1602 0631 09       		.byte	0x9
+ 1603 0632 07       		.uleb128 0x7
+ 1604 0633 85030000 		.4byte	.LASF129
+ 1605 0637 07       		.byte	0x7
+ 1606 0638 97       		.byte	0x97
+ 1607 0639 81000000 		.4byte	0x81
+ 1608 063d 0A       		.byte	0xa
+ 1609 063e 07       		.uleb128 0x7
+ 1610 063f 5B080000 		.4byte	.LASF130
+ 1611 0643 07       		.byte	0x7
+ 1612 0644 98       		.byte	0x98
+ 1613 0645 81000000 		.4byte	0x81
+ 1614 0649 0B       		.byte	0xb
+ 1615 064a 07       		.uleb128 0x7
+ 1616 064b 67080000 		.4byte	.LASF131
+ 1617 064f 07       		.byte	0x7
+ 1618 0650 99       		.byte	0x99
+ 1619 0651 81000000 		.4byte	0x81
+ 1620 0655 0C       		.byte	0xc
+ 1621 0656 07       		.uleb128 0x7
+ 1622 0657 73080000 		.4byte	.LASF132
+ 1623 065b 07       		.byte	0x7
+ 1624 065c 9A       		.byte	0x9a
+ 1625 065d 81000000 		.4byte	0x81
+ 1626 0661 0D       		.byte	0xd
+ 1627 0662 07       		.uleb128 0x7
+ 1628 0663 A3040000 		.4byte	.LASF133
+ 1629 0667 07       		.byte	0x7
+ 1630 0668 9B       		.byte	0x9b
+ 1631 0669 81000000 		.4byte	0x81
+ 1632 066d 0E       		.byte	0xe
+ 1633 066e 00       		.byte	0
+ 1634 066f 0A       		.uleb128 0xa
+ 1635 0670 79010000 		.4byte	.LASF134
+ 1636 0674 0F       		.byte	0xf
+ 1637 0675 07       		.byte	0x7
+ 1638 0676 87       		.byte	0x87
+ 1639 0677 92060000 		.4byte	0x692
+ 1640 067b 0B       		.uleb128 0xb
+ 1641 067c A3020000 		.4byte	.LASF33
+ 1642 0680 07       		.byte	0x7
+ 1643 0681 89       		.byte	0x89
+ 1644 0682 92060000 		.4byte	0x692
+ 1645 0686 0B       		.uleb128 0xb
+ 1646 0687 6C040000 		.4byte	.LASF34
+ 1647 068b 07       		.byte	0x7
+ 1648 068c 9C       		.byte	0x9c
+ 1649 068d AE050000 		.4byte	0x5ae
+ 1650 0691 00       		.byte	0
+ 1651 0692 08       		.uleb128 0x8
+ 1652 0693 81000000 		.4byte	0x81
+ 1653 0697 A2060000 		.4byte	0x6a2
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 39
+
+
+ 1654 069b 09       		.uleb128 0x9
+ 1655 069c B5000000 		.4byte	0xb5
+ 1656 06a0 0E       		.byte	0xe
+ 1657 06a1 00       		.byte	0
+ 1658 06a2 03       		.uleb128 0x3
+ 1659 06a3 6A090000 		.4byte	.LASF135
+ 1660 06a7 07       		.byte	0x7
+ 1661 06a8 9D       		.byte	0x9d
+ 1662 06a9 6F060000 		.4byte	0x66f
+ 1663 06ad 0D       		.uleb128 0xd
+ 1664 06ae 63090000 		.4byte	.LASF136
+ 1665 06b2 4F       		.byte	0x4f
+ 1666 06b3 07       		.byte	0x7
+ 1667 06b4 2D01     		.2byte	0x12d
+ 1668 06b6 BE0A0000 		.4byte	0xabe
+ 1669 06ba 0E       		.uleb128 0xe
+ 1670 06bb 9A030000 		.4byte	.LASF37
+ 1671 06bf 07       		.byte	0x7
+ 1672 06c0 2F01     		.2byte	0x12f
+ 1673 06c2 81000000 		.4byte	0x81
+ 1674 06c6 00       		.byte	0
+ 1675 06c7 0E       		.uleb128 0xe
+ 1676 06c8 EE040000 		.4byte	.LASF38
+ 1677 06cc 07       		.byte	0x7
+ 1678 06cd 3001     		.2byte	0x130
+ 1679 06cf 81000000 		.4byte	0x81
+ 1680 06d3 01       		.byte	0x1
+ 1681 06d4 0E       		.uleb128 0xe
+ 1682 06d5 01030000 		.4byte	.LASF39
+ 1683 06d9 07       		.byte	0x7
+ 1684 06da 3101     		.2byte	0x131
+ 1685 06dc 81000000 		.4byte	0x81
+ 1686 06e0 02       		.byte	0x2
+ 1687 06e1 0E       		.uleb128 0xe
+ 1688 06e2 0F050000 		.4byte	.LASF40
+ 1689 06e6 07       		.byte	0x7
+ 1690 06e7 3201     		.2byte	0x132
+ 1691 06e9 81000000 		.4byte	0x81
+ 1692 06ed 03       		.byte	0x3
+ 1693 06ee 0E       		.uleb128 0xe
+ 1694 06ef F7040000 		.4byte	.LASF41
+ 1695 06f3 07       		.byte	0x7
+ 1696 06f4 3301     		.2byte	0x133
+ 1697 06f6 81000000 		.4byte	0x81
+ 1698 06fa 04       		.byte	0x4
+ 1699 06fb 0E       		.uleb128 0xe
+ 1700 06fc E5040000 		.4byte	.LASF42
+ 1701 0700 07       		.byte	0x7
+ 1702 0701 3401     		.2byte	0x134
+ 1703 0703 81000000 		.4byte	0x81
+ 1704 0707 05       		.byte	0x5
+ 1705 0708 0E       		.uleb128 0xe
+ 1706 0709 B3060000 		.4byte	.LASF43
+ 1707 070d 07       		.byte	0x7
+ 1708 070e 3501     		.2byte	0x135
+ 1709 0710 81000000 		.4byte	0x81
+ 1710 0714 06       		.byte	0x6
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 40
+
+
+ 1711 0715 0E       		.uleb128 0xe
+ 1712 0716 94060000 		.4byte	.LASF44
+ 1713 071a 07       		.byte	0x7
+ 1714 071b 3601     		.2byte	0x136
+ 1715 071d 81000000 		.4byte	0x81
+ 1716 0721 07       		.byte	0x7
+ 1717 0722 0E       		.uleb128 0xe
+ 1718 0723 6B060000 		.4byte	.LASF45
+ 1719 0727 07       		.byte	0x7
+ 1720 0728 3701     		.2byte	0x137
+ 1721 072a 81000000 		.4byte	0x81
+ 1722 072e 08       		.byte	0x8
+ 1723 072f 0E       		.uleb128 0xe
+ 1724 0730 D2080000 		.4byte	.LASF46
+ 1725 0734 07       		.byte	0x7
+ 1726 0735 3801     		.2byte	0x138
+ 1727 0737 81000000 		.4byte	0x81
+ 1728 073b 09       		.byte	0x9
+ 1729 073c 0E       		.uleb128 0xe
+ 1730 073d 9B080000 		.4byte	.LASF47
+ 1731 0741 07       		.byte	0x7
+ 1732 0742 3901     		.2byte	0x139
+ 1733 0744 81000000 		.4byte	0x81
+ 1734 0748 0A       		.byte	0xa
+ 1735 0749 0E       		.uleb128 0xe
+ 1736 074a 86040000 		.4byte	.LASF48
+ 1737 074e 07       		.byte	0x7
+ 1738 074f 3A01     		.2byte	0x13a
+ 1739 0751 81000000 		.4byte	0x81
+ 1740 0755 0B       		.byte	0xb
+ 1741 0756 0E       		.uleb128 0xe
+ 1742 0757 34010000 		.4byte	.LASF49
+ 1743 075b 07       		.byte	0x7
+ 1744 075c 3B01     		.2byte	0x13b
+ 1745 075e 81000000 		.4byte	0x81
+ 1746 0762 0C       		.byte	0xc
+ 1747 0763 0E       		.uleb128 0xe
+ 1748 0764 88000000 		.4byte	.LASF50
+ 1749 0768 07       		.byte	0x7
+ 1750 0769 3C01     		.2byte	0x13c
+ 1751 076b 81000000 		.4byte	0x81
+ 1752 076f 0D       		.byte	0xd
+ 1753 0770 0E       		.uleb128 0xe
+ 1754 0771 26050000 		.4byte	.LASF51
+ 1755 0775 07       		.byte	0x7
+ 1756 0776 3D01     		.2byte	0x13d
+ 1757 0778 81000000 		.4byte	0x81
+ 1758 077c 0E       		.byte	0xe
+ 1759 077d 0E       		.uleb128 0xe
+ 1760 077e A9020000 		.4byte	.LASF52
+ 1761 0782 07       		.byte	0x7
+ 1762 0783 3E01     		.2byte	0x13e
+ 1763 0785 81000000 		.4byte	0x81
+ 1764 0789 0F       		.byte	0xf
+ 1765 078a 0E       		.uleb128 0xe
+ 1766 078b D1010000 		.4byte	.LASF53
+ 1767 078f 07       		.byte	0x7
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 41
+
+
+ 1768 0790 3F01     		.2byte	0x13f
+ 1769 0792 81000000 		.4byte	0x81
+ 1770 0796 10       		.byte	0x10
+ 1771 0797 0E       		.uleb128 0xe
+ 1772 0798 4C020000 		.4byte	.LASF54
+ 1773 079c 07       		.byte	0x7
+ 1774 079d 4001     		.2byte	0x140
+ 1775 079f 81000000 		.4byte	0x81
+ 1776 07a3 11       		.byte	0x11
+ 1777 07a4 0E       		.uleb128 0xe
+ 1778 07a5 63040000 		.4byte	.LASF55
+ 1779 07a9 07       		.byte	0x7
+ 1780 07aa 4101     		.2byte	0x141
+ 1781 07ac 81000000 		.4byte	0x81
+ 1782 07b0 12       		.byte	0x12
+ 1783 07b1 0E       		.uleb128 0xe
+ 1784 07b2 40040000 		.4byte	.LASF56
+ 1785 07b6 07       		.byte	0x7
+ 1786 07b7 4201     		.2byte	0x142
+ 1787 07b9 81000000 		.4byte	0x81
+ 1788 07bd 13       		.byte	0x13
+ 1789 07be 0E       		.uleb128 0xe
+ 1790 07bf 26040000 		.4byte	.LASF57
+ 1791 07c3 07       		.byte	0x7
+ 1792 07c4 4301     		.2byte	0x143
+ 1793 07c6 81000000 		.4byte	0x81
+ 1794 07ca 14       		.byte	0x14
+ 1795 07cb 0E       		.uleb128 0xe
+ 1796 07cc F0080000 		.4byte	.LASF58
+ 1797 07d0 07       		.byte	0x7
+ 1798 07d1 4401     		.2byte	0x144
+ 1799 07d3 81000000 		.4byte	0x81
+ 1800 07d7 15       		.byte	0x15
+ 1801 07d8 0E       		.uleb128 0xe
+ 1802 07d9 DB080000 		.4byte	.LASF59
+ 1803 07dd 07       		.byte	0x7
+ 1804 07de 4501     		.2byte	0x145
+ 1805 07e0 81000000 		.4byte	0x81
+ 1806 07e4 16       		.byte	0x16
+ 1807 07e5 0E       		.uleb128 0xe
+ 1808 07e6 C9080000 		.4byte	.LASF60
+ 1809 07ea 07       		.byte	0x7
+ 1810 07eb 4601     		.2byte	0x146
+ 1811 07ed 81000000 		.4byte	0x81
+ 1812 07f1 17       		.byte	0x17
+ 1813 07f2 0E       		.uleb128 0xe
+ 1814 07f3 5C010000 		.4byte	.LASF61
+ 1815 07f7 07       		.byte	0x7
+ 1816 07f8 4701     		.2byte	0x147
+ 1817 07fa 81000000 		.4byte	0x81
+ 1818 07fe 18       		.byte	0x18
+ 1819 07ff 0E       		.uleb128 0xe
+ 1820 0800 3D010000 		.4byte	.LASF62
+ 1821 0804 07       		.byte	0x7
+ 1822 0805 4801     		.2byte	0x148
+ 1823 0807 81000000 		.4byte	0x81
+ 1824 080b 19       		.byte	0x19
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 42
+
+
+ 1825 080c 0E       		.uleb128 0xe
+ 1826 080d 1F010000 		.4byte	.LASF63
+ 1827 0811 07       		.byte	0x7
+ 1828 0812 4901     		.2byte	0x149
+ 1829 0814 81000000 		.4byte	0x81
+ 1830 0818 1A       		.byte	0x1a
+ 1831 0819 0E       		.uleb128 0xe
+ 1832 081a DF020000 		.4byte	.LASF64
+ 1833 081e 07       		.byte	0x7
+ 1834 081f 4A01     		.2byte	0x14a
+ 1835 0821 81000000 		.4byte	0x81
+ 1836 0825 1B       		.byte	0x1b
+ 1837 0826 0E       		.uleb128 0xe
+ 1838 0827 B2020000 		.4byte	.LASF65
+ 1839 082b 07       		.byte	0x7
+ 1840 082c 4B01     		.2byte	0x14b
+ 1841 082e 81000000 		.4byte	0x81
+ 1842 0832 1C       		.byte	0x1c
+ 1843 0833 0E       		.uleb128 0xe
+ 1844 0834 9A020000 		.4byte	.LASF66
+ 1845 0838 07       		.byte	0x7
+ 1846 0839 4C01     		.2byte	0x14c
+ 1847 083b 81000000 		.4byte	0x81
+ 1848 083f 1D       		.byte	0x1d
+ 1849 0840 0E       		.uleb128 0xe
+ 1850 0841 7D040000 		.4byte	.LASF67
+ 1851 0845 07       		.byte	0x7
+ 1852 0846 4D01     		.2byte	0x14d
+ 1853 0848 81000000 		.4byte	0x81
+ 1854 084c 1E       		.byte	0x1e
+ 1855 084d 0E       		.uleb128 0xe
+ 1856 084e 74040000 		.4byte	.LASF68
+ 1857 0852 07       		.byte	0x7
+ 1858 0853 4E01     		.2byte	0x14e
+ 1859 0855 81000000 		.4byte	0x81
+ 1860 0859 1F       		.byte	0x1f
+ 1861 085a 0E       		.uleb128 0xe
+ 1862 085b 5A040000 		.4byte	.LASF69
+ 1863 085f 07       		.byte	0x7
+ 1864 0860 4F01     		.2byte	0x14f
+ 1865 0862 81000000 		.4byte	0x81
+ 1866 0866 20       		.byte	0x20
+ 1867 0867 0E       		.uleb128 0xe
+ 1868 0868 06060000 		.4byte	.LASF70
+ 1869 086c 07       		.byte	0x7
+ 1870 086d 5001     		.2byte	0x150
+ 1871 086f 81000000 		.4byte	0x81
+ 1872 0873 21       		.byte	0x21
+ 1873 0874 0E       		.uleb128 0xe
+ 1874 0875 C5050000 		.4byte	.LASF71
+ 1875 0879 07       		.byte	0x7
+ 1876 087a 5101     		.2byte	0x151
+ 1877 087c 81000000 		.4byte	0x81
+ 1878 0880 22       		.byte	0x22
+ 1879 0881 0E       		.uleb128 0xe
+ 1880 0882 AA060000 		.4byte	.LASF72
+ 1881 0886 07       		.byte	0x7
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 43
+
+
+ 1882 0887 5201     		.2byte	0x152
+ 1883 0889 81000000 		.4byte	0x81
+ 1884 088d 23       		.byte	0x23
+ 1885 088e 0E       		.uleb128 0xe
+ 1886 088f DE070000 		.4byte	.LASF73
+ 1887 0893 07       		.byte	0x7
+ 1888 0894 5301     		.2byte	0x153
+ 1889 0896 81000000 		.4byte	0x81
+ 1890 089a 24       		.byte	0x24
+ 1891 089b 0E       		.uleb128 0xe
+ 1892 089c 8B070000 		.4byte	.LASF74
+ 1893 08a0 07       		.byte	0x7
+ 1894 08a1 5401     		.2byte	0x154
+ 1895 08a3 81000000 		.4byte	0x81
+ 1896 08a7 25       		.byte	0x25
+ 1897 08a8 0E       		.uleb128 0xe
+ 1898 08a9 68070000 		.4byte	.LASF75
+ 1899 08ad 07       		.byte	0x7
+ 1900 08ae 5501     		.2byte	0x155
+ 1901 08b0 81000000 		.4byte	0x81
+ 1902 08b4 26       		.byte	0x26
+ 1903 08b5 0E       		.uleb128 0xe
+ 1904 08b6 1B000000 		.4byte	.LASF76
+ 1905 08ba 07       		.byte	0x7
+ 1906 08bb 5601     		.2byte	0x156
+ 1907 08bd 81000000 		.4byte	0x81
+ 1908 08c1 27       		.byte	0x27
+ 1909 08c2 0E       		.uleb128 0xe
+ 1910 08c3 8C090000 		.4byte	.LASF77
+ 1911 08c7 07       		.byte	0x7
+ 1912 08c8 5701     		.2byte	0x157
+ 1913 08ca 81000000 		.4byte	0x81
+ 1914 08ce 28       		.byte	0x28
+ 1915 08cf 0E       		.uleb128 0xe
+ 1916 08d0 7E090000 		.4byte	.LASF78
+ 1917 08d4 07       		.byte	0x7
+ 1918 08d5 5801     		.2byte	0x158
+ 1919 08d7 81000000 		.4byte	0x81
+ 1920 08db 29       		.byte	0x29
+ 1921 08dc 0E       		.uleb128 0xe
+ 1922 08dd 26020000 		.4byte	.LASF79
+ 1923 08e1 07       		.byte	0x7
+ 1924 08e2 5901     		.2byte	0x159
+ 1925 08e4 81000000 		.4byte	0x81
+ 1926 08e8 2A       		.byte	0x2a
+ 1927 08e9 0E       		.uleb128 0xe
+ 1928 08ea 14020000 		.4byte	.LASF80
+ 1929 08ee 07       		.byte	0x7
+ 1930 08ef 5A01     		.2byte	0x15a
+ 1931 08f1 81000000 		.4byte	0x81
+ 1932 08f5 2B       		.byte	0x2b
+ 1933 08f6 0E       		.uleb128 0xe
+ 1934 08f7 0B020000 		.4byte	.LASF81
+ 1935 08fb 07       		.byte	0x7
+ 1936 08fc 5B01     		.2byte	0x15b
+ 1937 08fe 81000000 		.4byte	0x81
+ 1938 0902 2C       		.byte	0x2c
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 44
+
+
+ 1939 0903 0E       		.uleb128 0xe
+ 1940 0904 CE030000 		.4byte	.LASF82
+ 1941 0908 07       		.byte	0x7
+ 1942 0909 5C01     		.2byte	0x15c
+ 1943 090b 81000000 		.4byte	0x81
+ 1944 090f 2D       		.byte	0x2d
+ 1945 0910 0E       		.uleb128 0xe
+ 1946 0911 91030000 		.4byte	.LASF83
+ 1947 0915 07       		.byte	0x7
+ 1948 0916 5D01     		.2byte	0x15d
+ 1949 0918 81000000 		.4byte	0x81
+ 1950 091c 2E       		.byte	0x2e
+ 1951 091d 0E       		.uleb128 0xe
+ 1952 091e 24000000 		.4byte	.LASF84
+ 1953 0922 07       		.byte	0x7
+ 1954 0923 5E01     		.2byte	0x15e
+ 1955 0925 81000000 		.4byte	0x81
+ 1956 0929 2F       		.byte	0x2f
+ 1957 092a 0E       		.uleb128 0xe
+ 1958 092b 55020000 		.4byte	.LASF85
+ 1959 092f 07       		.byte	0x7
+ 1960 0930 5F01     		.2byte	0x15f
+ 1961 0932 81000000 		.4byte	0x81
+ 1962 0936 30       		.byte	0x30
+ 1963 0937 0E       		.uleb128 0xe
+ 1964 0938 94070000 		.4byte	.LASF86
+ 1965 093c 07       		.byte	0x7
+ 1966 093d 6001     		.2byte	0x160
+ 1967 093f 81000000 		.4byte	0x81
+ 1968 0943 31       		.byte	0x31
+ 1969 0944 0E       		.uleb128 0xe
+ 1970 0945 8A080000 		.4byte	.LASF87
+ 1971 0949 07       		.byte	0x7
+ 1972 094a 6101     		.2byte	0x161
+ 1973 094c 81000000 		.4byte	0x81
+ 1974 0950 32       		.byte	0x32
+ 1975 0951 0E       		.uleb128 0xe
+ 1976 0952 5E020000 		.4byte	.LASF88
+ 1977 0956 07       		.byte	0x7
+ 1978 0957 6201     		.2byte	0x162
+ 1979 0959 81000000 		.4byte	0x81
+ 1980 095d 33       		.byte	0x33
+ 1981 095e 0E       		.uleb128 0xe
+ 1982 095f AE030000 		.4byte	.LASF89
+ 1983 0963 07       		.byte	0x7
+ 1984 0964 6301     		.2byte	0x163
+ 1985 0966 81000000 		.4byte	0x81
+ 1986 096a 34       		.byte	0x34
+ 1987 096b 0E       		.uleb128 0xe
+ 1988 096c 18050000 		.4byte	.LASF90
+ 1989 0970 07       		.byte	0x7
+ 1990 0971 6401     		.2byte	0x164
+ 1991 0973 81000000 		.4byte	0x81
+ 1992 0977 35       		.byte	0x35
+ 1993 0978 0E       		.uleb128 0xe
+ 1994 0979 9C050000 		.4byte	.LASF91
+ 1995 097d 07       		.byte	0x7
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 45
+
+
+ 1996 097e 6501     		.2byte	0x165
+ 1997 0980 81000000 		.4byte	0x81
+ 1998 0984 36       		.byte	0x36
+ 1999 0985 0E       		.uleb128 0xe
+ 2000 0986 F7070000 		.4byte	.LASF92
+ 2001 098a 07       		.byte	0x7
+ 2002 098b 6601     		.2byte	0x166
+ 2003 098d 81000000 		.4byte	0x81
+ 2004 0991 37       		.byte	0x37
+ 2005 0992 0E       		.uleb128 0xe
+ 2006 0993 07080000 		.4byte	.LASF93
+ 2007 0997 07       		.byte	0x7
+ 2008 0998 6701     		.2byte	0x167
+ 2009 099a 81000000 		.4byte	0x81
+ 2010 099e 38       		.byte	0x38
+ 2011 099f 0E       		.uleb128 0xe
+ 2012 09a0 17080000 		.4byte	.LASF94
+ 2013 09a4 07       		.byte	0x7
+ 2014 09a5 6801     		.2byte	0x168
+ 2015 09a7 81000000 		.4byte	0x81
+ 2016 09ab 39       		.byte	0x39
+ 2017 09ac 0E       		.uleb128 0xe
+ 2018 09ad 49030000 		.4byte	.LASF95
+ 2019 09b1 07       		.byte	0x7
+ 2020 09b2 6901     		.2byte	0x169
+ 2021 09b4 81000000 		.4byte	0x81
+ 2022 09b8 3A       		.byte	0x3a
+ 2023 09b9 0E       		.uleb128 0xe
+ 2024 09ba 6E000000 		.4byte	.LASF96
+ 2025 09be 07       		.byte	0x7
+ 2026 09bf 6A01     		.2byte	0x16a
+ 2027 09c1 81000000 		.4byte	0x81
+ 2028 09c5 3B       		.byte	0x3b
+ 2029 09c6 0E       		.uleb128 0xe
+ 2030 09c7 2F040000 		.4byte	.LASF97
+ 2031 09cb 07       		.byte	0x7
+ 2032 09cc 6B01     		.2byte	0x16b
+ 2033 09ce 81000000 		.4byte	0x81
+ 2034 09d2 3C       		.byte	0x3c
+ 2035 09d3 0E       		.uleb128 0xe
+ 2036 09d4 2C030000 		.4byte	.LASF98
+ 2037 09d8 07       		.byte	0x7
+ 2038 09d9 6C01     		.2byte	0x16c
+ 2039 09db 81000000 		.4byte	0x81
+ 2040 09df 3D       		.byte	0x3d
+ 2041 09e0 0E       		.uleb128 0xe
+ 2042 09e1 CF060000 		.4byte	.LASF99
+ 2043 09e5 07       		.byte	0x7
+ 2044 09e6 6D01     		.2byte	0x16d
+ 2045 09e8 81000000 		.4byte	0x81
+ 2046 09ec 3E       		.byte	0x3e
+ 2047 09ed 0E       		.uleb128 0xe
+ 2048 09ee A3030000 		.4byte	.LASF100
+ 2049 09f2 07       		.byte	0x7
+ 2050 09f3 6E01     		.2byte	0x16e
+ 2051 09f5 81000000 		.4byte	0x81
+ 2052 09f9 3F       		.byte	0x3f
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 46
+
+
+ 2053 09fa 0E       		.uleb128 0xe
+ 2054 09fb EA010000 		.4byte	.LASF101
+ 2055 09ff 07       		.byte	0x7
+ 2056 0a00 6F01     		.2byte	0x16f
+ 2057 0a02 81000000 		.4byte	0x81
+ 2058 0a06 40       		.byte	0x40
+ 2059 0a07 0E       		.uleb128 0xe
+ 2060 0a08 E7070000 		.4byte	.LASF102
+ 2061 0a0c 07       		.byte	0x7
+ 2062 0a0d 7001     		.2byte	0x170
+ 2063 0a0f 81000000 		.4byte	0x81
+ 2064 0a13 41       		.byte	0x41
+ 2065 0a14 0E       		.uleb128 0xe
+ 2066 0a15 75030000 		.4byte	.LASF103
+ 2067 0a19 07       		.byte	0x7
+ 2068 0a1a 7101     		.2byte	0x171
+ 2069 0a1c 81000000 		.4byte	0x81
+ 2070 0a20 42       		.byte	0x42
+ 2071 0a21 0E       		.uleb128 0xe
+ 2072 0a22 7A070000 		.4byte	.LASF104
+ 2073 0a26 07       		.byte	0x7
+ 2074 0a27 7201     		.2byte	0x172
+ 2075 0a29 81000000 		.4byte	0x81
+ 2076 0a2d 43       		.byte	0x43
+ 2077 0a2e 0E       		.uleb128 0xe
+ 2078 0a2f 49040000 		.4byte	.LASF105
+ 2079 0a33 07       		.byte	0x7
+ 2080 0a34 7301     		.2byte	0x173
+ 2081 0a36 81000000 		.4byte	0x81
+ 2082 0a3a 44       		.byte	0x44
+ 2083 0a3b 0E       		.uleb128 0xe
+ 2084 0a3c 0A030000 		.4byte	.LASF106
+ 2085 0a40 07       		.byte	0x7
+ 2086 0a41 7401     		.2byte	0x174
+ 2087 0a43 81000000 		.4byte	0x81
+ 2088 0a47 45       		.byte	0x45
+ 2089 0a48 0E       		.uleb128 0xe
+ 2090 0a49 E6060000 		.4byte	.LASF107
+ 2091 0a4d 07       		.byte	0x7
+ 2092 0a4e 7501     		.2byte	0x175
+ 2093 0a50 81000000 		.4byte	0x81
+ 2094 0a54 46       		.byte	0x46
+ 2095 0a55 0E       		.uleb128 0xe
+ 2096 0a56 8B020000 		.4byte	.LASF108
+ 2097 0a5a 07       		.byte	0x7
+ 2098 0a5b 7601     		.2byte	0x176
+ 2099 0a5d 81000000 		.4byte	0x81
+ 2100 0a61 47       		.byte	0x47
+ 2101 0a62 0E       		.uleb128 0xe
+ 2102 0a63 2F050000 		.4byte	.LASF109
+ 2103 0a67 07       		.byte	0x7
+ 2104 0a68 7701     		.2byte	0x177
+ 2105 0a6a 81000000 		.4byte	0x81
+ 2106 0a6e 48       		.byte	0x48
+ 2107 0a6f 0E       		.uleb128 0xe
+ 2108 0a70 00050000 		.4byte	.LASF110
+ 2109 0a74 07       		.byte	0x7
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 47
+
+
+ 2110 0a75 7801     		.2byte	0x178
+ 2111 0a77 81000000 		.4byte	0x81
+ 2112 0a7b 49       		.byte	0x49
+ 2113 0a7c 0E       		.uleb128 0xe
+ 2114 0a7d C3030000 		.4byte	.LASF111
+ 2115 0a81 07       		.byte	0x7
+ 2116 0a82 7901     		.2byte	0x179
+ 2117 0a84 81000000 		.4byte	0x81
+ 2118 0a88 4A       		.byte	0x4a
+ 2119 0a89 0F       		.uleb128 0xf
+ 2120 0a8a 52524200 		.ascii	"RRB\000"
+ 2121 0a8e 07       		.byte	0x7
+ 2122 0a8f 7A01     		.2byte	0x17a
+ 2123 0a91 81000000 		.4byte	0x81
+ 2124 0a95 4B       		.byte	0x4b
+ 2125 0a96 0E       		.uleb128 0xe
+ 2126 0a97 DA060000 		.4byte	.LASF112
+ 2127 0a9b 07       		.byte	0x7
+ 2128 0a9c 7B01     		.2byte	0x17b
+ 2129 0a9e 81000000 		.4byte	0x81
+ 2130 0aa2 4C       		.byte	0x4c
+ 2131 0aa3 0E       		.uleb128 0xe
+ 2132 0aa4 35020000 		.4byte	.LASF113
+ 2133 0aa8 07       		.byte	0x7
+ 2134 0aa9 7C01     		.2byte	0x17c
+ 2135 0aab 81000000 		.4byte	0x81
+ 2136 0aaf 4D       		.byte	0x4d
+ 2137 0ab0 0E       		.uleb128 0xe
+ 2138 0ab1 84060000 		.4byte	.LASF114
+ 2139 0ab5 07       		.byte	0x7
+ 2140 0ab6 7D01     		.2byte	0x17d
+ 2141 0ab8 81000000 		.4byte	0x81
+ 2142 0abc 4E       		.byte	0x4e
+ 2143 0abd 00       		.byte	0
+ 2144 0abe 10       		.uleb128 0x10
+ 2145 0abf 00000000 		.4byte	.LASF137
+ 2146 0ac3 4F       		.byte	0x4f
+ 2147 0ac4 07       		.byte	0x7
+ 2148 0ac5 2901     		.2byte	0x129
+ 2149 0ac7 E40A0000 		.4byte	0xae4
+ 2150 0acb 11       		.uleb128 0x11
+ 2151 0acc A3020000 		.4byte	.LASF33
+ 2152 0ad0 07       		.byte	0x7
+ 2153 0ad1 2B01     		.2byte	0x12b
+ 2154 0ad3 93050000 		.4byte	0x593
+ 2155 0ad7 11       		.uleb128 0x11
+ 2156 0ad8 6C040000 		.4byte	.LASF34
+ 2157 0adc 07       		.byte	0x7
+ 2158 0add 7E01     		.2byte	0x17e
+ 2159 0adf AD060000 		.4byte	0x6ad
+ 2160 0ae3 00       		.byte	0
+ 2161 0ae4 05       		.uleb128 0x5
+ 2162 0ae5 3E050000 		.4byte	.LASF138
+ 2163 0ae9 07       		.byte	0x7
+ 2164 0aea 7F01     		.2byte	0x17f
+ 2165 0aec BE0A0000 		.4byte	0xabe
+ 2166 0af0 12       		.uleb128 0x12
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 48
+
+
+ 2167 0af1 65010000 		.4byte	.LASF141
+ 2168 0af5 01       		.byte	0x1
+ 2169 0af6 2C000000 		.4byte	0x2c
+ 2170 0afa 01       		.byte	0x1
+ 2171 0afb 32       		.byte	0x32
+ 2172 0afc 190B0000 		.4byte	0xb19
+ 2173 0b00 13       		.uleb128 0x13
+ 2174 0b01 52454400 		.ascii	"RED\000"
+ 2175 0b05 00       		.byte	0
+ 2176 0b06 14       		.uleb128 0x14
+ 2177 0b07 5D070000 		.4byte	.LASF139
+ 2178 0b0b 01       		.byte	0x1
+ 2179 0b0c 14       		.uleb128 0x14
+ 2180 0b0d 62070000 		.4byte	.LASF140
+ 2181 0b11 02       		.byte	0x2
+ 2182 0b12 13       		.uleb128 0x13
+ 2183 0b13 4F464600 		.ascii	"OFF\000"
+ 2184 0b17 03       		.byte	0x3
+ 2185 0b18 00       		.byte	0
+ 2186 0b19 12       		.uleb128 0x12
+ 2187 0b1a 42060000 		.4byte	.LASF142
+ 2188 0b1e 01       		.byte	0x1
+ 2189 0b1f 2C000000 		.4byte	0x2c
+ 2190 0b23 01       		.byte	0x1
+ 2191 0b24 3B       		.byte	0x3b
+ 2192 0b25 360B0000 		.4byte	0xb36
+ 2193 0b29 14       		.uleb128 0x14
+ 2194 0b2a 50010000 		.4byte	.LASF143
+ 2195 0b2e 00       		.byte	0
+ 2196 0b2f 14       		.uleb128 0x14
+ 2197 0b30 4C070000 		.4byte	.LASF144
+ 2198 0b34 01       		.byte	0x1
+ 2199 0b35 00       		.byte	0
+ 2200 0b36 12       		.uleb128 0x12
+ 2201 0b37 BC060000 		.4byte	.LASF145
+ 2202 0b3b 01       		.byte	0x1
+ 2203 0b3c 2C000000 		.4byte	0x2c
+ 2204 0b40 01       		.byte	0x1
+ 2205 0b41 43       		.byte	0x43
+ 2206 0b42 530B0000 		.4byte	0xb53
+ 2207 0b46 14       		.uleb128 0x14
+ 2208 0b47 F4060000 		.4byte	.LASF146
+ 2209 0b4b 00       		.byte	0
+ 2210 0b4c 14       		.uleb128 0x14
+ 2211 0b4d 30060000 		.4byte	.LASF147
+ 2212 0b51 01       		.byte	0x1
+ 2213 0b52 00       		.byte	0
+ 2214 0b53 12       		.uleb128 0x12
+ 2215 0b54 2D000000 		.4byte	.LASF148
+ 2216 0b58 01       		.byte	0x1
+ 2217 0b59 2C000000 		.4byte	0x2c
+ 2218 0b5d 01       		.byte	0x1
+ 2219 0b5e 50       		.byte	0x50
+ 2220 0b5f 7C0B0000 		.4byte	0xb7c
+ 2221 0b63 14       		.uleb128 0x14
+ 2222 0b64 D7030000 		.4byte	.LASF149
+ 2223 0b68 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 49
+
+
+ 2224 0b69 14       		.uleb128 0x14
+ 2225 0b6a 7F080000 		.4byte	.LASF150
+ 2226 0b6e 01       		.byte	0x1
+ 2227 0b6f 14       		.uleb128 0x14
+ 2228 0b70 E4080000 		.4byte	.LASF151
+ 2229 0b74 02       		.byte	0x2
+ 2230 0b75 14       		.uleb128 0x14
+ 2231 0b76 7C000000 		.4byte	.LASF152
+ 2232 0b7a 03       		.byte	0x3
+ 2233 0b7b 00       		.byte	0
+ 2234 0b7c 12       		.uleb128 0x12
+ 2235 0b7d 62060000 		.4byte	.LASF19
+ 2236 0b81 01       		.byte	0x1
+ 2237 0b82 2C000000 		.4byte	0x2c
+ 2238 0b86 01       		.byte	0x1
+ 2239 0b87 5E       		.byte	0x5e
+ 2240 0b88 CF0B0000 		.4byte	0xbcf
+ 2241 0b8c 14       		.uleb128 0x14
+ 2242 0b8d DA010000 		.4byte	.LASF153
+ 2243 0b91 00       		.byte	0
+ 2244 0b92 14       		.uleb128 0x14
+ 2245 0b93 53060000 		.4byte	.LASF154
+ 2246 0b97 01       		.byte	0x1
+ 2247 0b98 14       		.uleb128 0x14
+ 2248 0b99 56000000 		.4byte	.LASF155
+ 2249 0b9d 02       		.byte	0x2
+ 2250 0b9e 14       		.uleb128 0x14
+ 2251 0b9f 74060000 		.4byte	.LASF156
+ 2252 0ba3 03       		.byte	0x3
+ 2253 0ba4 14       		.uleb128 0x14
+ 2254 0ba5 BB020000 		.4byte	.LASF157
+ 2255 0ba9 04       		.byte	0x4
+ 2256 0baa 14       		.uleb128 0x14
+ 2257 0bab E8020000 		.4byte	.LASF158
+ 2258 0baf 05       		.byte	0x5
+ 2259 0bb0 14       		.uleb128 0x14
+ 2260 0bb1 52050000 		.4byte	.LASF159
+ 2261 0bb5 06       		.byte	0x6
+ 2262 0bb6 14       		.uleb128 0x14
+ 2263 0bb7 CA040000 		.4byte	.LASF160
+ 2264 0bbb 07       		.byte	0x7
+ 2265 0bbc 14       		.uleb128 0x14
+ 2266 0bbd 3B080000 		.4byte	.LASF161
+ 2267 0bc1 08       		.byte	0x8
+ 2268 0bc2 14       		.uleb128 0x14
+ 2269 0bc3 6E010000 		.4byte	.LASF162
+ 2270 0bc7 09       		.byte	0x9
+ 2271 0bc8 14       		.uleb128 0x14
+ 2272 0bc9 87090000 		.4byte	.LASF163
+ 2273 0bcd 0A       		.byte	0xa
+ 2274 0bce 00       		.byte	0
+ 2275 0bcf 15       		.uleb128 0x15
+ 2276 0bd0 9D070000 		.4byte	.LASF181
+ 2277 0bd4 01       		.byte	0x1
+ 2278 0bd5 72       		.byte	0x72
+ 2279 0bd6 81000000 		.4byte	0x81
+ 2280 0bda 00000000 		.4byte	.LFB63
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 50
+
+
+ 2281 0bde 88040000 		.4byte	.LFE63-.LFB63
+ 2282 0be2 01       		.uleb128 0x1
+ 2283 0be3 9C       		.byte	0x9c
+ 2284 0be4 1A0C0000 		.4byte	0xc1a
+ 2285 0be8 16       		.uleb128 0x16
+ 2286 0be9 50000000 		.4byte	.LBB2
+ 2287 0bed 1A000000 		.4byte	.LBE2-.LBB2
+ 2288 0bf1 020C0000 		.4byte	0xc02
+ 2289 0bf5 17       		.uleb128 0x17
+ 2290 0bf6 6900     		.ascii	"i\000"
+ 2291 0bf8 01       		.byte	0x1
+ 2292 0bf9 7D       		.byte	0x7d
+ 2293 0bfa 81000000 		.4byte	0x81
+ 2294 0bfe 02       		.uleb128 0x2
+ 2295 0bff 91       		.byte	0x91
+ 2296 0c00 77       		.sleb128 -9
+ 2297 0c01 00       		.byte	0
+ 2298 0c02 18       		.uleb128 0x18
+ 2299 0c03 10040000 		.4byte	.LBB3
+ 2300 0c07 42000000 		.4byte	.LBE3-.LBB3
+ 2301 0c0b 19       		.uleb128 0x19
+ 2302 0c0c 6900     		.ascii	"i\000"
+ 2303 0c0e 01       		.byte	0x1
+ 2304 0c0f CB01     		.2byte	0x1cb
+ 2305 0c11 81000000 		.4byte	0x81
+ 2306 0c15 02       		.uleb128 0x2
+ 2307 0c16 91       		.byte	0x91
+ 2308 0c17 76       		.sleb128 -10
+ 2309 0c18 00       		.byte	0
+ 2310 0c19 00       		.byte	0
+ 2311 0c1a 1A       		.uleb128 0x1a
+ 2312 0c1b 88050000 		.4byte	.LASF116
+ 2313 0c1f 01       		.byte	0x1
+ 2314 0c20 1F       		.byte	0x1f
+ 2315 0c21 A3050000 		.4byte	0x5a3
+ 2316 0c25 05       		.uleb128 0x5
+ 2317 0c26 03       		.byte	0x3
+ 2318 0c27 00000000 		.4byte	rxPacket_Controller
+ 2319 0c2b 1A       		.uleb128 0x1a
+ 2320 0c2c BC010000 		.4byte	.LASF164
+ 2321 0c30 01       		.byte	0x1
+ 2322 0c31 20       		.byte	0x20
+ 2323 0c32 3C0C0000 		.4byte	0xc3c
+ 2324 0c36 05       		.uleb128 0x5
+ 2325 0c37 03       		.byte	0x3
+ 2326 0c38 50000000 		.4byte	pRxPacket_Controller
+ 2327 0c3c 1B       		.uleb128 0x1b
+ 2328 0c3d 04       		.byte	0x4
+ 2329 0c3e A3050000 		.4byte	0x5a3
+ 2330 0c42 1A       		.uleb128 0x1a
+ 2331 0c43 79010000 		.4byte	.LASF134
+ 2332 0c47 01       		.byte	0x1
+ 2333 0c48 22       		.byte	0x22
+ 2334 0c49 A2060000 		.4byte	0x6a2
+ 2335 0c4d 05       		.uleb128 0x5
+ 2336 0c4e 03       		.byte	0x3
+ 2337 0c4f 54000000 		.4byte	txPacket_Controller
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 51
+
+
+ 2338 0c53 1A       		.uleb128 0x1a
+ 2339 0c54 E4050000 		.4byte	.LASF165
+ 2340 0c58 01       		.byte	0x1
+ 2341 0c59 23       		.byte	0x23
+ 2342 0c5a 640C0000 		.4byte	0xc64
+ 2343 0c5e 05       		.uleb128 0x5
+ 2344 0c5f 03       		.byte	0x3
+ 2345 0c60 64000000 		.4byte	pTxPacket_Controller
+ 2346 0c64 1B       		.uleb128 0x1b
+ 2347 0c65 04       		.byte	0x4
+ 2348 0c66 A2060000 		.4byte	0x6a2
+ 2349 0c6a 1A       		.uleb128 0x1a
+ 2350 0c6b 27080000 		.4byte	.LASF166
+ 2351 0c6f 01       		.byte	0x1
+ 2352 0c70 25       		.byte	0x25
+ 2353 0c71 E40A0000 		.4byte	0xae4
+ 2354 0c75 05       		.uleb128 0x5
+ 2355 0c76 03       		.byte	0x3
+ 2356 0c77 68000000 		.4byte	txPacket_Relay
+ 2357 0c7b 1A       		.uleb128 0x1a
+ 2358 0c7c 46000000 		.4byte	.LASF167
+ 2359 0c80 01       		.byte	0x1
+ 2360 0c81 26       		.byte	0x26
+ 2361 0c82 8C0C0000 		.4byte	0xc8c
+ 2362 0c86 05       		.uleb128 0x5
+ 2363 0c87 03       		.byte	0x3
+ 2364 0c88 B8000000 		.4byte	pTxPacket_Relay
+ 2365 0c8c 1B       		.uleb128 0x1b
+ 2366 0c8d 04       		.byte	0x4
+ 2367 0c8e E40A0000 		.4byte	0xae4
+ 2368 0c92 1A       		.uleb128 0x1a
+ 2369 0c93 AC040000 		.4byte	.LASF115
+ 2370 0c97 01       		.byte	0x1
+ 2371 0c98 28       		.byte	0x28
+ 2372 0c99 A4010000 		.4byte	0x1a4
+ 2373 0c9d 05       		.uleb128 0x5
+ 2374 0c9e 03       		.byte	0x3
+ 2375 0c9f BC000000 		.4byte	txPacket_Intermotive
+ 2376 0ca3 1A       		.uleb128 0x1a
+ 2377 0ca4 C8070000 		.4byte	.LASF168
+ 2378 0ca8 01       		.byte	0x1
+ 2379 0ca9 29       		.byte	0x29
+ 2380 0caa B40C0000 		.4byte	0xcb4
+ 2381 0cae 05       		.uleb128 0x5
+ 2382 0caf 03       		.byte	0x3
+ 2383 0cb0 C8000000 		.4byte	pTxPacket_Intermotive
+ 2384 0cb4 1B       		.uleb128 0x1b
+ 2385 0cb5 04       		.byte	0x4
+ 2386 0cb6 A4010000 		.4byte	0x1a4
+ 2387 0cba 1A       		.uleb128 0x1a
+ 2388 0cbb 8D010000 		.4byte	.LASF169
+ 2389 0cbf 01       		.byte	0x1
+ 2390 0cc0 2C       		.byte	0x2c
+ 2391 0cc1 8D000000 		.4byte	0x8d
+ 2392 0cc5 05       		.uleb128 0x5
+ 2393 0cc6 03       		.byte	0x3
+ 2394 0cc7 CC000000 		.4byte	CTest_20ms_isr_count
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 52
+
+
+ 2395 0ccb 1A       		.uleb128 0x1a
+ 2396 0ccc 0D090000 		.4byte	.LASF170
+ 2397 0cd0 01       		.byte	0x1
+ 2398 0cd1 2D       		.byte	0x2d
+ 2399 0cd2 8D000000 		.4byte	0x8d
+ 2400 0cd6 05       		.uleb128 0x5
+ 2401 0cd7 03       		.byte	0x3
+ 2402 0cd8 CE000000 		.4byte	CTest_20ms_isr_EN
+ 2403 0cdc 1A       		.uleb128 0x1a
+ 2404 0cdd A4080000 		.4byte	.LASF171
+ 2405 0ce1 01       		.byte	0x1
+ 2406 0ce2 2F       		.byte	0x2f
+ 2407 0ce3 81000000 		.4byte	0x81
+ 2408 0ce7 05       		.uleb128 0x5
+ 2409 0ce8 03       		.byte	0x3
+ 2410 0ce9 D0000000 		.4byte	PB_NextAction_Pressed
+ 2411 0ced 1A       		.uleb128 0x1a
+ 2412 0cee 0F060000 		.4byte	.LASF172
+ 2413 0cf2 01       		.byte	0x1
+ 2414 0cf3 30       		.byte	0x30
+ 2415 0cf4 81000000 		.4byte	0x81
+ 2416 0cf8 05       		.uleb128 0x5
+ 2417 0cf9 03       		.byte	0x3
+ 2418 0cfa D1000000 		.4byte	PB_NextAction_Released
+ 2419 0cfe 08       		.uleb128 0x8
+ 2420 0cff 8D000000 		.4byte	0x8d
+ 2421 0d03 0E0D0000 		.4byte	0xd0e
+ 2422 0d07 09       		.uleb128 0x9
+ 2423 0d08 B5000000 		.4byte	0xb5
+ 2424 0d0c 0A       		.byte	0xa
+ 2425 0d0d 00       		.byte	0
+ 2426 0d0e 1A       		.uleb128 0x1a
+ 2427 0d0f B5070000 		.4byte	.LASF173
+ 2428 0d13 01       		.byte	0x1
+ 2429 0d14 5A       		.byte	0x5a
+ 2430 0d15 FE0C0000 		.4byte	0xcfe
+ 2431 0d19 05       		.uleb128 0x5
+ 2432 0d1a 03       		.byte	0x3
+ 2433 0d1b 00000000 		.4byte	CTest_TimeoutCount
+ 2434 0d1f 08       		.uleb128 0x8
+ 2435 0d20 81000000 		.4byte	0x81
+ 2436 0d24 2F0D0000 		.4byte	0xd2f
+ 2437 0d28 09       		.uleb128 0x9
+ 2438 0d29 B5000000 		.4byte	0xb5
+ 2439 0d2d 0A       		.byte	0xa
+ 2440 0d2e 00       		.byte	0
+ 2441 0d2f 1A       		.uleb128 0x1a
+ 2442 0d30 62000000 		.4byte	.LASF174
+ 2443 0d34 01       		.byte	0x1
+ 2444 0d35 70       		.byte	0x70
+ 2445 0d36 1F0D0000 		.4byte	0xd1f
+ 2446 0d3a 05       		.uleb128 0x5
+ 2447 0d3b 03       		.byte	0x3
+ 2448 0d3c D4000000 		.4byte	CTestStatus
+ 2449 0d40 1C       		.uleb128 0x1c
+ 2450 0d41 F9050000 		.4byte	.LASF175
+ 2451 0d45 08       		.byte	0x8
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 53
+
+
+ 2452 0d46 1207     		.2byte	0x712
+ 2453 0d48 4C0D0000 		.4byte	0xd4c
+ 2454 0d4c 1D       		.uleb128 0x1d
+ 2455 0d4d 76000000 		.4byte	0x76
+ 2456 0d51 1E       		.uleb128 0x1e
+ 2457 0d52 36080000 		.4byte	.LASF176
+ 2458 0d56 05       		.byte	0x5
+ 2459 0d57 16       		.byte	0x16
+ 2460 0d58 BC000000 		.4byte	0xbc
+ 2461 0d5c 05       		.uleb128 0x5
+ 2462 0d5d 03       		.byte	0x3
+ 2463 0d5e 00000000 		.4byte	Test
+ 2464 0d62 1F       		.uleb128 0x1f
+ 2465 0d63 28010000 		.4byte	.LASF177
+ 2466 0d67 05       		.byte	0x5
+ 2467 0d68 1A       		.byte	0x1a
+ 2468 0d69 ED000000 		.4byte	0xed
+ 2469 0d6d 00       		.byte	0
+ 2470              		.section	.debug_abbrev,"",%progbits
+ 2471              	.Ldebug_abbrev0:
+ 2472 0000 01       		.uleb128 0x1
+ 2473 0001 11       		.uleb128 0x11
+ 2474 0002 01       		.byte	0x1
+ 2475 0003 25       		.uleb128 0x25
+ 2476 0004 0E       		.uleb128 0xe
+ 2477 0005 13       		.uleb128 0x13
+ 2478 0006 0B       		.uleb128 0xb
+ 2479 0007 03       		.uleb128 0x3
+ 2480 0008 0E       		.uleb128 0xe
+ 2481 0009 1B       		.uleb128 0x1b
+ 2482 000a 0E       		.uleb128 0xe
+ 2483 000b 55       		.uleb128 0x55
+ 2484 000c 17       		.uleb128 0x17
+ 2485 000d 11       		.uleb128 0x11
+ 2486 000e 01       		.uleb128 0x1
+ 2487 000f 10       		.uleb128 0x10
+ 2488 0010 17       		.uleb128 0x17
+ 2489 0011 00       		.byte	0
+ 2490 0012 00       		.byte	0
+ 2491 0013 02       		.uleb128 0x2
+ 2492 0014 24       		.uleb128 0x24
+ 2493 0015 00       		.byte	0
+ 2494 0016 0B       		.uleb128 0xb
+ 2495 0017 0B       		.uleb128 0xb
+ 2496 0018 3E       		.uleb128 0x3e
+ 2497 0019 0B       		.uleb128 0xb
+ 2498 001a 03       		.uleb128 0x3
+ 2499 001b 0E       		.uleb128 0xe
+ 2500 001c 00       		.byte	0
+ 2501 001d 00       		.byte	0
+ 2502 001e 03       		.uleb128 0x3
+ 2503 001f 16       		.uleb128 0x16
+ 2504 0020 00       		.byte	0
+ 2505 0021 03       		.uleb128 0x3
+ 2506 0022 0E       		.uleb128 0xe
+ 2507 0023 3A       		.uleb128 0x3a
+ 2508 0024 0B       		.uleb128 0xb
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 54
+
+
+ 2509 0025 3B       		.uleb128 0x3b
+ 2510 0026 0B       		.uleb128 0xb
+ 2511 0027 49       		.uleb128 0x49
+ 2512 0028 13       		.uleb128 0x13
+ 2513 0029 00       		.byte	0
+ 2514 002a 00       		.byte	0
+ 2515 002b 04       		.uleb128 0x4
+ 2516 002c 24       		.uleb128 0x24
+ 2517 002d 00       		.byte	0
+ 2518 002e 0B       		.uleb128 0xb
+ 2519 002f 0B       		.uleb128 0xb
+ 2520 0030 3E       		.uleb128 0x3e
+ 2521 0031 0B       		.uleb128 0xb
+ 2522 0032 03       		.uleb128 0x3
+ 2523 0033 08       		.uleb128 0x8
+ 2524 0034 00       		.byte	0
+ 2525 0035 00       		.byte	0
+ 2526 0036 05       		.uleb128 0x5
+ 2527 0037 16       		.uleb128 0x16
+ 2528 0038 00       		.byte	0
+ 2529 0039 03       		.uleb128 0x3
+ 2530 003a 0E       		.uleb128 0xe
+ 2531 003b 3A       		.uleb128 0x3a
+ 2532 003c 0B       		.uleb128 0xb
+ 2533 003d 3B       		.uleb128 0x3b
+ 2534 003e 05       		.uleb128 0x5
+ 2535 003f 49       		.uleb128 0x49
+ 2536 0040 13       		.uleb128 0x13
+ 2537 0041 00       		.byte	0
+ 2538 0042 00       		.byte	0
+ 2539 0043 06       		.uleb128 0x6
+ 2540 0044 13       		.uleb128 0x13
+ 2541 0045 01       		.byte	0x1
+ 2542 0046 03       		.uleb128 0x3
+ 2543 0047 0E       		.uleb128 0xe
+ 2544 0048 0B       		.uleb128 0xb
+ 2545 0049 0B       		.uleb128 0xb
+ 2546 004a 3A       		.uleb128 0x3a
+ 2547 004b 0B       		.uleb128 0xb
+ 2548 004c 3B       		.uleb128 0x3b
+ 2549 004d 0B       		.uleb128 0xb
+ 2550 004e 01       		.uleb128 0x1
+ 2551 004f 13       		.uleb128 0x13
+ 2552 0050 00       		.byte	0
+ 2553 0051 00       		.byte	0
+ 2554 0052 07       		.uleb128 0x7
+ 2555 0053 0D       		.uleb128 0xd
+ 2556 0054 00       		.byte	0
+ 2557 0055 03       		.uleb128 0x3
+ 2558 0056 0E       		.uleb128 0xe
+ 2559 0057 3A       		.uleb128 0x3a
+ 2560 0058 0B       		.uleb128 0xb
+ 2561 0059 3B       		.uleb128 0x3b
+ 2562 005a 0B       		.uleb128 0xb
+ 2563 005b 49       		.uleb128 0x49
+ 2564 005c 13       		.uleb128 0x13
+ 2565 005d 38       		.uleb128 0x38
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 55
+
+
+ 2566 005e 0B       		.uleb128 0xb
+ 2567 005f 00       		.byte	0
+ 2568 0060 00       		.byte	0
+ 2569 0061 08       		.uleb128 0x8
+ 2570 0062 01       		.uleb128 0x1
+ 2571 0063 01       		.byte	0x1
+ 2572 0064 49       		.uleb128 0x49
+ 2573 0065 13       		.uleb128 0x13
+ 2574 0066 01       		.uleb128 0x1
+ 2575 0067 13       		.uleb128 0x13
+ 2576 0068 00       		.byte	0
+ 2577 0069 00       		.byte	0
+ 2578 006a 09       		.uleb128 0x9
+ 2579 006b 21       		.uleb128 0x21
+ 2580 006c 00       		.byte	0
+ 2581 006d 49       		.uleb128 0x49
+ 2582 006e 13       		.uleb128 0x13
+ 2583 006f 2F       		.uleb128 0x2f
+ 2584 0070 0B       		.uleb128 0xb
+ 2585 0071 00       		.byte	0
+ 2586 0072 00       		.byte	0
+ 2587 0073 0A       		.uleb128 0xa
+ 2588 0074 17       		.uleb128 0x17
+ 2589 0075 01       		.byte	0x1
+ 2590 0076 03       		.uleb128 0x3
+ 2591 0077 0E       		.uleb128 0xe
+ 2592 0078 0B       		.uleb128 0xb
+ 2593 0079 0B       		.uleb128 0xb
+ 2594 007a 3A       		.uleb128 0x3a
+ 2595 007b 0B       		.uleb128 0xb
+ 2596 007c 3B       		.uleb128 0x3b
+ 2597 007d 0B       		.uleb128 0xb
+ 2598 007e 01       		.uleb128 0x1
+ 2599 007f 13       		.uleb128 0x13
+ 2600 0080 00       		.byte	0
+ 2601 0081 00       		.byte	0
+ 2602 0082 0B       		.uleb128 0xb
+ 2603 0083 0D       		.uleb128 0xd
+ 2604 0084 00       		.byte	0
+ 2605 0085 03       		.uleb128 0x3
+ 2606 0086 0E       		.uleb128 0xe
+ 2607 0087 3A       		.uleb128 0x3a
+ 2608 0088 0B       		.uleb128 0xb
+ 2609 0089 3B       		.uleb128 0x3b
+ 2610 008a 0B       		.uleb128 0xb
+ 2611 008b 49       		.uleb128 0x49
+ 2612 008c 13       		.uleb128 0x13
+ 2613 008d 00       		.byte	0
+ 2614 008e 00       		.byte	0
+ 2615 008f 0C       		.uleb128 0xc
+ 2616 0090 0D       		.uleb128 0xd
+ 2617 0091 00       		.byte	0
+ 2618 0092 03       		.uleb128 0x3
+ 2619 0093 08       		.uleb128 0x8
+ 2620 0094 3A       		.uleb128 0x3a
+ 2621 0095 0B       		.uleb128 0xb
+ 2622 0096 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 56
+
+
+ 2623 0097 0B       		.uleb128 0xb
+ 2624 0098 49       		.uleb128 0x49
+ 2625 0099 13       		.uleb128 0x13
+ 2626 009a 38       		.uleb128 0x38
+ 2627 009b 0B       		.uleb128 0xb
+ 2628 009c 00       		.byte	0
+ 2629 009d 00       		.byte	0
+ 2630 009e 0D       		.uleb128 0xd
+ 2631 009f 13       		.uleb128 0x13
+ 2632 00a0 01       		.byte	0x1
+ 2633 00a1 03       		.uleb128 0x3
+ 2634 00a2 0E       		.uleb128 0xe
+ 2635 00a3 0B       		.uleb128 0xb
+ 2636 00a4 0B       		.uleb128 0xb
+ 2637 00a5 3A       		.uleb128 0x3a
+ 2638 00a6 0B       		.uleb128 0xb
+ 2639 00a7 3B       		.uleb128 0x3b
+ 2640 00a8 05       		.uleb128 0x5
+ 2641 00a9 01       		.uleb128 0x1
+ 2642 00aa 13       		.uleb128 0x13
+ 2643 00ab 00       		.byte	0
+ 2644 00ac 00       		.byte	0
+ 2645 00ad 0E       		.uleb128 0xe
+ 2646 00ae 0D       		.uleb128 0xd
+ 2647 00af 00       		.byte	0
+ 2648 00b0 03       		.uleb128 0x3
+ 2649 00b1 0E       		.uleb128 0xe
+ 2650 00b2 3A       		.uleb128 0x3a
+ 2651 00b3 0B       		.uleb128 0xb
+ 2652 00b4 3B       		.uleb128 0x3b
+ 2653 00b5 05       		.uleb128 0x5
+ 2654 00b6 49       		.uleb128 0x49
+ 2655 00b7 13       		.uleb128 0x13
+ 2656 00b8 38       		.uleb128 0x38
+ 2657 00b9 0B       		.uleb128 0xb
+ 2658 00ba 00       		.byte	0
+ 2659 00bb 00       		.byte	0
+ 2660 00bc 0F       		.uleb128 0xf
+ 2661 00bd 0D       		.uleb128 0xd
+ 2662 00be 00       		.byte	0
+ 2663 00bf 03       		.uleb128 0x3
+ 2664 00c0 08       		.uleb128 0x8
+ 2665 00c1 3A       		.uleb128 0x3a
+ 2666 00c2 0B       		.uleb128 0xb
+ 2667 00c3 3B       		.uleb128 0x3b
+ 2668 00c4 05       		.uleb128 0x5
+ 2669 00c5 49       		.uleb128 0x49
+ 2670 00c6 13       		.uleb128 0x13
+ 2671 00c7 38       		.uleb128 0x38
+ 2672 00c8 0B       		.uleb128 0xb
+ 2673 00c9 00       		.byte	0
+ 2674 00ca 00       		.byte	0
+ 2675 00cb 10       		.uleb128 0x10
+ 2676 00cc 17       		.uleb128 0x17
+ 2677 00cd 01       		.byte	0x1
+ 2678 00ce 03       		.uleb128 0x3
+ 2679 00cf 0E       		.uleb128 0xe
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 57
+
+
+ 2680 00d0 0B       		.uleb128 0xb
+ 2681 00d1 0B       		.uleb128 0xb
+ 2682 00d2 3A       		.uleb128 0x3a
+ 2683 00d3 0B       		.uleb128 0xb
+ 2684 00d4 3B       		.uleb128 0x3b
+ 2685 00d5 05       		.uleb128 0x5
+ 2686 00d6 01       		.uleb128 0x1
+ 2687 00d7 13       		.uleb128 0x13
+ 2688 00d8 00       		.byte	0
+ 2689 00d9 00       		.byte	0
+ 2690 00da 11       		.uleb128 0x11
+ 2691 00db 0D       		.uleb128 0xd
+ 2692 00dc 00       		.byte	0
+ 2693 00dd 03       		.uleb128 0x3
+ 2694 00de 0E       		.uleb128 0xe
+ 2695 00df 3A       		.uleb128 0x3a
+ 2696 00e0 0B       		.uleb128 0xb
+ 2697 00e1 3B       		.uleb128 0x3b
+ 2698 00e2 05       		.uleb128 0x5
+ 2699 00e3 49       		.uleb128 0x49
+ 2700 00e4 13       		.uleb128 0x13
+ 2701 00e5 00       		.byte	0
+ 2702 00e6 00       		.byte	0
+ 2703 00e7 12       		.uleb128 0x12
+ 2704 00e8 04       		.uleb128 0x4
+ 2705 00e9 01       		.byte	0x1
+ 2706 00ea 03       		.uleb128 0x3
+ 2707 00eb 0E       		.uleb128 0xe
+ 2708 00ec 0B       		.uleb128 0xb
+ 2709 00ed 0B       		.uleb128 0xb
+ 2710 00ee 49       		.uleb128 0x49
+ 2711 00ef 13       		.uleb128 0x13
+ 2712 00f0 3A       		.uleb128 0x3a
+ 2713 00f1 0B       		.uleb128 0xb
+ 2714 00f2 3B       		.uleb128 0x3b
+ 2715 00f3 0B       		.uleb128 0xb
+ 2716 00f4 01       		.uleb128 0x1
+ 2717 00f5 13       		.uleb128 0x13
+ 2718 00f6 00       		.byte	0
+ 2719 00f7 00       		.byte	0
+ 2720 00f8 13       		.uleb128 0x13
+ 2721 00f9 28       		.uleb128 0x28
+ 2722 00fa 00       		.byte	0
+ 2723 00fb 03       		.uleb128 0x3
+ 2724 00fc 08       		.uleb128 0x8
+ 2725 00fd 1C       		.uleb128 0x1c
+ 2726 00fe 0B       		.uleb128 0xb
+ 2727 00ff 00       		.byte	0
+ 2728 0100 00       		.byte	0
+ 2729 0101 14       		.uleb128 0x14
+ 2730 0102 28       		.uleb128 0x28
+ 2731 0103 00       		.byte	0
+ 2732 0104 03       		.uleb128 0x3
+ 2733 0105 0E       		.uleb128 0xe
+ 2734 0106 1C       		.uleb128 0x1c
+ 2735 0107 0B       		.uleb128 0xb
+ 2736 0108 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 58
+
+
+ 2737 0109 00       		.byte	0
+ 2738 010a 15       		.uleb128 0x15
+ 2739 010b 2E       		.uleb128 0x2e
+ 2740 010c 01       		.byte	0x1
+ 2741 010d 3F       		.uleb128 0x3f
+ 2742 010e 19       		.uleb128 0x19
+ 2743 010f 03       		.uleb128 0x3
+ 2744 0110 0E       		.uleb128 0xe
+ 2745 0111 3A       		.uleb128 0x3a
+ 2746 0112 0B       		.uleb128 0xb
+ 2747 0113 3B       		.uleb128 0x3b
+ 2748 0114 0B       		.uleb128 0xb
+ 2749 0115 27       		.uleb128 0x27
+ 2750 0116 19       		.uleb128 0x19
+ 2751 0117 49       		.uleb128 0x49
+ 2752 0118 13       		.uleb128 0x13
+ 2753 0119 11       		.uleb128 0x11
+ 2754 011a 01       		.uleb128 0x1
+ 2755 011b 12       		.uleb128 0x12
+ 2756 011c 06       		.uleb128 0x6
+ 2757 011d 40       		.uleb128 0x40
+ 2758 011e 18       		.uleb128 0x18
+ 2759 011f 9642     		.uleb128 0x2116
+ 2760 0121 19       		.uleb128 0x19
+ 2761 0122 01       		.uleb128 0x1
+ 2762 0123 13       		.uleb128 0x13
+ 2763 0124 00       		.byte	0
+ 2764 0125 00       		.byte	0
+ 2765 0126 16       		.uleb128 0x16
+ 2766 0127 0B       		.uleb128 0xb
+ 2767 0128 01       		.byte	0x1
+ 2768 0129 11       		.uleb128 0x11
+ 2769 012a 01       		.uleb128 0x1
+ 2770 012b 12       		.uleb128 0x12
+ 2771 012c 06       		.uleb128 0x6
+ 2772 012d 01       		.uleb128 0x1
+ 2773 012e 13       		.uleb128 0x13
+ 2774 012f 00       		.byte	0
+ 2775 0130 00       		.byte	0
+ 2776 0131 17       		.uleb128 0x17
+ 2777 0132 34       		.uleb128 0x34
+ 2778 0133 00       		.byte	0
+ 2779 0134 03       		.uleb128 0x3
+ 2780 0135 08       		.uleb128 0x8
+ 2781 0136 3A       		.uleb128 0x3a
+ 2782 0137 0B       		.uleb128 0xb
+ 2783 0138 3B       		.uleb128 0x3b
+ 2784 0139 0B       		.uleb128 0xb
+ 2785 013a 49       		.uleb128 0x49
+ 2786 013b 13       		.uleb128 0x13
+ 2787 013c 02       		.uleb128 0x2
+ 2788 013d 18       		.uleb128 0x18
+ 2789 013e 00       		.byte	0
+ 2790 013f 00       		.byte	0
+ 2791 0140 18       		.uleb128 0x18
+ 2792 0141 0B       		.uleb128 0xb
+ 2793 0142 01       		.byte	0x1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 59
+
+
+ 2794 0143 11       		.uleb128 0x11
+ 2795 0144 01       		.uleb128 0x1
+ 2796 0145 12       		.uleb128 0x12
+ 2797 0146 06       		.uleb128 0x6
+ 2798 0147 00       		.byte	0
+ 2799 0148 00       		.byte	0
+ 2800 0149 19       		.uleb128 0x19
+ 2801 014a 34       		.uleb128 0x34
+ 2802 014b 00       		.byte	0
+ 2803 014c 03       		.uleb128 0x3
+ 2804 014d 08       		.uleb128 0x8
+ 2805 014e 3A       		.uleb128 0x3a
+ 2806 014f 0B       		.uleb128 0xb
+ 2807 0150 3B       		.uleb128 0x3b
+ 2808 0151 05       		.uleb128 0x5
+ 2809 0152 49       		.uleb128 0x49
+ 2810 0153 13       		.uleb128 0x13
+ 2811 0154 02       		.uleb128 0x2
+ 2812 0155 18       		.uleb128 0x18
+ 2813 0156 00       		.byte	0
+ 2814 0157 00       		.byte	0
+ 2815 0158 1A       		.uleb128 0x1a
+ 2816 0159 34       		.uleb128 0x34
+ 2817 015a 00       		.byte	0
+ 2818 015b 03       		.uleb128 0x3
+ 2819 015c 0E       		.uleb128 0xe
+ 2820 015d 3A       		.uleb128 0x3a
+ 2821 015e 0B       		.uleb128 0xb
+ 2822 015f 3B       		.uleb128 0x3b
+ 2823 0160 0B       		.uleb128 0xb
+ 2824 0161 49       		.uleb128 0x49
+ 2825 0162 13       		.uleb128 0x13
+ 2826 0163 02       		.uleb128 0x2
+ 2827 0164 18       		.uleb128 0x18
+ 2828 0165 00       		.byte	0
+ 2829 0166 00       		.byte	0
+ 2830 0167 1B       		.uleb128 0x1b
+ 2831 0168 0F       		.uleb128 0xf
+ 2832 0169 00       		.byte	0
+ 2833 016a 0B       		.uleb128 0xb
+ 2834 016b 0B       		.uleb128 0xb
+ 2835 016c 49       		.uleb128 0x49
+ 2836 016d 13       		.uleb128 0x13
+ 2837 016e 00       		.byte	0
+ 2838 016f 00       		.byte	0
+ 2839 0170 1C       		.uleb128 0x1c
+ 2840 0171 34       		.uleb128 0x34
+ 2841 0172 00       		.byte	0
+ 2842 0173 03       		.uleb128 0x3
+ 2843 0174 0E       		.uleb128 0xe
+ 2844 0175 3A       		.uleb128 0x3a
+ 2845 0176 0B       		.uleb128 0xb
+ 2846 0177 3B       		.uleb128 0x3b
+ 2847 0178 05       		.uleb128 0x5
+ 2848 0179 49       		.uleb128 0x49
+ 2849 017a 13       		.uleb128 0x13
+ 2850 017b 3F       		.uleb128 0x3f
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 60
+
+
+ 2851 017c 19       		.uleb128 0x19
+ 2852 017d 3C       		.uleb128 0x3c
+ 2853 017e 19       		.uleb128 0x19
+ 2854 017f 00       		.byte	0
+ 2855 0180 00       		.byte	0
+ 2856 0181 1D       		.uleb128 0x1d
+ 2857 0182 35       		.uleb128 0x35
+ 2858 0183 00       		.byte	0
+ 2859 0184 49       		.uleb128 0x49
+ 2860 0185 13       		.uleb128 0x13
+ 2861 0186 00       		.byte	0
+ 2862 0187 00       		.byte	0
+ 2863 0188 1E       		.uleb128 0x1e
+ 2864 0189 34       		.uleb128 0x34
+ 2865 018a 00       		.byte	0
+ 2866 018b 03       		.uleb128 0x3
+ 2867 018c 0E       		.uleb128 0xe
+ 2868 018d 3A       		.uleb128 0x3a
+ 2869 018e 0B       		.uleb128 0xb
+ 2870 018f 3B       		.uleb128 0x3b
+ 2871 0190 0B       		.uleb128 0xb
+ 2872 0191 49       		.uleb128 0x49
+ 2873 0192 13       		.uleb128 0x13
+ 2874 0193 3F       		.uleb128 0x3f
+ 2875 0194 19       		.uleb128 0x19
+ 2876 0195 02       		.uleb128 0x2
+ 2877 0196 18       		.uleb128 0x18
+ 2878 0197 00       		.byte	0
+ 2879 0198 00       		.byte	0
+ 2880 0199 1F       		.uleb128 0x1f
+ 2881 019a 34       		.uleb128 0x34
+ 2882 019b 00       		.byte	0
+ 2883 019c 03       		.uleb128 0x3
+ 2884 019d 0E       		.uleb128 0xe
+ 2885 019e 3A       		.uleb128 0x3a
+ 2886 019f 0B       		.uleb128 0xb
+ 2887 01a0 3B       		.uleb128 0x3b
+ 2888 01a1 0B       		.uleb128 0xb
+ 2889 01a2 49       		.uleb128 0x49
+ 2890 01a3 13       		.uleb128 0x13
+ 2891 01a4 3F       		.uleb128 0x3f
+ 2892 01a5 19       		.uleb128 0x19
+ 2893 01a6 3C       		.uleb128 0x3c
+ 2894 01a7 19       		.uleb128 0x19
+ 2895 01a8 00       		.byte	0
+ 2896 01a9 00       		.byte	0
+ 2897 01aa 00       		.byte	0
+ 2898              		.section	.debug_aranges,"",%progbits
+ 2899 0000 1C000000 		.4byte	0x1c
+ 2900 0004 0200     		.2byte	0x2
+ 2901 0006 00000000 		.4byte	.Ldebug_info0
+ 2902 000a 04       		.byte	0x4
+ 2903 000b 00       		.byte	0
+ 2904 000c 0000     		.2byte	0
+ 2905 000e 0000     		.2byte	0
+ 2906 0010 00000000 		.4byte	.LFB63
+ 2907 0014 88040000 		.4byte	.LFE63-.LFB63
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 61
+
+
+ 2908 0018 00000000 		.4byte	0
+ 2909 001c 00000000 		.4byte	0
+ 2910              		.section	.debug_ranges,"",%progbits
+ 2911              	.Ldebug_ranges0:
+ 2912 0000 00000000 		.4byte	.LFB63
+ 2913 0004 88040000 		.4byte	.LFE63
+ 2914 0008 00000000 		.4byte	0
+ 2915 000c 00000000 		.4byte	0
+ 2916              		.section	.debug_line,"",%progbits
+ 2917              	.Ldebug_line0:
+ 2918 0000 D4020000 		.section	.debug_str,"MS",%progbits,1
+ 2918      0200AA01 
+ 2918      00000201 
+ 2918      FB0E0D00 
+ 2918      01010101 
+ 2919              	.LASF137:
+ 2920 0000 74785061 		.ascii	"txPacket_RelaySiren\000"
+ 2920      636B6574 
+ 2920      5F52656C 
+ 2920      61795369 
+ 2920      72656E00 
+ 2921              	.LASF12:
+ 2922 0014 75696E74 		.ascii	"uint16\000"
+ 2922      313600
+ 2923              	.LASF76:
+ 2924 001b 4C45445F 		.ascii	"LED_03_R\000"
+ 2924      30335F52 
+ 2924      00
+ 2925              	.LASF84:
+ 2926 0024 4C45445F 		.ascii	"LED_01_B\000"
+ 2926      30315F42 
+ 2926      00
+ 2927              	.LASF148:
+ 2928 002d 4D55585F 		.ascii	"MUX_DEMUX_230400_CHANNEL\000"
+ 2928      44454D55 
+ 2928      585F3233 
+ 2928      30343030 
+ 2928      5F434841 
+ 2929              	.LASF167:
+ 2930 0046 70547850 		.ascii	"pTxPacket_Relay\000"
+ 2930      61636B65 
+ 2930      745F5265 
+ 2930      6C617900 
+ 2931              	.LASF155:
+ 2932 0056 434F4E46 		.ascii	"CONFIG_FILE\000"
+ 2932      49475F46 
+ 2932      494C4500 
+ 2933              	.LASF174:
+ 2934 0062 43546573 		.ascii	"CTestStatus\000"
+ 2934      74537461 
+ 2934      74757300 
+ 2935              	.LASF96:
+ 2936 006e 53746F70 		.ascii	"StopByte2_FLB\000"
+ 2936      42797465 
+ 2936      325F464C 
+ 2936      4200
+ 2937              	.LASF152:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 62
+
+
+ 2938 007c 53544553 		.ascii	"STEST_RELAY\000"
+ 2938      545F5245 
+ 2938      4C415900 
+ 2939              	.LASF50:
+ 2940 0088 4C45445F 		.ascii	"LED_12_G\000"
+ 2940      31325F47 
+ 2940      00
+ 2941              	.LASF178:
+ 2942 0091 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 2942      43313120 
+ 2942      352E342E 
+ 2942      31203230 
+ 2942      31363036 
+ 2943 00c4 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 2943      20726576 
+ 2943      6973696F 
+ 2943      6E203233 
+ 2943      37373135 
+ 2944 00f7 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 2944      66756E63 
+ 2944      74696F6E 
+ 2944      2D736563 
+ 2944      74696F6E 
+ 2945              	.LASF63:
+ 2946 011f 4C45445F 		.ascii	"LED_08_B\000"
+ 2946      30385F42 
+ 2946      00
+ 2947              	.LASF177:
+ 2948 0128 43757272 		.ascii	"CurrentTest\000"
+ 2948      656E7454 
+ 2948      65737400 
+ 2949              	.LASF49:
+ 2950 0134 4C45445F 		.ascii	"LED_12_R\000"
+ 2950      31325F52 
+ 2950      00
+ 2951              	.LASF62:
+ 2952 013d 4C45445F 		.ascii	"LED_08_G\000"
+ 2952      30385F47 
+ 2952      00
+ 2953              	.LASF9:
+ 2954 0146 5F5F696E 		.ascii	"__int32_t\000"
+ 2954      7433325F 
+ 2954      7400
+ 2955              	.LASF143:
+ 2956 0150 43544553 		.ascii	"CTEST_AUDIO\000"
+ 2956      545F4155 
+ 2956      44494F00 
+ 2957              	.LASF61:
+ 2958 015c 4C45445F 		.ascii	"LED_08_R\000"
+ 2958      30385F52 
+ 2958      00
+ 2959              	.LASF141:
+ 2960 0165 4C454443 		.ascii	"LEDColor\000"
+ 2960      6F6C6F72 
+ 2960      00
+ 2961              	.LASF162:
+ 2962 016e 44454255 		.ascii	"DEBUG_PORT\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 63
+
+
+ 2962      475F504F 
+ 2962      525400
+ 2963              	.LASF134:
+ 2964 0179 74785061 		.ascii	"txPacket_Controller\000"
+ 2964      636B6574 
+ 2964      5F436F6E 
+ 2964      74726F6C 
+ 2964      6C657200 
+ 2965              	.LASF169:
+ 2966 018d 43546573 		.ascii	"CTest_20ms_isr_count\000"
+ 2966      745F3230 
+ 2966      6D735F69 
+ 2966      73725F63 
+ 2966      6F756E74 
+ 2967              	.LASF6:
+ 2968 01a2 6C6F6E67 		.ascii	"long long int\000"
+ 2968      206C6F6E 
+ 2968      6720696E 
+ 2968      7400
+ 2969              	.LASF0:
+ 2970 01b0 7369676E 		.ascii	"signed char\000"
+ 2970      65642063 
+ 2970      68617200 
+ 2971              	.LASF164:
+ 2972 01bc 70527850 		.ascii	"pRxPacket_Controller\000"
+ 2972      61636B65 
+ 2972      745F436F 
+ 2972      6E74726F 
+ 2972      6C6C6572 
+ 2973              	.LASF53:
+ 2974 01d1 4C45445F 		.ascii	"LED_11_G\000"
+ 2974      31315F47 
+ 2974      00
+ 2975              	.LASF153:
+ 2976 01da 494E4954 		.ascii	"INITIALIZE_TEST\000"
+ 2976      49414C49 
+ 2976      5A455F54 
+ 2976      45535400 
+ 2977              	.LASF101:
+ 2978 01ea 4475616C 		.ascii	"DualDelay\000"
+ 2978      44656C61 
+ 2978      7900
+ 2979              	.LASF7:
+ 2980 01f4 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2980      206C6F6E 
+ 2980      6720756E 
+ 2980      7369676E 
+ 2980      65642069 
+ 2981              	.LASF81:
+ 2982 020b 4C45445F 		.ascii	"LED_02_B\000"
+ 2982      30325F42 
+ 2982      00
+ 2983              	.LASF80:
+ 2984 0214 4C45445F 		.ascii	"LED_02_G\000"
+ 2984      30325F47 
+ 2984      00
+ 2985              	.LASF4:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 64
+
+
+ 2986 021d 6C6F6E67 		.ascii	"long int\000"
+ 2986      20696E74 
+ 2986      00
+ 2987              	.LASF79:
+ 2988 0226 4C45445F 		.ascii	"LED_02_R\000"
+ 2988      30325F52 
+ 2988      00
+ 2989              	.LASF11:
+ 2990 022f 75696E74 		.ascii	"uint8\000"
+ 2990      3800
+ 2991              	.LASF113:
+ 2992 0235 53746F70 		.ascii	"StopByte1_Relay\000"
+ 2992      42797465 
+ 2992      315F5265 
+ 2992      6C617900 
+ 2993              	.LASF14:
+ 2994 0245 646F7562 		.ascii	"double\000"
+ 2994      6C6500
+ 2995              	.LASF54:
+ 2996 024c 4C45445F 		.ascii	"LED_11_B\000"
+ 2996      31315F42 
+ 2996      00
+ 2997              	.LASF85:
+ 2998 0255 42757A7A 		.ascii	"Buzzer_H\000"
+ 2998      65725F48 
+ 2998      00
+ 2999              	.LASF88:
+ 3000 025e 636F6E74 		.ascii	"controllerSpeakerEnable\000"
+ 3000      726F6C6C 
+ 3000      65725370 
+ 3000      65616B65 
+ 3000      72456E61 
+ 3001              	.LASF35:
+ 3002 0276 54785061 		.ascii	"TxPacket_Intermotive\000"
+ 3002      636B6574 
+ 3002      5F496E74 
+ 3002      65726D6F 
+ 3002      74697665 
+ 3003              	.LASF108:
+ 3004 028b 4F757470 		.ascii	"Outputs_17to24\000"
+ 3004      7574735F 
+ 3004      3137746F 
+ 3004      323400
+ 3005              	.LASF66:
+ 3006 029a 4C45445F 		.ascii	"LED_07_B\000"
+ 3006      30375F42 
+ 3006      00
+ 3007              	.LASF33:
+ 3008 02a3 62797465 		.ascii	"bytes\000"
+ 3008      7300
+ 3009              	.LASF52:
+ 3010 02a9 4C45445F 		.ascii	"LED_11_R\000"
+ 3010      31315F52 
+ 3010      00
+ 3011              	.LASF65:
+ 3012 02b2 4C45445F 		.ascii	"LED_07_G\000"
+ 3012      30375F47 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 65
+
+
+ 3012      00
+ 3013              	.LASF157:
+ 3014 02bb 4F424449 		.ascii	"OBDII\000"
+ 3014      4900
+ 3015              	.LASF128:
+ 3016 02c1 53697265 		.ascii	"SirenFirm_1\000"
+ 3016      6E466972 
+ 3016      6D5F3100 
+ 3017              	.LASF36:
+ 3018 02cd 72784461 		.ascii	"rxData_Controller\000"
+ 3018      74615F43 
+ 3018      6F6E7472 
+ 3018      6F6C6C65 
+ 3018      7200
+ 3019              	.LASF64:
+ 3020 02df 4C45445F 		.ascii	"LED_07_R\000"
+ 3020      30375F52 
+ 3020      00
+ 3021              	.LASF158:
+ 3022 02e8 50555348 		.ascii	"PUSHBUTTONS\000"
+ 3022      42555454 
+ 3022      4F4E5300 
+ 3023              	.LASF8:
+ 3024 02f4 756E7369 		.ascii	"unsigned int\000"
+ 3024      676E6564 
+ 3024      20696E74 
+ 3024      00
+ 3025              	.LASF39:
+ 3026 0301 4C45445F 		.ascii	"LED_16_B\000"
+ 3026      31365F42 
+ 3026      00
+ 3027              	.LASF106:
+ 3028 030a 4F757470 		.ascii	"Outputs_1to8\000"
+ 3028      7574735F 
+ 3028      31746F38 
+ 3028      00
+ 3029              	.LASF124:
+ 3030 0317 53706561 		.ascii	"Speaker1_Overcurrent\000"
+ 3030      6B657231 
+ 3030      5F4F7665 
+ 3030      72637572 
+ 3030      72656E74 
+ 3031              	.LASF98:
+ 3032 032c 53697265 		.ascii	"Siren_PacketType\000"
+ 3032      6E5F5061 
+ 3032      636B6574 
+ 3032      54797065 
+ 3032      00
+ 3033              	.LASF126:
+ 3034 033d 52656C61 		.ascii	"RelayInputs\000"
+ 3034      79496E70 
+ 3034      75747300 
+ 3035              	.LASF95:
+ 3036 0349 53746F70 		.ascii	"StopByte1_FLB\000"
+ 3036      42797465 
+ 3036      315F464C 
+ 3036      4200
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 66
+
+
+ 3037              	.LASF5:
+ 3038 0357 6C6F6E67 		.ascii	"long unsigned int\000"
+ 3038      20756E73 
+ 3038      69676E65 
+ 3038      6420696E 
+ 3038      7400
+ 3039              	.LASF127:
+ 3040 0369 53697265 		.ascii	"SirenFirm_0\000"
+ 3040      6E466972 
+ 3040      6D5F3000 
+ 3041              	.LASF103:
+ 3042 0375 53746F70 		.ascii	"StopByte2_Siren\000"
+ 3042      42797465 
+ 3042      325F5369 
+ 3042      72656E00 
+ 3043              	.LASF129:
+ 3044 0385 53697265 		.ascii	"SirenFirm_2\000"
+ 3044      6E466972 
+ 3044      6D5F3200 
+ 3045              	.LASF83:
+ 3046 0391 4C45445F 		.ascii	"LED_01_G\000"
+ 3046      30315F47 
+ 3046      00
+ 3047              	.LASF37:
+ 3048 039a 4C45445F 		.ascii	"LED_16_R\000"
+ 3048      31365F52 
+ 3048      00
+ 3049              	.LASF100:
+ 3050 03a3 53697265 		.ascii	"Siren2Tone\000"
+ 3050      6E32546F 
+ 3050      6E6500
+ 3051              	.LASF89:
+ 3052 03ae 636F6E74 		.ascii	"controllerPowerState\000"
+ 3052      726F6C6C 
+ 3052      6572506F 
+ 3052      77657253 
+ 3052      74617465 
+ 3053              	.LASF111:
+ 3054 03c3 506F7765 		.ascii	"PowerState\000"
+ 3054      72537461 
+ 3054      746500
+ 3055              	.LASF82:
+ 3056 03ce 4C45445F 		.ascii	"LED_01_R\000"
+ 3056      30315F52 
+ 3056      00
+ 3057              	.LASF149:
+ 3058 03d7 43544553 		.ascii	"CTEST_RELAY\000"
+ 3058      545F5245 
+ 3058      4C415900 
+ 3059              	.LASF3:
+ 3060 03e3 73686F72 		.ascii	"short unsigned int\000"
+ 3060      7420756E 
+ 3060      7369676E 
+ 3060      65642069 
+ 3060      6E7400
+ 3061              	.LASF24:
+ 3062 03f6 44617461 		.ascii	"Data0\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 67
+
+
+ 3062      3000
+ 3063              	.LASF25:
+ 3064 03fc 44617461 		.ascii	"Data1\000"
+ 3064      3100
+ 3065              	.LASF26:
+ 3066 0402 44617461 		.ascii	"Data2\000"
+ 3066      3200
+ 3067              	.LASF27:
+ 3068 0408 44617461 		.ascii	"Data3\000"
+ 3068      3300
+ 3069              	.LASF28:
+ 3070 040e 44617461 		.ascii	"Data4\000"
+ 3070      3400
+ 3071              	.LASF29:
+ 3072 0414 44617461 		.ascii	"Data5\000"
+ 3072      3500
+ 3073              	.LASF30:
+ 3074 041a 44617461 		.ascii	"Data6\000"
+ 3074      3600
+ 3075              	.LASF31:
+ 3076 0420 44617461 		.ascii	"Data7\000"
+ 3076      3700
+ 3077              	.LASF57:
+ 3078 0426 4C45445F 		.ascii	"LED_10_B\000"
+ 3078      31305F42 
+ 3078      00
+ 3079              	.LASF97:
+ 3080 042f 53746172 		.ascii	"StartByte1_Siren\000"
+ 3080      74427974 
+ 3080      65315F53 
+ 3080      6972656E 
+ 3080      00
+ 3081              	.LASF56:
+ 3082 0440 4C45445F 		.ascii	"LED_10_G\000"
+ 3082      31305F47 
+ 3082      00
+ 3083              	.LASF105:
+ 3084 0449 52656C61 		.ascii	"Relay_PacketType\000"
+ 3084      795F5061 
+ 3084      636B6574 
+ 3084      54797065 
+ 3084      00
+ 3085              	.LASF69:
+ 3086 045a 4C45445F 		.ascii	"LED_06_B\000"
+ 3086      30365F42 
+ 3086      00
+ 3087              	.LASF55:
+ 3088 0463 4C45445F 		.ascii	"LED_10_R\000"
+ 3088      31305F52 
+ 3088      00
+ 3089              	.LASF34:
+ 3090 046c 5061796C 		.ascii	"Payload\000"
+ 3090      6F616400 
+ 3091              	.LASF68:
+ 3092 0474 4C45445F 		.ascii	"LED_06_G\000"
+ 3092      30365F47 
+ 3092      00
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 68
+
+
+ 3093              	.LASF67:
+ 3094 047d 4C45445F 		.ascii	"LED_06_R\000"
+ 3094      30365F52 
+ 3094      00
+ 3095              	.LASF48:
+ 3096 0486 4C45445F 		.ascii	"LED_13_B\000"
+ 3096      31335F42 
+ 3096      00
+ 3097              	.LASF117:
+ 3098 048f 52785061 		.ascii	"RxPacket_Controller\000"
+ 3098      636B6574 
+ 3098      5F436F6E 
+ 3098      74726F6C 
+ 3098      6C657200 
+ 3099              	.LASF133:
+ 3100 04a3 63686563 		.ascii	"checkSum\000"
+ 3100      6B53756D 
+ 3100      00
+ 3101              	.LASF115:
+ 3102 04ac 74785061 		.ascii	"txPacket_Intermotive\000"
+ 3102      636B6574 
+ 3102      5F496E74 
+ 3102      65726D6F 
+ 3102      74697665 
+ 3103              	.LASF17:
+ 3104 04c1 73697A65 		.ascii	"sizetype\000"
+ 3104      74797065 
+ 3104      00
+ 3105              	.LASF160:
+ 3106 04ca 4C454453 		.ascii	"LEDS_RGB\000"
+ 3106      5F524742 
+ 3106      00
+ 3107              	.LASF118:
+ 3108 04d3 74784461 		.ascii	"txData_Controller\000"
+ 3108      74615F43 
+ 3108      6F6E7472 
+ 3108      6F6C6C65 
+ 3108      7200
+ 3109              	.LASF42:
+ 3110 04e5 4C45445F 		.ascii	"LED_15_B\000"
+ 3110      31355F42 
+ 3110      00
+ 3111              	.LASF38:
+ 3112 04ee 4C45445F 		.ascii	"LED_16_G\000"
+ 3112      31365F47 
+ 3112      00
+ 3113              	.LASF41:
+ 3114 04f7 4C45445F 		.ascii	"LED_15_G\000"
+ 3114      31355F47 
+ 3114      00
+ 3115              	.LASF110:
+ 3116 0500 48694C6F 		.ascii	"HiLoInputLogic\000"
+ 3116      496E7075 
+ 3116      744C6F67 
+ 3116      696300
+ 3117              	.LASF40:
+ 3118 050f 4C45445F 		.ascii	"LED_15_R\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 69
+
+
+ 3118      31355F52 
+ 3118      00
+ 3119              	.LASF90:
+ 3120 0518 53746172 		.ascii	"StartByte_FLB\000"
+ 3120      74427974 
+ 3120      655F464C 
+ 3120      4200
+ 3121              	.LASF51:
+ 3122 0526 4C45445F 		.ascii	"LED_12_B\000"
+ 3122      31325F42 
+ 3122      00
+ 3123              	.LASF109:
+ 3124 052f 4F757470 		.ascii	"Outputs_25to32\000"
+ 3124      7574735F 
+ 3124      3235746F 
+ 3124      333200
+ 3125              	.LASF138:
+ 3126 053e 54785061 		.ascii	"TxPacket_RelaySiren\000"
+ 3126      636B6574 
+ 3126      5F52656C 
+ 3126      61795369 
+ 3126      72656E00 
+ 3127              	.LASF159:
+ 3128 0552 51554144 		.ascii	"QUAD_STREAM\000"
+ 3128      5F535452 
+ 3128      45414D00 
+ 3129              	.LASF125:
+ 3130 055e 53706561 		.ascii	"Speaker2_Overcurrent\000"
+ 3130      6B657232 
+ 3130      5F4F7665 
+ 3130      72637572 
+ 3130      72656E74 
+ 3131              	.LASF13:
+ 3132 0573 666C6F61 		.ascii	"float\000"
+ 3132      7400
+ 3133              	.LASF21:
+ 3134 0579 53747275 		.ascii	"StructTestInfo\000"
+ 3134      63745465 
+ 3134      7374496E 
+ 3134      666F00
+ 3135              	.LASF116:
+ 3136 0588 72785061 		.ascii	"rxPacket_Controller\000"
+ 3136      636B6574 
+ 3136      5F436F6E 
+ 3136      74726F6C 
+ 3136      6C657200 
+ 3137              	.LASF91:
+ 3138 059c 464C425F 		.ascii	"FLB_PacketType\000"
+ 3138      5061636B 
+ 3138      65745479 
+ 3138      706500
+ 3139              	.LASF179:
+ 3140 05ab 436F6E74 		.ascii	"ControllerTest_Complete.c\000"
+ 3140      726F6C6C 
+ 3140      65725465 
+ 3140      73745F43 
+ 3140      6F6D706C 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 70
+
+
+ 3141              	.LASF71:
+ 3142 05c5 4C45445F 		.ascii	"LED_05_G\000"
+ 3142      30355F47 
+ 3142      00
+ 3143              	.LASF10:
+ 3144 05ce 696E7433 		.ascii	"int32_t\000"
+ 3144      325F7400 
+ 3145              	.LASF1:
+ 3146 05d6 756E7369 		.ascii	"unsigned char\000"
+ 3146      676E6564 
+ 3146      20636861 
+ 3146      7200
+ 3147              	.LASF165:
+ 3148 05e4 70547850 		.ascii	"pTxPacket_Controller\000"
+ 3148      61636B65 
+ 3148      745F436F 
+ 3148      6E74726F 
+ 3148      6C6C6572 
+ 3149              	.LASF175:
+ 3150 05f9 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 3150      52784275 
+ 3150      66666572 
+ 3150      00
+ 3151              	.LASF70:
+ 3152 0606 4C45445F 		.ascii	"LED_05_R\000"
+ 3152      30355F52 
+ 3152      00
+ 3153              	.LASF172:
+ 3154 060f 50425F4E 		.ascii	"PB_NextAction_Released\000"
+ 3154      65787441 
+ 3154      6374696F 
+ 3154      6E5F5265 
+ 3154      6C656173 
+ 3155              	.LASF2:
+ 3156 0626 73686F72 		.ascii	"short int\000"
+ 3156      7420696E 
+ 3156      7400
+ 3157              	.LASF147:
+ 3158 0630 43544553 		.ascii	"CTEST_AUDIOSTREAM\000"
+ 3158      545F4155 
+ 3158      44494F53 
+ 3158      54524541 
+ 3158      4D00
+ 3159              	.LASF142:
+ 3160 0642 44415441 		.ascii	"DATA_TYPE_460800\000"
+ 3160      5F545950 
+ 3160      455F3436 
+ 3160      30383030 
+ 3160      00
+ 3161              	.LASF154:
+ 3162 0653 434F4E46 		.ascii	"CONFIRM_BOOTUP\000"
+ 3162      49524D5F 
+ 3162      424F4F54 
+ 3162      555000
+ 3163              	.LASF19:
+ 3164 0662 54657374 		.ascii	"TestStep\000"
+ 3164      53746570 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 71
+
+
+ 3164      00
+ 3165              	.LASF45:
+ 3166 066b 4C45445F 		.ascii	"LED_14_B\000"
+ 3166      31345F42 
+ 3166      00
+ 3167              	.LASF156:
+ 3168 0674 54455354 		.ascii	"TEST_POWERMODES\000"
+ 3168      5F504F57 
+ 3168      45524D4F 
+ 3168      44455300 
+ 3169              	.LASF114:
+ 3170 0684 53746F70 		.ascii	"StopByte2_Relay\000"
+ 3170      42797465 
+ 3170      325F5265 
+ 3170      6C617900 
+ 3171              	.LASF44:
+ 3172 0694 4C45445F 		.ascii	"LED_14_G\000"
+ 3172      31345F47 
+ 3172      00
+ 3173              	.LASF18:
+ 3174 069d 53656C65 		.ascii	"SelectedTest\000"
+ 3174      63746564 
+ 3174      54657374 
+ 3174      00
+ 3175              	.LASF72:
+ 3176 06aa 4C45445F 		.ascii	"LED_05_B\000"
+ 3176      30355F42 
+ 3176      00
+ 3177              	.LASF43:
+ 3178 06b3 4C45445F 		.ascii	"LED_14_R\000"
+ 3178      31345F52 
+ 3178      00
+ 3179              	.LASF145:
+ 3180 06bc 4D55585F 		.ascii	"MUX_460800_CHANNEL\000"
+ 3180      34363038 
+ 3180      30305F43 
+ 3180      48414E4E 
+ 3180      454C00
+ 3181              	.LASF99:
+ 3182 06cf 53697265 		.ascii	"Siren1Tone\000"
+ 3182      6E31546F 
+ 3182      6E6500
+ 3183              	.LASF112:
+ 3184 06da 53697265 		.ascii	"SirenEnable\000"
+ 3184      6E456E61 
+ 3184      626C6500 
+ 3185              	.LASF107:
+ 3186 06e6 4F757470 		.ascii	"Outputs_9to16\000"
+ 3186      7574735F 
+ 3186      39746F31 
+ 3186      3600
+ 3187              	.LASF146:
+ 3188 06f4 43544553 		.ascii	"CTEST_QUAD\000"
+ 3188      545F5155 
+ 3188      414400
+ 3189              	.LASF16:
+ 3190 06ff 6C6F6E67 		.ascii	"long double\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 72
+
+
+ 3190      20646F75 
+ 3190      626C6500 
+ 3191              	.LASF15:
+ 3192 070b 63686172 		.ascii	"char\000"
+ 3192      00
+ 3193              	.LASF119:
+ 3194 0710 426C6F63 		.ascii	"BlockCurrent_1\000"
+ 3194      6B437572 
+ 3194      72656E74 
+ 3194      5F3100
+ 3195              	.LASF120:
+ 3196 071f 426C6F63 		.ascii	"BlockCurrent_2\000"
+ 3196      6B437572 
+ 3196      72656E74 
+ 3196      5F3200
+ 3197              	.LASF121:
+ 3198 072e 426C6F63 		.ascii	"BlockCurrent_3\000"
+ 3198      6B437572 
+ 3198      72656E74 
+ 3198      5F3300
+ 3199              	.LASF122:
+ 3200 073d 426C6F63 		.ascii	"BlockCurrent_4\000"
+ 3200      6B437572 
+ 3200      72656E74 
+ 3200      5F3400
+ 3201              	.LASF144:
+ 3202 074c 43544553 		.ascii	"CTEST_RTEST_QUAD\000"
+ 3202      545F5254 
+ 3202      4553545F 
+ 3202      51554144 
+ 3202      00
+ 3203              	.LASF139:
+ 3204 075d 424C5545 		.ascii	"BLUE\000"
+ 3204      00
+ 3205              	.LASF140:
+ 3206 0762 47524545 		.ascii	"GREEN\000"
+ 3206      4E00
+ 3207              	.LASF75:
+ 3208 0768 4C45445F 		.ascii	"LED_04_B\000"
+ 3208      30345F42 
+ 3208      00
+ 3209              	.LASF32:
+ 3210 0771 43686563 		.ascii	"Checksum\000"
+ 3210      6B73756D 
+ 3210      00
+ 3211              	.LASF104:
+ 3212 077a 53746172 		.ascii	"StartByte1_Relay\000"
+ 3212      74427974 
+ 3212      65315F52 
+ 3212      656C6179 
+ 3212      00
+ 3213              	.LASF74:
+ 3214 078b 4C45445F 		.ascii	"LED_04_G\000"
+ 3214      30345F47 
+ 3214      00
+ 3215              	.LASF86:
+ 3216 0794 42757A7A 		.ascii	"Buzzer_L\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 73
+
+
+ 3216      65725F4C 
+ 3216      00
+ 3217              	.LASF181:
+ 3218 079d 436F6E74 		.ascii	"ControllerTest_Complete\000"
+ 3218      726F6C6C 
+ 3218      65725465 
+ 3218      73745F43 
+ 3218      6F6D706C 
+ 3219              	.LASF173:
+ 3220 07b5 43546573 		.ascii	"CTest_TimeoutCount\000"
+ 3220      745F5469 
+ 3220      6D656F75 
+ 3220      74436F75 
+ 3220      6E7400
+ 3221              	.LASF168:
+ 3222 07c8 70547850 		.ascii	"pTxPacket_Intermotive\000"
+ 3222      61636B65 
+ 3222      745F496E 
+ 3222      7465726D 
+ 3222      6F746976 
+ 3223              	.LASF73:
+ 3224 07de 4C45445F 		.ascii	"LED_04_R\000"
+ 3224      30345F52 
+ 3224      00
+ 3225              	.LASF102:
+ 3226 07e7 53746F70 		.ascii	"StopByte1_Siren\000"
+ 3226      42797465 
+ 3226      315F5369 
+ 3226      72656E00 
+ 3227              	.LASF92:
+ 3228 07f7 57697265 		.ascii	"WireActivation1\000"
+ 3228      41637469 
+ 3228      76617469 
+ 3228      6F6E3100 
+ 3229              	.LASF93:
+ 3230 0807 57697265 		.ascii	"WireActivation2\000"
+ 3230      41637469 
+ 3230      76617469 
+ 3230      6F6E3200 
+ 3231              	.LASF94:
+ 3232 0817 57697265 		.ascii	"WireActivation3\000"
+ 3232      41637469 
+ 3232      76617469 
+ 3232      6F6E3300 
+ 3233              	.LASF166:
+ 3234 0827 74785061 		.ascii	"txPacket_Relay\000"
+ 3234      636B6574 
+ 3234      5F52656C 
+ 3234      617900
+ 3235              	.LASF176:
+ 3236 0836 54657374 		.ascii	"Test\000"
+ 3236      00
+ 3237              	.LASF161:
+ 3238 083b 41554449 		.ascii	"AUDIO_STREAM\000"
+ 3238      4F5F5354 
+ 3238      5245414D 
+ 3238      00
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 74
+
+
+ 3239              	.LASF23:
+ 3240 0848 74784461 		.ascii	"txData_Intermotive\000"
+ 3240      74615F49 
+ 3240      6E746572 
+ 3240      6D6F7469 
+ 3240      766500
+ 3241              	.LASF130:
+ 3242 085b 52656C61 		.ascii	"RelayFirm_0\000"
+ 3242      79466972 
+ 3242      6D5F3000 
+ 3243              	.LASF131:
+ 3244 0867 52656C61 		.ascii	"RelayFirm_1\000"
+ 3244      79466972 
+ 3244      6D5F3100 
+ 3245              	.LASF132:
+ 3246 0873 52656C61 		.ascii	"RelayFirm_2\000"
+ 3246      79466972 
+ 3246      6D5F3200 
+ 3247              	.LASF150:
+ 3248 087f 52544553 		.ascii	"RTEST_CONT\000"
+ 3248      545F434F 
+ 3248      4E5400
+ 3249              	.LASF87:
+ 3250 088a 53637265 		.ascii	"ScreenBrightness\000"
+ 3250      656E4272 
+ 3250      69676874 
+ 3250      6E657373 
+ 3250      00
+ 3251              	.LASF47:
+ 3252 089b 4C45445F 		.ascii	"LED_13_G\000"
+ 3252      31335F47 
+ 3252      00
+ 3253              	.LASF171:
+ 3254 08a4 50425F4E 		.ascii	"PB_NextAction_Pressed\000"
+ 3254      65787441 
+ 3254      6374696F 
+ 3254      6E5F5072 
+ 3254      65737365 
+ 3255              	.LASF22:
+ 3256 08ba 73747275 		.ascii	"structTestInfo\000"
+ 3256      63745465 
+ 3256      7374496E 
+ 3256      666F00
+ 3257              	.LASF60:
+ 3258 08c9 4C45445F 		.ascii	"LED_09_B\000"
+ 3258      30395F42 
+ 3258      00
+ 3259              	.LASF46:
+ 3260 08d2 4C45445F 		.ascii	"LED_13_R\000"
+ 3260      31335F52 
+ 3260      00
+ 3261              	.LASF59:
+ 3262 08db 4C45445F 		.ascii	"LED_09_G\000"
+ 3262      30395F47 
+ 3262      00
+ 3263              	.LASF151:
+ 3264 08e4 52544553 		.ascii	"RTEST_SIREN\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cct5spuO.s 			page 75
+
+
+ 3264      545F5349 
+ 3264      52454E00 
+ 3265              	.LASF58:
+ 3266 08f0 4C45445F 		.ascii	"LED_09_R\000"
+ 3266      30395F52 
+ 3266      00
+ 3267              	.LASF123:
+ 3268 08f9 566F6C74 		.ascii	"Voltage_BATT\000"
+ 3268      6167655F 
+ 3268      42415454 
+ 3268      00
+ 3269              	.LASF20:
+ 3270 0906 53746174 		.ascii	"Status\000"
+ 3270      757300
+ 3271              	.LASF170:
+ 3272 090d 43546573 		.ascii	"CTest_20ms_isr_EN\000"
+ 3272      745F3230 
+ 3272      6D735F69 
+ 3272      73725F45 
+ 3272      4E00
+ 3273              	.LASF180:
+ 3274 091f 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\firm_F1-TestFixture\\"
+ 3274      73657273 
+ 3274      5C6D6172 
+ 3274      74686E69 
+ 3274      636B5C44 
+ 3275 094e 46312D54 		.ascii	"F1-TestFixture.cydsn\000"
+ 3275      65737446 
+ 3275      69787475 
+ 3275      72652E63 
+ 3275      7964736E 
+ 3276              	.LASF136:
+ 3277 0963 74784461 		.ascii	"txData\000"
+ 3277      746100
+ 3278              	.LASF135:
+ 3279 096a 54785061 		.ascii	"TxPacket_Controller\000"
+ 3279      636B6574 
+ 3279      5F436F6E 
+ 3279      74726F6C 
+ 3279      6C657200 
+ 3280              	.LASF78:
+ 3281 097e 4C45445F 		.ascii	"LED_03_B\000"
+ 3281      30335F42 
+ 3281      00
+ 3282              	.LASF163:
+ 3283 0987 50415353 		.ascii	"PASS\000"
+ 3283      00
+ 3284              	.LASF77:
+ 3285 098c 4C45445F 		.ascii	"LED_03_G\000"
+ 3285      30335F47 
+ 3285      00
+ 3286              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

@@ -32,6 +32,10 @@ void STest_PlayTestTone_AudioStream(void);
 void StartAutomatedStep(void);
 void StopAutomatedStep(void);
 
+/* Functions used for RTest_Complete */
+void RTest_Complete_PB_WaitForAction(void);
+void RTest_Complete_isr_PB(void);
+
 
 
 

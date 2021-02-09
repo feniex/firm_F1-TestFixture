@@ -66,7 +66,7 @@
 
 #define WaveDAC_CLOCK_INT      (1u)
 #define WaveDAC_CLOCK_EXT      (0u)
-#define WaveDAC_CLOCK_SRC      (0u)
+#define WaveDAC_CLOCK_SRC      (1u)
 
 #if(WaveDAC_CLOCK_SRC == WaveDAC_CLOCK_INT)  
 	#include <WaveDAC_DacClk.h>

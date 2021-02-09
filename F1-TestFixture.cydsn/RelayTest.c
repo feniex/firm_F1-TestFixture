@@ -19,7 +19,7 @@
 #include "CD4051BPW_Driver.h"
 
 #define VOLTAGE_SYSTEM      120             // (Voltage * 10)
-#define TOLERANCE_VOLTAGE   5  
+#define TOLERANCE_VOLTAGE   6               // How many 0.1V off a reading can be and still be good
 #define CURRENT_LOAD        9              // (ohms)
 #define TOLERANCE_CURRENT   2 
 #define CONFIRM_TIME        100            // How many msec to show pass/fail for each step
@@ -110,7 +110,7 @@ enum MUX_115200_CHANNEL
 
 // --------------Test steps---------------
 #define NUMBER_TEST_STEPS   11
-static uint16 RTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,50,200,50,100,100,50,100,15000,50};  // Number of 20msec counts before failure timeout, for each step
+static uint16 RTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,100,200,50,100,100,50,100,15000,50};  // Number of 20msec counts before failure timeout, for each step
 
 static uint8 RTestStatus[NUMBER_TEST_STEPS];
 
@@ -365,6 +365,8 @@ uint8 RelayTest(void)
             
             SetRelayOutputs(1);                         // Send command to turn on relay outputs
                 
+            CyDelay(100);
+            
             RTest_StartAutomatedStep();
              
             while( (!RTest_Test_BlockCurrents()) && (RTestStatus[CurrentTest.TestStep] != 'F') )
@@ -372,12 +374,10 @@ uint8 RelayTest(void)
             
             RTest_StopAutomatedStep();
             
+            SetRelayOutputs(0);                         // Send command to turn off relay outputs
+            CyDelay(100);
             CyDelay(CONFIRM_TIME);
              
-            SetRelayOutputs(0);                         // Send command to turn off relay outputs
-            
-            CyDelay(100);
-            
             if(RTestStatus[CurrentTest.TestStep] == 'F')
             {
                 CurrentTest.TestStep = PASS;
@@ -477,7 +477,7 @@ uint8 RTest_Test_Outputs(void)
         OutputsState = ( OutputsState | (testval << channel) );             // Read RTest_INPUT_DEMUX and store each bit in OutputsState   
     }
     
-    //SetRelayOutputs(0);                                                     // Send command to turn off relay outputs
+    SetRelayOutputs(0);                                                     // Send command to turn off relay outputs
     
     if(OutputsState == 0xFFFFFFFF)
         return(1);                                                          // If all outputs are turned on, then return pass

@@ -43,5 +43,19 @@ void RTest_StopAutomatedStep(void);
 
 void SetRelayInputs(uint8 enable);
 
+//****** Stuff added for RelayTest_Complete
+uint8 RelayTest_Complete(void);
+
+uint8 RTest_Complete_Test_DataLink(void);
+
+void RTest_Complete_StopAutomatedStep(void);
+void RTest_Complete_StartAutomatedStep(void);
+
+void RTest_Complete_20ms_isr(void);   
+void RTest_Complete_50ms_isr(void);
+
+void RTest_Complete_sendDiagPacket(void);
+
+
 
 /* [] END OF FILE */

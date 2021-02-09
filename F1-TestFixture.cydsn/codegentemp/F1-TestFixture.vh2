@@ -2,7 +2,7 @@
 --	Conversion of F1-TestFixture.v to vh2:
 --
 --	Cypress Semiconductor - WARP Version 6.3 IR 41
---	Wed Jan 20 12:47:10 2021
+--	Mon Feb 01 11:17:39 2021
 --
 
 USE cypress.cypress.all;
@@ -1370,11 +1370,12 @@ TERMINAL tmpSIOVREF__RTest_SIREN_EN_net_0 : bit;
 SIGNAL tmpINTERRUPT_0__RTest_SIREN_EN_net_0 : bit;
 SIGNAL tmpOE__STest_RRB_net_0 : bit;
 SIGNAL tmpFB_0__STest_RRB_net_0 : bit;
-TERMINAL Net_6448 : bit;
+TERMINAL Net_6497 : bit;
 SIGNAL tmpIO_0__STest_RRB_net_0 : bit;
 TERMINAL tmpSIOVREF__STest_RRB_net_0 : bit;
 SIGNAL tmpINTERRUPT_0__STest_RRB_net_0 : bit;
 TERMINAL \WaveDAC:Net_211\ : bit;
+SIGNAL \WaveDAC:Net_279\ : bit;
 TERMINAL \WaveDAC:Net_189\ : bit;
 TERMINAL \WaveDAC:Net_256\ : bit;
 TERMINAL \WaveDAC:Net_190\ : bit;
@@ -1387,30 +1388,14 @@ SIGNAL \WaveDAC:demux:tmp__demux_0_reg\ : bit;
 SIGNAL \WaveDAC:Net_134\ : bit;
 SIGNAL \WaveDAC:Net_336\ : bit;
 SIGNAL \WaveDAC:demux:tmp__demux_1_reg\ : bit;
-SIGNAL Net_6342 : bit;
 SIGNAL \WaveDAC:VDAC8:Net_83\ : bit;
 SIGNAL \WaveDAC:VDAC8:Net_81\ : bit;
 SIGNAL \WaveDAC:VDAC8:Net_82\ : bit;
 TERMINAL \WaveDAC:VDAC8:Net_77\ : bit;
 SIGNAL \WaveDAC:Net_280\ : bit;
 SIGNAL \WaveDAC:Net_80\ : bit;
-SIGNAL \WaveDAC:Net_279\ : bit;
 SIGNAL \WaveDAC:cydff_1\ : bit;
 SIGNAL Net_6341 : bit;
-SIGNAL Net_6361 : bit;
-SIGNAL \Timer_DAC:Net_260\ : bit;
-SIGNAL \Timer_DAC:Net_266\ : bit;
-SIGNAL Net_6354 : bit;
-SIGNAL \Timer_DAC:Net_51\ : bit;
-SIGNAL \Timer_DAC:Net_261\ : bit;
-SIGNAL \Timer_DAC:Net_57\ : bit;
-SIGNAL Net_6355 : bit;
-SIGNAL \Timer_DAC:Net_102\ : bit;
-SIGNAL tmpOE__STest_mic_net_0 : bit;
-SIGNAL tmpFB_0__STest_mic_net_0 : bit;
-SIGNAL tmpIO_0__STest_mic_net_0 : bit;
-TERMINAL tmpSIOVREF__STest_mic_net_0 : bit;
-SIGNAL tmpINTERRUPT_0__STest_mic_net_0 : bit;
 SIGNAL tmpOE__RTest_BLOCK_4_EN_net_0 : bit;
 SIGNAL tmpFB_0__RTest_BLOCK_4_EN_net_0 : bit;
 SIGNAL tmpIO_0__RTest_BLOCK_4_EN_net_0 : bit;
@@ -1978,9 +1963,9 @@ Net_6252 <= ((not \UART_460800:BUART:txn\ and not Net_5612_1 and not Net_5612_0)
 
 Net_6210 <= ((not \UART_460800:BUART:txn\ and not Net_5612_1 and Net_5612_0));
 
-\WaveDAC:Net_183\ <= ((not \WaveDAC:Net_134\ and Net_6342));
+\WaveDAC:Net_183\ <= ((not \WaveDAC:Net_134\ and \WaveDAC:Net_279\));
 
-\WaveDAC:Net_107\ <= ((\WaveDAC:Net_134\ and Net_6342));
+\WaveDAC:Net_107\ <= ((\WaveDAC:Net_279\ and \WaveDAC:Net_134\));
 
 CTest_USB_DEBUG_RX:cy_psoc3_pins_v1_10
 	GENERIC MAP(id=>"d8d4ee4d-c5b1-4be0-969a-f7b1f8fa0020",
@@ -4902,7 +4887,7 @@ STest_RRB:cy_psoc3_pins_v1_10
 	PORT MAP(oe=>(tmpOE__CTest_USB_DEBUG_RX_net_0),
 		y=>(zero),
 		fb=>(tmpFB_0__STest_RRB_net_0),
-		analog=>Net_6448,
+		analog=>Net_6497,
 		io=>(tmpIO_0__STest_RRB_net_0),
 		siovref=>(tmpSIOVREF__STest_RRB_net_0),
 		annotation=>(open),
@@ -4915,6 +4900,16 @@ STest_RRB:cy_psoc3_pins_v1_10
 		interrupt=>tmpINTERRUPT_0__STest_RRB_net_0);
 \WaveDAC:cy_analog_noconnect_1\:cy_analog_noconnect_v1_0
 	PORT MAP(noconnect=>\WaveDAC:Net_211\);
+\WaveDAC:DacClk\:cy_clock_v1_0
+	GENERIC MAP(cy_registers=>"",
+		id=>"99e37865-d5f0-46bd-9494-29b35055473e/77086516-855e-4b7b-abbe-47b22f8543de",
+		source_clock_id=>"",
+		divisor=>0,
+		period=>"10000000000",
+		is_direct=>'0',
+		is_digital=>'1')
+	PORT MAP(clock_out=>\WaveDAC:Net_279\,
+		dig_domain_out=>open);
 \WaveDAC:cy_analog_virtualmux_1_connect\:cy_connect_v1_0
 	GENERIC MAP(sig_width=>1,
 		is_net_join=>'0')
@@ -4948,8 +4943,8 @@ STest_RRB:cy_psoc3_pins_v1_10
 		ioff=>zero,
 		data=>(zero, zero, zero, zero,
 			zero, zero, zero, zero),
-		strobe=>Net_6342,
-		strobe_udb=>Net_6342,
+		strobe=>\WaveDAC:Net_279\,
+		strobe_udb=>\WaveDAC:Net_279\,
 		vout=>\WaveDAC:Net_189\,
 		iout=>\WaveDAC:VDAC8:Net_77\);
 \WaveDAC:VDAC8:cy_analog_noconnect_1\:cy_analog_noconnect_v1_0
@@ -4957,98 +4952,8 @@ STest_RRB:cy_psoc3_pins_v1_10
 \WaveDAC:cy_analog_virtualmux_3_connect\:cy_connect_v1_0
 	GENERIC MAP(sig_width=>1,
 		is_net_join=>'0')
-	PORT MAP(signal1=>Net_6448,
+	PORT MAP(signal1=>Net_6497,
 		signal2=>\WaveDAC:Net_256\);
-timer_clock_2:cy_clock_v1_0
-	GENERIC MAP(cy_registers=>"",
-		id=>"cda3b40f-4240-4064-8648-de6b9d228ab0",
-		source_clock_id=>"",
-		divisor=>0,
-		period=>"10000000000",
-		is_direct=>'0',
-		is_digital=>'1')
-	PORT MAP(clock_out=>Net_6361,
-		dig_domain_out=>open);
-\Timer_DAC:TimerHW\:cy_psoc3_timer_v1_0
-	GENERIC MAP(cy_registers=>"")
-	PORT MAP(clock=>Net_6361,
-		kill=>zero,
-		enable=>tmpOE__CTest_USB_DEBUG_RX_net_0,
-		capture=>zero,
-		timer_reset=>zero,
-		tc=>Net_6342,
-		compare=>\Timer_DAC:Net_261\,
-		interrupt=>\Timer_DAC:Net_57\);
-STest_mic:cy_psoc3_pins_v1_10
-	GENERIC MAP(id=>"968a2289-ee28-40df-b527-596ba3e0f63b",
-		drive_mode=>"000",
-		ibuf_enabled=>"0",
-		init_dr_st=>"0",
-		input_sync=>"1",
-		input_clk_en=>'0',
-		input_sync_mode=>"0",
-		intr_mode=>"00",
-		invert_in_clock=>'0',
-		invert_in_clock_en=>'0',
-		invert_in_reset=>'0',
-		invert_out_clock=>'0',
-		invert_out_clock_en=>'0',
-		invert_out_reset=>'0',
-		io_voltage=>"",
-		layout_mode=>"CONTIGUOUS",
-		output_conn=>"0",
-		output_sync=>"0",
-		output_clk_en=>'0',
-		output_mode=>"0",
-		output_reset=>'0',
-		output_clock_mode=>"0",
-		oe_sync=>"0",
-		oe_conn=>"0",
-		oe_reset=>'0',
-		pin_aliases=>"",
-		pin_mode=>"A",
-		por_state=>4,
-		sio_group_cnt=>0,
-		sio_hifreq=>"00000000",
-		sio_hyst=>"1",
-		sio_ibuf=>"00000000",
-		sio_info=>"00",
-		sio_obuf=>"00000000",
-		sio_refsel=>"00000000",
-		sio_vtrip=>"00000000",
-		sio_vohsel=>"00000000",
-		slew_rate=>"0",
-		spanning=>'0',
-		sw_only=>'0',
-		vtrip=>"10",
-		width=>1,
-		port_alias_required=>'0',
-		port_alias_group=>"",
-		use_annotation=>"0",
-		pa_in_clock=>-1,
-		pa_in_clock_en=>-1,
-		pa_in_reset=>-1,
-		pa_out_clock=>-1,
-		pa_out_clock_en=>-1,
-		pa_out_reset=>-1,
-		ovt_needed=>"0",
-		ovt_slew_control=>"00",
-		ovt_hyst_trim=>"0",
-		input_buffer_sel=>"00")
-	PORT MAP(oe=>(tmpOE__CTest_USB_DEBUG_RX_net_0),
-		y=>(zero),
-		fb=>(tmpFB_0__STest_mic_net_0),
-		analog=>Net_6448,
-		io=>(tmpIO_0__STest_mic_net_0),
-		siovref=>(tmpSIOVREF__STest_mic_net_0),
-		annotation=>(open),
-		in_clock=>zero,
-		in_clock_en=>tmpOE__CTest_USB_DEBUG_RX_net_0,
-		in_reset=>zero,
-		out_clock=>zero,
-		out_clock_en=>tmpOE__CTest_USB_DEBUG_RX_net_0,
-		out_reset=>zero,
-		interrupt=>tmpINTERRUPT_0__STest_mic_net_0);
 RTest_BLOCK_4_EN:cy_psoc3_pins_v1_10
 	GENERIC MAP(id=>"88219e11-5e88-42e0-8be7-ece3d9a0ecb1",
 		drive_mode=>"110",
@@ -7219,7 +7124,7 @@ Net_6185:cy_dff
 		q=>\UART_460800:BUART:rx_parity_bit\);
 \WaveDAC:cydff_1\:cy_dff
 	PORT MAP(d=>zero,
-		clk=>Net_6342,
+		clk=>\WaveDAC:Net_279\,
 		q=>\WaveDAC:Net_134\);
 
 END R_T_L;

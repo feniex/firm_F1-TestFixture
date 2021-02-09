@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 1
 
 
    1              		.syntax unified
@@ -20,20 +20,25 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.comm	Test,3,4
-  20              		.bss
-  21              	rs1_value:
-  22 0000 00       		.space	1
-  23              	rs2_value:
-  24 0001 00       		.space	1
-  25              		.section	.text.main,"ax",%progbits
-  26              		.align	2
-  27              		.global	main
-  28              		.thumb
-  29              		.thumb_func
-  30              		.type	main, %function
-  31              	main:
-  32              	.LFB63:
-  33              		.file 1 "main.c"
+  20              		.global	TESTFIXTURE_TYPE
+  21              		.bss
+  22              		.type	TESTFIXTURE_TYPE, %object
+  23              		.size	TESTFIXTURE_TYPE, 1
+  24              	TESTFIXTURE_TYPE:
+  25 0000 00       		.space	1
+  26              	rs1_value:
+  27 0001 00       		.space	1
+  28              	rs2_value:
+  29 0002 00       		.space	1
+  30              		.section	.text.main,"ax",%progbits
+  31              		.align	2
+  32              		.global	main
+  33              		.thumb
+  34              		.thumb_func
+  35              		.type	main, %function
+  36              	main:
+  37              	.LFB63:
+  38              		.file 1 "main.c"
    1:main.c        **** /* ========================================
    2:main.c        ****  *
    3:main.c        ****  * Copyright YOUR COMPANY, THE YEAR
@@ -53,14 +58,14 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 1
   17:main.c        **** *
   18:main.c        **** *   Started test fixture firmware on 11-4-20
   19:main.c        **** *
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 2
+
+
   20:main.c        **** *   Initial commit to GitHub on 12-15-20
   21:main.c        **** *
   22:main.c        **** ***********************************************/
   23:main.c        **** 
   24:main.c        **** /**********PREPROCESSOR DIRECTIVES**********/
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 2
-
-
   25:main.c        **** #include <project.h>
   26:main.c        **** #include "CommonVariables.h"
   27:main.c        **** 
@@ -74,1175 +79,1386 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 1
   35:main.c        **** //#define TIMEOUT 100
   36:main.c        **** #define INITIALIZE_TEST     0;
   37:main.c        **** 
-  38:main.c        **** 
-  39:main.c        **** 
-  40:main.c        **** /**********DEFINED CONSTANTS**********/
-  41:main.c        **** 
-  42:main.c        **** enum DataType
-  43:main.c        **** { 
-  44:main.c        ****     CTEST, 
-  45:main.c        ****     RTEST,
-  46:main.c        ****     STEST
-  47:main.c        **** };
-  48:main.c        **** 
-  49:main.c        **** /**********DATA STRUCTURES**********/
-  50:main.c        **** 
-  51:main.c        **** /**********GLOBAL VARIABLES**********/
-  52:main.c        **** //extern uint8 SelectedTest;
-  53:main.c        **** //extern struct structTestInfo
-  54:main.c        **** //struct structTestInfo
-  55:main.c        **** //{
-  56:main.c        **** //    uint8 SelectedTest;
-  57:main.c        **** //    uint8 TestStep;
-  58:main.c        **** //    uint8 Failures;
-  59:main.c        **** //}Test;
-  60:main.c        **** //
-  61:main.c        **** //typedef struct structTestInfo StructTestInfo;
-  62:main.c        **** //
-  63:main.c        **** //extern StructTestInfo CurrentTest;
-  64:main.c        **** 
-  65:main.c        **** /**********FUNCTION PROTOTYPES**********/
-  66:main.c        **** static void initializePeripherals(void);
+  38:main.c        **** #define PCBA_TESTFIXTURE    0
+  39:main.c        **** #define FINAL_TESTFIXTURE    1
+  40:main.c        **** 
+  41:main.c        **** /**********DEFINED CONSTANTS**********/
+  42:main.c        **** 
+  43:main.c        **** enum DataType
+  44:main.c        **** { 
+  45:main.c        ****     CTEST, 
+  46:main.c        ****     RTEST,
+  47:main.c        ****     STEST,
+  48:main.c        ****     CTEST_COMPLETE,
+  49:main.c        ****     RTEST_COMPLETE
+  50:main.c        **** };
+  51:main.c        **** 
+  52:main.c        **** /**********DATA STRUCTURES**********/
+  53:main.c        **** 
+  54:main.c        **** /**********GLOBAL VARIABLES**********/
+  55:main.c        **** //extern uint8 SelectedTest;
+  56:main.c        **** //extern struct structTestInfo
+  57:main.c        **** //struct structTestInfo
+  58:main.c        **** //{
+  59:main.c        **** //    uint8 SelectedTest;
+  60:main.c        **** //    uint8 TestStep;
+  61:main.c        **** //    uint8 Failures;
+  62:main.c        **** //}Test;
+  63:main.c        **** //
+  64:main.c        **** //typedef struct structTestInfo StructTestInfo;
+  65:main.c        **** //
+  66:main.c        **** //extern StructTestInfo CurrentTest;
   67:main.c        **** 
-  68:main.c        **** //uint8 Timer_Quick_INT_GetFlag(void);
-  69:main.c        **** //void Timer_Quick_INT_ClearFlag(void);
-  70:main.c        **** void StartTimeout(void);
-  71:main.c        **** void StopTimeout(void);
-  72:main.c        **** void ProcessFailure(void);
-  73:main.c        **** 
-  74:main.c        **** /**********DEFINED FUNCTIONS**********/
-  75:main.c        **** 
-  76:main.c        **** static uint8 rs1_value = 0;
-  77:main.c        **** static uint8 rs2_value = 0;
-  78:main.c        **** 
-  79:main.c        **** int main()
-  80:main.c        **** {
-  34              		.loc 1 80 0
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 3
+  68:main.c        **** /**********FUNCTION PROTOTYPES**********/
+  69:main.c        **** static void initializePeripherals(void);
+  70:main.c        **** 
+  71:main.c        **** //uint8 Timer_Quick_INT_GetFlag(void);
+  72:main.c        **** //void Timer_Quick_INT_ClearFlag(void);
+  73:main.c        **** void StartTimeout(void);
+  74:main.c        **** void StopTimeout(void);
+  75:main.c        **** void ProcessFailure(void);
+  76:main.c        **** 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 3
 
 
-  35              		.cfi_startproc
-  36              		@ args = 0, pretend = 0, frame = 0
-  37              		@ frame_needed = 1, uses_anonymous_args = 0
-  38 0000 80B5     		push	{r7, lr}
-  39              		.cfi_def_cfa_offset 8
-  40              		.cfi_offset 7, -8
-  41              		.cfi_offset 14, -4
-  42 0002 00AF     		add	r7, sp, #0
-  43              		.cfi_def_cfa_register 7
-  81:main.c        ****     initializePeripherals();
-  44              		.loc 1 81 0
-  45 0004 FFF7FEFF 		bl	initializePeripherals
-  82:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */ 
-  46              		.loc 1 82 0
-  47              		.syntax unified
-  48              	@ 82 "main.c" 1
-  49 0008 62B6     		CPSIE   i
-  50              	@ 0 "" 2
-  51              		.thumb
-  52              		.syntax unified
-  53              	.L12:
-  83:main.c        ****     
-  84:main.c        ****     
-  85:main.c        ****     for(;;)
-  86:main.c        ****     {     
-  87:main.c        ****         rs1_value = RS1_Read();
-  54              		.loc 1 87 0
-  55 000a FFF7FEFF 		bl	RS1_Read
-  56 000e 0346     		mov	r3, r0
-  57 0010 1A46     		mov	r2, r3
-  58 0012 2C4B     		ldr	r3, .L13
-  59 0014 1A70     		strb	r2, [r3]
-  88:main.c        ****         rs2_value = RS2_Read();
-  60              		.loc 1 88 0
-  61 0016 FFF7FEFF 		bl	RS2_Read
-  62 001a 0346     		mov	r3, r0
-  63 001c 1A46     		mov	r2, r3
-  64 001e 2A4B     		ldr	r3, .L13+4
-  65 0020 1A70     		strb	r2, [r3]
-  89:main.c        ****         
-  90:main.c        ****         if( (RS1_Read() == 1) && (RS2_Read() == 0) )
-  66              		.loc 1 90 0
-  67 0022 FFF7FEFF 		bl	RS1_Read
-  68 0026 0346     		mov	r3, r0
-  69 0028 012B     		cmp	r3, #1
-  70 002a 08D1     		bne	.L2
-  71              		.loc 1 90 0 is_stmt 0 discriminator 1
-  72 002c FFF7FEFF 		bl	RS2_Read
-  73 0030 0346     		mov	r3, r0
-  74 0032 002B     		cmp	r3, #0
-  75 0034 03D1     		bne	.L2
-  91:main.c        ****             CurrentTest.SelectedTest = CTEST;
-  76              		.loc 1 91 0 is_stmt 1
-  77 0036 254B     		ldr	r3, .L13+8
-  78 0038 0022     		movs	r2, #0
-  79 003a 1A70     		strb	r2, [r3]
-  80 003c 1AE0     		b	.L3
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 4
+  77:main.c        **** /**********DEFINED FUNCTIONS**********/
+  78:main.c        **** uint8 TESTFIXTURE_TYPE = 0;
+  79:main.c        **** 
+  80:main.c        **** 
+  81:main.c        **** static uint8 rs1_value = 0;
+  82:main.c        **** static uint8 rs2_value = 0;
+  83:main.c        **** 
+  84:main.c        **** 
+  85:main.c        **** int main()
+  86:main.c        **** {
+  39              		.loc 1 86 0
+  40              		.cfi_startproc
+  41              		@ args = 0, pretend = 0, frame = 0
+  42              		@ frame_needed = 1, uses_anonymous_args = 0
+  43 0000 80B5     		push	{r7, lr}
+  44              		.cfi_def_cfa_offset 8
+  45              		.cfi_offset 7, -8
+  46              		.cfi_offset 14, -4
+  47 0002 00AF     		add	r7, sp, #0
+  48              		.cfi_def_cfa_register 7
+  87:main.c        ****     TESTFIXTURE_TYPE = FINAL_TESTFIXTURE;                    //*** Define testfixture hardware type
+  49              		.loc 1 87 0
+  50 0004 534B     		ldr	r3, .L21
+  51 0006 0122     		movs	r2, #1
+  52 0008 1A70     		strb	r2, [r3]
+  88:main.c        ****     
+  89:main.c        ****     initializePeripherals();
+  53              		.loc 1 89 0
+  54 000a FFF7FEFF 		bl	initializePeripherals
+  90:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */ 
+  55              		.loc 1 90 0
+  56              		.syntax unified
+  57              	@ 90 "main.c" 1
+  58 000e 62B6     		CPSIE   i
+  59              	@ 0 "" 2
+  60              		.thumb
+  61              		.syntax unified
+  62              	.L20:
+  91:main.c        ****     
+  92:main.c        ****     for(;;)
+  93:main.c        ****     {     
+  94:main.c        ****         rs1_value = RS1_Read();
+  63              		.loc 1 94 0
+  64 0010 FFF7FEFF 		bl	RS1_Read
+  65 0014 0346     		mov	r3, r0
+  66 0016 1A46     		mov	r2, r3
+  67 0018 4F4B     		ldr	r3, .L21+4
+  68 001a 1A70     		strb	r2, [r3]
+  95:main.c        ****         rs2_value = RS2_Read();
+  69              		.loc 1 95 0
+  70 001c FFF7FEFF 		bl	RS2_Read
+  71 0020 0346     		mov	r3, r0
+  72 0022 1A46     		mov	r2, r3
+  73 0024 4D4B     		ldr	r3, .L21+8
+  74 0026 1A70     		strb	r2, [r3]
+  96:main.c        ****         
+  97:main.c        ****         if(TESTFIXTURE_TYPE == PCBA_TESTFIXTURE)
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 4
 
 
-  81              	.L2:
-  92:main.c        ****         else if( (RS1_Read() == 0) && (RS2_Read() == 0) )
-  82              		.loc 1 92 0
-  83 003e FFF7FEFF 		bl	RS1_Read
-  84 0042 0346     		mov	r3, r0
-  85 0044 002B     		cmp	r3, #0
-  86 0046 08D1     		bne	.L4
-  87              		.loc 1 92 0 is_stmt 0 discriminator 1
-  88 0048 FFF7FEFF 		bl	RS2_Read
-  89 004c 0346     		mov	r3, r0
-  90 004e 002B     		cmp	r3, #0
-  91 0050 03D1     		bne	.L4
-  93:main.c        ****             CurrentTest.SelectedTest = RTEST;
-  92              		.loc 1 93 0 is_stmt 1
-  93 0052 1E4B     		ldr	r3, .L13+8
-  94 0054 0122     		movs	r2, #1
-  95 0056 1A70     		strb	r2, [r3]
-  96 0058 0CE0     		b	.L3
-  97              	.L4:
-  94:main.c        ****         else if( (RS1_Read() == 0) && (RS2_Read() == 1) )
-  98              		.loc 1 94 0
-  99 005a FFF7FEFF 		bl	RS1_Read
- 100 005e 0346     		mov	r3, r0
- 101 0060 002B     		cmp	r3, #0
- 102 0062 07D1     		bne	.L3
- 103              		.loc 1 94 0 is_stmt 0 discriminator 1
- 104 0064 FFF7FEFF 		bl	RS2_Read
- 105 0068 0346     		mov	r3, r0
- 106 006a 012B     		cmp	r3, #1
- 107 006c 02D1     		bne	.L3
-  95:main.c        ****             CurrentTest.SelectedTest = STEST;
- 108              		.loc 1 95 0 is_stmt 1
- 109 006e 174B     		ldr	r3, .L13+8
- 110 0070 0222     		movs	r2, #2
- 111 0072 1A70     		strb	r2, [r3]
- 112              	.L3:
-  96:main.c        ****                     
-  97:main.c        ****         //CurrentTest.SelectedTest = STEST;
-  98:main.c        ****         
-  99:main.c        ****     
- 100:main.c        ****         switch(CurrentTest.SelectedTest)
- 113              		.loc 1 100 0
- 114 0074 154B     		ldr	r3, .L13+8
- 115 0076 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
- 116 0078 012B     		cmp	r3, #1
- 117 007a 0DD0     		beq	.L6
- 118 007c 022B     		cmp	r3, #2
- 119 007e 15D0     		beq	.L7
- 120 0080 002B     		cmp	r3, #0
- 121 0082 1DD1     		bne	.L5
- 101:main.c        ****         {
- 102:main.c        ****             case CTEST:
- 103:main.c        ****             
- 104:main.c        ****                 CurrentTest.TestStep = INITIALIZE_TEST;
- 122              		.loc 1 104 0
- 123 0084 114B     		ldr	r3, .L13+8
- 124 0086 0022     		movs	r2, #0
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 5
+  75              		.loc 1 97 0
+  76 0028 4A4B     		ldr	r3, .L21
+  77 002a 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  78 002c 002B     		cmp	r3, #0
+  79 002e 29D1     		bne	.L2
+  98:main.c        ****         {
+  99:main.c        ****             if( (RS1_Read() == 1) && (RS2_Read() == 0) )
+  80              		.loc 1 99 0
+  81 0030 FFF7FEFF 		bl	RS1_Read
+  82 0034 0346     		mov	r3, r0
+  83 0036 012B     		cmp	r3, #1
+  84 0038 08D1     		bne	.L3
+  85              		.loc 1 99 0 is_stmt 0 discriminator 1
+  86 003a FFF7FEFF 		bl	RS2_Read
+  87 003e 0346     		mov	r3, r0
+  88 0040 002B     		cmp	r3, #0
+  89 0042 03D1     		bne	.L3
+ 100:main.c        ****                 CurrentTest.SelectedTest = CTEST;
+  90              		.loc 1 100 0 is_stmt 1
+  91 0044 464B     		ldr	r3, .L21+12
+  92 0046 0022     		movs	r2, #0
+  93 0048 1A70     		strb	r2, [r3]
+  94 004a 3AE0     		b	.L6
+  95              	.L3:
+ 101:main.c        ****             else if( (RS1_Read() == 0) && (RS2_Read() == 0) )
+  96              		.loc 1 101 0
+  97 004c FFF7FEFF 		bl	RS1_Read
+  98 0050 0346     		mov	r3, r0
+  99 0052 002B     		cmp	r3, #0
+ 100 0054 08D1     		bne	.L5
+ 101              		.loc 1 101 0 is_stmt 0 discriminator 1
+ 102 0056 FFF7FEFF 		bl	RS2_Read
+ 103 005a 0346     		mov	r3, r0
+ 104 005c 002B     		cmp	r3, #0
+ 105 005e 03D1     		bne	.L5
+ 102:main.c        ****                 CurrentTest.SelectedTest = RTEST;
+ 106              		.loc 1 102 0 is_stmt 1
+ 107 0060 3F4B     		ldr	r3, .L21+12
+ 108 0062 0122     		movs	r2, #1
+ 109 0064 1A70     		strb	r2, [r3]
+ 110 0066 2CE0     		b	.L6
+ 111              	.L5:
+ 103:main.c        ****             else if( (RS1_Read() == 0) && (RS2_Read() == 1) )
+ 112              		.loc 1 103 0
+ 113 0068 FFF7FEFF 		bl	RS1_Read
+ 114 006c 0346     		mov	r3, r0
+ 115 006e 002B     		cmp	r3, #0
+ 116 0070 27D1     		bne	.L6
+ 117              		.loc 1 103 0 is_stmt 0 discriminator 1
+ 118 0072 FFF7FEFF 		bl	RS2_Read
+ 119 0076 0346     		mov	r3, r0
+ 120 0078 012B     		cmp	r3, #1
+ 121 007a 22D1     		bne	.L6
+ 104:main.c        ****                 CurrentTest.SelectedTest = STEST;
+ 122              		.loc 1 104 0 is_stmt 1
+ 123 007c 384B     		ldr	r3, .L21+12
+ 124 007e 0222     		movs	r2, #2
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 5
 
 
- 125 0088 5A70     		strb	r2, [r3, #1]
- 105:main.c        ****                 while(!ControllerTest())
- 126              		.loc 1 105 0
- 127 008a 00BF     		nop
- 128              	.L9:
- 129              		.loc 1 105 0 is_stmt 0 discriminator 1
- 130 008c FFF7FEFF 		bl	ControllerTest
- 131 0090 0346     		mov	r3, r0
- 132 0092 002B     		cmp	r3, #0
- 133 0094 FAD0     		beq	.L9
- 106:main.c        ****                 {}
- 107:main.c        **** 
- 108:main.c        ****             break;
- 134              		.loc 1 108 0 is_stmt 1
- 135 0096 13E0     		b	.L5
- 136              	.L6:
- 109:main.c        ****                 
- 110:main.c        ****             case RTEST:
- 111:main.c        ****             
- 112:main.c        ****                 CurrentTest.TestStep = INITIALIZE_TEST;
- 137              		.loc 1 112 0
- 138 0098 0C4B     		ldr	r3, .L13+8
- 139 009a 0022     		movs	r2, #0
- 140 009c 5A70     		strb	r2, [r3, #1]
- 113:main.c        ****                 while(!RelayTest())
- 141              		.loc 1 113 0
- 142 009e 00BF     		nop
- 143              	.L10:
- 144              		.loc 1 113 0 is_stmt 0 discriminator 1
- 145 00a0 FFF7FEFF 		bl	RelayTest
- 146 00a4 0346     		mov	r3, r0
- 147 00a6 002B     		cmp	r3, #0
- 148 00a8 FAD0     		beq	.L10
- 114:main.c        ****                 {}
- 115:main.c        **** 
- 116:main.c        ****             break;    
- 149              		.loc 1 116 0 is_stmt 1
- 150 00aa 09E0     		b	.L5
- 151              	.L7:
- 117:main.c        ****                 
- 118:main.c        ****             case STEST:
- 119:main.c        ****             
- 120:main.c        ****                 CurrentTest.TestStep = INITIALIZE_TEST;
- 152              		.loc 1 120 0
- 153 00ac 074B     		ldr	r3, .L13+8
- 154 00ae 0022     		movs	r2, #0
- 155 00b0 5A70     		strb	r2, [r3, #1]
- 121:main.c        ****                 while(!SirenTest())
- 156              		.loc 1 121 0
- 157 00b2 00BF     		nop
- 158              	.L11:
- 159              		.loc 1 121 0 is_stmt 0 discriminator 1
- 160 00b4 FFF7FEFF 		bl	SirenTest
- 161 00b8 0346     		mov	r3, r0
- 162 00ba 002B     		cmp	r3, #0
- 163 00bc FAD0     		beq	.L11
- 122:main.c        ****                 {}
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 6
+ 125 0080 1A70     		strb	r2, [r3]
+ 126 0082 1EE0     		b	.L6
+ 127              	.L2:
+ 105:main.c        ****         }
+ 106:main.c        ****         else if(TESTFIXTURE_TYPE == FINAL_TESTFIXTURE)
+ 128              		.loc 1 106 0
+ 129 0084 334B     		ldr	r3, .L21
+ 130 0086 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 131 0088 012B     		cmp	r3, #1
+ 132 008a 1AD1     		bne	.L6
+ 107:main.c        ****         {
+ 108:main.c        ****             if( (RS1_Read() == 1) && (RS2_Read() == 0) )
+ 133              		.loc 1 108 0
+ 134 008c FFF7FEFF 		bl	RS1_Read
+ 135 0090 0346     		mov	r3, r0
+ 136 0092 012B     		cmp	r3, #1
+ 137 0094 08D1     		bne	.L7
+ 138              		.loc 1 108 0 is_stmt 0 discriminator 1
+ 139 0096 FFF7FEFF 		bl	RS2_Read
+ 140 009a 0346     		mov	r3, r0
+ 141 009c 002B     		cmp	r3, #0
+ 142 009e 03D1     		bne	.L7
+ 109:main.c        ****                 CurrentTest.SelectedTest = CTEST_COMPLETE;
+ 143              		.loc 1 109 0 is_stmt 1
+ 144 00a0 2F4B     		ldr	r3, .L21+12
+ 145 00a2 0322     		movs	r2, #3
+ 146 00a4 1A70     		strb	r2, [r3]
+ 147 00a6 0CE0     		b	.L6
+ 148              	.L7:
+ 110:main.c        ****             else if( (RS1_Read() == 0) && (RS2_Read() == 0) )
+ 149              		.loc 1 110 0
+ 150 00a8 FFF7FEFF 		bl	RS1_Read
+ 151 00ac 0346     		mov	r3, r0
+ 152 00ae 002B     		cmp	r3, #0
+ 153 00b0 07D1     		bne	.L6
+ 154              		.loc 1 110 0 is_stmt 0 discriminator 1
+ 155 00b2 FFF7FEFF 		bl	RS2_Read
+ 156 00b6 0346     		mov	r3, r0
+ 157 00b8 002B     		cmp	r3, #0
+ 158 00ba 02D1     		bne	.L6
+ 111:main.c        ****                 CurrentTest.SelectedTest = RTEST_COMPLETE;
+ 159              		.loc 1 111 0 is_stmt 1
+ 160 00bc 284B     		ldr	r3, .L21+12
+ 161 00be 0422     		movs	r2, #4
+ 162 00c0 1A70     		strb	r2, [r3]
+ 163              	.L6:
+ 112:main.c        **** //            else if( (RS1_Read() == 0) && (RS2_Read() == 1) )
+ 113:main.c        **** //                CurrentTest.SelectedTest = STEST;
+ 114:main.c        ****         }
+ 115:main.c        ****                     
+ 116:main.c        ****         //CurrentTest.SelectedTest = STEST;
+ 117:main.c        ****         CurrentTest.SelectedTest = RTEST_COMPLETE;
+ 164              		.loc 1 117 0
+ 165 00c2 274B     		ldr	r3, .L21+12
+ 166 00c4 0422     		movs	r2, #4
+ 167 00c6 1A70     		strb	r2, [r3]
+ 118:main.c        ****         
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 6
 
 
- 123:main.c        **** 
- 124:main.c        ****             break;   
- 164              		.loc 1 124 0 is_stmt 1
- 165 00be 00BF     		nop
- 166              	.L5:
- 125:main.c        ****         }
- 126:main.c        ****             
- 127:main.c        ****     }
- 167              		.loc 1 127 0 discriminator 1
- 168 00c0 A3E7     		b	.L12
- 169              	.L14:
- 170 00c2 00BF     		.align	2
- 171              	.L13:
- 172 00c4 00000000 		.word	rs1_value
- 173 00c8 01000000 		.word	rs2_value
- 174 00cc 00000000 		.word	CurrentTest
- 175              		.cfi_endproc
- 176              	.LFE63:
- 177              		.size	main, .-main
- 178              		.section	.text.initializePeripherals,"ax",%progbits
- 179              		.align	2
- 180              		.thumb
- 181              		.thumb_func
- 182              		.type	initializePeripherals, %function
- 183              	initializePeripherals:
- 184              	.LFB64:
- 128:main.c        ****     
- 129:main.c        **** }
- 130:main.c        **** 
- 131:main.c        **** /*******************************************************************************
- 132:main.c        **** * Function Name: initializePeripherals
- 133:main.c        **** ********************************************************************************
- 134:main.c        **** *
- 135:main.c        **** * Summary:
- 136:main.c        **** *  Sets up the watchdog timer, disables, power amplifiers, and enables all ISRs
- 137:main.c        **** *
- 138:main.c        **** * Parameters:  
- 139:main.c        **** *   None
- 140:main.c        **** *
- 141:main.c        **** * Return:
- 142:main.c        **** *   None
- 143:main.c        **** *
- 144:main.c        **** *******************************************************************************/
- 145:main.c        **** static void initializePeripherals(void)
- 146:main.c        **** {
- 185              		.loc 1 146 0
- 186              		.cfi_startproc
- 187              		@ args = 0, pretend = 0, frame = 0
- 188              		@ frame_needed = 1, uses_anonymous_args = 0
- 189 0000 80B5     		push	{r7, lr}
- 190              		.cfi_def_cfa_offset 8
- 191              		.cfi_offset 7, -8
- 192              		.cfi_offset 14, -4
- 193 0002 00AF     		add	r7, sp, #0
- 194              		.cfi_def_cfa_register 7
- 147:main.c        ****     
- 148:main.c        ****     //RS485_RX_EN_Write(1);                       // *** for testing with siren board only
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 7
+ 119:main.c        **** 
+ 120:main.c        ****         switch(CurrentTest.SelectedTest)
+ 168              		.loc 1 120 0
+ 169 00c8 254B     		ldr	r3, .L21+12
+ 170 00ca 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 171 00cc 042B     		cmp	r3, #4
+ 172 00ce 9FD8     		bhi	.L20
+ 173 00d0 01A2     		adr	r2, .L10
+ 174 00d2 52F823F0 		ldr	pc, [r2, r3, lsl #2]
+ 175 00d6 00BF     		.p2align 2
+ 176              	.L10:
+ 177 00d8 ED000000 		.word	.L9+1
+ 178 00dc 01010000 		.word	.L11+1
+ 179 00e0 15010000 		.word	.L12+1
+ 180 00e4 29010000 		.word	.L13+1
+ 181 00e8 3D010000 		.word	.L14+1
+ 182              		.p2align 1
+ 183              	.L9:
+ 121:main.c        ****         {
+ 122:main.c        ****             case CTEST:
+ 123:main.c        ****             
+ 124:main.c        ****                 CurrentTest.TestStep = INITIALIZE_TEST;
+ 184              		.loc 1 124 0
+ 185 00ec 1C4B     		ldr	r3, .L21+12
+ 186 00ee 0022     		movs	r2, #0
+ 187 00f0 5A70     		strb	r2, [r3, #1]
+ 125:main.c        ****                 while(!ControllerTest())
+ 188              		.loc 1 125 0
+ 189 00f2 00BF     		nop
+ 190              	.L15:
+ 191              		.loc 1 125 0 is_stmt 0 discriminator 1
+ 192 00f4 FFF7FEFF 		bl	ControllerTest
+ 193 00f8 0346     		mov	r3, r0
+ 194 00fa 002B     		cmp	r3, #0
+ 195 00fc FAD0     		beq	.L15
+ 126:main.c        ****                 {}
+ 127:main.c        **** 
+ 128:main.c        ****             break;
+ 196              		.loc 1 128 0 is_stmt 1
+ 197 00fe 27E0     		b	.L8
+ 198              	.L11:
+ 129:main.c        ****                 
+ 130:main.c        ****             case RTEST:
+ 131:main.c        ****             
+ 132:main.c        ****                 CurrentTest.TestStep = INITIALIZE_TEST;
+ 199              		.loc 1 132 0
+ 200 0100 174B     		ldr	r3, .L21+12
+ 201 0102 0022     		movs	r2, #0
+ 202 0104 5A70     		strb	r2, [r3, #1]
+ 133:main.c        ****                 while(!RelayTest())
+ 203              		.loc 1 133 0
+ 204 0106 00BF     		nop
+ 205              	.L16:
+ 206              		.loc 1 133 0 is_stmt 0 discriminator 1
+ 207 0108 FFF7FEFF 		bl	RelayTest
+ 208 010c 0346     		mov	r3, r0
+ 209 010e 002B     		cmp	r3, #0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 7
 
 
- 149:main.c        ****     
- 150:main.c        ****     //Debouncer_PB
- 151:main.c        ****     //isr_PB_Start();
- 152:main.c        ****     
- 153:main.c        ****     //----------Start UART_460800--------
- 154:main.c        ****     UART_460800_Start();    
- 195              		.loc 1 154 0
- 196 0004 FFF7FEFF 		bl	UART_460800_Start
- 155:main.c        ****     isr_UART_460800_Start();
- 197              		.loc 1 155 0
- 198 0008 FFF7FEFF 		bl	isr_UART_460800_Start
- 156:main.c        ****     //----------Start UART_230400--------
- 157:main.c        ****     UART_230400_Start();    
- 199              		.loc 1 157 0
- 200 000c FFF7FEFF 		bl	UART_230400_Start
- 158:main.c        ****     isr_UART_230400_Start();
- 201              		.loc 1 158 0
- 202 0010 FFF7FEFF 		bl	isr_UART_230400_Start
- 159:main.c        ****     //----------Start UART_115200--------
- 160:main.c        ****     UART_115200_Start();    
- 203              		.loc 1 160 0
- 204 0014 FFF7FEFF 		bl	UART_115200_Start
- 161:main.c        ****     isr_UART_115200_Start();
- 205              		.loc 1 161 0
- 206 0018 FFF7FEFF 		bl	isr_UART_115200_Start
- 162:main.c        ****     //----------Start UART_9600----------
- 163:main.c        **** //    UART_9600_Start();    
- 164:main.c        **** //    isr_UART_9600_Start();
+ 210 0110 FAD0     		beq	.L16
+ 134:main.c        ****                 {}
+ 135:main.c        **** 
+ 136:main.c        ****             break;    
+ 211              		.loc 1 136 0 is_stmt 1
+ 212 0112 1DE0     		b	.L8
+ 213              	.L12:
+ 137:main.c        ****                 
+ 138:main.c        ****             case STEST:
+ 139:main.c        ****             
+ 140:main.c        ****                 CurrentTest.TestStep = INITIALIZE_TEST;
+ 214              		.loc 1 140 0
+ 215 0114 124B     		ldr	r3, .L21+12
+ 216 0116 0022     		movs	r2, #0
+ 217 0118 5A70     		strb	r2, [r3, #1]
+ 141:main.c        ****                 while(!SirenTest())
+ 218              		.loc 1 141 0
+ 219 011a 00BF     		nop
+ 220              	.L17:
+ 221              		.loc 1 141 0 is_stmt 0 discriminator 1
+ 222 011c FFF7FEFF 		bl	SirenTest
+ 223 0120 0346     		mov	r3, r0
+ 224 0122 002B     		cmp	r3, #0
+ 225 0124 FAD0     		beq	.L17
+ 142:main.c        ****                 {}
+ 143:main.c        **** 
+ 144:main.c        ****             break;   
+ 226              		.loc 1 144 0 is_stmt 1
+ 227 0126 13E0     		b	.L8
+ 228              	.L13:
+ 145:main.c        ****                 
+ 146:main.c        ****             case CTEST_COMPLETE:
+ 147:main.c        ****             
+ 148:main.c        ****                 CurrentTest.TestStep = INITIALIZE_TEST;
+ 229              		.loc 1 148 0
+ 230 0128 0D4B     		ldr	r3, .L21+12
+ 231 012a 0022     		movs	r2, #0
+ 232 012c 5A70     		strb	r2, [r3, #1]
+ 233              	.LBB2:
+ 149:main.c        ****                 while(!ControllerTest_Complete())
+ 234              		.loc 1 149 0
+ 235 012e 00BF     		nop
+ 236              	.L18:
+ 237              		.loc 1 149 0 is_stmt 0 discriminator 1
+ 238 0130 FFF7FEFF 		bl	ControllerTest_Complete
+ 239 0134 0346     		mov	r3, r0
+ 240 0136 002B     		cmp	r3, #0
+ 241 0138 FAD0     		beq	.L18
+ 242              	.LBE2:
+ 150:main.c        ****                 {}
+ 151:main.c        **** 
+ 152:main.c        ****             break;   
+ 243              		.loc 1 152 0 is_stmt 1
+ 244 013a 09E0     		b	.L8
+ 245              	.L14:
+ 153:main.c        ****                 
+ 154:main.c        ****             case RTEST_COMPLETE:                            // Test 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 8
+
+
+ 155:main.c        ****             
+ 156:main.c        ****                 CurrentTest.TestStep = INITIALIZE_TEST;
+ 246              		.loc 1 156 0
+ 247 013c 084B     		ldr	r3, .L21+12
+ 248 013e 0022     		movs	r2, #0
+ 249 0140 5A70     		strb	r2, [r3, #1]
+ 157:main.c        ****                 while(!RelayTest_Complete())
+ 250              		.loc 1 157 0
+ 251 0142 00BF     		nop
+ 252              	.L19:
+ 253              		.loc 1 157 0 is_stmt 0 discriminator 1
+ 254 0144 FFF7FEFF 		bl	RelayTest_Complete
+ 255 0148 0346     		mov	r3, r0
+ 256 014a 002B     		cmp	r3, #0
+ 257 014c FAD0     		beq	.L19
+ 158:main.c        ****                 {}
+ 159:main.c        **** 
+ 160:main.c        ****             break; 
+ 258              		.loc 1 160 0 is_stmt 1
+ 259 014e 00BF     		nop
+ 260              	.L8:
+ 161:main.c        ****                 
+ 162:main.c        ****         }
+ 163:main.c        ****             
+ 164:main.c        ****     }
+ 261              		.loc 1 164 0 discriminator 1
+ 262 0150 5EE7     		b	.L20
+ 263              	.L22:
+ 264 0152 00BF     		.align	2
+ 265              	.L21:
+ 266 0154 00000000 		.word	TESTFIXTURE_TYPE
+ 267 0158 01000000 		.word	rs1_value
+ 268 015c 02000000 		.word	rs2_value
+ 269 0160 00000000 		.word	CurrentTest
+ 270              		.cfi_endproc
+ 271              	.LFE63:
+ 272              		.size	main, .-main
+ 273              		.section	.text.initializePeripherals,"ax",%progbits
+ 274              		.align	2
+ 275              		.thumb
+ 276              		.thumb_func
+ 277              		.type	initializePeripherals, %function
+ 278              	initializePeripherals:
+ 279              	.LFB64:
  165:main.c        ****     
- 166:main.c        ****     
- 167:main.c        ****     //UART_1_Start();    
- 168:main.c        ****     //isr_UART_230400_Start();
- 169:main.c        **** 
- 170:main.c        ****     
- 171:main.c        ****     //-----------------------------------
- 172:main.c        ****     
- 173:main.c        ****     Timer_50ms_Start();
- 207              		.loc 1 173 0
- 208 001c FFF7FEFF 		bl	Timer_50ms_Start
- 174:main.c        ****     isr_Timer_50ms_Start();
- 209              		.loc 1 174 0
- 210 0020 FFF7FEFF 		bl	isr_Timer_50ms_Start
- 175:main.c        ****     
- 176:main.c        ****     Timer_20ms_Start();
- 211              		.loc 1 176 0
- 212 0024 FFF7FEFF 		bl	Timer_20ms_Start
- 177:main.c        ****     isr_Timer_20ms_Start();
- 213              		.loc 1 177 0
- 214 0028 FFF7FEFF 		bl	isr_Timer_20ms_Start
- 178:main.c        ****     
- 179:main.c        ****     Timer_10ms_Start();
- 215              		.loc 1 179 0
- 216 002c FFF7FEFF 		bl	Timer_10ms_Start
- 180:main.c        ****     isr_Timer_10ms_Start();
- 217              		.loc 1 180 0
- 218 0030 FFF7FEFF 		bl	isr_Timer_10ms_Start
- 181:main.c        ****     
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 8
+ 166:main.c        **** }
+ 167:main.c        **** 
+ 168:main.c        **** /*******************************************************************************
+ 169:main.c        **** * Function Name: initializePeripherals
+ 170:main.c        **** ********************************************************************************
+ 171:main.c        **** *
+ 172:main.c        **** * Summary:
+ 173:main.c        **** *  Sets up the watchdog timer, disables, power amplifiers, and enables all ISRs
+ 174:main.c        **** *
+ 175:main.c        **** * Parameters:  
+ 176:main.c        **** *   None
+ 177:main.c        **** *
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 9
 
 
- 182:main.c        ****     //WaveDAC_Start();
- 183:main.c        ****     
- 184:main.c        ****     Timer_DAC_Start();
- 219              		.loc 1 184 0
- 220 0034 FFF7FEFF 		bl	Timer_DAC_Start
- 185:main.c        ****     
- 186:main.c        ****     //ADC_AudioStream_Start();
- 187:main.c        ****     //isr_ADC_AudioStream_Start();
- 188:main.c        **** 
- 189:main.c        ****     return;
- 221              		.loc 1 189 0
- 222 0038 00BF     		nop
- 190:main.c        **** }
- 223              		.loc 1 190 0
- 224 003a 80BD     		pop	{r7, pc}
- 225              		.cfi_endproc
- 226              	.LFE64:
- 227              		.size	initializePeripherals, .-initializePeripherals
- 228              		.section	.text.StartTimeout,"ax",%progbits
- 229              		.align	2
- 230              		.global	StartTimeout
- 231              		.thumb
- 232              		.thumb_func
- 233              		.type	StartTimeout, %function
- 234              	StartTimeout:
- 235              	.LFB65:
- 191:main.c        **** 
- 192:main.c        **** void StartTimeout(void)
- 193:main.c        **** {
- 236              		.loc 1 193 0
- 237              		.cfi_startproc
- 238              		@ args = 0, pretend = 0, frame = 0
- 239              		@ frame_needed = 1, uses_anonymous_args = 0
- 240              		@ link register save eliminated.
- 241 0000 80B4     		push	{r7}
- 242              		.cfi_def_cfa_offset 4
- 243              		.cfi_offset 7, -4
- 244 0002 00AF     		add	r7, sp, #0
- 245              		.cfi_def_cfa_register 7
- 194:main.c        ****     
- 195:main.c        **** 
- 196:main.c        ****     return;
- 246              		.loc 1 196 0
- 247 0004 00BF     		nop
- 197:main.c        **** }
- 248              		.loc 1 197 0
- 249 0006 BD46     		mov	sp, r7
- 250              		.cfi_def_cfa_register 13
- 251              		@ sp needed
- 252 0008 80BC     		pop	{r7}
- 253              		.cfi_restore 7
- 254              		.cfi_def_cfa_offset 0
- 255 000a 7047     		bx	lr
- 256              		.cfi_endproc
- 257              	.LFE65:
- 258              		.size	StartTimeout, .-StartTimeout
- 259              		.section	.text.StopTimeout,"ax",%progbits
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 9
+ 178:main.c        **** * Return:
+ 179:main.c        **** *   None
+ 180:main.c        **** *
+ 181:main.c        **** *******************************************************************************/
+ 182:main.c        **** static void initializePeripherals(void)
+ 183:main.c        **** {
+ 280              		.loc 1 183 0
+ 281              		.cfi_startproc
+ 282              		@ args = 0, pretend = 0, frame = 0
+ 283              		@ frame_needed = 1, uses_anonymous_args = 0
+ 284 0000 80B5     		push	{r7, lr}
+ 285              		.cfi_def_cfa_offset 8
+ 286              		.cfi_offset 7, -8
+ 287              		.cfi_offset 14, -4
+ 288 0002 00AF     		add	r7, sp, #0
+ 289              		.cfi_def_cfa_register 7
+ 184:main.c        ****     
+ 185:main.c        ****     //----------Start UART_460800--------
+ 186:main.c        ****     UART_460800_Start();    
+ 290              		.loc 1 186 0
+ 291 0004 FFF7FEFF 		bl	UART_460800_Start
+ 187:main.c        ****     isr_UART_460800_Start();
+ 292              		.loc 1 187 0
+ 293 0008 FFF7FEFF 		bl	isr_UART_460800_Start
+ 188:main.c        ****     //----------Start UART_230400--------
+ 189:main.c        ****     UART_230400_Start();    
+ 294              		.loc 1 189 0
+ 295 000c FFF7FEFF 		bl	UART_230400_Start
+ 190:main.c        ****     isr_UART_230400_Start();
+ 296              		.loc 1 190 0
+ 297 0010 FFF7FEFF 		bl	isr_UART_230400_Start
+ 191:main.c        ****     //----------Start UART_115200--------
+ 192:main.c        ****     UART_115200_Start();    
+ 298              		.loc 1 192 0
+ 299 0014 FFF7FEFF 		bl	UART_115200_Start
+ 193:main.c        ****     isr_UART_115200_Start();
+ 300              		.loc 1 193 0
+ 301 0018 FFF7FEFF 		bl	isr_UART_115200_Start
+ 194:main.c        ****     //----------Start UART_9600----------
+ 195:main.c        **** //    UART_9600_Start();    
+ 196:main.c        **** //    isr_UART_9600_Start();
+ 197:main.c        ****     
+ 198:main.c        ****     //-----------------------------------
+ 199:main.c        ****     
+ 200:main.c        ****     Timer_50ms_Start();
+ 302              		.loc 1 200 0
+ 303 001c FFF7FEFF 		bl	Timer_50ms_Start
+ 201:main.c        ****     isr_Timer_50ms_Start();
+ 304              		.loc 1 201 0
+ 305 0020 FFF7FEFF 		bl	isr_Timer_50ms_Start
+ 202:main.c        ****     
+ 203:main.c        ****     Timer_20ms_Start();
+ 306              		.loc 1 203 0
+ 307 0024 FFF7FEFF 		bl	Timer_20ms_Start
+ 204:main.c        ****     isr_Timer_20ms_Start();
+ 308              		.loc 1 204 0
+ 309 0028 FFF7FEFF 		bl	isr_Timer_20ms_Start
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 10
 
 
- 260              		.align	2
- 261              		.global	StopTimeout
- 262              		.thumb
- 263              		.thumb_func
- 264              		.type	StopTimeout, %function
- 265              	StopTimeout:
- 266              	.LFB66:
- 198:main.c        **** 
- 199:main.c        **** void StopTimeout(void)
- 200:main.c        **** {
- 267              		.loc 1 200 0
- 268              		.cfi_startproc
- 269              		@ args = 0, pretend = 0, frame = 0
- 270              		@ frame_needed = 1, uses_anonymous_args = 0
- 271              		@ link register save eliminated.
- 272 0000 80B4     		push	{r7}
- 273              		.cfi_def_cfa_offset 4
- 274              		.cfi_offset 7, -4
- 275 0002 00AF     		add	r7, sp, #0
- 276              		.cfi_def_cfa_register 7
- 201:main.c        **** 
- 202:main.c        **** 
- 203:main.c        ****     return;
- 277              		.loc 1 203 0
- 278 0004 00BF     		nop
- 204:main.c        **** }
- 279              		.loc 1 204 0
- 280 0006 BD46     		mov	sp, r7
- 281              		.cfi_def_cfa_register 13
- 282              		@ sp needed
- 283 0008 80BC     		pop	{r7}
- 284              		.cfi_restore 7
- 285              		.cfi_def_cfa_offset 0
- 286 000a 7047     		bx	lr
- 287              		.cfi_endproc
- 288              	.LFE66:
- 289              		.size	StopTimeout, .-StopTimeout
- 290              		.text
- 291              	.Letext0:
- 292              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 293              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 294              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
- 295              		.file 5 "CommonVariables.h"
- 296              		.file 6 "Generated_Source\\PSoC5/core_cm3.h"
- 297              		.section	.debug_info,"",%progbits
- 298              	.Ldebug_info0:
- 299 0000 A3010000 		.4byte	0x1a3
- 300 0004 0400     		.2byte	0x4
- 301 0006 00000000 		.4byte	.Ldebug_abbrev0
- 302 000a 04       		.byte	0x4
- 303 000b 01       		.uleb128 0x1
- 304 000c 00000000 		.4byte	.LASF32
- 305 0010 0C       		.byte	0xc
- 306 0011 E1010000 		.4byte	.LASF33
- 307 0015 25010000 		.4byte	.LASF34
- 308 0019 00000000 		.4byte	.Ldebug_ranges0+0
- 309 001d 00000000 		.4byte	0
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 10
+ 205:main.c        ****     
+ 206:main.c        ****     Timer_10ms_Start();
+ 310              		.loc 1 206 0
+ 311 002c FFF7FEFF 		bl	Timer_10ms_Start
+ 207:main.c        ****     isr_Timer_10ms_Start();
+ 312              		.loc 1 207 0
+ 313 0030 FFF7FEFF 		bl	isr_Timer_10ms_Start
+ 208:main.c        ****     
+ 209:main.c        ****     WaveDAC_Start();
+ 314              		.loc 1 209 0
+ 315 0034 FFF7FEFF 		bl	WaveDAC_Start
+ 210:main.c        ****     
+ 211:main.c        **** //    Timer_DAC_Start();
+ 212:main.c        ****     
+ 213:main.c        ****     //ADC_AudioStream_Start();
+ 214:main.c        ****     //isr_ADC_AudioStream_Start();
+ 215:main.c        **** 
+ 216:main.c        ****     return;
+ 316              		.loc 1 216 0
+ 317 0038 00BF     		nop
+ 217:main.c        **** }
+ 318              		.loc 1 217 0
+ 319 003a 80BD     		pop	{r7, pc}
+ 320              		.cfi_endproc
+ 321              	.LFE64:
+ 322              		.size	initializePeripherals, .-initializePeripherals
+ 323              		.section	.text.StartTimeout,"ax",%progbits
+ 324              		.align	2
+ 325              		.global	StartTimeout
+ 326              		.thumb
+ 327              		.thumb_func
+ 328              		.type	StartTimeout, %function
+ 329              	StartTimeout:
+ 330              	.LFB65:
+ 218:main.c        **** 
+ 219:main.c        **** void StartTimeout(void)
+ 220:main.c        **** {
+ 331              		.loc 1 220 0
+ 332              		.cfi_startproc
+ 333              		@ args = 0, pretend = 0, frame = 0
+ 334              		@ frame_needed = 1, uses_anonymous_args = 0
+ 335              		@ link register save eliminated.
+ 336 0000 80B4     		push	{r7}
+ 337              		.cfi_def_cfa_offset 4
+ 338              		.cfi_offset 7, -4
+ 339 0002 00AF     		add	r7, sp, #0
+ 340              		.cfi_def_cfa_register 7
+ 221:main.c        ****     
+ 222:main.c        **** 
+ 223:main.c        ****     return;
+ 341              		.loc 1 223 0
+ 342 0004 00BF     		nop
+ 224:main.c        **** }
+ 343              		.loc 1 224 0
+ 344 0006 BD46     		mov	sp, r7
+ 345              		.cfi_def_cfa_register 13
+ 346              		@ sp needed
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 11
 
 
- 310 0021 00000000 		.4byte	.Ldebug_line0
- 311 0025 02       		.uleb128 0x2
- 312 0026 01       		.byte	0x1
- 313 0027 06       		.byte	0x6
- 314 0028 42020000 		.4byte	.LASF0
- 315 002c 02       		.uleb128 0x2
- 316 002d 01       		.byte	0x1
- 317 002e 08       		.byte	0x8
- 318 002f E0000000 		.4byte	.LASF1
- 319 0033 02       		.uleb128 0x2
- 320 0034 02       		.byte	0x2
- 321 0035 05       		.byte	0x5
- 322 0036 09020000 		.4byte	.LASF2
- 323 003a 02       		.uleb128 0x2
- 324 003b 02       		.byte	0x2
- 325 003c 07       		.byte	0x7
- 326 003d 12010000 		.4byte	.LASF3
- 327 0041 03       		.uleb128 0x3
- 328 0042 9E000000 		.4byte	.LASF9
- 329 0046 02       		.byte	0x2
- 330 0047 3F       		.byte	0x3f
- 331 0048 4C000000 		.4byte	0x4c
- 332 004c 02       		.uleb128 0x2
- 333 004d 04       		.byte	0x4
- 334 004e 05       		.byte	0x5
- 335 004f 19020000 		.4byte	.LASF4
- 336 0053 02       		.uleb128 0x2
- 337 0054 04       		.byte	0x4
- 338 0055 07       		.byte	0x7
- 339 0056 F4000000 		.4byte	.LASF5
- 340 005a 02       		.uleb128 0x2
- 341 005b 08       		.byte	0x8
- 342 005c 05       		.byte	0x5
- 343 005d D3010000 		.4byte	.LASF6
- 344 0061 02       		.uleb128 0x2
- 345 0062 08       		.byte	0x8
- 346 0063 07       		.byte	0x7
- 347 0064 95010000 		.4byte	.LASF7
- 348 0068 04       		.uleb128 0x4
- 349 0069 04       		.byte	0x4
- 350 006a 05       		.byte	0x5
- 351 006b 696E7400 		.ascii	"int\000"
- 352 006f 02       		.uleb128 0x2
- 353 0070 04       		.byte	0x4
- 354 0071 07       		.byte	0x7
- 355 0072 88010000 		.4byte	.LASF8
- 356 0076 03       		.uleb128 0x3
- 357 0077 C2010000 		.4byte	.LASF10
- 358 007b 03       		.byte	0x3
- 359 007c 2C       		.byte	0x2c
- 360 007d 41000000 		.4byte	0x41
- 361 0081 05       		.uleb128 0x5
- 362 0082 13020000 		.4byte	.LASF11
- 363 0086 04       		.byte	0x4
- 364 0087 E401     		.2byte	0x1e4
- 365 0089 2C000000 		.4byte	0x2c
- 366 008d 02       		.uleb128 0x2
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 11
+ 347 0008 80BC     		pop	{r7}
+ 348              		.cfi_restore 7
+ 349              		.cfi_def_cfa_offset 0
+ 350 000a 7047     		bx	lr
+ 351              		.cfi_endproc
+ 352              	.LFE65:
+ 353              		.size	StartTimeout, .-StartTimeout
+ 354              		.section	.text.StopTimeout,"ax",%progbits
+ 355              		.align	2
+ 356              		.global	StopTimeout
+ 357              		.thumb
+ 358              		.thumb_func
+ 359              		.type	StopTimeout, %function
+ 360              	StopTimeout:
+ 361              	.LFB66:
+ 225:main.c        **** 
+ 226:main.c        **** void StopTimeout(void)
+ 227:main.c        **** {
+ 362              		.loc 1 227 0
+ 363              		.cfi_startproc
+ 364              		@ args = 0, pretend = 0, frame = 0
+ 365              		@ frame_needed = 1, uses_anonymous_args = 0
+ 366              		@ link register save eliminated.
+ 367 0000 80B4     		push	{r7}
+ 368              		.cfi_def_cfa_offset 4
+ 369              		.cfi_offset 7, -4
+ 370 0002 00AF     		add	r7, sp, #0
+ 371              		.cfi_def_cfa_register 7
+ 228:main.c        **** 
+ 229:main.c        **** 
+ 230:main.c        ****     return;
+ 372              		.loc 1 230 0
+ 373 0004 00BF     		nop
+ 231:main.c        **** }
+ 374              		.loc 1 231 0
+ 375 0006 BD46     		mov	sp, r7
+ 376              		.cfi_def_cfa_register 13
+ 377              		@ sp needed
+ 378 0008 80BC     		pop	{r7}
+ 379              		.cfi_restore 7
+ 380              		.cfi_def_cfa_offset 0
+ 381 000a 7047     		bx	lr
+ 382              		.cfi_endproc
+ 383              	.LFE66:
+ 384              		.size	StopTimeout, .-StopTimeout
+ 385              		.text
+ 386              	.Letext0:
+ 387              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 388              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 389              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 390              		.file 5 "CommonVariables.h"
+ 391              		.file 6 "Generated_Source\\PSoC5/core_cm3.h"
+ 392              		.section	.debug_info,"",%progbits
+ 393              	.Ldebug_info0:
+ 394 0000 DC010000 		.4byte	0x1dc
+ 395 0004 0400     		.2byte	0x4
+ 396 0006 00000000 		.4byte	.Ldebug_abbrev0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 12
 
 
- 367 008e 04       		.byte	0x4
- 368 008f 04       		.byte	0x4
- 369 0090 DA000000 		.4byte	.LASF12
- 370 0094 02       		.uleb128 0x2
- 371 0095 08       		.byte	0x8
- 372 0096 04       		.byte	0x4
- 373 0097 7C010000 		.4byte	.LASF13
- 374 009b 02       		.uleb128 0x2
- 375 009c 01       		.byte	0x1
- 376 009d 08       		.byte	0x8
- 377 009e E8010000 		.4byte	.LASF14
- 378 00a2 02       		.uleb128 0x2
- 379 00a3 08       		.byte	0x8
- 380 00a4 04       		.byte	0x4
- 381 00a5 36020000 		.4byte	.LASF15
- 382 00a9 02       		.uleb128 0x2
- 383 00aa 04       		.byte	0x4
- 384 00ab 07       		.byte	0x7
- 385 00ac CA010000 		.4byte	.LASF16
- 386 00b0 06       		.uleb128 0x6
- 387 00b1 27020000 		.4byte	.LASF35
- 388 00b5 03       		.byte	0x3
- 389 00b6 05       		.byte	0x5
- 390 00b7 10       		.byte	0x10
- 391 00b8 E1000000 		.4byte	0xe1
- 392 00bc 07       		.uleb128 0x7
- 393 00bd CD000000 		.4byte	.LASF17
- 394 00c1 05       		.byte	0x5
- 395 00c2 12       		.byte	0x12
- 396 00c3 81000000 		.4byte	0x81
- 397 00c7 00       		.byte	0
- 398 00c8 07       		.uleb128 0x7
- 399 00c9 AF000000 		.4byte	.LASF18
- 400 00cd 05       		.byte	0x5
- 401 00ce 13       		.byte	0x13
- 402 00cf 81000000 		.4byte	0x81
- 403 00d3 01       		.byte	0x1
- 404 00d4 07       		.uleb128 0x7
- 405 00d5 A8000000 		.4byte	.LASF19
- 406 00d9 05       		.byte	0x5
- 407 00da 14       		.byte	0x14
- 408 00db 81000000 		.4byte	0x81
- 409 00df 02       		.byte	0x2
- 410 00e0 00       		.byte	0
- 411 00e1 03       		.uleb128 0x3
- 412 00e2 ED010000 		.4byte	.LASF20
- 413 00e6 05       		.byte	0x5
- 414 00e7 18       		.byte	0x18
- 415 00e8 B0000000 		.4byte	0xb0
- 416 00ec 08       		.uleb128 0x8
- 417 00ed B8000000 		.4byte	.LASF36
- 418 00f1 01       		.byte	0x1
- 419 00f2 2C000000 		.4byte	0x2c
- 420 00f6 01       		.byte	0x1
- 421 00f7 2A       		.byte	0x2a
- 422 00f8 0F010000 		.4byte	0x10f
- 423 00fc 09       		.uleb128 0x9
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 12
+ 397 000a 04       		.byte	0x4
+ 398 000b 01       		.uleb128 0x1
+ 399 000c 0F000000 		.4byte	.LASF34
+ 400 0010 0C       		.byte	0xc
+ 401 0011 F0010000 		.4byte	.LASF35
+ 402 0015 34010000 		.4byte	.LASF36
+ 403 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 404 001d 00000000 		.4byte	0
+ 405 0021 00000000 		.4byte	.Ldebug_line0
+ 406 0025 02       		.uleb128 0x2
+ 407 0026 01       		.byte	0x1
+ 408 0027 06       		.byte	0x6
+ 409 0028 69020000 		.4byte	.LASF0
+ 410 002c 02       		.uleb128 0x2
+ 411 002d 01       		.byte	0x1
+ 412 002e 08       		.byte	0x8
+ 413 002f EF000000 		.4byte	.LASF1
+ 414 0033 02       		.uleb128 0x2
+ 415 0034 02       		.byte	0x2
+ 416 0035 05       		.byte	0x5
+ 417 0036 30020000 		.4byte	.LASF2
+ 418 003a 02       		.uleb128 0x2
+ 419 003b 02       		.byte	0x2
+ 420 003c 07       		.byte	0x7
+ 421 003d 21010000 		.4byte	.LASF3
+ 422 0041 03       		.uleb128 0x3
+ 423 0042 AD000000 		.4byte	.LASF9
+ 424 0046 02       		.byte	0x2
+ 425 0047 3F       		.byte	0x3f
+ 426 0048 4C000000 		.4byte	0x4c
+ 427 004c 02       		.uleb128 0x2
+ 428 004d 04       		.byte	0x4
+ 429 004e 05       		.byte	0x5
+ 430 004f 40020000 		.4byte	.LASF4
+ 431 0053 02       		.uleb128 0x2
+ 432 0054 04       		.byte	0x4
+ 433 0055 07       		.byte	0x7
+ 434 0056 03010000 		.4byte	.LASF5
+ 435 005a 02       		.uleb128 0x2
+ 436 005b 08       		.byte	0x8
+ 437 005c 05       		.byte	0x5
+ 438 005d E2010000 		.4byte	.LASF6
+ 439 0061 02       		.uleb128 0x2
+ 440 0062 08       		.byte	0x8
+ 441 0063 07       		.byte	0x7
+ 442 0064 A4010000 		.4byte	.LASF7
+ 443 0068 04       		.uleb128 0x4
+ 444 0069 04       		.byte	0x4
+ 445 006a 05       		.byte	0x5
+ 446 006b 696E7400 		.ascii	"int\000"
+ 447 006f 02       		.uleb128 0x2
+ 448 0070 04       		.byte	0x4
+ 449 0071 07       		.byte	0x7
+ 450 0072 97010000 		.4byte	.LASF8
+ 451 0076 03       		.uleb128 0x3
+ 452 0077 D1010000 		.4byte	.LASF10
+ 453 007b 03       		.byte	0x3
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 13
 
 
- 424 00fd 76010000 		.4byte	.LASF21
- 425 0101 00       		.byte	0
- 426 0102 09       		.uleb128 0x9
- 427 0103 98000000 		.4byte	.LASF22
- 428 0107 01       		.byte	0x1
- 429 0108 09       		.uleb128 0x9
- 430 0109 EE000000 		.4byte	.LASF23
- 431 010d 02       		.byte	0x2
- 432 010e 00       		.byte	0
- 433 010f 0A       		.uleb128 0xa
- 434 0110 83010000 		.4byte	.LASF24
- 435 0114 01       		.byte	0x1
- 436 0115 4F       		.byte	0x4f
- 437 0116 68000000 		.4byte	0x68
- 438 011a 00000000 		.4byte	.LFB63
- 439 011e D0000000 		.4byte	.LFE63-.LFB63
- 440 0122 01       		.uleb128 0x1
- 441 0123 9C       		.byte	0x9c
- 442 0124 0B       		.uleb128 0xb
- 443 0125 AC010000 		.4byte	.LASF37
- 444 0129 01       		.byte	0x1
- 445 012a 91       		.byte	0x91
- 446 012b 00000000 		.4byte	.LFB64
- 447 012f 3C000000 		.4byte	.LFE64-.LFB64
- 448 0133 01       		.uleb128 0x1
- 449 0134 9C       		.byte	0x9c
- 450 0135 0C       		.uleb128 0xc
- 451 0136 FC010000 		.4byte	.LASF25
- 452 013a 01       		.byte	0x1
- 453 013b C0       		.byte	0xc0
- 454 013c 00000000 		.4byte	.LFB65
- 455 0140 0C000000 		.4byte	.LFE65-.LFB65
- 456 0144 01       		.uleb128 0x1
- 457 0145 9C       		.byte	0x9c
- 458 0146 0C       		.uleb128 0xc
- 459 0147 C1000000 		.4byte	.LASF26
- 460 014b 01       		.byte	0x1
- 461 014c C7       		.byte	0xc7
- 462 014d 00000000 		.4byte	.LFB66
- 463 0151 0C000000 		.4byte	.LFE66-.LFB66
- 464 0155 01       		.uleb128 0x1
- 465 0156 9C       		.byte	0x9c
- 466 0157 0D       		.uleb128 0xd
- 467 0158 4E020000 		.4byte	.LASF27
- 468 015c 01       		.byte	0x1
- 469 015d 4C       		.byte	0x4c
- 470 015e 81000000 		.4byte	0x81
- 471 0162 05       		.uleb128 0x5
- 472 0163 03       		.byte	0x3
- 473 0164 00000000 		.4byte	rs1_value
- 474 0168 0D       		.uleb128 0xd
- 475 0169 8E000000 		.4byte	.LASF28
- 476 016d 01       		.byte	0x1
- 477 016e 4D       		.byte	0x4d
- 478 016f 81000000 		.4byte	0x81
- 479 0173 05       		.uleb128 0x5
- 480 0174 03       		.byte	0x3
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 13
+ 454 007c 2C       		.byte	0x2c
+ 455 007d 41000000 		.4byte	0x41
+ 456 0081 05       		.uleb128 0x5
+ 457 0082 3A020000 		.4byte	.LASF11
+ 458 0086 04       		.byte	0x4
+ 459 0087 E401     		.2byte	0x1e4
+ 460 0089 2C000000 		.4byte	0x2c
+ 461 008d 02       		.uleb128 0x2
+ 462 008e 04       		.byte	0x4
+ 463 008f 04       		.byte	0x4
+ 464 0090 E9000000 		.4byte	.LASF12
+ 465 0094 02       		.uleb128 0x2
+ 466 0095 08       		.byte	0x8
+ 467 0096 04       		.byte	0x4
+ 468 0097 8B010000 		.4byte	.LASF13
+ 469 009b 02       		.uleb128 0x2
+ 470 009c 01       		.byte	0x1
+ 471 009d 08       		.byte	0x8
+ 472 009e F7010000 		.4byte	.LASF14
+ 473 00a2 02       		.uleb128 0x2
+ 474 00a3 08       		.byte	0x8
+ 475 00a4 04       		.byte	0x4
+ 476 00a5 5D020000 		.4byte	.LASF15
+ 477 00a9 02       		.uleb128 0x2
+ 478 00aa 04       		.byte	0x4
+ 479 00ab 07       		.byte	0x7
+ 480 00ac D9010000 		.4byte	.LASF16
+ 481 00b0 06       		.uleb128 0x6
+ 482 00b1 4E020000 		.4byte	.LASF37
+ 483 00b5 03       		.byte	0x3
+ 484 00b6 05       		.byte	0x5
+ 485 00b7 10       		.byte	0x10
+ 486 00b8 E1000000 		.4byte	0xe1
+ 487 00bc 07       		.uleb128 0x7
+ 488 00bd DC000000 		.4byte	.LASF17
+ 489 00c1 05       		.byte	0x5
+ 490 00c2 12       		.byte	0x12
+ 491 00c3 81000000 		.4byte	0x81
+ 492 00c7 00       		.byte	0
+ 493 00c8 07       		.uleb128 0x7
+ 494 00c9 BE000000 		.4byte	.LASF18
+ 495 00cd 05       		.byte	0x5
+ 496 00ce 13       		.byte	0x13
+ 497 00cf 81000000 		.4byte	0x81
+ 498 00d3 01       		.byte	0x1
+ 499 00d4 07       		.uleb128 0x7
+ 500 00d5 B7000000 		.4byte	.LASF19
+ 501 00d9 05       		.byte	0x5
+ 502 00da 14       		.byte	0x14
+ 503 00db 81000000 		.4byte	0x81
+ 504 00df 02       		.byte	0x2
+ 505 00e0 00       		.byte	0
+ 506 00e1 03       		.uleb128 0x3
+ 507 00e2 14020000 		.4byte	.LASF20
+ 508 00e6 05       		.byte	0x5
+ 509 00e7 18       		.byte	0x18
+ 510 00e8 B0000000 		.4byte	0xb0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 14
 
 
- 481 0175 01000000 		.4byte	rs2_value
- 482 0179 0E       		.uleb128 0xe
- 483 017a 69010000 		.4byte	.LASF29
- 484 017e 06       		.byte	0x6
- 485 017f 1207     		.2byte	0x712
- 486 0181 85010000 		.4byte	0x185
- 487 0185 0F       		.uleb128 0xf
- 488 0186 76000000 		.4byte	0x76
- 489 018a 10       		.uleb128 0x10
- 490 018b 22020000 		.4byte	.LASF30
- 491 018f 05       		.byte	0x5
- 492 0190 16       		.byte	0x16
- 493 0191 B0000000 		.4byte	0xb0
- 494 0195 05       		.uleb128 0x5
- 495 0196 03       		.byte	0x3
- 496 0197 00000000 		.4byte	Test
- 497 019b 11       		.uleb128 0x11
- 498 019c 06010000 		.4byte	.LASF31
- 499 01a0 05       		.byte	0x5
- 500 01a1 1A       		.byte	0x1a
- 501 01a2 E1000000 		.4byte	0xe1
- 502 01a6 00       		.byte	0
- 503              		.section	.debug_abbrev,"",%progbits
- 504              	.Ldebug_abbrev0:
- 505 0000 01       		.uleb128 0x1
- 506 0001 11       		.uleb128 0x11
- 507 0002 01       		.byte	0x1
- 508 0003 25       		.uleb128 0x25
- 509 0004 0E       		.uleb128 0xe
- 510 0005 13       		.uleb128 0x13
- 511 0006 0B       		.uleb128 0xb
- 512 0007 03       		.uleb128 0x3
- 513 0008 0E       		.uleb128 0xe
- 514 0009 1B       		.uleb128 0x1b
- 515 000a 0E       		.uleb128 0xe
- 516 000b 55       		.uleb128 0x55
- 517 000c 17       		.uleb128 0x17
- 518 000d 11       		.uleb128 0x11
- 519 000e 01       		.uleb128 0x1
- 520 000f 10       		.uleb128 0x10
- 521 0010 17       		.uleb128 0x17
- 522 0011 00       		.byte	0
- 523 0012 00       		.byte	0
- 524 0013 02       		.uleb128 0x2
- 525 0014 24       		.uleb128 0x24
- 526 0015 00       		.byte	0
- 527 0016 0B       		.uleb128 0xb
- 528 0017 0B       		.uleb128 0xb
- 529 0018 3E       		.uleb128 0x3e
- 530 0019 0B       		.uleb128 0xb
- 531 001a 03       		.uleb128 0x3
- 532 001b 0E       		.uleb128 0xe
- 533 001c 00       		.byte	0
- 534 001d 00       		.byte	0
- 535 001e 03       		.uleb128 0x3
- 536 001f 16       		.uleb128 0x16
- 537 0020 00       		.byte	0
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 14
+ 511 00ec 08       		.uleb128 0x8
+ 512 00ed C7000000 		.4byte	.LASF38
+ 513 00f1 01       		.byte	0x1
+ 514 00f2 2C000000 		.4byte	0x2c
+ 515 00f6 01       		.byte	0x1
+ 516 00f7 2B       		.byte	0x2b
+ 517 00f8 1B010000 		.4byte	0x11b
+ 518 00fc 09       		.uleb128 0x9
+ 519 00fd 85010000 		.4byte	.LASF21
+ 520 0101 00       		.byte	0
+ 521 0102 09       		.uleb128 0x9
+ 522 0103 A7000000 		.4byte	.LASF22
+ 523 0107 01       		.byte	0x1
+ 524 0108 09       		.uleb128 0x9
+ 525 0109 FD000000 		.4byte	.LASF23
+ 526 010d 02       		.byte	0x2
+ 527 010e 09       		.uleb128 0x9
+ 528 010f 86020000 		.4byte	.LASF24
+ 529 0113 03       		.byte	0x3
+ 530 0114 09       		.uleb128 0x9
+ 531 0115 00000000 		.4byte	.LASF25
+ 532 0119 04       		.byte	0x4
+ 533 011a 00       		.byte	0
+ 534 011b 0A       		.uleb128 0xa
+ 535 011c 92010000 		.4byte	.LASF39
+ 536 0120 01       		.byte	0x1
+ 537 0121 55       		.byte	0x55
+ 538 0122 68000000 		.4byte	0x68
+ 539 0126 00000000 		.4byte	.LFB63
+ 540 012a 64010000 		.4byte	.LFE63-.LFB63
+ 541 012e 01       		.uleb128 0x1
+ 542 012f 9C       		.byte	0x9c
+ 543 0130 4C010000 		.4byte	0x14c
+ 544 0134 0B       		.uleb128 0xb
+ 545 0135 2E010000 		.4byte	.LBB2
+ 546 0139 0C000000 		.4byte	.LBE2-.LBB2
+ 547 013d 0C       		.uleb128 0xc
+ 548 013e FC010000 		.4byte	.LASF40
+ 549 0142 01       		.byte	0x1
+ 550 0143 95       		.byte	0x95
+ 551 0144 68000000 		.4byte	0x68
+ 552 0148 0D       		.uleb128 0xd
+ 553 0149 00       		.byte	0
+ 554 014a 00       		.byte	0
+ 555 014b 00       		.byte	0
+ 556 014c 0E       		.uleb128 0xe
+ 557 014d BB010000 		.4byte	.LASF41
+ 558 0151 01       		.byte	0x1
+ 559 0152 B6       		.byte	0xb6
+ 560 0153 00000000 		.4byte	.LFB64
+ 561 0157 3C000000 		.4byte	.LFE64-.LFB64
+ 562 015b 01       		.uleb128 0x1
+ 563 015c 9C       		.byte	0x9c
+ 564 015d 0F       		.uleb128 0xf
+ 565 015e 23020000 		.4byte	.LASF26
+ 566 0162 01       		.byte	0x1
+ 567 0163 DB       		.byte	0xdb
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 15
 
 
- 538 0021 03       		.uleb128 0x3
- 539 0022 0E       		.uleb128 0xe
- 540 0023 3A       		.uleb128 0x3a
- 541 0024 0B       		.uleb128 0xb
- 542 0025 3B       		.uleb128 0x3b
- 543 0026 0B       		.uleb128 0xb
- 544 0027 49       		.uleb128 0x49
- 545 0028 13       		.uleb128 0x13
- 546 0029 00       		.byte	0
- 547 002a 00       		.byte	0
- 548 002b 04       		.uleb128 0x4
- 549 002c 24       		.uleb128 0x24
- 550 002d 00       		.byte	0
- 551 002e 0B       		.uleb128 0xb
- 552 002f 0B       		.uleb128 0xb
- 553 0030 3E       		.uleb128 0x3e
- 554 0031 0B       		.uleb128 0xb
- 555 0032 03       		.uleb128 0x3
- 556 0033 08       		.uleb128 0x8
- 557 0034 00       		.byte	0
- 558 0035 00       		.byte	0
- 559 0036 05       		.uleb128 0x5
- 560 0037 16       		.uleb128 0x16
- 561 0038 00       		.byte	0
- 562 0039 03       		.uleb128 0x3
- 563 003a 0E       		.uleb128 0xe
- 564 003b 3A       		.uleb128 0x3a
- 565 003c 0B       		.uleb128 0xb
- 566 003d 3B       		.uleb128 0x3b
- 567 003e 05       		.uleb128 0x5
- 568 003f 49       		.uleb128 0x49
- 569 0040 13       		.uleb128 0x13
- 570 0041 00       		.byte	0
- 571 0042 00       		.byte	0
- 572 0043 06       		.uleb128 0x6
- 573 0044 13       		.uleb128 0x13
- 574 0045 01       		.byte	0x1
- 575 0046 03       		.uleb128 0x3
- 576 0047 0E       		.uleb128 0xe
- 577 0048 0B       		.uleb128 0xb
- 578 0049 0B       		.uleb128 0xb
- 579 004a 3A       		.uleb128 0x3a
- 580 004b 0B       		.uleb128 0xb
- 581 004c 3B       		.uleb128 0x3b
- 582 004d 0B       		.uleb128 0xb
- 583 004e 01       		.uleb128 0x1
- 584 004f 13       		.uleb128 0x13
- 585 0050 00       		.byte	0
- 586 0051 00       		.byte	0
- 587 0052 07       		.uleb128 0x7
- 588 0053 0D       		.uleb128 0xd
- 589 0054 00       		.byte	0
- 590 0055 03       		.uleb128 0x3
- 591 0056 0E       		.uleb128 0xe
- 592 0057 3A       		.uleb128 0x3a
- 593 0058 0B       		.uleb128 0xb
- 594 0059 3B       		.uleb128 0x3b
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 15
+ 568 0164 00000000 		.4byte	.LFB65
+ 569 0168 0C000000 		.4byte	.LFE65-.LFB65
+ 570 016c 01       		.uleb128 0x1
+ 571 016d 9C       		.byte	0x9c
+ 572 016e 0F       		.uleb128 0xf
+ 573 016f D0000000 		.4byte	.LASF27
+ 574 0173 01       		.byte	0x1
+ 575 0174 E2       		.byte	0xe2
+ 576 0175 00000000 		.4byte	.LFB66
+ 577 0179 0C000000 		.4byte	.LFE66-.LFB66
+ 578 017d 01       		.uleb128 0x1
+ 579 017e 9C       		.byte	0x9c
+ 580 017f 10       		.uleb128 0x10
+ 581 0180 95020000 		.4byte	.LASF28
+ 582 0184 01       		.byte	0x1
+ 583 0185 51       		.byte	0x51
+ 584 0186 81000000 		.4byte	0x81
+ 585 018a 05       		.uleb128 0x5
+ 586 018b 03       		.byte	0x3
+ 587 018c 01000000 		.4byte	rs1_value
+ 588 0190 10       		.uleb128 0x10
+ 589 0191 9D000000 		.4byte	.LASF29
+ 590 0195 01       		.byte	0x1
+ 591 0196 52       		.byte	0x52
+ 592 0197 81000000 		.4byte	0x81
+ 593 019b 05       		.uleb128 0x5
+ 594 019c 03       		.byte	0x3
+ 595 019d 02000000 		.4byte	rs2_value
+ 596 01a1 11       		.uleb128 0x11
+ 597 01a2 78010000 		.4byte	.LASF30
+ 598 01a6 06       		.byte	0x6
+ 599 01a7 1207     		.2byte	0x712
+ 600 01a9 AD010000 		.4byte	0x1ad
+ 601 01ad 12       		.uleb128 0x12
+ 602 01ae 76000000 		.4byte	0x76
+ 603 01b2 13       		.uleb128 0x13
+ 604 01b3 49020000 		.4byte	.LASF31
+ 605 01b7 05       		.byte	0x5
+ 606 01b8 16       		.byte	0x16
+ 607 01b9 B0000000 		.4byte	0xb0
+ 608 01bd 05       		.uleb128 0x5
+ 609 01be 03       		.byte	0x3
+ 610 01bf 00000000 		.4byte	Test
+ 611 01c3 14       		.uleb128 0x14
+ 612 01c4 15010000 		.4byte	.LASF32
+ 613 01c8 05       		.byte	0x5
+ 614 01c9 1A       		.byte	0x1a
+ 615 01ca E1000000 		.4byte	0xe1
+ 616 01ce 13       		.uleb128 0x13
+ 617 01cf 75020000 		.4byte	.LASF33
+ 618 01d3 01       		.byte	0x1
+ 619 01d4 4E       		.byte	0x4e
+ 620 01d5 81000000 		.4byte	0x81
+ 621 01d9 05       		.uleb128 0x5
+ 622 01da 03       		.byte	0x3
+ 623 01db 00000000 		.4byte	TESTFIXTURE_TYPE
+ 624 01df 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 16
 
 
- 595 005a 0B       		.uleb128 0xb
- 596 005b 49       		.uleb128 0x49
- 597 005c 13       		.uleb128 0x13
- 598 005d 38       		.uleb128 0x38
- 599 005e 0B       		.uleb128 0xb
- 600 005f 00       		.byte	0
- 601 0060 00       		.byte	0
- 602 0061 08       		.uleb128 0x8
- 603 0062 04       		.uleb128 0x4
- 604 0063 01       		.byte	0x1
- 605 0064 03       		.uleb128 0x3
- 606 0065 0E       		.uleb128 0xe
- 607 0066 0B       		.uleb128 0xb
- 608 0067 0B       		.uleb128 0xb
- 609 0068 49       		.uleb128 0x49
- 610 0069 13       		.uleb128 0x13
- 611 006a 3A       		.uleb128 0x3a
- 612 006b 0B       		.uleb128 0xb
- 613 006c 3B       		.uleb128 0x3b
- 614 006d 0B       		.uleb128 0xb
- 615 006e 01       		.uleb128 0x1
- 616 006f 13       		.uleb128 0x13
- 617 0070 00       		.byte	0
- 618 0071 00       		.byte	0
- 619 0072 09       		.uleb128 0x9
- 620 0073 28       		.uleb128 0x28
- 621 0074 00       		.byte	0
- 622 0075 03       		.uleb128 0x3
- 623 0076 0E       		.uleb128 0xe
- 624 0077 1C       		.uleb128 0x1c
- 625 0078 0B       		.uleb128 0xb
- 626 0079 00       		.byte	0
- 627 007a 00       		.byte	0
- 628 007b 0A       		.uleb128 0xa
- 629 007c 2E       		.uleb128 0x2e
- 630 007d 00       		.byte	0
- 631 007e 3F       		.uleb128 0x3f
- 632 007f 19       		.uleb128 0x19
- 633 0080 03       		.uleb128 0x3
- 634 0081 0E       		.uleb128 0xe
- 635 0082 3A       		.uleb128 0x3a
- 636 0083 0B       		.uleb128 0xb
- 637 0084 3B       		.uleb128 0x3b
- 638 0085 0B       		.uleb128 0xb
- 639 0086 49       		.uleb128 0x49
- 640 0087 13       		.uleb128 0x13
- 641 0088 11       		.uleb128 0x11
- 642 0089 01       		.uleb128 0x1
- 643 008a 12       		.uleb128 0x12
- 644 008b 06       		.uleb128 0x6
- 645 008c 40       		.uleb128 0x40
- 646 008d 18       		.uleb128 0x18
- 647 008e 9642     		.uleb128 0x2116
- 648 0090 19       		.uleb128 0x19
- 649 0091 00       		.byte	0
- 650 0092 00       		.byte	0
- 651 0093 0B       		.uleb128 0xb
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 16
+ 625              		.section	.debug_abbrev,"",%progbits
+ 626              	.Ldebug_abbrev0:
+ 627 0000 01       		.uleb128 0x1
+ 628 0001 11       		.uleb128 0x11
+ 629 0002 01       		.byte	0x1
+ 630 0003 25       		.uleb128 0x25
+ 631 0004 0E       		.uleb128 0xe
+ 632 0005 13       		.uleb128 0x13
+ 633 0006 0B       		.uleb128 0xb
+ 634 0007 03       		.uleb128 0x3
+ 635 0008 0E       		.uleb128 0xe
+ 636 0009 1B       		.uleb128 0x1b
+ 637 000a 0E       		.uleb128 0xe
+ 638 000b 55       		.uleb128 0x55
+ 639 000c 17       		.uleb128 0x17
+ 640 000d 11       		.uleb128 0x11
+ 641 000e 01       		.uleb128 0x1
+ 642 000f 10       		.uleb128 0x10
+ 643 0010 17       		.uleb128 0x17
+ 644 0011 00       		.byte	0
+ 645 0012 00       		.byte	0
+ 646 0013 02       		.uleb128 0x2
+ 647 0014 24       		.uleb128 0x24
+ 648 0015 00       		.byte	0
+ 649 0016 0B       		.uleb128 0xb
+ 650 0017 0B       		.uleb128 0xb
+ 651 0018 3E       		.uleb128 0x3e
+ 652 0019 0B       		.uleb128 0xb
+ 653 001a 03       		.uleb128 0x3
+ 654 001b 0E       		.uleb128 0xe
+ 655 001c 00       		.byte	0
+ 656 001d 00       		.byte	0
+ 657 001e 03       		.uleb128 0x3
+ 658 001f 16       		.uleb128 0x16
+ 659 0020 00       		.byte	0
+ 660 0021 03       		.uleb128 0x3
+ 661 0022 0E       		.uleb128 0xe
+ 662 0023 3A       		.uleb128 0x3a
+ 663 0024 0B       		.uleb128 0xb
+ 664 0025 3B       		.uleb128 0x3b
+ 665 0026 0B       		.uleb128 0xb
+ 666 0027 49       		.uleb128 0x49
+ 667 0028 13       		.uleb128 0x13
+ 668 0029 00       		.byte	0
+ 669 002a 00       		.byte	0
+ 670 002b 04       		.uleb128 0x4
+ 671 002c 24       		.uleb128 0x24
+ 672 002d 00       		.byte	0
+ 673 002e 0B       		.uleb128 0xb
+ 674 002f 0B       		.uleb128 0xb
+ 675 0030 3E       		.uleb128 0x3e
+ 676 0031 0B       		.uleb128 0xb
+ 677 0032 03       		.uleb128 0x3
+ 678 0033 08       		.uleb128 0x8
+ 679 0034 00       		.byte	0
+ 680 0035 00       		.byte	0
+ 681 0036 05       		.uleb128 0x5
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 17
 
 
- 652 0094 2E       		.uleb128 0x2e
- 653 0095 00       		.byte	0
- 654 0096 03       		.uleb128 0x3
- 655 0097 0E       		.uleb128 0xe
- 656 0098 3A       		.uleb128 0x3a
- 657 0099 0B       		.uleb128 0xb
- 658 009a 3B       		.uleb128 0x3b
- 659 009b 0B       		.uleb128 0xb
- 660 009c 27       		.uleb128 0x27
- 661 009d 19       		.uleb128 0x19
- 662 009e 11       		.uleb128 0x11
- 663 009f 01       		.uleb128 0x1
- 664 00a0 12       		.uleb128 0x12
- 665 00a1 06       		.uleb128 0x6
- 666 00a2 40       		.uleb128 0x40
- 667 00a3 18       		.uleb128 0x18
- 668 00a4 9642     		.uleb128 0x2116
- 669 00a6 19       		.uleb128 0x19
- 670 00a7 00       		.byte	0
- 671 00a8 00       		.byte	0
- 672 00a9 0C       		.uleb128 0xc
- 673 00aa 2E       		.uleb128 0x2e
- 674 00ab 00       		.byte	0
- 675 00ac 3F       		.uleb128 0x3f
- 676 00ad 19       		.uleb128 0x19
- 677 00ae 03       		.uleb128 0x3
- 678 00af 0E       		.uleb128 0xe
- 679 00b0 3A       		.uleb128 0x3a
- 680 00b1 0B       		.uleb128 0xb
- 681 00b2 3B       		.uleb128 0x3b
- 682 00b3 0B       		.uleb128 0xb
- 683 00b4 27       		.uleb128 0x27
- 684 00b5 19       		.uleb128 0x19
- 685 00b6 11       		.uleb128 0x11
- 686 00b7 01       		.uleb128 0x1
- 687 00b8 12       		.uleb128 0x12
- 688 00b9 06       		.uleb128 0x6
- 689 00ba 40       		.uleb128 0x40
- 690 00bb 18       		.uleb128 0x18
- 691 00bc 9742     		.uleb128 0x2117
- 692 00be 19       		.uleb128 0x19
- 693 00bf 00       		.byte	0
- 694 00c0 00       		.byte	0
- 695 00c1 0D       		.uleb128 0xd
- 696 00c2 34       		.uleb128 0x34
- 697 00c3 00       		.byte	0
- 698 00c4 03       		.uleb128 0x3
- 699 00c5 0E       		.uleb128 0xe
- 700 00c6 3A       		.uleb128 0x3a
- 701 00c7 0B       		.uleb128 0xb
- 702 00c8 3B       		.uleb128 0x3b
- 703 00c9 0B       		.uleb128 0xb
- 704 00ca 49       		.uleb128 0x49
- 705 00cb 13       		.uleb128 0x13
- 706 00cc 02       		.uleb128 0x2
- 707 00cd 18       		.uleb128 0x18
- 708 00ce 00       		.byte	0
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 17
+ 682 0037 16       		.uleb128 0x16
+ 683 0038 00       		.byte	0
+ 684 0039 03       		.uleb128 0x3
+ 685 003a 0E       		.uleb128 0xe
+ 686 003b 3A       		.uleb128 0x3a
+ 687 003c 0B       		.uleb128 0xb
+ 688 003d 3B       		.uleb128 0x3b
+ 689 003e 05       		.uleb128 0x5
+ 690 003f 49       		.uleb128 0x49
+ 691 0040 13       		.uleb128 0x13
+ 692 0041 00       		.byte	0
+ 693 0042 00       		.byte	0
+ 694 0043 06       		.uleb128 0x6
+ 695 0044 13       		.uleb128 0x13
+ 696 0045 01       		.byte	0x1
+ 697 0046 03       		.uleb128 0x3
+ 698 0047 0E       		.uleb128 0xe
+ 699 0048 0B       		.uleb128 0xb
+ 700 0049 0B       		.uleb128 0xb
+ 701 004a 3A       		.uleb128 0x3a
+ 702 004b 0B       		.uleb128 0xb
+ 703 004c 3B       		.uleb128 0x3b
+ 704 004d 0B       		.uleb128 0xb
+ 705 004e 01       		.uleb128 0x1
+ 706 004f 13       		.uleb128 0x13
+ 707 0050 00       		.byte	0
+ 708 0051 00       		.byte	0
+ 709 0052 07       		.uleb128 0x7
+ 710 0053 0D       		.uleb128 0xd
+ 711 0054 00       		.byte	0
+ 712 0055 03       		.uleb128 0x3
+ 713 0056 0E       		.uleb128 0xe
+ 714 0057 3A       		.uleb128 0x3a
+ 715 0058 0B       		.uleb128 0xb
+ 716 0059 3B       		.uleb128 0x3b
+ 717 005a 0B       		.uleb128 0xb
+ 718 005b 49       		.uleb128 0x49
+ 719 005c 13       		.uleb128 0x13
+ 720 005d 38       		.uleb128 0x38
+ 721 005e 0B       		.uleb128 0xb
+ 722 005f 00       		.byte	0
+ 723 0060 00       		.byte	0
+ 724 0061 08       		.uleb128 0x8
+ 725 0062 04       		.uleb128 0x4
+ 726 0063 01       		.byte	0x1
+ 727 0064 03       		.uleb128 0x3
+ 728 0065 0E       		.uleb128 0xe
+ 729 0066 0B       		.uleb128 0xb
+ 730 0067 0B       		.uleb128 0xb
+ 731 0068 49       		.uleb128 0x49
+ 732 0069 13       		.uleb128 0x13
+ 733 006a 3A       		.uleb128 0x3a
+ 734 006b 0B       		.uleb128 0xb
+ 735 006c 3B       		.uleb128 0x3b
+ 736 006d 0B       		.uleb128 0xb
+ 737 006e 01       		.uleb128 0x1
+ 738 006f 13       		.uleb128 0x13
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 18
 
 
- 709 00cf 00       		.byte	0
- 710 00d0 0E       		.uleb128 0xe
- 711 00d1 34       		.uleb128 0x34
- 712 00d2 00       		.byte	0
- 713 00d3 03       		.uleb128 0x3
- 714 00d4 0E       		.uleb128 0xe
- 715 00d5 3A       		.uleb128 0x3a
- 716 00d6 0B       		.uleb128 0xb
- 717 00d7 3B       		.uleb128 0x3b
- 718 00d8 05       		.uleb128 0x5
- 719 00d9 49       		.uleb128 0x49
- 720 00da 13       		.uleb128 0x13
- 721 00db 3F       		.uleb128 0x3f
- 722 00dc 19       		.uleb128 0x19
- 723 00dd 3C       		.uleb128 0x3c
- 724 00de 19       		.uleb128 0x19
- 725 00df 00       		.byte	0
- 726 00e0 00       		.byte	0
- 727 00e1 0F       		.uleb128 0xf
- 728 00e2 35       		.uleb128 0x35
- 729 00e3 00       		.byte	0
- 730 00e4 49       		.uleb128 0x49
- 731 00e5 13       		.uleb128 0x13
- 732 00e6 00       		.byte	0
- 733 00e7 00       		.byte	0
- 734 00e8 10       		.uleb128 0x10
- 735 00e9 34       		.uleb128 0x34
- 736 00ea 00       		.byte	0
- 737 00eb 03       		.uleb128 0x3
- 738 00ec 0E       		.uleb128 0xe
- 739 00ed 3A       		.uleb128 0x3a
- 740 00ee 0B       		.uleb128 0xb
- 741 00ef 3B       		.uleb128 0x3b
- 742 00f0 0B       		.uleb128 0xb
- 743 00f1 49       		.uleb128 0x49
- 744 00f2 13       		.uleb128 0x13
- 745 00f3 3F       		.uleb128 0x3f
- 746 00f4 19       		.uleb128 0x19
- 747 00f5 02       		.uleb128 0x2
- 748 00f6 18       		.uleb128 0x18
- 749 00f7 00       		.byte	0
- 750 00f8 00       		.byte	0
- 751 00f9 11       		.uleb128 0x11
- 752 00fa 34       		.uleb128 0x34
- 753 00fb 00       		.byte	0
- 754 00fc 03       		.uleb128 0x3
- 755 00fd 0E       		.uleb128 0xe
- 756 00fe 3A       		.uleb128 0x3a
- 757 00ff 0B       		.uleb128 0xb
- 758 0100 3B       		.uleb128 0x3b
- 759 0101 0B       		.uleb128 0xb
- 760 0102 49       		.uleb128 0x49
- 761 0103 13       		.uleb128 0x13
- 762 0104 3F       		.uleb128 0x3f
- 763 0105 19       		.uleb128 0x19
- 764 0106 3C       		.uleb128 0x3c
- 765 0107 19       		.uleb128 0x19
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 18
+ 739 0070 00       		.byte	0
+ 740 0071 00       		.byte	0
+ 741 0072 09       		.uleb128 0x9
+ 742 0073 28       		.uleb128 0x28
+ 743 0074 00       		.byte	0
+ 744 0075 03       		.uleb128 0x3
+ 745 0076 0E       		.uleb128 0xe
+ 746 0077 1C       		.uleb128 0x1c
+ 747 0078 0B       		.uleb128 0xb
+ 748 0079 00       		.byte	0
+ 749 007a 00       		.byte	0
+ 750 007b 0A       		.uleb128 0xa
+ 751 007c 2E       		.uleb128 0x2e
+ 752 007d 01       		.byte	0x1
+ 753 007e 3F       		.uleb128 0x3f
+ 754 007f 19       		.uleb128 0x19
+ 755 0080 03       		.uleb128 0x3
+ 756 0081 0E       		.uleb128 0xe
+ 757 0082 3A       		.uleb128 0x3a
+ 758 0083 0B       		.uleb128 0xb
+ 759 0084 3B       		.uleb128 0x3b
+ 760 0085 0B       		.uleb128 0xb
+ 761 0086 49       		.uleb128 0x49
+ 762 0087 13       		.uleb128 0x13
+ 763 0088 11       		.uleb128 0x11
+ 764 0089 01       		.uleb128 0x1
+ 765 008a 12       		.uleb128 0x12
+ 766 008b 06       		.uleb128 0x6
+ 767 008c 40       		.uleb128 0x40
+ 768 008d 18       		.uleb128 0x18
+ 769 008e 9642     		.uleb128 0x2116
+ 770 0090 19       		.uleb128 0x19
+ 771 0091 01       		.uleb128 0x1
+ 772 0092 13       		.uleb128 0x13
+ 773 0093 00       		.byte	0
+ 774 0094 00       		.byte	0
+ 775 0095 0B       		.uleb128 0xb
+ 776 0096 0B       		.uleb128 0xb
+ 777 0097 01       		.byte	0x1
+ 778 0098 11       		.uleb128 0x11
+ 779 0099 01       		.uleb128 0x1
+ 780 009a 12       		.uleb128 0x12
+ 781 009b 06       		.uleb128 0x6
+ 782 009c 00       		.byte	0
+ 783 009d 00       		.byte	0
+ 784 009e 0C       		.uleb128 0xc
+ 785 009f 2E       		.uleb128 0x2e
+ 786 00a0 01       		.byte	0x1
+ 787 00a1 3F       		.uleb128 0x3f
+ 788 00a2 19       		.uleb128 0x19
+ 789 00a3 03       		.uleb128 0x3
+ 790 00a4 0E       		.uleb128 0xe
+ 791 00a5 3A       		.uleb128 0x3a
+ 792 00a6 0B       		.uleb128 0xb
+ 793 00a7 3B       		.uleb128 0x3b
+ 794 00a8 0B       		.uleb128 0xb
+ 795 00a9 49       		.uleb128 0x49
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 19
 
 
- 766 0108 00       		.byte	0
- 767 0109 00       		.byte	0
- 768 010a 00       		.byte	0
- 769              		.section	.debug_aranges,"",%progbits
- 770 0000 34000000 		.4byte	0x34
- 771 0004 0200     		.2byte	0x2
- 772 0006 00000000 		.4byte	.Ldebug_info0
- 773 000a 04       		.byte	0x4
- 774 000b 00       		.byte	0
- 775 000c 0000     		.2byte	0
- 776 000e 0000     		.2byte	0
- 777 0010 00000000 		.4byte	.LFB63
- 778 0014 D0000000 		.4byte	.LFE63-.LFB63
- 779 0018 00000000 		.4byte	.LFB64
- 780 001c 3C000000 		.4byte	.LFE64-.LFB64
- 781 0020 00000000 		.4byte	.LFB65
- 782 0024 0C000000 		.4byte	.LFE65-.LFB65
- 783 0028 00000000 		.4byte	.LFB66
- 784 002c 0C000000 		.4byte	.LFE66-.LFB66
- 785 0030 00000000 		.4byte	0
- 786 0034 00000000 		.4byte	0
- 787              		.section	.debug_ranges,"",%progbits
- 788              	.Ldebug_ranges0:
- 789 0000 00000000 		.4byte	.LFB63
- 790 0004 D0000000 		.4byte	.LFE63
- 791 0008 00000000 		.4byte	.LFB64
- 792 000c 3C000000 		.4byte	.LFE64
- 793 0010 00000000 		.4byte	.LFB65
- 794 0014 0C000000 		.4byte	.LFE65
- 795 0018 00000000 		.4byte	.LFB66
- 796 001c 0C000000 		.4byte	.LFE66
- 797 0020 00000000 		.4byte	0
- 798 0024 00000000 		.4byte	0
- 799              		.section	.debug_line,"",%progbits
- 800              	.Ldebug_line0:
- 801 0000 FF010000 		.section	.debug_str,"MS",%progbits,1
- 801      02006101 
- 801      00000201 
- 801      FB0E0D00 
- 801      01010101 
- 802              	.LASF32:
- 803 0000 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 803      43313120 
- 803      352E342E 
- 803      31203230 
- 803      31363036 
- 804 0033 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 804      20726576 
- 804      6973696F 
- 804      6E203233 
- 804      37373135 
- 805 0066 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
- 805      66756E63 
- 805      74696F6E 
- 805      2D736563 
- 805      74696F6E 
- 806              	.LASF28:
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 19
+ 796 00aa 13       		.uleb128 0x13
+ 797 00ab 3C       		.uleb128 0x3c
+ 798 00ac 19       		.uleb128 0x19
+ 799 00ad 00       		.byte	0
+ 800 00ae 00       		.byte	0
+ 801 00af 0D       		.uleb128 0xd
+ 802 00b0 18       		.uleb128 0x18
+ 803 00b1 00       		.byte	0
+ 804 00b2 00       		.byte	0
+ 805 00b3 00       		.byte	0
+ 806 00b4 0E       		.uleb128 0xe
+ 807 00b5 2E       		.uleb128 0x2e
+ 808 00b6 00       		.byte	0
+ 809 00b7 03       		.uleb128 0x3
+ 810 00b8 0E       		.uleb128 0xe
+ 811 00b9 3A       		.uleb128 0x3a
+ 812 00ba 0B       		.uleb128 0xb
+ 813 00bb 3B       		.uleb128 0x3b
+ 814 00bc 0B       		.uleb128 0xb
+ 815 00bd 27       		.uleb128 0x27
+ 816 00be 19       		.uleb128 0x19
+ 817 00bf 11       		.uleb128 0x11
+ 818 00c0 01       		.uleb128 0x1
+ 819 00c1 12       		.uleb128 0x12
+ 820 00c2 06       		.uleb128 0x6
+ 821 00c3 40       		.uleb128 0x40
+ 822 00c4 18       		.uleb128 0x18
+ 823 00c5 9642     		.uleb128 0x2116
+ 824 00c7 19       		.uleb128 0x19
+ 825 00c8 00       		.byte	0
+ 826 00c9 00       		.byte	0
+ 827 00ca 0F       		.uleb128 0xf
+ 828 00cb 2E       		.uleb128 0x2e
+ 829 00cc 00       		.byte	0
+ 830 00cd 3F       		.uleb128 0x3f
+ 831 00ce 19       		.uleb128 0x19
+ 832 00cf 03       		.uleb128 0x3
+ 833 00d0 0E       		.uleb128 0xe
+ 834 00d1 3A       		.uleb128 0x3a
+ 835 00d2 0B       		.uleb128 0xb
+ 836 00d3 3B       		.uleb128 0x3b
+ 837 00d4 0B       		.uleb128 0xb
+ 838 00d5 27       		.uleb128 0x27
+ 839 00d6 19       		.uleb128 0x19
+ 840 00d7 11       		.uleb128 0x11
+ 841 00d8 01       		.uleb128 0x1
+ 842 00d9 12       		.uleb128 0x12
+ 843 00da 06       		.uleb128 0x6
+ 844 00db 40       		.uleb128 0x40
+ 845 00dc 18       		.uleb128 0x18
+ 846 00dd 9742     		.uleb128 0x2117
+ 847 00df 19       		.uleb128 0x19
+ 848 00e0 00       		.byte	0
+ 849 00e1 00       		.byte	0
+ 850 00e2 10       		.uleb128 0x10
+ 851 00e3 34       		.uleb128 0x34
+ 852 00e4 00       		.byte	0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 20
 
 
- 807 008e 7273325F 		.ascii	"rs2_value\000"
- 807      76616C75 
- 807      6500
- 808              	.LASF22:
- 809 0098 52544553 		.ascii	"RTEST\000"
- 809      5400
- 810              	.LASF9:
- 811 009e 5F5F696E 		.ascii	"__int32_t\000"
- 811      7433325F 
- 811      7400
- 812              	.LASF19:
- 813 00a8 53746174 		.ascii	"Status\000"
- 813      757300
- 814              	.LASF18:
- 815 00af 54657374 		.ascii	"TestStep\000"
- 815      53746570 
- 815      00
- 816              	.LASF36:
- 817 00b8 44617461 		.ascii	"DataType\000"
- 817      54797065 
- 817      00
- 818              	.LASF26:
- 819 00c1 53746F70 		.ascii	"StopTimeout\000"
- 819      54696D65 
- 819      6F757400 
- 820              	.LASF17:
- 821 00cd 53656C65 		.ascii	"SelectedTest\000"
- 821      63746564 
- 821      54657374 
- 821      00
- 822              	.LASF12:
- 823 00da 666C6F61 		.ascii	"float\000"
- 823      7400
- 824              	.LASF1:
- 825 00e0 756E7369 		.ascii	"unsigned char\000"
- 825      676E6564 
- 825      20636861 
- 825      7200
- 826              	.LASF23:
- 827 00ee 53544553 		.ascii	"STEST\000"
- 827      5400
- 828              	.LASF5:
- 829 00f4 6C6F6E67 		.ascii	"long unsigned int\000"
- 829      20756E73 
- 829      69676E65 
- 829      6420696E 
- 829      7400
- 830              	.LASF31:
- 831 0106 43757272 		.ascii	"CurrentTest\000"
- 831      656E7454 
- 831      65737400 
- 832              	.LASF3:
- 833 0112 73686F72 		.ascii	"short unsigned int\000"
- 833      7420756E 
- 833      7369676E 
- 833      65642069 
- 833      6E7400
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 20
+ 853 00e5 03       		.uleb128 0x3
+ 854 00e6 0E       		.uleb128 0xe
+ 855 00e7 3A       		.uleb128 0x3a
+ 856 00e8 0B       		.uleb128 0xb
+ 857 00e9 3B       		.uleb128 0x3b
+ 858 00ea 0B       		.uleb128 0xb
+ 859 00eb 49       		.uleb128 0x49
+ 860 00ec 13       		.uleb128 0x13
+ 861 00ed 02       		.uleb128 0x2
+ 862 00ee 18       		.uleb128 0x18
+ 863 00ef 00       		.byte	0
+ 864 00f0 00       		.byte	0
+ 865 00f1 11       		.uleb128 0x11
+ 866 00f2 34       		.uleb128 0x34
+ 867 00f3 00       		.byte	0
+ 868 00f4 03       		.uleb128 0x3
+ 869 00f5 0E       		.uleb128 0xe
+ 870 00f6 3A       		.uleb128 0x3a
+ 871 00f7 0B       		.uleb128 0xb
+ 872 00f8 3B       		.uleb128 0x3b
+ 873 00f9 05       		.uleb128 0x5
+ 874 00fa 49       		.uleb128 0x49
+ 875 00fb 13       		.uleb128 0x13
+ 876 00fc 3F       		.uleb128 0x3f
+ 877 00fd 19       		.uleb128 0x19
+ 878 00fe 3C       		.uleb128 0x3c
+ 879 00ff 19       		.uleb128 0x19
+ 880 0100 00       		.byte	0
+ 881 0101 00       		.byte	0
+ 882 0102 12       		.uleb128 0x12
+ 883 0103 35       		.uleb128 0x35
+ 884 0104 00       		.byte	0
+ 885 0105 49       		.uleb128 0x49
+ 886 0106 13       		.uleb128 0x13
+ 887 0107 00       		.byte	0
+ 888 0108 00       		.byte	0
+ 889 0109 13       		.uleb128 0x13
+ 890 010a 34       		.uleb128 0x34
+ 891 010b 00       		.byte	0
+ 892 010c 03       		.uleb128 0x3
+ 893 010d 0E       		.uleb128 0xe
+ 894 010e 3A       		.uleb128 0x3a
+ 895 010f 0B       		.uleb128 0xb
+ 896 0110 3B       		.uleb128 0x3b
+ 897 0111 0B       		.uleb128 0xb
+ 898 0112 49       		.uleb128 0x49
+ 899 0113 13       		.uleb128 0x13
+ 900 0114 3F       		.uleb128 0x3f
+ 901 0115 19       		.uleb128 0x19
+ 902 0116 02       		.uleb128 0x2
+ 903 0117 18       		.uleb128 0x18
+ 904 0118 00       		.byte	0
+ 905 0119 00       		.byte	0
+ 906 011a 14       		.uleb128 0x14
+ 907 011b 34       		.uleb128 0x34
+ 908 011c 00       		.byte	0
+ 909 011d 03       		.uleb128 0x3
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 21
 
 
- 834              	.LASF34:
- 835 0125 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\firm_F1-TestFixture\\"
- 835      73657273 
- 835      5C6D6172 
- 835      74686E69 
- 835      636B5C44 
- 836 0154 46312D54 		.ascii	"F1-TestFixture.cydsn\000"
- 836      65737446 
- 836      69787475 
- 836      72652E63 
- 836      7964736E 
- 837              	.LASF29:
- 838 0169 49544D5F 		.ascii	"ITM_RxBuffer\000"
- 838      52784275 
- 838      66666572 
- 838      00
- 839              	.LASF21:
- 840 0176 43544553 		.ascii	"CTEST\000"
- 840      5400
- 841              	.LASF13:
- 842 017c 646F7562 		.ascii	"double\000"
- 842      6C6500
- 843              	.LASF24:
- 844 0183 6D61696E 		.ascii	"main\000"
- 844      00
- 845              	.LASF8:
- 846 0188 756E7369 		.ascii	"unsigned int\000"
- 846      676E6564 
- 846      20696E74 
- 846      00
- 847              	.LASF7:
- 848 0195 6C6F6E67 		.ascii	"long long unsigned int\000"
- 848      206C6F6E 
- 848      6720756E 
- 848      7369676E 
- 848      65642069 
- 849              	.LASF37:
- 850 01ac 696E6974 		.ascii	"initializePeripherals\000"
- 850      69616C69 
- 850      7A655065 
- 850      72697068 
- 850      6572616C 
- 851              	.LASF10:
- 852 01c2 696E7433 		.ascii	"int32_t\000"
- 852      325F7400 
- 853              	.LASF16:
- 854 01ca 73697A65 		.ascii	"sizetype\000"
- 854      74797065 
- 854      00
- 855              	.LASF6:
- 856 01d3 6C6F6E67 		.ascii	"long long int\000"
- 856      206C6F6E 
- 856      6720696E 
- 856      7400
- 857              	.LASF33:
- 858 01e1 6D61696E 		.ascii	"main.c\000"
- 858      2E6300
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccmhHWdT.s 			page 21
+ 910 011e 0E       		.uleb128 0xe
+ 911 011f 3A       		.uleb128 0x3a
+ 912 0120 0B       		.uleb128 0xb
+ 913 0121 3B       		.uleb128 0x3b
+ 914 0122 0B       		.uleb128 0xb
+ 915 0123 49       		.uleb128 0x49
+ 916 0124 13       		.uleb128 0x13
+ 917 0125 3F       		.uleb128 0x3f
+ 918 0126 19       		.uleb128 0x19
+ 919 0127 3C       		.uleb128 0x3c
+ 920 0128 19       		.uleb128 0x19
+ 921 0129 00       		.byte	0
+ 922 012a 00       		.byte	0
+ 923 012b 00       		.byte	0
+ 924              		.section	.debug_aranges,"",%progbits
+ 925 0000 34000000 		.4byte	0x34
+ 926 0004 0200     		.2byte	0x2
+ 927 0006 00000000 		.4byte	.Ldebug_info0
+ 928 000a 04       		.byte	0x4
+ 929 000b 00       		.byte	0
+ 930 000c 0000     		.2byte	0
+ 931 000e 0000     		.2byte	0
+ 932 0010 00000000 		.4byte	.LFB63
+ 933 0014 64010000 		.4byte	.LFE63-.LFB63
+ 934 0018 00000000 		.4byte	.LFB64
+ 935 001c 3C000000 		.4byte	.LFE64-.LFB64
+ 936 0020 00000000 		.4byte	.LFB65
+ 937 0024 0C000000 		.4byte	.LFE65-.LFB65
+ 938 0028 00000000 		.4byte	.LFB66
+ 939 002c 0C000000 		.4byte	.LFE66-.LFB66
+ 940 0030 00000000 		.4byte	0
+ 941 0034 00000000 		.4byte	0
+ 942              		.section	.debug_ranges,"",%progbits
+ 943              	.Ldebug_ranges0:
+ 944 0000 00000000 		.4byte	.LFB63
+ 945 0004 64010000 		.4byte	.LFE63
+ 946 0008 00000000 		.4byte	.LFB64
+ 947 000c 3C000000 		.4byte	.LFE64
+ 948 0010 00000000 		.4byte	.LFB65
+ 949 0014 0C000000 		.4byte	.LFE65
+ 950 0018 00000000 		.4byte	.LFB66
+ 951 001c 0C000000 		.4byte	.LFE66
+ 952 0020 00000000 		.4byte	0
+ 953 0024 00000000 		.4byte	0
+ 954              		.section	.debug_line,"",%progbits
+ 955              	.Ldebug_line0:
+ 956 0000 28020000 		.section	.debug_str,"MS",%progbits,1
+ 956      02006101 
+ 956      00000201 
+ 956      FB0E0D00 
+ 956      01010101 
+ 957              	.LASF25:
+ 958 0000 52544553 		.ascii	"RTEST_COMPLETE\000"
+ 958      545F434F 
+ 958      4D504C45 
+ 958      544500
+ 959              	.LASF34:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 22
 
 
- 859              	.LASF14:
- 860 01e8 63686172 		.ascii	"char\000"
- 860      00
- 861              	.LASF20:
- 862 01ed 53747275 		.ascii	"StructTestInfo\000"
- 862      63745465 
- 862      7374496E 
- 862      666F00
- 863              	.LASF25:
- 864 01fc 53746172 		.ascii	"StartTimeout\000"
- 864      7454696D 
- 864      656F7574 
- 864      00
- 865              	.LASF2:
- 866 0209 73686F72 		.ascii	"short int\000"
- 866      7420696E 
- 866      7400
- 867              	.LASF11:
- 868 0213 75696E74 		.ascii	"uint8\000"
- 868      3800
- 869              	.LASF4:
- 870 0219 6C6F6E67 		.ascii	"long int\000"
- 870      20696E74 
- 870      00
- 871              	.LASF30:
- 872 0222 54657374 		.ascii	"Test\000"
- 872      00
- 873              	.LASF35:
- 874 0227 73747275 		.ascii	"structTestInfo\000"
- 874      63745465 
- 874      7374496E 
- 874      666F00
- 875              	.LASF15:
- 876 0236 6C6F6E67 		.ascii	"long double\000"
- 876      20646F75 
- 876      626C6500 
- 877              	.LASF0:
- 878 0242 7369676E 		.ascii	"signed char\000"
- 878      65642063 
- 878      68617200 
- 879              	.LASF27:
- 880 024e 7273315F 		.ascii	"rs1_value\000"
- 880      76616C75 
- 880      6500
- 881              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ 960 000f 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 960      43313120 
+ 960      352E342E 
+ 960      31203230 
+ 960      31363036 
+ 961 0042 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 961      20726576 
+ 961      6973696F 
+ 961      6E203233 
+ 961      37373135 
+ 962 0075 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 962      66756E63 
+ 962      74696F6E 
+ 962      2D736563 
+ 962      74696F6E 
+ 963              	.LASF29:
+ 964 009d 7273325F 		.ascii	"rs2_value\000"
+ 964      76616C75 
+ 964      6500
+ 965              	.LASF22:
+ 966 00a7 52544553 		.ascii	"RTEST\000"
+ 966      5400
+ 967              	.LASF9:
+ 968 00ad 5F5F696E 		.ascii	"__int32_t\000"
+ 968      7433325F 
+ 968      7400
+ 969              	.LASF19:
+ 970 00b7 53746174 		.ascii	"Status\000"
+ 970      757300
+ 971              	.LASF18:
+ 972 00be 54657374 		.ascii	"TestStep\000"
+ 972      53746570 
+ 972      00
+ 973              	.LASF38:
+ 974 00c7 44617461 		.ascii	"DataType\000"
+ 974      54797065 
+ 974      00
+ 975              	.LASF27:
+ 976 00d0 53746F70 		.ascii	"StopTimeout\000"
+ 976      54696D65 
+ 976      6F757400 
+ 977              	.LASF17:
+ 978 00dc 53656C65 		.ascii	"SelectedTest\000"
+ 978      63746564 
+ 978      54657374 
+ 978      00
+ 979              	.LASF12:
+ 980 00e9 666C6F61 		.ascii	"float\000"
+ 980      7400
+ 981              	.LASF1:
+ 982 00ef 756E7369 		.ascii	"unsigned char\000"
+ 982      676E6564 
+ 982      20636861 
+ 982      7200
+ 983              	.LASF23:
+ 984 00fd 53544553 		.ascii	"STEST\000"
+ 984      5400
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 23
+
+
+ 985              	.LASF5:
+ 986 0103 6C6F6E67 		.ascii	"long unsigned int\000"
+ 986      20756E73 
+ 986      69676E65 
+ 986      6420696E 
+ 986      7400
+ 987              	.LASF32:
+ 988 0115 43757272 		.ascii	"CurrentTest\000"
+ 988      656E7454 
+ 988      65737400 
+ 989              	.LASF3:
+ 990 0121 73686F72 		.ascii	"short unsigned int\000"
+ 990      7420756E 
+ 990      7369676E 
+ 990      65642069 
+ 990      6E7400
+ 991              	.LASF36:
+ 992 0134 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\firm_F1-TestFixture\\"
+ 992      73657273 
+ 992      5C6D6172 
+ 992      74686E69 
+ 992      636B5C44 
+ 993 0163 46312D54 		.ascii	"F1-TestFixture.cydsn\000"
+ 993      65737446 
+ 993      69787475 
+ 993      72652E63 
+ 993      7964736E 
+ 994              	.LASF30:
+ 995 0178 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 995      52784275 
+ 995      66666572 
+ 995      00
+ 996              	.LASF21:
+ 997 0185 43544553 		.ascii	"CTEST\000"
+ 997      5400
+ 998              	.LASF13:
+ 999 018b 646F7562 		.ascii	"double\000"
+ 999      6C6500
+ 1000              	.LASF39:
+ 1001 0192 6D61696E 		.ascii	"main\000"
+ 1001      00
+ 1002              	.LASF8:
+ 1003 0197 756E7369 		.ascii	"unsigned int\000"
+ 1003      676E6564 
+ 1003      20696E74 
+ 1003      00
+ 1004              	.LASF7:
+ 1005 01a4 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1005      206C6F6E 
+ 1005      6720756E 
+ 1005      7369676E 
+ 1005      65642069 
+ 1006              	.LASF41:
+ 1007 01bb 696E6974 		.ascii	"initializePeripherals\000"
+ 1007      69616C69 
+ 1007      7A655065 
+ 1007      72697068 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 24
+
+
+ 1007      6572616C 
+ 1008              	.LASF10:
+ 1009 01d1 696E7433 		.ascii	"int32_t\000"
+ 1009      325F7400 
+ 1010              	.LASF16:
+ 1011 01d9 73697A65 		.ascii	"sizetype\000"
+ 1011      74797065 
+ 1011      00
+ 1012              	.LASF6:
+ 1013 01e2 6C6F6E67 		.ascii	"long long int\000"
+ 1013      206C6F6E 
+ 1013      6720696E 
+ 1013      7400
+ 1014              	.LASF35:
+ 1015 01f0 6D61696E 		.ascii	"main.c\000"
+ 1015      2E6300
+ 1016              	.LASF14:
+ 1017 01f7 63686172 		.ascii	"char\000"
+ 1017      00
+ 1018              	.LASF40:
+ 1019 01fc 436F6E74 		.ascii	"ControllerTest_Complete\000"
+ 1019      726F6C6C 
+ 1019      65725465 
+ 1019      73745F43 
+ 1019      6F6D706C 
+ 1020              	.LASF20:
+ 1021 0214 53747275 		.ascii	"StructTestInfo\000"
+ 1021      63745465 
+ 1021      7374496E 
+ 1021      666F00
+ 1022              	.LASF26:
+ 1023 0223 53746172 		.ascii	"StartTimeout\000"
+ 1023      7454696D 
+ 1023      656F7574 
+ 1023      00
+ 1024              	.LASF2:
+ 1025 0230 73686F72 		.ascii	"short int\000"
+ 1025      7420696E 
+ 1025      7400
+ 1026              	.LASF11:
+ 1027 023a 75696E74 		.ascii	"uint8\000"
+ 1027      3800
+ 1028              	.LASF4:
+ 1029 0240 6C6F6E67 		.ascii	"long int\000"
+ 1029      20696E74 
+ 1029      00
+ 1030              	.LASF31:
+ 1031 0249 54657374 		.ascii	"Test\000"
+ 1031      00
+ 1032              	.LASF37:
+ 1033 024e 73747275 		.ascii	"structTestInfo\000"
+ 1033      63745465 
+ 1033      7374496E 
+ 1033      666F00
+ 1034              	.LASF15:
+ 1035 025d 6C6F6E67 		.ascii	"long double\000"
+ 1035      20646F75 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\cc1TW2Xj.s 			page 25
+
+
+ 1035      626C6500 
+ 1036              	.LASF0:
+ 1037 0269 7369676E 		.ascii	"signed char\000"
+ 1037      65642063 
+ 1037      68617200 
+ 1038              	.LASF33:
+ 1039 0275 54455354 		.ascii	"TESTFIXTURE_TYPE\000"
+ 1039      46495854 
+ 1039      5552455F 
+ 1039      54595045 
+ 1039      00
+ 1040              	.LASF24:
+ 1041 0286 43544553 		.ascii	"CTEST_COMPLETE\000"
+ 1041      545F434F 
+ 1041      4D504C45 
+ 1041      544500
+ 1042              	.LASF28:
+ 1043 0295 7273315F 		.ascii	"rs1_value\000"
+ 1043      76616C75 
+ 1043      6500
+ 1044              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
