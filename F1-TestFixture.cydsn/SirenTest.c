@@ -673,6 +673,8 @@ void STest_PlayTestTone(void)
 //    Timer_DAC_WritePeriod(500);     // ~100Hz
     CyDelay(1000);
     
+    //while(1);
+    
     //pTxPacket_RelaySiren->Payload.RRB = 0x00;           // Turn off RRB
     
     WaveDAC_Stop();                                   // Turn off DAC

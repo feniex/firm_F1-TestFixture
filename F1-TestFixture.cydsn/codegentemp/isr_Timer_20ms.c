@@ -181,6 +181,7 @@ CY_ISR(isr_Timer_20ms_Interrupt)
             
         CTest_isr_PB();
         STest_isr_PB();
+        RTest_Complete_isr_PB();
         
 
     /* `#END` */

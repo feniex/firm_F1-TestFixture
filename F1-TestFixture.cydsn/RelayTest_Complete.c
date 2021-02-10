@@ -116,7 +116,7 @@ enum MUX_115200_CHANNEL
 
 // --------------Test steps---------------
 #define NUMBER_TEST_STEPS   16
-static uint16 RTest_Complete_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,200,50,100,50,100,15000,50,50,50,50,50,50,100,50};  //,   50,50,50,50,50,100,50};  // Number of 20msec counts before failure timeout, for each step
+static uint16 RTest_Complete_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,200,50,100,50,100,15000,50,50,50,50,50,50,500,50};  //,   50,50,50,50,50,100,50};  // Number of 20msec counts before failure timeout, for each step
                                     
 static uint8 RTest_CompleteStatus[NUMBER_TEST_STEPS];
 
@@ -134,12 +134,12 @@ enum TestStep               // *** (relay firmware needs the 'H' packet payload 
     
     /* Siren Test Stuff*/
     UART_TX,            // U ('D' packet - firmware versions are the only thing that is unread)
-    AMP1,               // COMPLETE
-    AMP2,               // COMPLETE
-    RRB,                // U (ask Devin about external speaker)
-    MIC,                // U (ask Devin about external speaker)(user will just use a known working mic outside the fixture)
-    FLASH,              // U (ask Devin about external speaker)
-    OVERLOAD,           // COMPLETE
+    AMP1,               // COMPLETE (low volume)
+    AMP2,               // COMPLETE (low volume)
+    RRB,                // COMPLETE (hi volume - adjustable)
+    MIC,                // COMPLETE (hi volume)
+    FLASH,              // COMPLETE (kind of loud/weak)
+    OVERLOAD,           // ??? U (cannot be used with loaded 
     
     PASS                // COMPLETE
 };
@@ -199,7 +199,7 @@ uint8 RelayTest_Complete(void)
             CyDelay(CONFIRM_TIME);
             
             //CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = TEST_OUTPUTS;
+            CurrentTest.TestStep = TEST_OUTPUTS;
             //CurrentTest.TestStep = DATALINK;
             //CurrentTest.TestStep = QUAD_PORTS;
             //CurrentTest.TestStep = UART_SIREN;
@@ -208,7 +208,10 @@ uint8 RelayTest_Complete(void)
             //CurrentTest.TestStep = BLOCK_CURRENTS; 
             //CurrentTest.TestStep = GPS; 
             
-            CurrentTest.TestStep = AMP1;
+            //CurrentTest.TestStep = AMP1;
+            //CurrentTest.TestStep = RRB;
+            //CurrentTest.TestStep = MIC;
+            //CurrentTest.TestStep = FLASH;
             //CurrentTest.TestStep = OVERLOAD;
                    
         break;      
@@ -371,10 +374,10 @@ uint8 RelayTest_Complete(void)
 ////            CurrentTest.Status = 'B';
 //            
 //            MUX_CTRL_230400_Write(RTEST_CONT);
-//               
-//            while( (!VerifyPacket_GPS()) && (RTest_CompleteStatus[CurrentTest.TestStep] != 'F') )
-//            {}        
-//            
+               
+            while( (!VerifyPacket_GPS()) && (RTest_CompleteStatus[CurrentTest.TestStep] != 'F') )
+            {}        
+            
 //            RTest_Complete_StopAutomatedStep();
 ////            if(RTestStatus[CurrentTest.TestStep] != 'F')       // If not failed, then pass
 ////            {
@@ -423,7 +426,7 @@ uint8 RelayTest_Complete(void)
         case AMP1:                                  // Manual - 
             
             STest_SIREN_EN_Write(0);        // Turn on muted speaker load
-            //STest_SIREN_EN_Write(~STest_SIREN_EN_Read()); 
+            CyDelay(250);
                   
             DEMUX_CTRL_230400_Write(RTEST_CONT);
             pTxPacket_RelaySiren = getTxPacket_RelaySiren();    
@@ -447,7 +450,7 @@ uint8 RelayTest_Complete(void)
         case AMP2:                                  // Manual - 
             
             STest_SIREN_EN_Write(0);        // Turn on muted speaker load
-            //STest_SIREN_EN_Write(~STest_SIREN_EN_Read()); 
+            CyDelay(250);
                        
             DEMUX_CTRL_230400_Write(RTEST_CONT);
             pTxPacket_RelaySiren = getTxPacket_RelaySiren();    
@@ -460,7 +463,9 @@ uint8 RelayTest_Complete(void)
             RTest_Complete_PB_WaitForAction();                         
             
             pTxPacket_RelaySiren->Payload.Siren2Tone = 0x00;    // Turn off wail tone
-            CyDelay(1000);
+            //CyDelay(1000);
+            
+            CyDelay(CONFIRM_TIME);
             
             CurrentTest.TestStep = RRB;
             //CurrentTest.TestStep = FLASH;
@@ -471,76 +476,50 @@ uint8 RelayTest_Complete(void)
             
         case RRB:    
             
-            RTest_CompleteStatus[CurrentTest.TestStep] = 'U';           
-            CurrentTest.Status = 'U'; 
+//            RTest_CompleteStatus[CurrentTest.TestStep] = 'U';           
+//            CurrentTest.Status = 'U'; 
+            RTest_CompleteStatus[CurrentTest.TestStep] = 'B';            // Let tone play for 3sec
+            CurrentTest.Status = 'B'; 
             
             STest_SIREN_EN_Write(1);        // Turn on the less muted speaker load
+            CyDelay(250);
                          
-            DEMUX_CTRL_230400_Write(STEST_RELAY);             // 230400 - 'S' - Send a command to enable RRB          
+            DEMUX_CTRL_230400_Write(RTEST_CONT);             // 230400 - 'S' - Send a command to enable RRB          
             pTxPacket_RelaySiren = getTxPacket_RelaySiren();    
             pTxPacket_RelaySiren->Payload.RRB = 0x01;  
             
-            STest_PlayTestTone();                               // Play test tone for 3sec
-
-////            while( (STestStatus[CurrentTest.TestStep] != 'P') && (STestStatus[CurrentTest.TestStep] != 'F') )
-////            {
-////                STest_PlayTestTone();   // Play test tone for 3sec
-////                
-////                if(PB_NextAction_Released) 
-////                {
-////                    //LED_EN_Write(1);
-////                    STestStatus[CurrentTest.TestStep] = 'P'; 
-////                    PB_NextAction_Released = 0;
-////                }
-////                
-////            }
-//             
-//            //while(1);
-//            
+            WaveDAC_Start();  
+            //STest_PlayTestTone();                               // Play test tone for 3sec
+            
+            CyDelay(1000);
+ 
             RTest_Complete_PB_WaitForAction();
-//            
-//            pTxPacket_RelaySiren->Payload.RRB = 0x00;  
-//            
+            
+            WaveDAC_Stop();  
+            pTxPacket_RelaySiren->Payload.RRB = 0x00;  
+         
             CyDelay(CONFIRM_TIME);
 
-            //CurrentTest.TestStep = MIC;
-            CurrentTest.TestStep = AMP1;
+            //CurrentTest.TestStep = AMP1;
             //CurrentTest.TestStep = RRB;
+            CurrentTest.TestStep = MIC;
             //CurrentTest.TestStep = INITIALIZE_TEST;
         
         break;   
             
         case MIC:                               
+
+            STest_SIREN_EN_Write(1);  // Less muted
+            CyDelay(250);
             
-            RTest_CompleteStatus[CurrentTest.TestStep] = 'U';           
-            CurrentTest.Status = 'U'; 
-                
-//            // *** user needs to plug in mic cable now - (so it keys now, but not during the rest of the test)
-//            
-//            STestStatus[CurrentTest.TestStep] = 'W';  
-//            CurrentTest.Status = 'W'; 
-//            
-////            while(1)
-////            {
-////                STest_PlayTestTone();   // Play test tone for 3sec
-////            }
-//
-////            // repeat test tone - so user has a chance to attach cable and hear it (if they forgot)
-////            while( (STestStatus[CurrentTest.TestStep] != 'P') && (STestStatus[CurrentTest.TestStep] != 'F') )
-////            {
-////                STest_PlayTestTone();   // Play test tone for 3sec
-////                
-////                if(PB_NextAction_Released) 
-////                {
-////                    //LED_EN_Write(1);
-////                    STestStatus[CurrentTest.TestStep] = 'P'; 
-////                    CurrentTest.Status = 'P'; 
-////                    PB_NextAction_Released = 0;
-////                }
-////                
-////            }
-//
-//            //PB_WaitForAction();
+            RTest_CompleteStatus[CurrentTest.TestStep] = 'W';  
+            CurrentTest.Status = 'W'; 
+            
+            //STest_SIREN_EN_Write(1);  // Less muted
+            
+            RTest_Complete_PB_WaitForAction();        
+            
+            CyDelay(CONFIRM_TIME);
             
             //CurrentTest.TestStep = MIC;
             CurrentTest.TestStep = FLASH;
@@ -550,62 +529,49 @@ uint8 RelayTest_Complete(void)
                
         case FLASH:                                         // Manual - 
             
-            RTest_CompleteStatus[CurrentTest.TestStep] = 'U';           
-            CurrentTest.Status = 'U'; 
+            RTest_CompleteStatus[CurrentTest.TestStep] = 'B';  
+            CurrentTest.Status = 'B'; 
+            
+            STest_SIREN_EN_Write(1);  // 
+            CyDelay(250);
             
             /*this is test code to scroll through tones with PB*/
-//            DEMUX_CTRL_230400_Write(STEST_RELAY);             // 230400 - 'S' - Send a command to play an audio tone          
-//            pTxPacket_RelaySiren = getTxPacket_RelaySiren();    
-//            
-//            uint8 sirentonenum = 0;
-//            while(1)
-//            {
-//            pTxPacket_RelaySiren->Payload.Siren1Tone = sirentonenum; 
-//            pTxPacket_RelaySiren->Payload.Siren2Tone = sirentonenum; 
-//            
-//            STestStatus[CurrentTest.TestStep] = 'B';            // Let tone play for 3sec
-//            CurrentTest.Status = 'B'; 
-//            CyDelay(1000);
-//            
-//            PB_WaitForAction();
-//            
-//            sirentonenum++;
-//            if(sirentonenum >30)
-//                sirentonenum = 0;
-//            }
-                        
-            /*this is the actual code*/
-//            DEMUX_CTRL_230400_Write(STEST_RELAY);             // 230400 - 'S' - Send a command to play an audio tone          
-//            pTxPacket_RelaySiren = getTxPacket_RelaySiren();    
-//            pTxPacket_RelaySiren->Payload.Siren1Tone = 22; 
-//            pTxPacket_RelaySiren->Payload.Siren2Tone = 22; 
-//            
-//            STestStatus[CurrentTest.TestStep] = 'B';            // Let tone play for 3sec
-//            CurrentTest.Status = 'B'; 
-//            CyDelay(1000);
-//            
-//            PB_WaitForAction();
-//            
-//            pTxPacket_RelaySiren->Payload.Siren1Tone = 0; 
-//            pTxPacket_RelaySiren->Payload.Siren2Tone = 0; 
-//            
-//            CyDelay(CONFIRM_TIME);
+            DEMUX_CTRL_230400_Write(RTEST_CONT);             // 230400 - 'S' - Send a command to play an audio tone          
+            pTxPacket_RelaySiren = getTxPacket_RelaySiren();    
+            
+            pTxPacket_RelaySiren->Payload.Siren1Tone = 16; 
+            pTxPacket_RelaySiren->Payload.Siren2Tone = 16; 
+            
+            CyDelay(1000);
+
+            RTest_Complete_PB_WaitForAction();
+       
+            pTxPacket_RelaySiren->Payload.Siren1Tone = 0; 
+            pTxPacket_RelaySiren->Payload.Siren2Tone = 0; 
+
+            CyDelay(CONFIRM_TIME);
             
             CurrentTest.TestStep = OVERLOAD;
+            //CurrentTest.TestStep = MIC;
             //CurrentTest.TestStep = FLASH;
             //CurrentTest.TestStep = INITIALIZE_TEST;
                 
         break;  
              
-        case OVERLOAD:                
+        case OVERLOAD:     
+            
+            RTest_CompleteStatus[CurrentTest.TestStep] = 'B';           
+            CurrentTest.Status = 'B'; 
+            
+            CyDelay(5000);
+            STest_SIREN_EN_Write(0);  // 
+            CyDelay(250);
 
             //MUX_CTRL_230400_Write(STEST_RELAY);     // Rx - 'D' packet
             MUX_CTRL_230400_Write(RTEST_CONT);          // Rx - 'D' packet
     
             //DEMUX_CTRL_230400_Write(STEST_RELAY);   // Tx - 'S' packet
             DEMUX_CTRL_230400_Write(RTEST_CONT);        // Tx - 'I' packet (includes 'S' packet)
-            
-            //PB_WaitForAction();
 
             RTest_Complete_StartAutomatedStep();
             
@@ -619,8 +585,7 @@ uint8 RelayTest_Complete(void)
             pTxPacket_RelaySiren->Payload.Siren2Tone = 1;     
             
             CyDelay(100);
-            
-            //pRxPacket_H = getRxPacket_H();                                  // Read 'H' packet, wait for overload to be triggered  
+             
             pRxPacket_RelaySiren = getRxPacket_RelaySiren();
             while( (pRxPacket_RelaySiren->Payload.Speaker2_Overcurrent != 1) && (RTest_CompleteStatus[CurrentTest.TestStep] != 'F') )
             {}
@@ -645,8 +610,7 @@ uint8 RelayTest_Complete(void)
             {}
             
             //--------------------------------------
-            //PB_WaitForAction();
-            
+
             RTest_Complete_StartAutomatedStep();
             
             Overload1_Write(1);               
@@ -659,8 +623,7 @@ uint8 RelayTest_Complete(void)
             pTxPacket_RelaySiren->Payload.Siren2Tone = 0;    
             
             CyDelay(100);
-            
-            //pRxPacket_H = getRxPacket_H();                                  // Read 'H' packet, wait for overload to be triggered    
+                
             while( (pRxPacket_RelaySiren->Payload.Speaker1_Overcurrent != 1) && (RTest_CompleteStatus[CurrentTest.TestStep] != 'F') )
             {}
                 
@@ -668,12 +631,14 @@ uint8 RelayTest_Complete(void)
             
             Overload1_Write(0);                                 // Turn everything off
             Overload2_Write(0);
-                
-            CyDelay(1000);
-            
+
             pTxPacket_RelaySiren->Payload.Siren1Tone = 0; 
             pTxPacket_RelaySiren->Payload.Siren2Tone = 0; 
             
+            CyDelay(1000);
+            
+            //CurrentTest.TestStep = INITIALIZE_TEST;
+            //CurrentTest.TestStep = MIC;
             //CurrentTest.TestStep = OVERLOAD;
             CurrentTest.TestStep = PASS;
             
@@ -1165,6 +1130,8 @@ void RTest_Complete_50ms_isr(void)                       // Times interboard com
         (CurrentTest.TestStep == BLOCK_CURRENTS) ||
         (CurrentTest.TestStep == AMP1) ||
         (CurrentTest.TestStep == AMP2) ||
+        (CurrentTest.TestStep == RRB) ||
+        (CurrentTest.TestStep == FLASH) ||
         (CurrentTest.TestStep == OVERLOAD) )
     {      
         sendPacketToRelaySiren();               //*** used for UART_SIREN

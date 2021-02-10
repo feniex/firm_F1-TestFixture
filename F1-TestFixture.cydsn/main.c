@@ -114,7 +114,7 @@ int main()
         }
                     
         //CurrentTest.SelectedTest = STEST;
-        CurrentTest.SelectedTest = RTEST_COMPLETE;
+        //CurrentTest.SelectedTest = RTEST_COMPLETE;
         
 
         switch(CurrentTest.SelectedTest)
