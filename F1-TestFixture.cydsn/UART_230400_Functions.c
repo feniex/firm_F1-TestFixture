@@ -317,27 +317,72 @@ uint8 VerifyPacket_230400(uint8 PacketType)
 
 uint8 findpacket(uint8 dataByte)
 {
-    static uint8 targetstring[6] = {'$','G','P','R','M','C'};
-    //static uint8 targetstring[4] = {0x7D,'o','o',0xFF};
+    static uint8 targetstring[7] = {'$','G','P','R','M','C',','};
     static uint8 index = 0;
     
-    if(dataByte == targetstring[0])         // Detect the first byte of the string and reset index
+    static uint8 gpsHeader_true = 0;
+    static uint8 dataByte_prev = 0;
+    
+
+    if(gpsHeader_true != 1)
     {
-        index = 0;
+        if(dataByte == targetstring[0])         // Detect the first byte of the string and reset index
+        {
+            index = 0;
+        }
+
+        if(dataByte != targetstring[index])     // If any sequential byte in the string is missed, then return fail       
+            index = 0;
+
+        index++;
+
+        if(index > 6)                           // If header was read without missing a byte, then look for validation bit
+        {
+            
+            index = 0;
+            dataByte = 0;
+            dataByte_prev = 0;
+            //packetsuccess_GPS = 1;
+            gpsHeader_true = 1;
+    ////      return(1);
+            
+        }
+    }
+        
+
+    
+    if(gpsHeader_true == 1)
+    {
+        
+        //if( (dataByte != '2') && (dataByte_prev == ',') )
+        if(dataByte_prev == ',')
+        {
+            if(dataByte == 'A')                 // Valid gps reading
+            {
+                //gpsHeader_true = 0;
+                packetsuccess_GPS = 1;
+                gpsHeader_true = 0;
+                return(1);
+            }
+            else if(dataByte == 'V')            // Invalid gps reading
+            {
+                //gpsHeader_true = 0;
+                packetsuccess_GPS = 0;
+                gpsHeader_true = 0;
+                return(0);
+            }
+//            else
+                gpsHeader_true = 0;
+                //LED_EN_Write(0);
+             
+            packetsuccess_GPS = 0;
+            
+        }   
+        
+        dataByte_prev = dataByte;
+        
     }
 
-    if(dataByte != targetstring[index])     // If any sequential byte in the string is missed, then return fail       
-        index = 0;
-
-    index++;
-    
-    if(index > 5)                           // If entire string was read without missing a byte, then return pass
-    {
-        index = 0;
-        packetsuccess_GPS = 1;
-        return(1);
-    }
-    
     return(0);
         
 }
@@ -387,7 +432,7 @@ void sendPacket_RelayToController_Test(void)
     
     UART_230400_WriteTxData('~');
     UART_230400_WriteTxData('I');
-    for(uint8 iterator = 0; iterator<79; iterator++)              // Send entire payload every other send
+    for(uint8 iterator = 0; iterator<79; iterator++)            
     {
         UART_230400_WriteTxData(pTxPacket_Relay->bytes[iterator]);
     }
@@ -433,14 +478,34 @@ void sendPacketToRelaySiren(void)                   //*** This part needs some w
 //        pTxPacket_RelaySiren->Payload.StopByte1_Relay = 0x0D;
 //        pTxPacket_RelaySiren->Payload.StopByte2_Relay = 0x0A; 
     
+        uint8 checksum = 0;
+        for(uint8 iteratorChecksum = 0; iteratorChecksum<78; iteratorChecksum++)          // Calculate checksum
+        {
+        checksum ^= pTxPacket_RelaySiren->bytes[iteratorChecksum];
+        }
+        
+        uint8 checksum_P = 0;
+        for(uint8 iteratorChecksum = 69; iteratorChecksum<79; iteratorChecksum++)          // Calculate checksum
+        {
+        checksum_P ^= pTxPacket_RelaySiren->bytes[iteratorChecksum];
+        }
+        //pTxPacket_RelaySiren->Payload.Checksum_Relay = checksum_P;
+        
+//        pTxPacket_RelaySiren->bytes[80] = '0x0D';
+//        pTxPacket_RelaySiren->bytes[81] = '0x0A';
+    
         UART_230400_WriteTxData(0x7E);
         UART_230400_WriteTxData('I');
         for(iterator = 0; iterator<79; iterator++)              // Send entire payload every other send
         {
             UART_230400_WriteTxData(pTxPacket_RelaySiren->bytes[iterator]);
         }
-        UART_230400_WriteTxData(0x0D);
-        UART_230400_WriteTxData(0x0A);
+        UART_230400_WriteTxData(checksum);                          // [79]
+        UART_230400_WriteTxData(0x0D);                              // [80]
+        UART_230400_WriteTxData(0x0A);                              // [81]
+        UART_230400_WriteTxData(checksum_P);                        // [82]
+        UART_230400_WriteTxData(0x0D);                              // [83]
+        UART_230400_WriteTxData(0x0A);                              // [84]
         
   
         

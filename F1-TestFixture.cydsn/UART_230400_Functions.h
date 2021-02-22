@@ -296,7 +296,7 @@ typedef union rxPacket_RelaySiren
 // RTest/STest Tx to Relay (from Controller)              Packet 'I' - 
     typedef union txPacket_RelaySiren                                         
     {
-        uint8 bytes[79];    // 79 originally
+        uint8 bytes[80];    // 79 originally
     
         struct txData
         {
@@ -347,7 +347,7 @@ typedef union rxPacket_RelaySiren
             uint8 LED_02_B;           
             uint8 LED_01_R;
             uint8 LED_01_G;
-            uint8 LED_01_B;           
+            uint8 LED_01_B;                         // Payload byte number 48
             uint8 Buzzer_H;
             uint8 Buzzer_L;
             uint8 ScreenBrightness;
@@ -361,14 +361,14 @@ typedef union rxPacket_RelaySiren
             uint8 StopByte1_FLB;
             uint8 StopByte2_FLB;
             uint8 StartByte1_Siren;
-            uint8 Siren_PacketType;                 // S - Payload byte number 62
+            uint8 Siren_PacketType;                 // S - Payload byte number 62/61
                 uint8 Siren1Tone;
                 uint8 Siren2Tone;
                 uint8 DualDelay; 
             uint8 StopByte1_Siren;
             uint8 StopByte2_Siren;
             uint8 StartByte1_Relay;
-            uint8 Relay_PacketType;                 // P - Payload byte number 69
+            uint8 Relay_PacketType;                 // P - Payload byte number 69/68    overall byte 70
                 uint8 Outputs_1to8;
                 uint8 Outputs_9to16;
                 uint8 Outputs_17to24;
@@ -378,7 +378,8 @@ typedef union rxPacket_RelaySiren
                 uint8 RRB;
                 uint8 SirenEnable;
             uint8 StopByte1_Relay;
-            uint8 StopByte2_Relay;                    // Payload byte number 79
+            uint8 StopByte2_Relay;                  // Payload byte number 79/78        overall byte 80
+            uint8 Checksum_Relay;                   // Payload byte number 80/79
         }Payload;
     }TxPacket_RelaySiren;
     

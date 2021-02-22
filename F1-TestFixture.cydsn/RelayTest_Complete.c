@@ -116,7 +116,7 @@ enum MUX_115200_CHANNEL
 
 // --------------Test steps---------------
 #define NUMBER_TEST_STEPS   16
-static uint16 RTest_Complete_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,200,50,100,50,100,15000,50,50,50,50,50,50,500,50};  //,   50,50,50,50,50,100,50};  // Number of 20msec counts before failure timeout, for each step
+static uint16 RTest_Complete_TimeoutCount[NUMBER_TEST_STEPS] = {50,500,200,50,100,50,100,50,50,50,50,50,50,500,50,500};  //,   50,50,50,50,50,100,50};  // Number of 20msec counts before failure timeout, for each step
                                     
 static uint8 RTest_CompleteStatus[NUMBER_TEST_STEPS];
 
@@ -130,7 +130,6 @@ enum TestStep               // *** (relay firmware needs the 'H' packet payload 
     INPUTS,             // COMPLETE - same
     VBATT,              // COMPLETE - same
     BLOCK_CURRENTS,     // COMPLETE - same
-    GPS,                // U (ask Devin about this)(passing when disconnected right now)
     
     /* Siren Test Stuff*/
     UART_TX,            // U ('D' packet - firmware versions are the only thing that is unread)
@@ -140,6 +139,8 @@ enum TestStep               // *** (relay firmware needs the 'H' packet payload 
     MIC,                // COMPLETE (hi volume)
     FLASH,              // COMPLETE (kind of loud/weak)
     OVERLOAD,           // ??? U (cannot be used with loaded 
+    
+    GPS,                // U (ask Devin about this)(passing when disconnected right now)
     
     PASS                // COMPLETE
 };
@@ -219,7 +220,8 @@ uint8 RelayTest_Complete(void)
         case TEST_OUTPUTS:  
                 
             RTest_Complete_StartAutomatedStep(); 
-            
+            //SetRelayOutputs(1);
+            //While(1);
             while( (!RTest_Test_Outputs()) && (RTest_CompleteStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
             {}   
             
@@ -360,44 +362,10 @@ uint8 RelayTest_Complete(void)
                 //CurrentTest.TestStep = INITIALIZE_TEST;
                 CurrentTest.TestStep = GPS;
                 //CurrentTest.TestStep = PASS;
-            }
-            
-        break; 
-          
-        case GPS:         
-
-            RTest_CompleteStatus[CurrentTest.TestStep] = 'U';
-            CurrentTest.Status = 'U';
-            
-//            RTest_Complete_StartAutomatedStep();
-////            RTestStatus[CurrentTest.TestStep] = 'B';
-////            CurrentTest.Status = 'B';
-//            
-//            MUX_CTRL_230400_Write(RTEST_CONT);
-               
-            while( (!VerifyPacket_GPS()) && (RTest_CompleteStatus[CurrentTest.TestStep] != 'F') )
-            {}        
-            
-//            RTest_Complete_StopAutomatedStep();
-////            if(RTestStatus[CurrentTest.TestStep] != 'F')       // If not failed, then pass
-////            {
-////                RTestStatus[CurrentTest.TestStep] = 'P';
-////                CurrentTest.Status = 'P';
-////            }
-            
-            CyDelay(CONFIRM_TIME);
-             
-//            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
-//            {
-//                CurrentTest.TestStep = PASS;
-//            }
-//            else
-            {
-                //CurrentTest.TestStep = INITIALIZE_TEST; 
                 CurrentTest.TestStep = UART_TX;
             }
             
-        break;   
+        break; 
                     
         case UART_TX:                               // Automated - 
             
@@ -640,9 +608,30 @@ uint8 RelayTest_Complete(void)
             //CurrentTest.TestStep = INITIALIZE_TEST;
             //CurrentTest.TestStep = MIC;
             //CurrentTest.TestStep = OVERLOAD;
-            CurrentTest.TestStep = PASS;
+            CurrentTest.TestStep = GPS;
+            //CurrentTest.TestStep = PASS;
             
         break;  
+            
+        case GPS:         
+
+            RTest_Complete_StartAutomatedStep();
+
+            MUX_CTRL_230400_Write(RTEST_CONT);
+               
+            while( (!VerifyPacket_GPS()) && (RTest_CompleteStatus[CurrentTest.TestStep] != 'F') )
+            {}        
+            
+            RTest_Complete_StopAutomatedStep();
+
+            CyDelay(CONFIRM_TIME);
+             
+            //CurrentTest.TestStep = INITIALIZE_TEST; 
+            //CurrentTest.TestStep = GPS;
+            //CurrentTest.TestStep = UART_TX;
+            CurrentTest.TestStep = PASS;
+            
+        break;   
             
         case PASS:  
             

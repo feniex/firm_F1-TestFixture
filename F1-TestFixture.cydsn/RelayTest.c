@@ -110,7 +110,7 @@ enum MUX_115200_CHANNEL
 
 // --------------Test steps---------------
 #define NUMBER_TEST_STEPS   11
-static uint16 RTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,100,200,50,100,100,50,100,15000,50};  // Number of 20msec counts before failure timeout, for each step
+static uint16 RTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,50,100,200,50,100,100,50,100,15000,50};  // {50,50,100,200,50,100,100,50,100,15000,50}; // Number of 20msec counts before failure timeout, for each step
 
 static uint8 RTestStatus[NUMBER_TEST_STEPS];
 
@@ -201,7 +201,7 @@ uint8 RelayTest(void)
              
             while( (!RTest_SIREN_EN_Read()) && (RTestStatus[CurrentTest.TestStep] != 'F') )              // Wait for test to complete or fail          
             {} 
-            
+
             RTest_StopAutomatedStep();
             
             CyDelay(CONFIRM_TIME);
@@ -223,7 +223,7 @@ uint8 RelayTest(void)
             RTest_StartAutomatedStep(); 
             
             while( (!RTest_Test_Outputs()) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
-            {}   
+            {}  
             
             RTest_StopAutomatedStep();
             

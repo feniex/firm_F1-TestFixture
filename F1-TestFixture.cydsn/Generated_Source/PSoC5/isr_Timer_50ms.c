@@ -47,7 +47,9 @@
     { 
         CTEST, 
         RTEST,
-        STEST
+        STEST,
+        CTEST_COMPLETE,
+        RTEST_COMPLETE
     };
 
 /* `#END` */
@@ -196,8 +198,8 @@ CY_ISR(isr_Timer_50ms_Interrupt)
         RTest_50ms_isr();
     else if(CurrentTest.SelectedTest == 2)
         STest_50ms_isr();
-//    else if(CurrentTest.SelectedTest == 3)
-//        CTest_Complete_50ms_isr();
+    else if(CurrentTest.SelectedTest == 3)
+        CTest_Complete_50ms_isr();
     else if(CurrentTest.SelectedTest == 4)
         RTest_Complete_50ms_isr();
         

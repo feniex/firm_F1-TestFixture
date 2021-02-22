@@ -37,5 +37,14 @@ void CTest_PB_WaitForAction(void);
 
 void setLEDs(uint8 color);
 
+/****************************************/
+void CTest_Complete_sendDiagPacket(void);
+void CTest_Complete_isr_PB(void);
+void CTest_Complete_20ms_isr(void);
+void CTest_Complete_50ms_isr(void);
+
+void CTest_Complete_StartAutomatedStep(void);
+void CTest_Complete_StopAutomatedStep(void);
+
 
 /* [] END OF FILE */

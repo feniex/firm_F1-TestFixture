@@ -177,13 +177,14 @@ CY_ISR(isr_Timer_20ms_Interrupt)
         CTest_20ms_isr();
         RTest_20ms_isr();
         STest_20ms_isr();
+        CTest_Complete_20ms_isr();
         RTest_Complete_20ms_isr();
-            
+                    
         CTest_isr_PB();
         STest_isr_PB();
+        //CTest_Complete_isr_PB();
         RTest_Complete_isr_PB();
         
-
     /* `#END` */
 }
 
