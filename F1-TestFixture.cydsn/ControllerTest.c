@@ -683,7 +683,7 @@ void CTest_50ms_isr(void)
         //sendPacket_OBDII();
         sendPacket_RelayToController();
     }
-    if(CurrentTest.TestStep == LEDS_RGB)
+    if( (CurrentTest.TestStep == LEDS_RGB) || (CurrentTest.TestStep == PASS) )
     {      
         //sendIgnition_OBDII();
         sendPacket_RelayToController_Test();

@@ -103,8 +103,8 @@ enum TestStep
                         // Verify button beep with this step
     QUAD_STREAM,            // COMPLETE (configfile)
     LEDS_RGB,               // COMPLETE (***leds take up to 5 seconds to turn on)
-    AUDIO_STREAM,           // (not included)
-    DEBUG_PORT,             // (not included)
+    AUDIO_STREAM,           // (unused - not included)
+    DEBUG_PORT,             // (unused - not included)
     PASS                    // COMPLETE
 };
 
@@ -402,11 +402,11 @@ uint8 ControllerTest_Complete(void)
             CyDelay(5000);
             CTest_PB_WaitForAction();
             
-            setLEDs(OFF);
-            CTest_CompleteStatus[CurrentTest.TestStep] = 'B';
-            CurrentTest.Status = 'B';
-            CyDelay(5000);
-//            CTest_PB_WaitForAction();
+//            setLEDs(OFF);
+//            CTest_CompleteStatus[CurrentTest.TestStep] = 'B';
+//            CurrentTest.Status = 'B';
+//            //CyDelay(5000);
+////            CTest_PB_WaitForAction();
 
             CTest_CompleteStatus[CurrentTest.TestStep] = 'P';
             CurrentTest.Status = 'P';
@@ -686,7 +686,7 @@ void CTest_Complete_50ms_isr(void)
         //sendPacket_OBDII();
         sendPacket_RelayToController();
     }
-    if(CurrentTest.TestStep == LEDS_RGB)
+    if( (CurrentTest.TestStep == LEDS_RGB) || (CurrentTest.TestStep == PASS) )
     {      
         //sendIgnition_OBDII();
         sendPacket_RelayToController_Test();

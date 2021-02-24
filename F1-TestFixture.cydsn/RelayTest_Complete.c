@@ -116,7 +116,7 @@ enum MUX_115200_CHANNEL
 
 // --------------Test steps---------------
 #define NUMBER_TEST_STEPS   16
-static uint16 RTest_Complete_TimeoutCount[NUMBER_TEST_STEPS] = {50,500,200,50,100,50,100,50,50,50,50,50,50,500,50,500};  //,   50,50,50,50,50,100,50};  // Number of 20msec counts before failure timeout, for each step
+static uint16 RTest_Complete_TimeoutCount[NUMBER_TEST_STEPS] = {50,500,200,50,100,50,100,50,50,50,50,50,50,1000,50,50};  //,   50,50,50,50,50,100,50};  // Number of 20msec counts before failure timeout, for each step
                                     
 static uint8 RTest_CompleteStatus[NUMBER_TEST_STEPS];
 
@@ -140,7 +140,7 @@ enum TestStep               // *** (relay firmware needs the 'H' packet payload 
     FLASH,              // COMPLETE (kind of loud/weak)
     OVERLOAD,           // ??? U (cannot be used with loaded 
     
-    GPS,                // U (ask Devin about this)(passing when disconnected right now)
+    GPS,                // ***Need to add this in still
     
     PASS                // COMPLETE
 };
@@ -154,8 +154,11 @@ uint8 RelayTest_Complete(void)
     switch(CurrentTest.TestStep)
     {   
                
-        case INITIALIZE_TEST:
-
+        case INITIALIZE_TEST:            
+        
+            STest_SIREN_EN_Write(1);  // Less muted - for Mic test
+            CyDelay(250);
+                
             for (uint8 i=0;i<NUMBER_TEST_STEPS;i++)                 // Reset Status of aall test steps to 0
                 RTest_CompleteStatus[i] = '_';
                 
@@ -229,11 +232,11 @@ uint8 RelayTest_Complete(void)
             
             CyDelay(CONFIRM_TIME);
             
-//            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
-//            {
-//                CurrentTest.TestStep = PASS;
-//            }
-//            else
+            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
             {
                 //CurrentTest.TestStep = INITIALIZE_TEST;
                 //CurrentTest.TestStep = TEST_OUTPUTS;
@@ -253,11 +256,11 @@ uint8 RelayTest_Complete(void)
             
             CyDelay(CONFIRM_TIME);
             
-//            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
-//            {
-//                CurrentTest.TestStep = PASS;
-//            }
-//            else
+            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
             {
                 //CurrentTest.TestStep = INITIALIZE_TEST;
                 CurrentTest.TestStep = QUAD_PORTS; 
@@ -278,11 +281,11 @@ uint8 RelayTest_Complete(void)
             
             CyDelay(CONFIRM_TIME);
                   
-//            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
-//            {
-//                CurrentTest.TestStep = PASS;
-//            }
-//            else
+            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
             {
                 //CurrentTest.TestStep = INITIALIZE_TEST;
                 CurrentTest.TestStep = INPUTS;   
@@ -301,11 +304,11 @@ uint8 RelayTest_Complete(void)
             
             CyDelay(CONFIRM_TIME);
              
-//            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
-//            {
-//                CurrentTest.TestStep = PASS;
-//            }
-//            else
+            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
             {
                 //CurrentTest.TestStep = INITIALIZE_TEST;  
                 CurrentTest.TestStep = VBATT;  
@@ -324,11 +327,11 @@ uint8 RelayTest_Complete(void)
             
             CyDelay(CONFIRM_TIME);
              
-//            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
-//            {
-//                CurrentTest.TestStep = PASS;
-//            }
-//            else
+            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
             {
                 //CurrentTest.TestStep = INITIALIZE_TEST; 
                 CurrentTest.TestStep = BLOCK_CURRENTS; 
@@ -353,11 +356,11 @@ uint8 RelayTest_Complete(void)
             
             CyDelay(100);
             
-//            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
-//            {
-//                CurrentTest.TestStep = PASS;
-//            }
-//            else
+            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
             {
                 //CurrentTest.TestStep = INITIALIZE_TEST;
                 CurrentTest.TestStep = GPS;
@@ -385,9 +388,16 @@ uint8 RelayTest_Complete(void)
             
             CyDelay(CONFIRM_TIME);
             
-            CurrentTest.TestStep = AMP1;
-            //CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = PASS;
+            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
+            {
+                CurrentTest.TestStep = AMP1;
+                //CurrentTest.TestStep = INITIALIZE_TEST;
+                //CurrentTest.TestStep = PASS;
+            }
         
         break;  
                   
@@ -410,8 +420,15 @@ uint8 RelayTest_Complete(void)
             
             CyDelay(CONFIRM_TIME);
             
-            //CurrentTest.TestStep = AMP1;
-            CurrentTest.TestStep = AMP2;
+            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
+            {
+                //CurrentTest.TestStep = AMP1;
+                CurrentTest.TestStep = AMP2;
+            }
         
         break;    
              
@@ -435,10 +452,17 @@ uint8 RelayTest_Complete(void)
             
             CyDelay(CONFIRM_TIME);
             
-            CurrentTest.TestStep = RRB;
-            //CurrentTest.TestStep = FLASH;
-            //CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = PASS;
+            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
+            {
+                CurrentTest.TestStep = RRB;
+                //CurrentTest.TestStep = FLASH;
+                //CurrentTest.TestStep = INITIALIZE_TEST;
+                //CurrentTest.TestStep = PASS;
+            }
                 
         break;
             
@@ -468,10 +492,17 @@ uint8 RelayTest_Complete(void)
          
             CyDelay(CONFIRM_TIME);
 
-            //CurrentTest.TestStep = AMP1;
-            //CurrentTest.TestStep = RRB;
-            CurrentTest.TestStep = MIC;
-            //CurrentTest.TestStep = INITIALIZE_TEST;
+            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
+            {
+                //CurrentTest.TestStep = AMP1;
+                //CurrentTest.TestStep = RRB;
+                CurrentTest.TestStep = MIC;
+                //CurrentTest.TestStep = INITIALIZE_TEST;
+            }
         
         break;   
             
@@ -489,9 +520,16 @@ uint8 RelayTest_Complete(void)
             
             CyDelay(CONFIRM_TIME);
             
-            //CurrentTest.TestStep = MIC;
-            CurrentTest.TestStep = FLASH;
-            //CurrentTest.TestStep = INITIALIZE_TEST;
+            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
+            {
+                //CurrentTest.TestStep = MIC;
+                CurrentTest.TestStep = FLASH;
+                //CurrentTest.TestStep = INITIALIZE_TEST;
+            }
         
         break;    
                
@@ -519,10 +557,17 @@ uint8 RelayTest_Complete(void)
 
             CyDelay(CONFIRM_TIME);
             
-            CurrentTest.TestStep = OVERLOAD;
-            //CurrentTest.TestStep = MIC;
-            //CurrentTest.TestStep = FLASH;
-            //CurrentTest.TestStep = INITIALIZE_TEST;
+            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
+            {
+                CurrentTest.TestStep = OVERLOAD;
+                //CurrentTest.TestStep = MIC;
+                //CurrentTest.TestStep = FLASH;
+                //CurrentTest.TestStep = INITIALIZE_TEST;
+            }
                 
         break;  
              
@@ -572,6 +617,11 @@ uint8 RelayTest_Complete(void)
                 
             //--------------------------------------
             
+            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            
             RTest_CompleteStatus[CurrentTest.TestStep] = 'B';
             CurrentTest.Status = 'B';
             while( (pRxPacket_RelaySiren->Payload.Speaker1_Overcurrent != 0) || (pRxPacket_RelaySiren->Payload.Speaker2_Overcurrent != 0) )
@@ -605,24 +655,34 @@ uint8 RelayTest_Complete(void)
             
             CyDelay(1000);
             
-            //CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = MIC;
-            //CurrentTest.TestStep = OVERLOAD;
-            CurrentTest.TestStep = GPS;
-            //CurrentTest.TestStep = PASS;
+            if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
+            {
+                CurrentTest.TestStep = PASS;
+            }
+            else
+            {
+                //CurrentTest.TestStep = INITIALIZE_TEST;
+                //CurrentTest.TestStep = MIC;
+                //CurrentTest.TestStep = OVERLOAD;
+                CurrentTest.TestStep = GPS;
+                //CurrentTest.TestStep = PASS;
+            }
             
         break;  
             
         case GPS:         
-
-            RTest_Complete_StartAutomatedStep();
-
-            MUX_CTRL_230400_Write(RTEST_CONT);
-               
-            while( (!VerifyPacket_GPS()) && (RTest_CompleteStatus[CurrentTest.TestStep] != 'F') )
-            {}        
             
-            RTest_Complete_StopAutomatedStep();
+            RTest_CompleteStatus[CurrentTest.TestStep] = 'U';
+            CurrentTest.Status = 'U';
+
+//            RTest_Complete_StartAutomatedStep();
+//
+//            MUX_CTRL_230400_Write(RTEST_CONT);
+//               
+//            while( (!VerifyPacket_GPS()) && (RTest_CompleteStatus[CurrentTest.TestStep] != 'F') )
+//            {}        
+//            
+//            RTest_Complete_StopAutomatedStep();
 
             CyDelay(CONFIRM_TIME);
              
