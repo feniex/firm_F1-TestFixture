@@ -46,7 +46,8 @@ enum DataType
     RTEST,
     STEST,
     CTEST_COMPLETE,
-    RTEST_COMPLETE
+    RTEST_COMPLETE,
+    CABLE_TEST
 };
 
 /**********DATA STRUCTURES**********/
@@ -85,8 +86,8 @@ static uint8 rs2_value = 0;
 int main()
 {
     
-    //TESTFIXTURE_TYPE = PCBA_TESTFIXTURE;                    //*** Define testfixture hardware type
-    TESTFIXTURE_TYPE = FINAL_TESTFIXTURE;                   //*** Define testfixture hardware type
+    TESTFIXTURE_TYPE = PCBA_TESTFIXTURE;                    //*** Define testfixture hardware type
+    //TESTFIXTURE_TYPE = FINAL_TESTFIXTURE;                   //*** Define testfixture hardware type
     
     initializePeripherals();
     CyGlobalIntEnable; /* Enable global interrupts. */ 
@@ -111,8 +112,8 @@ int main()
                 CurrentTest.SelectedTest = CTEST_COMPLETE;
             else if( (RS1_Read() == 0) && (RS2_Read() == 0) )
                 CurrentTest.SelectedTest = RTEST_COMPLETE;
-//            else if( (RS1_Read() == 0) && (RS2_Read() == 1) )
-//                CurrentTest.SelectedTest = STEST;
+            else if( (RS1_Read() == 0) && (RS2_Read() == 1) )
+                CurrentTest.SelectedTest = CABLE_TEST;
         }
                     
         //CurrentTest.SelectedTest = STEST;
@@ -160,6 +161,15 @@ int main()
                 {}
 
             break; 
+                
+            case CABLE_TEST:                            // Test 
+            
+                CurrentTest.TestStep = INITIALIZE_TEST;
+                while(!ControllerCableTest_Complete())
+                {}
+
+            break; 
+                
                 
         }
             

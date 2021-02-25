@@ -116,7 +116,7 @@ enum MUX_115200_CHANNEL
 
 // --------------Test steps---------------
 #define NUMBER_TEST_STEPS   16
-static uint16 RTest_Complete_TimeoutCount[NUMBER_TEST_STEPS] = {50,500,200,50,100,50,100,50,50,50,50,50,50,1000,50,50};  //,   50,50,50,50,50,100,50};  // Number of 20msec counts before failure timeout, for each step
+static uint16 RTest_Complete_TimeoutCount[NUMBER_TEST_STEPS] = {50,500,200,100,100,50,100,50,50,50,50,50,50,1000,50,50};  //,   50,50,50,50,50,100,50};  // Number of 20msec counts before failure timeout, for each step
                                     
 static uint8 RTest_CompleteStatus[NUMBER_TEST_STEPS];
 
@@ -138,7 +138,7 @@ enum TestStep               // *** (relay firmware needs the 'H' packet payload 
     RRB,                // COMPLETE (hi volume - adjustable)
     MIC,                // COMPLETE (hi volume)
     FLASH,              // COMPLETE (kind of loud/weak)
-    OVERLOAD,           // ??? U (cannot be used with loaded 
+    OVERLOAD,           // *** remove this ??? U (cannot be used with loaded 
     
     GPS,                // ***Need to add this in still
     
@@ -203,7 +203,9 @@ uint8 RelayTest_Complete(void)
             CyDelay(CONFIRM_TIME);
             
             //CurrentTest.TestStep = INITIALIZE_TEST;
+            
             CurrentTest.TestStep = TEST_OUTPUTS;
+            
             //CurrentTest.TestStep = DATALINK;
             //CurrentTest.TestStep = QUAD_PORTS;
             //CurrentTest.TestStep = UART_SIREN;
@@ -571,13 +573,16 @@ uint8 RelayTest_Complete(void)
                 
         break;  
              
-        case OVERLOAD:     
+        case OVERLOAD:    
+            
+//            STest_SIREN_EN_Write(0);        // Turn on muted speaker load
+//            CyDelay(250);
             
             RTest_CompleteStatus[CurrentTest.TestStep] = 'B';           
             CurrentTest.Status = 'B'; 
             
-            CyDelay(5000);
-            STest_SIREN_EN_Write(0);  // 
+            //CyDelay(15000);
+            STest_SIREN_EN_Write(0);                    // Turn on muted speaker load
             CyDelay(250);
 
             //MUX_CTRL_230400_Write(STEST_RELAY);     // Rx - 'D' packet
@@ -591,7 +596,7 @@ uint8 RelayTest_Complete(void)
             Overload1_Write(0);                
             Overload2_Write(1);                
             
-            CyDelay(100);
+            CyDelay(250);
             
             pTxPacket_RelaySiren = getTxPacket_RelaySiren();                // 230400 - 'S' - Send a command to enable Wail tone on Amp1
             pTxPacket_RelaySiren->Payload.Siren1Tone = 0; 
@@ -654,6 +659,12 @@ uint8 RelayTest_Complete(void)
             pTxPacket_RelaySiren->Payload.Siren2Tone = 0; 
             
             CyDelay(1000);
+            CyDelay(CONFIRM_TIME);
+            
+//            RTest_CompleteStatus[CurrentTest.TestStep] = 'B';
+//            CurrentTest.Status = 'B';
+//            while( (pRxPacket_RelaySiren->Payload.Speaker1_Overcurrent != 0) || (pRxPacket_RelaySiren->Payload.Speaker2_Overcurrent != 0) )
+//            {}
             
             if(RTest_CompleteStatus[CurrentTest.TestStep] == 'F')
             {
@@ -664,7 +675,9 @@ uint8 RelayTest_Complete(void)
                 //CurrentTest.TestStep = INITIALIZE_TEST;
                 //CurrentTest.TestStep = MIC;
                 //CurrentTest.TestStep = OVERLOAD;
+                
                 CurrentTest.TestStep = GPS;
+                
                 //CurrentTest.TestStep = PASS;
             }
             
@@ -672,17 +685,22 @@ uint8 RelayTest_Complete(void)
             
         case GPS:         
             
-            RTest_CompleteStatus[CurrentTest.TestStep] = 'U';
-            CurrentTest.Status = 'U';
+//            RTest_CompleteStatus[CurrentTest.TestStep] = 'U';
+//            CurrentTest.Status = 'U';
+//            RTest_CompleteStatus[CurrentTest.TestStep] = 'W';
+            CurrentTest.Status = 'W';
 
-//            RTest_Complete_StartAutomatedStep();
-//
-//            MUX_CTRL_230400_Write(RTEST_CONT);
-//               
-//            while( (!VerifyPacket_GPS()) && (RTest_CompleteStatus[CurrentTest.TestStep] != 'F') )
-//            {}        
-//            
-//            RTest_Complete_StopAutomatedStep();
+            //RTest_Complete_StartAutomatedStep();
+
+            MUX_CTRL_230400_Write(RTEST_CONT);
+               
+            while( (!VerifyPacket_GPS()) && (RTest_CompleteStatus[CurrentTest.TestStep] != 'F') )
+            {}        
+            
+            //RTest_Complete_StopAutomatedStep();
+            
+            RTest_CompleteStatus[CurrentTest.TestStep] = 'P';
+            CurrentTest.Status = 'P';
 
             CyDelay(CONFIRM_TIME);
              

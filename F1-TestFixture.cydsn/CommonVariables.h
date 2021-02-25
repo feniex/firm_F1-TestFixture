@@ -26,4 +26,15 @@ typedef struct structTestInfo StructTestInfo;
 extern StructTestInfo CurrentTest;
 
 
+//-----------------------------------------
+uint8 ControllerTest_Complete(void);
+uint8 ControllerCableTest_Complete(void);
+
+void CableTest_Complete_20ms_isr(void);
+void CableTest_Complete_50ms_isr(void);
+
+void CableTest_Complete_StopAutomatedStep(void);
+void CableTest_Complete_StartAutomatedStep(void);
+
+
 /* [] END OF FILE */

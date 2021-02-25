@@ -33,6 +33,7 @@
     #include "ControllerTest.h"
     #include "RelayTest.h"
     #include "SirenTest.h"
+    #include "CommonVariables.h"
     
        // extern uint16 _100ms_flag;
 
@@ -179,6 +180,7 @@ CY_ISR(isr_Timer_20ms_Interrupt)
         STest_20ms_isr();
         CTest_Complete_20ms_isr();
         RTest_Complete_20ms_isr();
+        CableTest_Complete_20ms_isr();
                     
         CTest_isr_PB();
         STest_isr_PB();

@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 1
 
 
    1              		.syntax unified
@@ -19,15 +19,16 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 1
   16              		.text
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
-  19              		.section	.text.isr_Timer_20ms_Start,"ax",%progbits
-  20              		.align	2
-  21              		.global	isr_Timer_20ms_Start
-  22              		.thumb
-  23              		.thumb_func
-  24              		.type	isr_Timer_20ms_Start, %function
-  25              	isr_Timer_20ms_Start:
-  26              	.LFB63:
-  27              		.file 1 "Generated_Source\\PSoC5\\isr_Timer_20ms.c"
+  19              		.comm	Test,3,4
+  20              		.section	.text.isr_Timer_20ms_Start,"ax",%progbits
+  21              		.align	2
+  22              		.global	isr_Timer_20ms_Start
+  23              		.thumb
+  24              		.thumb_func
+  25              		.type	isr_Timer_20ms_Start, %function
+  26              	isr_Timer_20ms_Start:
+  27              	.LFB63:
+  28              		.file 1 "Generated_Source\\PSoC5\\isr_Timer_20ms.c"
    1:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
    2:Generated_Source\PSoC5/isr_Timer_20ms.c **** * File Name: isr_Timer_20ms.c  
    3:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Version 1.70
@@ -57,1982 +58,2093 @@ ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 1
   27:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  Place your includes, defines and code here 
   28:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************/
   29:Generated_Source\PSoC5/isr_Timer_20ms.c **** /* `#START isr_Timer_20ms_intc` */
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 2
+
+
   30:Generated_Source\PSoC5/isr_Timer_20ms.c ****     
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 2
-
-
   31:Generated_Source\PSoC5/isr_Timer_20ms.c **** //    //#include "ControllerTest.h"
   32:Generated_Source\PSoC5/isr_Timer_20ms.c ****     #include "UART_230400_Functions.h"
   33:Generated_Source\PSoC5/isr_Timer_20ms.c ****     #include "ControllerTest.h"
   34:Generated_Source\PSoC5/isr_Timer_20ms.c ****     #include "RelayTest.h"
   35:Generated_Source\PSoC5/isr_Timer_20ms.c ****     #include "SirenTest.h"
-  36:Generated_Source\PSoC5/isr_Timer_20ms.c ****     
-  37:Generated_Source\PSoC5/isr_Timer_20ms.c ****        // extern uint16 _100ms_flag;
-  38:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
-  39:Generated_Source\PSoC5/isr_Timer_20ms.c **** /* `#END` */
-  40:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
-  41:Generated_Source\PSoC5/isr_Timer_20ms.c **** #ifndef CYINT_IRQ_BASE
-  42:Generated_Source\PSoC5/isr_Timer_20ms.c **** #define CYINT_IRQ_BASE      16
-  43:Generated_Source\PSoC5/isr_Timer_20ms.c **** #endif /* CYINT_IRQ_BASE */
-  44:Generated_Source\PSoC5/isr_Timer_20ms.c **** #ifndef CYINT_VECT_TABLE
-  45:Generated_Source\PSoC5/isr_Timer_20ms.c **** #define CYINT_VECT_TABLE    ((cyisraddress **) CYREG_NVIC_VECT_OFFSET)
-  46:Generated_Source\PSoC5/isr_Timer_20ms.c **** #endif /* CYINT_VECT_TABLE */
-  47:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
-  48:Generated_Source\PSoC5/isr_Timer_20ms.c **** /* Declared in startup, used to set unused interrupts to. */
-  49:Generated_Source\PSoC5/isr_Timer_20ms.c **** CY_ISR_PROTO(IntDefaultHandler);
-  50:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+  36:Generated_Source\PSoC5/isr_Timer_20ms.c ****     #include "CommonVariables.h"
+  37:Generated_Source\PSoC5/isr_Timer_20ms.c ****     
+  38:Generated_Source\PSoC5/isr_Timer_20ms.c ****        // extern uint16 _100ms_flag;
+  39:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+  40:Generated_Source\PSoC5/isr_Timer_20ms.c **** /* `#END` */
+  41:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+  42:Generated_Source\PSoC5/isr_Timer_20ms.c **** #ifndef CYINT_IRQ_BASE
+  43:Generated_Source\PSoC5/isr_Timer_20ms.c **** #define CYINT_IRQ_BASE      16
+  44:Generated_Source\PSoC5/isr_Timer_20ms.c **** #endif /* CYINT_IRQ_BASE */
+  45:Generated_Source\PSoC5/isr_Timer_20ms.c **** #ifndef CYINT_VECT_TABLE
+  46:Generated_Source\PSoC5/isr_Timer_20ms.c **** #define CYINT_VECT_TABLE    ((cyisraddress **) CYREG_NVIC_VECT_OFFSET)
+  47:Generated_Source\PSoC5/isr_Timer_20ms.c **** #endif /* CYINT_VECT_TABLE */
+  48:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+  49:Generated_Source\PSoC5/isr_Timer_20ms.c **** /* Declared in startup, used to set unused interrupts to. */
+  50:Generated_Source\PSoC5/isr_Timer_20ms.c **** CY_ISR_PROTO(IntDefaultHandler);
   51:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
-  52:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
-  53:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_Start
-  54:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
-  55:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
-  56:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
-  57:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  Set up the interrupt and enable it. This function disables the interrupt, 
-  58:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  sets the default interrupt vector, sets the priority from the value in the
-  59:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  Design Wide Resources Interrupt Editor, then enables the interrupt to the 
-  60:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  interrupt controller.
-  61:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
-  62:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:  
-  63:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
-  64:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
-  65:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
-  66:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
-  67:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
-  68:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
-  69:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_Start(void)
-  70:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
-  28              		.loc 1 70 0
-  29              		.cfi_startproc
-  30              		@ args = 0, pretend = 0, frame = 0
-  31              		@ frame_needed = 1, uses_anonymous_args = 0
-  32 0000 80B5     		push	{r7, lr}
-  33              		.cfi_def_cfa_offset 8
-  34              		.cfi_offset 7, -8
-  35              		.cfi_offset 14, -4
-  36 0002 00AF     		add	r7, sp, #0
-  37              		.cfi_def_cfa_register 7
-  71:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* For all we know the interrupt is active. */
-  72:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_Disable();
-  38              		.loc 1 72 0
-  39 0004 FFF7FEFF 		bl	isr_Timer_20ms_Disable
-  73:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
-  74:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Set the ISR to point to the isr_Timer_20ms Interrupt. */
-  75:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_SetVector(&isr_Timer_20ms_Interrupt);
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 3
+  52:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+  53:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
+  54:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_Start
+  55:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
+  56:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+  57:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
+  58:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  Set up the interrupt and enable it. This function disables the interrupt, 
+  59:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  sets the default interrupt vector, sets the priority from the value in the
+  60:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  Design Wide Resources Interrupt Editor, then enables the interrupt to the 
+  61:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  interrupt controller.
+  62:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+  63:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:  
+  64:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+  65:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+  66:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
+  67:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+  68:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+  69:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
+  70:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_Start(void)
+  71:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
+  29              		.loc 1 71 0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 1, uses_anonymous_args = 0
+  33 0000 80B5     		push	{r7, lr}
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 7, -8
+  36              		.cfi_offset 14, -4
+  37 0002 00AF     		add	r7, sp, #0
+  38              		.cfi_def_cfa_register 7
+  72:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* For all we know the interrupt is active. */
+  73:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_Disable();
+  39              		.loc 1 73 0
+  40 0004 FFF7FEFF 		bl	isr_Timer_20ms_Disable
+  74:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 3
 
 
-  40              		.loc 1 75 0
-  41 0008 0448     		ldr	r0, .L2
-  42 000a FFF7FEFF 		bl	isr_Timer_20ms_SetVector
-  76:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
-  77:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Set the priority. */
-  78:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_SetPriority((uint8)isr_Timer_20ms_INTC_PRIOR_NUMBER);
-  43              		.loc 1 78 0
-  44 000e 0520     		movs	r0, #5
-  45 0010 FFF7FEFF 		bl	isr_Timer_20ms_SetPriority
-  79:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
-  80:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Enable it. */
-  81:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_Enable();
-  46              		.loc 1 81 0
-  47 0014 FFF7FEFF 		bl	isr_Timer_20ms_Enable
-  82:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
-  48              		.loc 1 82 0
-  49 0018 00BF     		nop
-  50 001a 80BD     		pop	{r7, pc}
-  51              	.L3:
-  52              		.align	2
-  53              	.L2:
-  54 001c 00000000 		.word	isr_Timer_20ms_Interrupt
-  55              		.cfi_endproc
-  56              	.LFE63:
-  57              		.size	isr_Timer_20ms_Start, .-isr_Timer_20ms_Start
-  58              		.section	.text.isr_Timer_20ms_StartEx,"ax",%progbits
-  59              		.align	2
-  60              		.global	isr_Timer_20ms_StartEx
-  61              		.thumb
-  62              		.thumb_func
-  63              		.type	isr_Timer_20ms_StartEx, %function
-  64              	isr_Timer_20ms_StartEx:
-  65              	.LFB64:
-  83:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+  75:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Set the ISR to point to the isr_Timer_20ms Interrupt. */
+  76:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_SetVector(&isr_Timer_20ms_Interrupt);
+  41              		.loc 1 76 0
+  42 0008 0448     		ldr	r0, .L2
+  43 000a FFF7FEFF 		bl	isr_Timer_20ms_SetVector
+  77:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+  78:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Set the priority. */
+  79:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_SetPriority((uint8)isr_Timer_20ms_INTC_PRIOR_NUMBER);
+  44              		.loc 1 79 0
+  45 000e 0520     		movs	r0, #5
+  46 0010 FFF7FEFF 		bl	isr_Timer_20ms_SetPriority
+  80:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+  81:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Enable it. */
+  82:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_Enable();
+  47              		.loc 1 82 0
+  48 0014 FFF7FEFF 		bl	isr_Timer_20ms_Enable
+  83:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
+  49              		.loc 1 83 0
+  50 0018 00BF     		nop
+  51 001a 80BD     		pop	{r7, pc}
+  52              	.L3:
+  53              		.align	2
+  54              	.L2:
+  55 001c 00000000 		.word	isr_Timer_20ms_Interrupt
+  56              		.cfi_endproc
+  57              	.LFE63:
+  58              		.size	isr_Timer_20ms_Start, .-isr_Timer_20ms_Start
+  59              		.section	.text.isr_Timer_20ms_StartEx,"ax",%progbits
+  60              		.align	2
+  61              		.global	isr_Timer_20ms_StartEx
+  62              		.thumb
+  63              		.thumb_func
+  64              		.type	isr_Timer_20ms_StartEx, %function
+  65              	isr_Timer_20ms_StartEx:
+  66              	.LFB64:
   84:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
-  85:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
-  86:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_StartEx
-  87:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
-  88:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
-  89:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
-  90:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  Sets up the interrupt and enables it. This function disables the interrupt,
-  91:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  sets the interrupt vector based on the address passed in, sets the priority 
-  92:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  from the value in the Design Wide Resources Interrupt Editor, then enables 
-  93:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  the interrupt to the interrupt controller.
-  94:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  
-  95:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
-  96:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  used to provide consistent definition across compilers:
-  97:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  
-  98:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  Function definition example:
-  99:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   CY_ISR(MyISR)
- 100:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   {
- 101:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   }
- 102:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Function prototype example:
- 103:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   CY_ISR_PROTO(MyISR);
- 104:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 105:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:  
- 106:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   address: Address of the ISR to set in the interrupt vector table.
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 4
+  85:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+  86:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
+  87:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_StartEx
+  88:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
+  89:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+  90:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
+  91:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  Sets up the interrupt and enables it. This function disables the interrupt,
+  92:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  sets the interrupt vector based on the address passed in, sets the priority 
+  93:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  from the value in the Design Wide Resources Interrupt Editor, then enables 
+  94:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  the interrupt to the interrupt controller.
+  95:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  
+  96:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
+  97:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  used to provide consistent definition across compilers:
+  98:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  
+  99:Generated_Source\PSoC5/isr_Timer_20ms.c **** *  Function definition example:
+ 100:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   CY_ISR(MyISR)
+ 101:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   {
+ 102:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   }
+ 103:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Function prototype example:
+ 104:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   CY_ISR_PROTO(MyISR);
+ 105:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 4
 
 
- 107:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 108:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
- 109:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 110:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 111:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
- 112:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_StartEx(cyisraddress address)
- 113:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
-  66              		.loc 1 113 0
-  67              		.cfi_startproc
-  68              		@ args = 0, pretend = 0, frame = 8
-  69              		@ frame_needed = 1, uses_anonymous_args = 0
-  70 0000 80B5     		push	{r7, lr}
-  71              		.cfi_def_cfa_offset 8
-  72              		.cfi_offset 7, -8
-  73              		.cfi_offset 14, -4
-  74 0002 82B0     		sub	sp, sp, #8
-  75              		.cfi_def_cfa_offset 16
-  76 0004 00AF     		add	r7, sp, #0
-  77              		.cfi_def_cfa_register 7
-  78 0006 7860     		str	r0, [r7, #4]
- 114:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* For all we know the interrupt is active. */
- 115:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_Disable();
-  79              		.loc 1 115 0
-  80 0008 FFF7FEFF 		bl	isr_Timer_20ms_Disable
- 116:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 117:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Set the ISR to point to the isr_Timer_20ms Interrupt. */
- 118:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_SetVector(address);
-  81              		.loc 1 118 0
-  82 000c 7868     		ldr	r0, [r7, #4]
-  83 000e FFF7FEFF 		bl	isr_Timer_20ms_SetVector
- 119:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 120:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Set the priority. */
- 121:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_SetPriority((uint8)isr_Timer_20ms_INTC_PRIOR_NUMBER);
-  84              		.loc 1 121 0
-  85 0012 0520     		movs	r0, #5
-  86 0014 FFF7FEFF 		bl	isr_Timer_20ms_SetPriority
- 122:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 123:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Enable it. */
- 124:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_Enable();
-  87              		.loc 1 124 0
-  88 0018 FFF7FEFF 		bl	isr_Timer_20ms_Enable
- 125:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
-  89              		.loc 1 125 0
-  90 001c 00BF     		nop
-  91 001e 0837     		adds	r7, r7, #8
-  92              		.cfi_def_cfa_offset 8
-  93 0020 BD46     		mov	sp, r7
-  94              		.cfi_def_cfa_register 13
-  95              		@ sp needed
-  96 0022 80BD     		pop	{r7, pc}
-  97              		.cfi_endproc
-  98              	.LFE64:
-  99              		.size	isr_Timer_20ms_StartEx, .-isr_Timer_20ms_StartEx
- 100              		.section	.text.isr_Timer_20ms_Stop,"ax",%progbits
- 101              		.align	2
- 102              		.global	isr_Timer_20ms_Stop
- 103              		.thumb
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 5
+ 106:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:  
+ 107:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   address: Address of the ISR to set in the interrupt vector table.
+ 108:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 109:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
+ 110:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 111:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 112:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
+ 113:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_StartEx(cyisraddress address)
+ 114:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
+  67              		.loc 1 114 0
+  68              		.cfi_startproc
+  69              		@ args = 0, pretend = 0, frame = 8
+  70              		@ frame_needed = 1, uses_anonymous_args = 0
+  71 0000 80B5     		push	{r7, lr}
+  72              		.cfi_def_cfa_offset 8
+  73              		.cfi_offset 7, -8
+  74              		.cfi_offset 14, -4
+  75 0002 82B0     		sub	sp, sp, #8
+  76              		.cfi_def_cfa_offset 16
+  77 0004 00AF     		add	r7, sp, #0
+  78              		.cfi_def_cfa_register 7
+  79 0006 7860     		str	r0, [r7, #4]
+ 115:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* For all we know the interrupt is active. */
+ 116:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_Disable();
+  80              		.loc 1 116 0
+  81 0008 FFF7FEFF 		bl	isr_Timer_20ms_Disable
+ 117:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 118:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Set the ISR to point to the isr_Timer_20ms Interrupt. */
+ 119:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_SetVector(address);
+  82              		.loc 1 119 0
+  83 000c 7868     		ldr	r0, [r7, #4]
+  84 000e FFF7FEFF 		bl	isr_Timer_20ms_SetVector
+ 120:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 121:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Set the priority. */
+ 122:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_SetPriority((uint8)isr_Timer_20ms_INTC_PRIOR_NUMBER);
+  85              		.loc 1 122 0
+  86 0012 0520     		movs	r0, #5
+  87 0014 FFF7FEFF 		bl	isr_Timer_20ms_SetPriority
+ 123:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 124:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Enable it. */
+ 125:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_Enable();
+  88              		.loc 1 125 0
+  89 0018 FFF7FEFF 		bl	isr_Timer_20ms_Enable
+ 126:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
+  90              		.loc 1 126 0
+  91 001c 00BF     		nop
+  92 001e 0837     		adds	r7, r7, #8
+  93              		.cfi_def_cfa_offset 8
+  94 0020 BD46     		mov	sp, r7
+  95              		.cfi_def_cfa_register 13
+  96              		@ sp needed
+  97 0022 80BD     		pop	{r7, pc}
+  98              		.cfi_endproc
+  99              	.LFE64:
+ 100              		.size	isr_Timer_20ms_StartEx, .-isr_Timer_20ms_StartEx
+ 101              		.section	.text.isr_Timer_20ms_Stop,"ax",%progbits
+ 102              		.align	2
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 5
 
 
- 104              		.thumb_func
- 105              		.type	isr_Timer_20ms_Stop, %function
- 106              	isr_Timer_20ms_Stop:
- 107              	.LFB65:
- 126:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 103              		.global	isr_Timer_20ms_Stop
+ 104              		.thumb
+ 105              		.thumb_func
+ 106              		.type	isr_Timer_20ms_Stop, %function
+ 107              	isr_Timer_20ms_Stop:
+ 108              	.LFB65:
  127:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 128:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
- 129:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_Stop
- 130:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
- 131:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 132:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
- 133:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Disables and removes the interrupt.
- 134:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 135:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:  
- 136:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 137:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 138:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
- 139:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 140:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 141:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
- 142:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_Stop(void)
- 143:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
- 108              		.loc 1 143 0
- 109              		.cfi_startproc
- 110              		@ args = 0, pretend = 0, frame = 0
- 111              		@ frame_needed = 1, uses_anonymous_args = 0
- 112 0000 80B5     		push	{r7, lr}
- 113              		.cfi_def_cfa_offset 8
- 114              		.cfi_offset 7, -8
- 115              		.cfi_offset 14, -4
- 116 0002 00AF     		add	r7, sp, #0
- 117              		.cfi_def_cfa_register 7
- 144:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Disable this interrupt. */
- 145:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_Disable();
- 118              		.loc 1 145 0
- 119 0004 FFF7FEFF 		bl	isr_Timer_20ms_Disable
- 146:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 147:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Set the ISR to point to the passive one. */
- 148:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_SetVector(&IntDefaultHandler);
- 120              		.loc 1 148 0
- 121 0008 0248     		ldr	r0, .L6
- 122 000a FFF7FEFF 		bl	isr_Timer_20ms_SetVector
- 149:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
- 123              		.loc 1 149 0
- 124 000e 00BF     		nop
- 125 0010 80BD     		pop	{r7, pc}
- 126              	.L7:
- 127 0012 00BF     		.align	2
- 128              	.L6:
- 129 0014 00000000 		.word	IntDefaultHandler
- 130              		.cfi_endproc
- 131              	.LFE65:
- 132              		.size	isr_Timer_20ms_Stop, .-isr_Timer_20ms_Stop
- 133              		.section	.text.isr_Timer_20ms_Interrupt,"ax",%progbits
- 134              		.align	2
- 135              		.global	isr_Timer_20ms_Interrupt
- 136              		.thumb
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 6
+ 128:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 129:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
+ 130:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_Stop
+ 131:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
+ 132:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 133:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
+ 134:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Disables and removes the interrupt.
+ 135:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 136:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:  
+ 137:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 138:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 139:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
+ 140:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 141:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 142:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
+ 143:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_Stop(void)
+ 144:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
+ 109              		.loc 1 144 0
+ 110              		.cfi_startproc
+ 111              		@ args = 0, pretend = 0, frame = 0
+ 112              		@ frame_needed = 1, uses_anonymous_args = 0
+ 113 0000 80B5     		push	{r7, lr}
+ 114              		.cfi_def_cfa_offset 8
+ 115              		.cfi_offset 7, -8
+ 116              		.cfi_offset 14, -4
+ 117 0002 00AF     		add	r7, sp, #0
+ 118              		.cfi_def_cfa_register 7
+ 145:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Disable this interrupt. */
+ 146:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_Disable();
+ 119              		.loc 1 146 0
+ 120 0004 FFF7FEFF 		bl	isr_Timer_20ms_Disable
+ 147:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 148:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Set the ISR to point to the passive one. */
+ 149:Generated_Source\PSoC5/isr_Timer_20ms.c ****     isr_Timer_20ms_SetVector(&IntDefaultHandler);
+ 121              		.loc 1 149 0
+ 122 0008 0248     		ldr	r0, .L6
+ 123 000a FFF7FEFF 		bl	isr_Timer_20ms_SetVector
+ 150:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
+ 124              		.loc 1 150 0
+ 125 000e 00BF     		nop
+ 126 0010 80BD     		pop	{r7, pc}
+ 127              	.L7:
+ 128 0012 00BF     		.align	2
+ 129              	.L6:
+ 130 0014 00000000 		.word	IntDefaultHandler
+ 131              		.cfi_endproc
+ 132              	.LFE65:
+ 133              		.size	isr_Timer_20ms_Stop, .-isr_Timer_20ms_Stop
+ 134              		.section	.text.isr_Timer_20ms_Interrupt,"ax",%progbits
+ 135              		.align	2
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 6
 
 
- 137              		.thumb_func
- 138              		.type	isr_Timer_20ms_Interrupt, %function
- 139              	isr_Timer_20ms_Interrupt:
- 140              	.LFB66:
- 150:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 136              		.global	isr_Timer_20ms_Interrupt
+ 137              		.thumb
+ 138              		.thumb_func
+ 139              		.type	isr_Timer_20ms_Interrupt, %function
+ 140              	isr_Timer_20ms_Interrupt:
+ 141              	.LFB66:
  151:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 152:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
- 153:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_Interrupt
- 154:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
- 155:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 156:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
- 157:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   The default Interrupt Service Routine for isr_Timer_20ms.
- 158:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 159:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Add custom code between the coments to keep the next version of this file
- 160:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   from over writting your code.
- 161:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 162:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:  
- 163:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 164:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
- 165:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 166:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 167:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
- 168:Generated_Source\PSoC5/isr_Timer_20ms.c **** CY_ISR(isr_Timer_20ms_Interrupt)
- 169:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
- 141              		.loc 1 169 0
- 142              		.cfi_startproc
- 143              		@ args = 0, pretend = 0, frame = 0
- 144              		@ frame_needed = 1, uses_anonymous_args = 0
- 145 0000 80B5     		push	{r7, lr}
- 146              		.cfi_def_cfa_offset 8
- 147              		.cfi_offset 7, -8
- 148              		.cfi_offset 14, -4
- 149 0002 00AF     		add	r7, sp, #0
- 150              		.cfi_def_cfa_register 7
- 170:Generated_Source\PSoC5/isr_Timer_20ms.c ****     #ifdef isr_Timer_20ms_INTERRUPT_INTERRUPT_CALLBACK
- 171:Generated_Source\PSoC5/isr_Timer_20ms.c ****         isr_Timer_20ms_Interrupt_InterruptCallback();
- 172:Generated_Source\PSoC5/isr_Timer_20ms.c ****     #endif /* isr_Timer_20ms_INTERRUPT_INTERRUPT_CALLBACK */ 
- 173:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 174:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /*  Place your Interrupt code here. */
- 175:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* `#START isr_Timer_20ms_Interrupt` */
- 176:Generated_Source\PSoC5/isr_Timer_20ms.c ****         
- 177:Generated_Source\PSoC5/isr_Timer_20ms.c ****         CTest_20ms_isr();
- 151              		.loc 1 177 0
- 152 0004 FFF7FEFF 		bl	CTest_20ms_isr
- 178:Generated_Source\PSoC5/isr_Timer_20ms.c ****         RTest_20ms_isr();
- 153              		.loc 1 178 0
- 154 0008 FFF7FEFF 		bl	RTest_20ms_isr
- 179:Generated_Source\PSoC5/isr_Timer_20ms.c ****         STest_20ms_isr();
- 155              		.loc 1 179 0
- 156 000c FFF7FEFF 		bl	STest_20ms_isr
- 180:Generated_Source\PSoC5/isr_Timer_20ms.c ****         CTest_Complete_20ms_isr();
- 157              		.loc 1 180 0
- 158 0010 FFF7FEFF 		bl	CTest_Complete_20ms_isr
- 181:Generated_Source\PSoC5/isr_Timer_20ms.c ****         RTest_Complete_20ms_isr();
- 159              		.loc 1 181 0
- 160 0014 FFF7FEFF 		bl	RTest_Complete_20ms_isr
- 182:Generated_Source\PSoC5/isr_Timer_20ms.c ****                     
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 7
+ 152:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 153:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
+ 154:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_Interrupt
+ 155:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
+ 156:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 157:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
+ 158:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   The default Interrupt Service Routine for isr_Timer_20ms.
+ 159:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 160:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Add custom code between the coments to keep the next version of this file
+ 161:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   from over writting your code.
+ 162:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 163:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:  
+ 164:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 165:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
+ 166:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 167:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 168:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
+ 169:Generated_Source\PSoC5/isr_Timer_20ms.c **** CY_ISR(isr_Timer_20ms_Interrupt)
+ 170:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
+ 142              		.loc 1 170 0
+ 143              		.cfi_startproc
+ 144              		@ args = 0, pretend = 0, frame = 0
+ 145              		@ frame_needed = 1, uses_anonymous_args = 0
+ 146 0000 80B5     		push	{r7, lr}
+ 147              		.cfi_def_cfa_offset 8
+ 148              		.cfi_offset 7, -8
+ 149              		.cfi_offset 14, -4
+ 150 0002 00AF     		add	r7, sp, #0
+ 151              		.cfi_def_cfa_register 7
+ 171:Generated_Source\PSoC5/isr_Timer_20ms.c ****     #ifdef isr_Timer_20ms_INTERRUPT_INTERRUPT_CALLBACK
+ 172:Generated_Source\PSoC5/isr_Timer_20ms.c ****         isr_Timer_20ms_Interrupt_InterruptCallback();
+ 173:Generated_Source\PSoC5/isr_Timer_20ms.c ****     #endif /* isr_Timer_20ms_INTERRUPT_INTERRUPT_CALLBACK */ 
+ 174:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 175:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /*  Place your Interrupt code here. */
+ 176:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* `#START isr_Timer_20ms_Interrupt` */
+ 177:Generated_Source\PSoC5/isr_Timer_20ms.c ****         
+ 178:Generated_Source\PSoC5/isr_Timer_20ms.c ****         CTest_20ms_isr();
+ 152              		.loc 1 178 0
+ 153 0004 FFF7FEFF 		bl	CTest_20ms_isr
+ 179:Generated_Source\PSoC5/isr_Timer_20ms.c ****         RTest_20ms_isr();
+ 154              		.loc 1 179 0
+ 155 0008 FFF7FEFF 		bl	RTest_20ms_isr
+ 180:Generated_Source\PSoC5/isr_Timer_20ms.c ****         STest_20ms_isr();
+ 156              		.loc 1 180 0
+ 157 000c FFF7FEFF 		bl	STest_20ms_isr
+ 181:Generated_Source\PSoC5/isr_Timer_20ms.c ****         CTest_Complete_20ms_isr();
+ 158              		.loc 1 181 0
+ 159 0010 FFF7FEFF 		bl	CTest_Complete_20ms_isr
+ 182:Generated_Source\PSoC5/isr_Timer_20ms.c ****         RTest_Complete_20ms_isr();
+ 160              		.loc 1 182 0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 7
 
 
- 183:Generated_Source\PSoC5/isr_Timer_20ms.c ****         CTest_isr_PB();
- 161              		.loc 1 183 0
- 162 0018 FFF7FEFF 		bl	CTest_isr_PB
- 184:Generated_Source\PSoC5/isr_Timer_20ms.c ****         STest_isr_PB();
- 163              		.loc 1 184 0
- 164 001c FFF7FEFF 		bl	STest_isr_PB
- 185:Generated_Source\PSoC5/isr_Timer_20ms.c ****         //CTest_Complete_isr_PB();
- 186:Generated_Source\PSoC5/isr_Timer_20ms.c ****         RTest_Complete_isr_PB();
- 165              		.loc 1 186 0
- 166 0020 FFF7FEFF 		bl	RTest_Complete_isr_PB
- 187:Generated_Source\PSoC5/isr_Timer_20ms.c ****         
- 188:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* `#END` */
- 189:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
- 167              		.loc 1 189 0
- 168 0024 00BF     		nop
- 169 0026 80BD     		pop	{r7, pc}
- 170              		.cfi_endproc
- 171              	.LFE66:
- 172              		.size	isr_Timer_20ms_Interrupt, .-isr_Timer_20ms_Interrupt
- 173              		.section	.text.isr_Timer_20ms_SetVector,"ax",%progbits
- 174              		.align	2
- 175              		.global	isr_Timer_20ms_SetVector
- 176              		.thumb
- 177              		.thumb_func
- 178              		.type	isr_Timer_20ms_SetVector, %function
- 179              	isr_Timer_20ms_SetVector:
- 180              	.LFB67:
- 190:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 191:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 192:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
- 193:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_SetVector
- 194:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
- 195:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 196:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
- 197:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Change the ISR vector for the Interrupt. Note calling isr_Timer_20ms_Start
- 198:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   will override any effect this method would have had. To set the vector 
- 199:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   before the component has been started use isr_Timer_20ms_StartEx instead.
- 200:Generated_Source\PSoC5/isr_Timer_20ms.c **** * 
- 201:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
- 202:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   used to provide consistent definition across compilers:
- 203:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 204:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Function definition example:
- 205:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   CY_ISR(MyISR)
- 206:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   {
- 207:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   }
- 208:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 209:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Function prototype example:
- 210:Generated_Source\PSoC5/isr_Timer_20ms.c **** *     CY_ISR_PROTO(MyISR);
- 211:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 212:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
- 213:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   address: Address of the ISR to set in the interrupt vector table.
- 214:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 215:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
- 216:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 217:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 218:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
- 219:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_SetVector(cyisraddress address)
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 8
+ 161 0014 FFF7FEFF 		bl	RTest_Complete_20ms_isr
+ 183:Generated_Source\PSoC5/isr_Timer_20ms.c ****         CableTest_Complete_20ms_isr();
+ 162              		.loc 1 183 0
+ 163 0018 FFF7FEFF 		bl	CableTest_Complete_20ms_isr
+ 184:Generated_Source\PSoC5/isr_Timer_20ms.c ****                     
+ 185:Generated_Source\PSoC5/isr_Timer_20ms.c ****         CTest_isr_PB();
+ 164              		.loc 1 185 0
+ 165 001c FFF7FEFF 		bl	CTest_isr_PB
+ 186:Generated_Source\PSoC5/isr_Timer_20ms.c ****         STest_isr_PB();
+ 166              		.loc 1 186 0
+ 167 0020 FFF7FEFF 		bl	STest_isr_PB
+ 187:Generated_Source\PSoC5/isr_Timer_20ms.c ****         //CTest_Complete_isr_PB();
+ 188:Generated_Source\PSoC5/isr_Timer_20ms.c ****         RTest_Complete_isr_PB();
+ 168              		.loc 1 188 0
+ 169 0024 FFF7FEFF 		bl	RTest_Complete_isr_PB
+ 189:Generated_Source\PSoC5/isr_Timer_20ms.c ****         
+ 190:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* `#END` */
+ 191:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
+ 170              		.loc 1 191 0
+ 171 0028 00BF     		nop
+ 172 002a 80BD     		pop	{r7, pc}
+ 173              		.cfi_endproc
+ 174              	.LFE66:
+ 175              		.size	isr_Timer_20ms_Interrupt, .-isr_Timer_20ms_Interrupt
+ 176              		.section	.text.isr_Timer_20ms_SetVector,"ax",%progbits
+ 177              		.align	2
+ 178              		.global	isr_Timer_20ms_SetVector
+ 179              		.thumb
+ 180              		.thumb_func
+ 181              		.type	isr_Timer_20ms_SetVector, %function
+ 182              	isr_Timer_20ms_SetVector:
+ 183              	.LFB67:
+ 192:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 193:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 194:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
+ 195:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_SetVector
+ 196:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
+ 197:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 198:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
+ 199:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Change the ISR vector for the Interrupt. Note calling isr_Timer_20ms_Start
+ 200:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   will override any effect this method would have had. To set the vector 
+ 201:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   before the component has been started use isr_Timer_20ms_StartEx instead.
+ 202:Generated_Source\PSoC5/isr_Timer_20ms.c **** * 
+ 203:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   When defining ISR functions, the CY_ISR and CY_ISR_PROTO macros should be 
+ 204:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   used to provide consistent definition across compilers:
+ 205:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 206:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Function definition example:
+ 207:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   CY_ISR(MyISR)
+ 208:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   {
+ 209:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   }
+ 210:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 211:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Function prototype example:
+ 212:Generated_Source\PSoC5/isr_Timer_20ms.c **** *     CY_ISR_PROTO(MyISR);
+ 213:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 214:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
+ 215:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   address: Address of the ISR to set in the interrupt vector table.
+ 216:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 8
 
 
- 220:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
- 181              		.loc 1 220 0
- 182              		.cfi_startproc
- 183              		@ args = 0, pretend = 0, frame = 16
- 184              		@ frame_needed = 1, uses_anonymous_args = 0
- 185              		@ link register save eliminated.
- 186 0000 80B4     		push	{r7}
- 187              		.cfi_def_cfa_offset 4
- 188              		.cfi_offset 7, -4
- 189 0002 85B0     		sub	sp, sp, #20
- 190              		.cfi_def_cfa_offset 24
- 191 0004 00AF     		add	r7, sp, #0
- 192              		.cfi_def_cfa_register 7
- 193 0006 7860     		str	r0, [r7, #4]
- 221:Generated_Source\PSoC5/isr_Timer_20ms.c ****     cyisraddress * ramVectorTable;
- 222:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 223:Generated_Source\PSoC5/isr_Timer_20ms.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
- 194              		.loc 1 223 0
- 195 0008 054B     		ldr	r3, .L10
- 196 000a 1B68     		ldr	r3, [r3]
- 197 000c FB60     		str	r3, [r7, #12]
+ 217:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
+ 218:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 219:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 220:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
+ 221:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_SetVector(cyisraddress address)
+ 222:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
+ 184              		.loc 1 222 0
+ 185              		.cfi_startproc
+ 186              		@ args = 0, pretend = 0, frame = 16
+ 187              		@ frame_needed = 1, uses_anonymous_args = 0
+ 188              		@ link register save eliminated.
+ 189 0000 80B4     		push	{r7}
+ 190              		.cfi_def_cfa_offset 4
+ 191              		.cfi_offset 7, -4
+ 192 0002 85B0     		sub	sp, sp, #20
+ 193              		.cfi_def_cfa_offset 24
+ 194 0004 00AF     		add	r7, sp, #0
+ 195              		.cfi_def_cfa_register 7
+ 196 0006 7860     		str	r0, [r7, #4]
+ 223:Generated_Source\PSoC5/isr_Timer_20ms.c ****     cyisraddress * ramVectorTable;
  224:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 225:Generated_Source\PSoC5/isr_Timer_20ms.c ****     ramVectorTable[CYINT_IRQ_BASE + (uint32)isr_Timer_20ms__INTC_NUMBER] = address;
- 198              		.loc 1 225 0
- 199 000e FB68     		ldr	r3, [r7, #12]
- 200 0010 5033     		adds	r3, r3, #80
- 201 0012 7A68     		ldr	r2, [r7, #4]
- 202 0014 1A60     		str	r2, [r3]
- 226:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
- 203              		.loc 1 226 0
- 204 0016 00BF     		nop
- 205 0018 1437     		adds	r7, r7, #20
- 206              		.cfi_def_cfa_offset 4
- 207 001a BD46     		mov	sp, r7
- 208              		.cfi_def_cfa_register 13
- 209              		@ sp needed
- 210 001c 80BC     		pop	{r7}
- 211              		.cfi_restore 7
- 212              		.cfi_def_cfa_offset 0
- 213 001e 7047     		bx	lr
- 214              	.L11:
- 215              		.align	2
- 216              	.L10:
- 217 0020 08ED00E0 		.word	-536810232
- 218              		.cfi_endproc
- 219              	.LFE67:
- 220              		.size	isr_Timer_20ms_SetVector, .-isr_Timer_20ms_SetVector
- 221              		.section	.text.isr_Timer_20ms_GetVector,"ax",%progbits
- 222              		.align	2
- 223              		.global	isr_Timer_20ms_GetVector
- 224              		.thumb
- 225              		.thumb_func
- 226              		.type	isr_Timer_20ms_GetVector, %function
- 227              	isr_Timer_20ms_GetVector:
- 228              	.LFB68:
- 227:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 228:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 9
+ 225:Generated_Source\PSoC5/isr_Timer_20ms.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
+ 197              		.loc 1 225 0
+ 198 0008 054B     		ldr	r3, .L10
+ 199 000a 1B68     		ldr	r3, [r3]
+ 200 000c FB60     		str	r3, [r7, #12]
+ 226:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 227:Generated_Source\PSoC5/isr_Timer_20ms.c ****     ramVectorTable[CYINT_IRQ_BASE + (uint32)isr_Timer_20ms__INTC_NUMBER] = address;
+ 201              		.loc 1 227 0
+ 202 000e FB68     		ldr	r3, [r7, #12]
+ 203 0010 5033     		adds	r3, r3, #80
+ 204 0012 7A68     		ldr	r2, [r7, #4]
+ 205 0014 1A60     		str	r2, [r3]
+ 228:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
+ 206              		.loc 1 228 0
+ 207 0016 00BF     		nop
+ 208 0018 1437     		adds	r7, r7, #20
+ 209              		.cfi_def_cfa_offset 4
+ 210 001a BD46     		mov	sp, r7
+ 211              		.cfi_def_cfa_register 13
+ 212              		@ sp needed
+ 213 001c 80BC     		pop	{r7}
+ 214              		.cfi_restore 7
+ 215              		.cfi_def_cfa_offset 0
+ 216 001e 7047     		bx	lr
+ 217              	.L11:
+ 218              		.align	2
+ 219              	.L10:
+ 220 0020 08ED00E0 		.word	-536810232
+ 221              		.cfi_endproc
+ 222              	.LFE67:
+ 223              		.size	isr_Timer_20ms_SetVector, .-isr_Timer_20ms_SetVector
+ 224              		.section	.text.isr_Timer_20ms_GetVector,"ax",%progbits
+ 225              		.align	2
+ 226              		.global	isr_Timer_20ms_GetVector
+ 227              		.thumb
+ 228              		.thumb_func
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 9
 
 
- 229:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
- 230:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_GetVector
- 231:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
- 232:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 233:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
- 234:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Gets the "address" of the current ISR vector for the Interrupt.
- 235:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 236:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
- 237:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 238:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 239:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
- 240:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Address of the ISR in the interrupt vector table.
- 241:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 242:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
- 243:Generated_Source\PSoC5/isr_Timer_20ms.c **** cyisraddress isr_Timer_20ms_GetVector(void)
- 244:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
- 229              		.loc 1 244 0
- 230              		.cfi_startproc
- 231              		@ args = 0, pretend = 0, frame = 8
- 232              		@ frame_needed = 1, uses_anonymous_args = 0
- 233              		@ link register save eliminated.
- 234 0000 80B4     		push	{r7}
- 235              		.cfi_def_cfa_offset 4
- 236              		.cfi_offset 7, -4
- 237 0002 83B0     		sub	sp, sp, #12
- 238              		.cfi_def_cfa_offset 16
- 239 0004 00AF     		add	r7, sp, #0
- 240              		.cfi_def_cfa_register 7
- 245:Generated_Source\PSoC5/isr_Timer_20ms.c ****     cyisraddress * ramVectorTable;
- 246:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 247:Generated_Source\PSoC5/isr_Timer_20ms.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
- 241              		.loc 1 247 0
- 242 0006 054B     		ldr	r3, .L14
- 243 0008 1B68     		ldr	r3, [r3]
- 244 000a 7B60     		str	r3, [r7, #4]
+ 229              		.type	isr_Timer_20ms_GetVector, %function
+ 230              	isr_Timer_20ms_GetVector:
+ 231              	.LFB68:
+ 229:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 230:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 231:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
+ 232:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_GetVector
+ 233:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
+ 234:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 235:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
+ 236:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Gets the "address" of the current ISR vector for the Interrupt.
+ 237:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 238:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
+ 239:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 240:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 241:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
+ 242:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Address of the ISR in the interrupt vector table.
+ 243:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 244:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
+ 245:Generated_Source\PSoC5/isr_Timer_20ms.c **** cyisraddress isr_Timer_20ms_GetVector(void)
+ 246:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
+ 232              		.loc 1 246 0
+ 233              		.cfi_startproc
+ 234              		@ args = 0, pretend = 0, frame = 8
+ 235              		@ frame_needed = 1, uses_anonymous_args = 0
+ 236              		@ link register save eliminated.
+ 237 0000 80B4     		push	{r7}
+ 238              		.cfi_def_cfa_offset 4
+ 239              		.cfi_offset 7, -4
+ 240 0002 83B0     		sub	sp, sp, #12
+ 241              		.cfi_def_cfa_offset 16
+ 242 0004 00AF     		add	r7, sp, #0
+ 243              		.cfi_def_cfa_register 7
+ 247:Generated_Source\PSoC5/isr_Timer_20ms.c ****     cyisraddress * ramVectorTable;
  248:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 249:Generated_Source\PSoC5/isr_Timer_20ms.c ****     return ramVectorTable[CYINT_IRQ_BASE + (uint32)isr_Timer_20ms__INTC_NUMBER];
- 245              		.loc 1 249 0
- 246 000c 7B68     		ldr	r3, [r7, #4]
- 247 000e 1B6D     		ldr	r3, [r3, #80]
- 250:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
- 248              		.loc 1 250 0
- 249 0010 1846     		mov	r0, r3
- 250 0012 0C37     		adds	r7, r7, #12
- 251              		.cfi_def_cfa_offset 4
- 252 0014 BD46     		mov	sp, r7
- 253              		.cfi_def_cfa_register 13
- 254              		@ sp needed
- 255 0016 80BC     		pop	{r7}
- 256              		.cfi_restore 7
- 257              		.cfi_def_cfa_offset 0
- 258 0018 7047     		bx	lr
- 259              	.L15:
- 260 001a 00BF     		.align	2
- 261              	.L14:
- 262 001c 08ED00E0 		.word	-536810232
- 263              		.cfi_endproc
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 10
+ 249:Generated_Source\PSoC5/isr_Timer_20ms.c ****     ramVectorTable = (cyisraddress *) *CYINT_VECT_TABLE;
+ 244              		.loc 1 249 0
+ 245 0006 054B     		ldr	r3, .L14
+ 246 0008 1B68     		ldr	r3, [r3]
+ 247 000a 7B60     		str	r3, [r7, #4]
+ 250:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 251:Generated_Source\PSoC5/isr_Timer_20ms.c ****     return ramVectorTable[CYINT_IRQ_BASE + (uint32)isr_Timer_20ms__INTC_NUMBER];
+ 248              		.loc 1 251 0
+ 249 000c 7B68     		ldr	r3, [r7, #4]
+ 250 000e 1B6D     		ldr	r3, [r3, #80]
+ 252:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
+ 251              		.loc 1 252 0
+ 252 0010 1846     		mov	r0, r3
+ 253 0012 0C37     		adds	r7, r7, #12
+ 254              		.cfi_def_cfa_offset 4
+ 255 0014 BD46     		mov	sp, r7
+ 256              		.cfi_def_cfa_register 13
+ 257              		@ sp needed
+ 258 0016 80BC     		pop	{r7}
+ 259              		.cfi_restore 7
+ 260              		.cfi_def_cfa_offset 0
+ 261 0018 7047     		bx	lr
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 10
 
 
- 264              	.LFE68:
- 265              		.size	isr_Timer_20ms_GetVector, .-isr_Timer_20ms_GetVector
- 266              		.section	.text.isr_Timer_20ms_SetPriority,"ax",%progbits
- 267              		.align	2
- 268              		.global	isr_Timer_20ms_SetPriority
- 269              		.thumb
- 270              		.thumb_func
- 271              		.type	isr_Timer_20ms_SetPriority, %function
- 272              	isr_Timer_20ms_SetPriority:
- 273              	.LFB69:
- 251:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 252:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 253:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
- 254:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_SetPriority
- 255:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
- 256:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 257:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
- 258:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Sets the Priority of the Interrupt. 
- 259:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 260:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Note calling isr_Timer_20ms_Start or isr_Timer_20ms_StartEx will 
- 261:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   override any effect this API would have had. This API should only be called
- 262:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   after isr_Timer_20ms_Start or isr_Timer_20ms_StartEx has been called. 
- 263:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   To set the initial priority for the component, use the Design-Wide Resources
- 264:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Interrupt Editor.
- 265:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 266:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Note This API has no effect on Non-maskable interrupt NMI).
+ 262              	.L15:
+ 263 001a 00BF     		.align	2
+ 264              	.L14:
+ 265 001c 08ED00E0 		.word	-536810232
+ 266              		.cfi_endproc
+ 267              	.LFE68:
+ 268              		.size	isr_Timer_20ms_GetVector, .-isr_Timer_20ms_GetVector
+ 269              		.section	.text.isr_Timer_20ms_SetPriority,"ax",%progbits
+ 270              		.align	2
+ 271              		.global	isr_Timer_20ms_SetPriority
+ 272              		.thumb
+ 273              		.thumb_func
+ 274              		.type	isr_Timer_20ms_SetPriority, %function
+ 275              	isr_Timer_20ms_SetPriority:
+ 276              	.LFB69:
+ 253:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 254:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 255:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
+ 256:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_SetPriority
+ 257:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
+ 258:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 259:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
+ 260:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Sets the Priority of the Interrupt. 
+ 261:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 262:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Note calling isr_Timer_20ms_Start or isr_Timer_20ms_StartEx will 
+ 263:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   override any effect this API would have had. This API should only be called
+ 264:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   after isr_Timer_20ms_Start or isr_Timer_20ms_StartEx has been called. 
+ 265:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   To set the initial priority for the component, use the Design-Wide Resources
+ 266:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Interrupt Editor.
  267:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 268:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
- 269:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   priority: Priority of the interrupt, 0 being the highest priority
- 270:Generated_Source\PSoC5/isr_Timer_20ms.c **** *             PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
- 271:Generated_Source\PSoC5/isr_Timer_20ms.c **** *             PSoC 4: Priority is from 0 to 3.
- 272:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 273:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
- 274:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 275:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 276:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
- 277:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_SetPriority(uint8 priority)
- 278:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
- 274              		.loc 1 278 0
- 275              		.cfi_startproc
- 276              		@ args = 0, pretend = 0, frame = 8
- 277              		@ frame_needed = 1, uses_anonymous_args = 0
- 278              		@ link register save eliminated.
- 279 0000 80B4     		push	{r7}
- 280              		.cfi_def_cfa_offset 4
- 281              		.cfi_offset 7, -4
- 282 0002 83B0     		sub	sp, sp, #12
- 283              		.cfi_def_cfa_offset 16
- 284 0004 00AF     		add	r7, sp, #0
- 285              		.cfi_def_cfa_register 7
- 286 0006 0346     		mov	r3, r0
- 287 0008 FB71     		strb	r3, [r7, #7]
- 279:Generated_Source\PSoC5/isr_Timer_20ms.c ****     *isr_Timer_20ms_INTC_PRIOR = priority << 5;
- 288              		.loc 1 279 0
- 289 000a 054A     		ldr	r2, .L17
- 290 000c FB79     		ldrb	r3, [r7, #7]
- 291 000e 5B01     		lsls	r3, r3, #5
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 11
+ 268:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Note This API has no effect on Non-maskable interrupt NMI).
+ 269:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 270:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
+ 271:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   priority: Priority of the interrupt, 0 being the highest priority
+ 272:Generated_Source\PSoC5/isr_Timer_20ms.c **** *             PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
+ 273:Generated_Source\PSoC5/isr_Timer_20ms.c **** *             PSoC 4: Priority is from 0 to 3.
+ 274:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 275:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
+ 276:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 277:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 278:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
+ 279:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_SetPriority(uint8 priority)
+ 280:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
+ 277              		.loc 1 280 0
+ 278              		.cfi_startproc
+ 279              		@ args = 0, pretend = 0, frame = 8
+ 280              		@ frame_needed = 1, uses_anonymous_args = 0
+ 281              		@ link register save eliminated.
+ 282 0000 80B4     		push	{r7}
+ 283              		.cfi_def_cfa_offset 4
+ 284              		.cfi_offset 7, -4
+ 285 0002 83B0     		sub	sp, sp, #12
+ 286              		.cfi_def_cfa_offset 16
+ 287 0004 00AF     		add	r7, sp, #0
+ 288              		.cfi_def_cfa_register 7
+ 289 0006 0346     		mov	r3, r0
+ 290 0008 FB71     		strb	r3, [r7, #7]
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 11
 
 
- 292 0010 DBB2     		uxtb	r3, r3
- 293 0012 1370     		strb	r3, [r2]
- 280:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
- 294              		.loc 1 280 0
- 295 0014 00BF     		nop
- 296 0016 0C37     		adds	r7, r7, #12
- 297              		.cfi_def_cfa_offset 4
- 298 0018 BD46     		mov	sp, r7
- 299              		.cfi_def_cfa_register 13
- 300              		@ sp needed
- 301 001a 80BC     		pop	{r7}
- 302              		.cfi_restore 7
- 303              		.cfi_def_cfa_offset 0
- 304 001c 7047     		bx	lr
- 305              	.L18:
- 306 001e 00BF     		.align	2
- 307              	.L17:
- 308 0020 04E400E0 		.word	-536812540
- 309              		.cfi_endproc
- 310              	.LFE69:
- 311              		.size	isr_Timer_20ms_SetPriority, .-isr_Timer_20ms_SetPriority
- 312              		.section	.text.isr_Timer_20ms_GetPriority,"ax",%progbits
- 313              		.align	2
- 314              		.global	isr_Timer_20ms_GetPriority
- 315              		.thumb
- 316              		.thumb_func
- 317              		.type	isr_Timer_20ms_GetPriority, %function
- 318              	isr_Timer_20ms_GetPriority:
- 319              	.LFB70:
- 281:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 282:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 283:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
- 284:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_GetPriority
- 285:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
- 286:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 287:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
- 288:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Gets the Priority of the Interrupt.
- 289:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 290:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
- 291:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 292:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 293:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
- 294:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Priority of the interrupt, 0 being the highest priority
- 295:Generated_Source\PSoC5/isr_Timer_20ms.c **** *    PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
- 296:Generated_Source\PSoC5/isr_Timer_20ms.c **** *    PSoC 4: Priority is from 0 to 3.
- 297:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 298:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
- 299:Generated_Source\PSoC5/isr_Timer_20ms.c **** uint8 isr_Timer_20ms_GetPriority(void)
- 300:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
- 320              		.loc 1 300 0
- 321              		.cfi_startproc
- 322              		@ args = 0, pretend = 0, frame = 8
- 323              		@ frame_needed = 1, uses_anonymous_args = 0
- 324              		@ link register save eliminated.
- 325 0000 80B4     		push	{r7}
- 326              		.cfi_def_cfa_offset 4
- 327              		.cfi_offset 7, -4
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 12
+ 281:Generated_Source\PSoC5/isr_Timer_20ms.c ****     *isr_Timer_20ms_INTC_PRIOR = priority << 5;
+ 291              		.loc 1 281 0
+ 292 000a 054A     		ldr	r2, .L17
+ 293 000c FB79     		ldrb	r3, [r7, #7]
+ 294 000e 5B01     		lsls	r3, r3, #5
+ 295 0010 DBB2     		uxtb	r3, r3
+ 296 0012 1370     		strb	r3, [r2]
+ 282:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
+ 297              		.loc 1 282 0
+ 298 0014 00BF     		nop
+ 299 0016 0C37     		adds	r7, r7, #12
+ 300              		.cfi_def_cfa_offset 4
+ 301 0018 BD46     		mov	sp, r7
+ 302              		.cfi_def_cfa_register 13
+ 303              		@ sp needed
+ 304 001a 80BC     		pop	{r7}
+ 305              		.cfi_restore 7
+ 306              		.cfi_def_cfa_offset 0
+ 307 001c 7047     		bx	lr
+ 308              	.L18:
+ 309 001e 00BF     		.align	2
+ 310              	.L17:
+ 311 0020 04E400E0 		.word	-536812540
+ 312              		.cfi_endproc
+ 313              	.LFE69:
+ 314              		.size	isr_Timer_20ms_SetPriority, .-isr_Timer_20ms_SetPriority
+ 315              		.section	.text.isr_Timer_20ms_GetPriority,"ax",%progbits
+ 316              		.align	2
+ 317              		.global	isr_Timer_20ms_GetPriority
+ 318              		.thumb
+ 319              		.thumb_func
+ 320              		.type	isr_Timer_20ms_GetPriority, %function
+ 321              	isr_Timer_20ms_GetPriority:
+ 322              	.LFB70:
+ 283:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 284:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 285:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
+ 286:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_GetPriority
+ 287:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
+ 288:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 289:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
+ 290:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Gets the Priority of the Interrupt.
+ 291:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 292:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
+ 293:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 294:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 295:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
+ 296:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Priority of the interrupt, 0 being the highest priority
+ 297:Generated_Source\PSoC5/isr_Timer_20ms.c **** *    PSoC 3 and PSoC 5LP: Priority is from 0 to 7.
+ 298:Generated_Source\PSoC5/isr_Timer_20ms.c **** *    PSoC 4: Priority is from 0 to 3.
+ 299:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 300:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
+ 301:Generated_Source\PSoC5/isr_Timer_20ms.c **** uint8 isr_Timer_20ms_GetPriority(void)
+ 302:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
+ 323              		.loc 1 302 0
+ 324              		.cfi_startproc
+ 325              		@ args = 0, pretend = 0, frame = 8
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 12
 
 
- 328 0002 83B0     		sub	sp, sp, #12
- 329              		.cfi_def_cfa_offset 16
- 330 0004 00AF     		add	r7, sp, #0
- 331              		.cfi_def_cfa_register 7
- 301:Generated_Source\PSoC5/isr_Timer_20ms.c ****     uint8 priority;
- 302:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 303:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 304:Generated_Source\PSoC5/isr_Timer_20ms.c ****     priority = *isr_Timer_20ms_INTC_PRIOR >> 5;
- 332              		.loc 1 304 0
- 333 0006 054B     		ldr	r3, .L21
- 334 0008 1B78     		ldrb	r3, [r3]
- 335 000a DBB2     		uxtb	r3, r3
- 336 000c 5B09     		lsrs	r3, r3, #5
- 337 000e FB71     		strb	r3, [r7, #7]
+ 326              		@ frame_needed = 1, uses_anonymous_args = 0
+ 327              		@ link register save eliminated.
+ 328 0000 80B4     		push	{r7}
+ 329              		.cfi_def_cfa_offset 4
+ 330              		.cfi_offset 7, -4
+ 331 0002 83B0     		sub	sp, sp, #12
+ 332              		.cfi_def_cfa_offset 16
+ 333 0004 00AF     		add	r7, sp, #0
+ 334              		.cfi_def_cfa_register 7
+ 303:Generated_Source\PSoC5/isr_Timer_20ms.c ****     uint8 priority;
+ 304:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
  305:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 306:Generated_Source\PSoC5/isr_Timer_20ms.c ****     return priority;
- 338              		.loc 1 306 0
- 339 0010 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
- 307:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
- 340              		.loc 1 307 0
- 341 0012 1846     		mov	r0, r3
- 342 0014 0C37     		adds	r7, r7, #12
- 343              		.cfi_def_cfa_offset 4
- 344 0016 BD46     		mov	sp, r7
- 345              		.cfi_def_cfa_register 13
- 346              		@ sp needed
- 347 0018 80BC     		pop	{r7}
- 348              		.cfi_restore 7
- 349              		.cfi_def_cfa_offset 0
- 350 001a 7047     		bx	lr
- 351              	.L22:
- 352              		.align	2
- 353              	.L21:
- 354 001c 04E400E0 		.word	-536812540
- 355              		.cfi_endproc
- 356              	.LFE70:
- 357              		.size	isr_Timer_20ms_GetPriority, .-isr_Timer_20ms_GetPriority
- 358              		.section	.text.isr_Timer_20ms_Enable,"ax",%progbits
- 359              		.align	2
- 360              		.global	isr_Timer_20ms_Enable
- 361              		.thumb
- 362              		.thumb_func
- 363              		.type	isr_Timer_20ms_Enable, %function
- 364              	isr_Timer_20ms_Enable:
- 365              	.LFB71:
- 308:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 309:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 310:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
- 311:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_Enable
- 312:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
- 313:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 314:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
- 315:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Enables the interrupt to the interrupt controller. Do not call this function
- 316:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   unless ISR_Start() has been called or the functionality of the ISR_Start() 
- 317:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   function, which sets the vector and the priority, has been called.
- 318:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 319:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 13
+ 306:Generated_Source\PSoC5/isr_Timer_20ms.c ****     priority = *isr_Timer_20ms_INTC_PRIOR >> 5;
+ 335              		.loc 1 306 0
+ 336 0006 054B     		ldr	r3, .L21
+ 337 0008 1B78     		ldrb	r3, [r3]
+ 338 000a DBB2     		uxtb	r3, r3
+ 339 000c 5B09     		lsrs	r3, r3, #5
+ 340 000e FB71     		strb	r3, [r7, #7]
+ 307:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 308:Generated_Source\PSoC5/isr_Timer_20ms.c ****     return priority;
+ 341              		.loc 1 308 0
+ 342 0010 FB79     		ldrb	r3, [r7, #7]	@ zero_extendqisi2
+ 309:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
+ 343              		.loc 1 309 0
+ 344 0012 1846     		mov	r0, r3
+ 345 0014 0C37     		adds	r7, r7, #12
+ 346              		.cfi_def_cfa_offset 4
+ 347 0016 BD46     		mov	sp, r7
+ 348              		.cfi_def_cfa_register 13
+ 349              		@ sp needed
+ 350 0018 80BC     		pop	{r7}
+ 351              		.cfi_restore 7
+ 352              		.cfi_def_cfa_offset 0
+ 353 001a 7047     		bx	lr
+ 354              	.L22:
+ 355              		.align	2
+ 356              	.L21:
+ 357 001c 04E400E0 		.word	-536812540
+ 358              		.cfi_endproc
+ 359              	.LFE70:
+ 360              		.size	isr_Timer_20ms_GetPriority, .-isr_Timer_20ms_GetPriority
+ 361              		.section	.text.isr_Timer_20ms_Enable,"ax",%progbits
+ 362              		.align	2
+ 363              		.global	isr_Timer_20ms_Enable
+ 364              		.thumb
+ 365              		.thumb_func
+ 366              		.type	isr_Timer_20ms_Enable, %function
+ 367              	isr_Timer_20ms_Enable:
+ 368              	.LFB71:
+ 310:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 311:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 312:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
+ 313:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_Enable
+ 314:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
+ 315:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 316:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 13
 
 
- 320:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 321:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 322:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
- 323:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 324:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 325:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
- 326:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_Enable(void)
- 327:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
- 366              		.loc 1 327 0
- 367              		.cfi_startproc
- 368              		@ args = 0, pretend = 0, frame = 0
- 369              		@ frame_needed = 1, uses_anonymous_args = 0
- 370              		@ link register save eliminated.
- 371 0000 80B4     		push	{r7}
- 372              		.cfi_def_cfa_offset 4
- 373              		.cfi_offset 7, -4
- 374 0002 00AF     		add	r7, sp, #0
- 375              		.cfi_def_cfa_register 7
- 328:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Enable the general interrupt. */
- 329:Generated_Source\PSoC5/isr_Timer_20ms.c ****     *isr_Timer_20ms_INTC_SET_EN = isr_Timer_20ms__INTC_MASK;
- 376              		.loc 1 329 0
- 377 0004 034B     		ldr	r3, .L24
- 378 0006 1022     		movs	r2, #16
- 379 0008 1A60     		str	r2, [r3]
- 330:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
- 380              		.loc 1 330 0
- 381 000a 00BF     		nop
- 382 000c BD46     		mov	sp, r7
- 383              		.cfi_def_cfa_register 13
- 384              		@ sp needed
- 385 000e 80BC     		pop	{r7}
- 386              		.cfi_restore 7
- 387              		.cfi_def_cfa_offset 0
- 388 0010 7047     		bx	lr
- 389              	.L25:
- 390 0012 00BF     		.align	2
- 391              	.L24:
- 392 0014 00E100E0 		.word	-536813312
- 393              		.cfi_endproc
- 394              	.LFE71:
- 395              		.size	isr_Timer_20ms_Enable, .-isr_Timer_20ms_Enable
- 396              		.section	.text.isr_Timer_20ms_GetState,"ax",%progbits
- 397              		.align	2
- 398              		.global	isr_Timer_20ms_GetState
- 399              		.thumb
- 400              		.thumb_func
- 401              		.type	isr_Timer_20ms_GetState, %function
- 402              	isr_Timer_20ms_GetState:
- 403              	.LFB72:
- 331:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 332:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 333:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
- 334:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_GetState
- 335:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
- 336:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 337:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
- 338:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Gets the state (enabled, disabled) of the Interrupt.
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 14
+ 317:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Enables the interrupt to the interrupt controller. Do not call this function
+ 318:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   unless ISR_Start() has been called or the functionality of the ISR_Start() 
+ 319:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   function, which sets the vector and the priority, has been called.
+ 320:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 321:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
+ 322:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 323:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 324:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
+ 325:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 326:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 327:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
+ 328:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_Enable(void)
+ 329:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
+ 369              		.loc 1 329 0
+ 370              		.cfi_startproc
+ 371              		@ args = 0, pretend = 0, frame = 0
+ 372              		@ frame_needed = 1, uses_anonymous_args = 0
+ 373              		@ link register save eliminated.
+ 374 0000 80B4     		push	{r7}
+ 375              		.cfi_def_cfa_offset 4
+ 376              		.cfi_offset 7, -4
+ 377 0002 00AF     		add	r7, sp, #0
+ 378              		.cfi_def_cfa_register 7
+ 330:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Enable the general interrupt. */
+ 331:Generated_Source\PSoC5/isr_Timer_20ms.c ****     *isr_Timer_20ms_INTC_SET_EN = isr_Timer_20ms__INTC_MASK;
+ 379              		.loc 1 331 0
+ 380 0004 034B     		ldr	r3, .L24
+ 381 0006 1022     		movs	r2, #16
+ 382 0008 1A60     		str	r2, [r3]
+ 332:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
+ 383              		.loc 1 332 0
+ 384 000a 00BF     		nop
+ 385 000c BD46     		mov	sp, r7
+ 386              		.cfi_def_cfa_register 13
+ 387              		@ sp needed
+ 388 000e 80BC     		pop	{r7}
+ 389              		.cfi_restore 7
+ 390              		.cfi_def_cfa_offset 0
+ 391 0010 7047     		bx	lr
+ 392              	.L25:
+ 393 0012 00BF     		.align	2
+ 394              	.L24:
+ 395 0014 00E100E0 		.word	-536813312
+ 396              		.cfi_endproc
+ 397              	.LFE71:
+ 398              		.size	isr_Timer_20ms_Enable, .-isr_Timer_20ms_Enable
+ 399              		.section	.text.isr_Timer_20ms_GetState,"ax",%progbits
+ 400              		.align	2
+ 401              		.global	isr_Timer_20ms_GetState
+ 402              		.thumb
+ 403              		.thumb_func
+ 404              		.type	isr_Timer_20ms_GetState, %function
+ 405              	isr_Timer_20ms_GetState:
+ 406              	.LFB72:
+ 333:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 334:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 335:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 14
 
 
- 339:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 340:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
- 341:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 342:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 343:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
- 344:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   1 if enabled, 0 if disabled.
- 345:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 346:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
- 347:Generated_Source\PSoC5/isr_Timer_20ms.c **** uint8 isr_Timer_20ms_GetState(void)
- 348:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
- 404              		.loc 1 348 0
- 405              		.cfi_startproc
- 406              		@ args = 0, pretend = 0, frame = 0
- 407              		@ frame_needed = 1, uses_anonymous_args = 0
- 408              		@ link register save eliminated.
- 409 0000 80B4     		push	{r7}
- 410              		.cfi_def_cfa_offset 4
- 411              		.cfi_offset 7, -4
- 412 0002 00AF     		add	r7, sp, #0
- 413              		.cfi_def_cfa_register 7
- 349:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Get the state of the general interrupt. */
- 350:Generated_Source\PSoC5/isr_Timer_20ms.c ****     return ((*isr_Timer_20ms_INTC_SET_EN & (uint32)isr_Timer_20ms__INTC_MASK) != 0u) ? 1u:0u;
- 414              		.loc 1 350 0
- 415 0004 064B     		ldr	r3, .L30
- 416 0006 1B68     		ldr	r3, [r3]
- 417 0008 03F01003 		and	r3, r3, #16
- 418 000c 002B     		cmp	r3, #0
- 419 000e 01D0     		beq	.L27
- 420              		.loc 1 350 0 is_stmt 0 discriminator 1
- 421 0010 0123     		movs	r3, #1
- 422 0012 00E0     		b	.L28
- 423              	.L27:
- 424              		.loc 1 350 0 discriminator 2
- 425 0014 0023     		movs	r3, #0
- 426              	.L28:
- 351:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
- 427              		.loc 1 351 0 is_stmt 1 discriminator 4
- 428 0016 1846     		mov	r0, r3
- 429 0018 BD46     		mov	sp, r7
- 430              		.cfi_def_cfa_register 13
- 431              		@ sp needed
- 432 001a 80BC     		pop	{r7}
- 433              		.cfi_restore 7
- 434              		.cfi_def_cfa_offset 0
- 435 001c 7047     		bx	lr
- 436              	.L31:
- 437 001e 00BF     		.align	2
- 438              	.L30:
- 439 0020 00E100E0 		.word	-536813312
- 440              		.cfi_endproc
- 441              	.LFE72:
- 442              		.size	isr_Timer_20ms_GetState, .-isr_Timer_20ms_GetState
- 443              		.section	.text.isr_Timer_20ms_Disable,"ax",%progbits
- 444              		.align	2
- 445              		.global	isr_Timer_20ms_Disable
- 446              		.thumb
- 447              		.thumb_func
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 15
+ 336:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_GetState
+ 337:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
+ 338:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 339:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
+ 340:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Gets the state (enabled, disabled) of the Interrupt.
+ 341:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 342:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
+ 343:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 344:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 345:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
+ 346:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   1 if enabled, 0 if disabled.
+ 347:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 348:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
+ 349:Generated_Source\PSoC5/isr_Timer_20ms.c **** uint8 isr_Timer_20ms_GetState(void)
+ 350:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
+ 407              		.loc 1 350 0
+ 408              		.cfi_startproc
+ 409              		@ args = 0, pretend = 0, frame = 0
+ 410              		@ frame_needed = 1, uses_anonymous_args = 0
+ 411              		@ link register save eliminated.
+ 412 0000 80B4     		push	{r7}
+ 413              		.cfi_def_cfa_offset 4
+ 414              		.cfi_offset 7, -4
+ 415 0002 00AF     		add	r7, sp, #0
+ 416              		.cfi_def_cfa_register 7
+ 351:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Get the state of the general interrupt. */
+ 352:Generated_Source\PSoC5/isr_Timer_20ms.c ****     return ((*isr_Timer_20ms_INTC_SET_EN & (uint32)isr_Timer_20ms__INTC_MASK) != 0u) ? 1u:0u;
+ 417              		.loc 1 352 0
+ 418 0004 064B     		ldr	r3, .L30
+ 419 0006 1B68     		ldr	r3, [r3]
+ 420 0008 03F01003 		and	r3, r3, #16
+ 421 000c 002B     		cmp	r3, #0
+ 422 000e 01D0     		beq	.L27
+ 423              		.loc 1 352 0 is_stmt 0 discriminator 1
+ 424 0010 0123     		movs	r3, #1
+ 425 0012 00E0     		b	.L28
+ 426              	.L27:
+ 427              		.loc 1 352 0 discriminator 2
+ 428 0014 0023     		movs	r3, #0
+ 429              	.L28:
+ 353:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
+ 430              		.loc 1 353 0 is_stmt 1 discriminator 4
+ 431 0016 1846     		mov	r0, r3
+ 432 0018 BD46     		mov	sp, r7
+ 433              		.cfi_def_cfa_register 13
+ 434              		@ sp needed
+ 435 001a 80BC     		pop	{r7}
+ 436              		.cfi_restore 7
+ 437              		.cfi_def_cfa_offset 0
+ 438 001c 7047     		bx	lr
+ 439              	.L31:
+ 440 001e 00BF     		.align	2
+ 441              	.L30:
+ 442 0020 00E100E0 		.word	-536813312
+ 443              		.cfi_endproc
+ 444              	.LFE72:
+ 445              		.size	isr_Timer_20ms_GetState, .-isr_Timer_20ms_GetState
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 15
 
 
- 448              		.type	isr_Timer_20ms_Disable, %function
- 449              	isr_Timer_20ms_Disable:
- 450              	.LFB73:
- 352:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 353:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 354:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
- 355:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_Disable
- 356:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
- 357:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 358:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
- 359:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Disables the Interrupt in the interrupt controller.
- 360:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 361:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
- 362:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 363:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 364:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
- 365:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 366:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 367:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
- 368:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_Disable(void)
- 369:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
- 451              		.loc 1 369 0
- 452              		.cfi_startproc
- 453              		@ args = 0, pretend = 0, frame = 0
- 454              		@ frame_needed = 1, uses_anonymous_args = 0
- 455              		@ link register save eliminated.
- 456 0000 80B4     		push	{r7}
- 457              		.cfi_def_cfa_offset 4
- 458              		.cfi_offset 7, -4
- 459 0002 00AF     		add	r7, sp, #0
- 460              		.cfi_def_cfa_register 7
- 370:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Disable the general interrupt. */
- 371:Generated_Source\PSoC5/isr_Timer_20ms.c ****     *isr_Timer_20ms_INTC_CLR_EN = isr_Timer_20ms__INTC_MASK;
- 461              		.loc 1 371 0
- 462 0004 034B     		ldr	r3, .L33
- 463 0006 1022     		movs	r2, #16
- 464 0008 1A60     		str	r2, [r3]
- 372:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
- 465              		.loc 1 372 0
- 466 000a 00BF     		nop
- 467 000c BD46     		mov	sp, r7
- 468              		.cfi_def_cfa_register 13
- 469              		@ sp needed
- 470 000e 80BC     		pop	{r7}
- 471              		.cfi_restore 7
- 472              		.cfi_def_cfa_offset 0
- 473 0010 7047     		bx	lr
- 474              	.L34:
- 475 0012 00BF     		.align	2
- 476              	.L33:
- 477 0014 80E100E0 		.word	-536813184
- 478              		.cfi_endproc
- 479              	.LFE73:
- 480              		.size	isr_Timer_20ms_Disable, .-isr_Timer_20ms_Disable
- 481              		.section	.text.isr_Timer_20ms_SetPending,"ax",%progbits
- 482              		.align	2
- 483              		.global	isr_Timer_20ms_SetPending
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 16
+ 446              		.section	.text.isr_Timer_20ms_Disable,"ax",%progbits
+ 447              		.align	2
+ 448              		.global	isr_Timer_20ms_Disable
+ 449              		.thumb
+ 450              		.thumb_func
+ 451              		.type	isr_Timer_20ms_Disable, %function
+ 452              	isr_Timer_20ms_Disable:
+ 453              	.LFB73:
+ 354:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 355:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 356:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
+ 357:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_Disable
+ 358:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
+ 359:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 360:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
+ 361:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Disables the Interrupt in the interrupt controller.
+ 362:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 363:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
+ 364:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 365:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 366:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
+ 367:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 368:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 369:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
+ 370:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_Disable(void)
+ 371:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
+ 454              		.loc 1 371 0
+ 455              		.cfi_startproc
+ 456              		@ args = 0, pretend = 0, frame = 0
+ 457              		@ frame_needed = 1, uses_anonymous_args = 0
+ 458              		@ link register save eliminated.
+ 459 0000 80B4     		push	{r7}
+ 460              		.cfi_def_cfa_offset 4
+ 461              		.cfi_offset 7, -4
+ 462 0002 00AF     		add	r7, sp, #0
+ 463              		.cfi_def_cfa_register 7
+ 372:Generated_Source\PSoC5/isr_Timer_20ms.c ****     /* Disable the general interrupt. */
+ 373:Generated_Source\PSoC5/isr_Timer_20ms.c ****     *isr_Timer_20ms_INTC_CLR_EN = isr_Timer_20ms__INTC_MASK;
+ 464              		.loc 1 373 0
+ 465 0004 034B     		ldr	r3, .L33
+ 466 0006 1022     		movs	r2, #16
+ 467 0008 1A60     		str	r2, [r3]
+ 374:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
+ 468              		.loc 1 374 0
+ 469 000a 00BF     		nop
+ 470 000c BD46     		mov	sp, r7
+ 471              		.cfi_def_cfa_register 13
+ 472              		@ sp needed
+ 473 000e 80BC     		pop	{r7}
+ 474              		.cfi_restore 7
+ 475              		.cfi_def_cfa_offset 0
+ 476 0010 7047     		bx	lr
+ 477              	.L34:
+ 478 0012 00BF     		.align	2
+ 479              	.L33:
+ 480 0014 80E100E0 		.word	-536813184
+ 481              		.cfi_endproc
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 16
 
 
- 484              		.thumb
- 485              		.thumb_func
- 486              		.type	isr_Timer_20ms_SetPending, %function
- 487              	isr_Timer_20ms_SetPending:
- 488              	.LFB74:
- 373:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 374:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 375:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
- 376:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_SetPending
- 377:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
- 378:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 379:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
- 380:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Causes the Interrupt to enter the pending state, a software method of
- 381:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   generating the interrupt.
- 382:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 383:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
- 384:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 385:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 386:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
- 387:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 388:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 389:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Side Effects:
- 390:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   If interrupts are enabled and the interrupt is set up properly, the ISR is
- 391:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   entered (depending on the priority of this interrupt and other pending 
- 392:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   interrupts).
- 393:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 394:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
- 395:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_SetPending(void)
- 396:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
- 489              		.loc 1 396 0
- 490              		.cfi_startproc
- 491              		@ args = 0, pretend = 0, frame = 0
- 492              		@ frame_needed = 1, uses_anonymous_args = 0
- 493              		@ link register save eliminated.
- 494 0000 80B4     		push	{r7}
- 495              		.cfi_def_cfa_offset 4
- 496              		.cfi_offset 7, -4
- 497 0002 00AF     		add	r7, sp, #0
- 498              		.cfi_def_cfa_register 7
- 397:Generated_Source\PSoC5/isr_Timer_20ms.c ****     *isr_Timer_20ms_INTC_SET_PD = isr_Timer_20ms__INTC_MASK;
- 499              		.loc 1 397 0
- 500 0004 034B     		ldr	r3, .L36
- 501 0006 1022     		movs	r2, #16
- 502 0008 1A60     		str	r2, [r3]
- 398:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
- 503              		.loc 1 398 0
- 504 000a 00BF     		nop
- 505 000c BD46     		mov	sp, r7
- 506              		.cfi_def_cfa_register 13
- 507              		@ sp needed
- 508 000e 80BC     		pop	{r7}
- 509              		.cfi_restore 7
- 510              		.cfi_def_cfa_offset 0
- 511 0010 7047     		bx	lr
- 512              	.L37:
- 513 0012 00BF     		.align	2
- 514              	.L36:
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 17
+ 482              	.LFE73:
+ 483              		.size	isr_Timer_20ms_Disable, .-isr_Timer_20ms_Disable
+ 484              		.section	.text.isr_Timer_20ms_SetPending,"ax",%progbits
+ 485              		.align	2
+ 486              		.global	isr_Timer_20ms_SetPending
+ 487              		.thumb
+ 488              		.thumb_func
+ 489              		.type	isr_Timer_20ms_SetPending, %function
+ 490              	isr_Timer_20ms_SetPending:
+ 491              	.LFB74:
+ 375:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 376:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 377:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
+ 378:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_SetPending
+ 379:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
+ 380:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 381:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
+ 382:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Causes the Interrupt to enter the pending state, a software method of
+ 383:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   generating the interrupt.
+ 384:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 385:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
+ 386:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 387:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 388:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
+ 389:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 390:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 391:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Side Effects:
+ 392:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   If interrupts are enabled and the interrupt is set up properly, the ISR is
+ 393:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   entered (depending on the priority of this interrupt and other pending 
+ 394:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   interrupts).
+ 395:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 396:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
+ 397:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_SetPending(void)
+ 398:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
+ 492              		.loc 1 398 0
+ 493              		.cfi_startproc
+ 494              		@ args = 0, pretend = 0, frame = 0
+ 495              		@ frame_needed = 1, uses_anonymous_args = 0
+ 496              		@ link register save eliminated.
+ 497 0000 80B4     		push	{r7}
+ 498              		.cfi_def_cfa_offset 4
+ 499              		.cfi_offset 7, -4
+ 500 0002 00AF     		add	r7, sp, #0
+ 501              		.cfi_def_cfa_register 7
+ 399:Generated_Source\PSoC5/isr_Timer_20ms.c ****     *isr_Timer_20ms_INTC_SET_PD = isr_Timer_20ms__INTC_MASK;
+ 502              		.loc 1 399 0
+ 503 0004 034B     		ldr	r3, .L36
+ 504 0006 1022     		movs	r2, #16
+ 505 0008 1A60     		str	r2, [r3]
+ 400:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
+ 506              		.loc 1 400 0
+ 507 000a 00BF     		nop
+ 508 000c BD46     		mov	sp, r7
+ 509              		.cfi_def_cfa_register 13
+ 510              		@ sp needed
+ 511 000e 80BC     		pop	{r7}
+ 512              		.cfi_restore 7
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 17
 
 
- 515 0014 00E200E0 		.word	-536813056
- 516              		.cfi_endproc
- 517              	.LFE74:
- 518              		.size	isr_Timer_20ms_SetPending, .-isr_Timer_20ms_SetPending
- 519              		.section	.text.isr_Timer_20ms_ClearPending,"ax",%progbits
- 520              		.align	2
- 521              		.global	isr_Timer_20ms_ClearPending
- 522              		.thumb
- 523              		.thumb_func
- 524              		.type	isr_Timer_20ms_ClearPending, %function
- 525              	isr_Timer_20ms_ClearPending:
- 526              	.LFB75:
- 399:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 400:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
- 401:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
- 402:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_ClearPending
- 403:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
- 404:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 405:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
- 406:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Clears a pending interrupt in the interrupt controller.
- 407:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 408:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Note Some interrupt sources are clear-on-read and require the block 
- 409:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   interrupt/status register to be read/cleared with the appropriate block API 
- 410:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   (GPIO, UART, and so on). Otherwise the ISR will continue to remain in 
- 411:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   pending state even though the interrupt itself is cleared using this API.
- 412:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 413:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
- 414:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 415:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 416:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
- 417:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
- 418:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
- 419:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
- 420:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_ClearPending(void)
- 421:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
- 527              		.loc 1 421 0
- 528              		.cfi_startproc
- 529              		@ args = 0, pretend = 0, frame = 0
- 530              		@ frame_needed = 1, uses_anonymous_args = 0
- 531              		@ link register save eliminated.
- 532 0000 80B4     		push	{r7}
- 533              		.cfi_def_cfa_offset 4
- 534              		.cfi_offset 7, -4
- 535 0002 00AF     		add	r7, sp, #0
- 536              		.cfi_def_cfa_register 7
- 422:Generated_Source\PSoC5/isr_Timer_20ms.c ****     *isr_Timer_20ms_INTC_CLR_PD = isr_Timer_20ms__INTC_MASK;
- 537              		.loc 1 422 0
- 538 0004 034B     		ldr	r3, .L39
- 539 0006 1022     		movs	r2, #16
- 540 0008 1A60     		str	r2, [r3]
- 423:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
- 541              		.loc 1 423 0
- 542 000a 00BF     		nop
- 543 000c BD46     		mov	sp, r7
- 544              		.cfi_def_cfa_register 13
- 545              		@ sp needed
- 546 000e 80BC     		pop	{r7}
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 18
+ 513              		.cfi_def_cfa_offset 0
+ 514 0010 7047     		bx	lr
+ 515              	.L37:
+ 516 0012 00BF     		.align	2
+ 517              	.L36:
+ 518 0014 00E200E0 		.word	-536813056
+ 519              		.cfi_endproc
+ 520              	.LFE74:
+ 521              		.size	isr_Timer_20ms_SetPending, .-isr_Timer_20ms_SetPending
+ 522              		.section	.text.isr_Timer_20ms_ClearPending,"ax",%progbits
+ 523              		.align	2
+ 524              		.global	isr_Timer_20ms_ClearPending
+ 525              		.thumb
+ 526              		.thumb_func
+ 527              		.type	isr_Timer_20ms_ClearPending, %function
+ 528              	isr_Timer_20ms_ClearPending:
+ 529              	.LFB75:
+ 401:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 402:Generated_Source\PSoC5/isr_Timer_20ms.c **** 
+ 403:Generated_Source\PSoC5/isr_Timer_20ms.c **** /*******************************************************************************
+ 404:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Function Name: isr_Timer_20ms_ClearPending
+ 405:Generated_Source\PSoC5/isr_Timer_20ms.c **** ********************************************************************************
+ 406:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 407:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Summary:
+ 408:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Clears a pending interrupt in the interrupt controller.
+ 409:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 410:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   Note Some interrupt sources are clear-on-read and require the block 
+ 411:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   interrupt/status register to be read/cleared with the appropriate block API 
+ 412:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   (GPIO, UART, and so on). Otherwise the ISR will continue to remain in 
+ 413:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   pending state even though the interrupt itself is cleared using this API.
+ 414:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 415:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Parameters:
+ 416:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 417:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 418:Generated_Source\PSoC5/isr_Timer_20ms.c **** * Return:
+ 419:Generated_Source\PSoC5/isr_Timer_20ms.c **** *   None
+ 420:Generated_Source\PSoC5/isr_Timer_20ms.c **** *
+ 421:Generated_Source\PSoC5/isr_Timer_20ms.c **** *******************************************************************************/
+ 422:Generated_Source\PSoC5/isr_Timer_20ms.c **** void isr_Timer_20ms_ClearPending(void)
+ 423:Generated_Source\PSoC5/isr_Timer_20ms.c **** {
+ 530              		.loc 1 423 0
+ 531              		.cfi_startproc
+ 532              		@ args = 0, pretend = 0, frame = 0
+ 533              		@ frame_needed = 1, uses_anonymous_args = 0
+ 534              		@ link register save eliminated.
+ 535 0000 80B4     		push	{r7}
+ 536              		.cfi_def_cfa_offset 4
+ 537              		.cfi_offset 7, -4
+ 538 0002 00AF     		add	r7, sp, #0
+ 539              		.cfi_def_cfa_register 7
+ 424:Generated_Source\PSoC5/isr_Timer_20ms.c ****     *isr_Timer_20ms_INTC_CLR_PD = isr_Timer_20ms__INTC_MASK;
+ 540              		.loc 1 424 0
+ 541 0004 034B     		ldr	r3, .L39
+ 542 0006 1022     		movs	r2, #16
+ 543 0008 1A60     		str	r2, [r3]
+ 425:Generated_Source\PSoC5/isr_Timer_20ms.c **** }
+ 544              		.loc 1 425 0
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 18
 
 
- 547              		.cfi_restore 7
- 548              		.cfi_def_cfa_offset 0
- 549 0010 7047     		bx	lr
- 550              	.L40:
- 551 0012 00BF     		.align	2
- 552              	.L39:
- 553 0014 80E200E0 		.word	-536812928
- 554              		.cfi_endproc
- 555              	.LFE75:
- 556              		.size	isr_Timer_20ms_ClearPending, .-isr_Timer_20ms_ClearPending
- 557              		.text
- 558              	.Letext0:
- 559              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 560              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 561              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
- 562              		.file 5 "Generated_Source\\PSoC5/core_cm3.h"
- 563              		.section	.debug_info,"",%progbits
- 564              	.Ldebug_info0:
- 565 0000 64020000 		.4byte	0x264
- 566 0004 0400     		.2byte	0x4
- 567 0006 00000000 		.4byte	.Ldebug_abbrev0
- 568 000a 04       		.byte	0x4
- 569 000b 01       		.uleb128 0x1
- 570 000c 06000000 		.4byte	.LASF36
- 571 0010 0C       		.byte	0xc
- 572 0011 EC020000 		.4byte	.LASF37
- 573 0015 4A010000 		.4byte	.LASF38
- 574 0019 00000000 		.4byte	.Ldebug_ranges0+0
- 575 001d 00000000 		.4byte	0
- 576 0021 00000000 		.4byte	.Ldebug_line0
- 577 0025 02       		.uleb128 0x2
- 578 0026 04       		.byte	0x4
- 579 0027 05       		.byte	0x5
- 580 0028 696E7400 		.ascii	"int\000"
- 581 002c 03       		.uleb128 0x3
- 582 002d 04       		.byte	0x4
- 583 002e 07       		.byte	0x7
- 584 002f FC010000 		.4byte	.LASF0
- 585 0033 03       		.uleb128 0x3
- 586 0034 08       		.byte	0x8
- 587 0035 05       		.byte	0x5
- 588 0036 CA020000 		.4byte	.LASF1
- 589 003a 03       		.uleb128 0x3
- 590 003b 08       		.byte	0x8
- 591 003c 04       		.byte	0x4
- 592 003d 2D030000 		.4byte	.LASF2
- 593 0041 03       		.uleb128 0x3
- 594 0042 01       		.byte	0x1
- 595 0043 06       		.byte	0x6
- 596 0044 39030000 		.4byte	.LASF3
- 597 0048 03       		.uleb128 0x3
- 598 0049 01       		.byte	0x1
- 599 004a 08       		.byte	0x8
- 600 004b EF000000 		.4byte	.LASF4
- 601 004f 03       		.uleb128 0x3
- 602 0050 02       		.byte	0x2
- 603 0051 05       		.byte	0x5
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 19
+ 545 000a 00BF     		nop
+ 546 000c BD46     		mov	sp, r7
+ 547              		.cfi_def_cfa_register 13
+ 548              		@ sp needed
+ 549 000e 80BC     		pop	{r7}
+ 550              		.cfi_restore 7
+ 551              		.cfi_def_cfa_offset 0
+ 552 0010 7047     		bx	lr
+ 553              	.L40:
+ 554 0012 00BF     		.align	2
+ 555              	.L39:
+ 556 0014 80E200E0 		.word	-536812928
+ 557              		.cfi_endproc
+ 558              	.LFE75:
+ 559              		.size	isr_Timer_20ms_ClearPending, .-isr_Timer_20ms_ClearPending
+ 560              		.text
+ 561              	.Letext0:
+ 562              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 563              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 564              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 565              		.file 5 "./CommonVariables.h"
+ 566              		.file 6 "Generated_Source\\PSoC5/core_cm3.h"
+ 567              		.section	.debug_info,"",%progbits
+ 568              	.Ldebug_info0:
+ 569 0000 A6020000 		.4byte	0x2a6
+ 570 0004 0400     		.2byte	0x4
+ 571 0006 00000000 		.4byte	.Ldebug_abbrev0
+ 572 000a 04       		.byte	0x4
+ 573 000b 01       		.uleb128 0x1
+ 574 000c 06000000 		.4byte	.LASF41
+ 575 0010 0C       		.byte	0xc
+ 576 0011 09030000 		.4byte	.LASF42
+ 577 0015 67010000 		.4byte	.LASF43
+ 578 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 579 001d 00000000 		.4byte	0
+ 580 0021 00000000 		.4byte	.Ldebug_line0
+ 581 0025 02       		.uleb128 0x2
+ 582 0026 04       		.byte	0x4
+ 583 0027 05       		.byte	0x5
+ 584 0028 696E7400 		.ascii	"int\000"
+ 585 002c 03       		.uleb128 0x3
+ 586 002d 04       		.byte	0x4
+ 587 002e 07       		.byte	0x7
+ 588 002f 19020000 		.4byte	.LASF0
+ 589 0033 03       		.uleb128 0x3
+ 590 0034 08       		.byte	0x8
+ 591 0035 05       		.byte	0x5
+ 592 0036 E7020000 		.4byte	.LASF1
+ 593 003a 03       		.uleb128 0x3
+ 594 003b 08       		.byte	0x8
+ 595 003c 04       		.byte	0x4
+ 596 003d 5E030000 		.4byte	.LASF2
+ 597 0041 03       		.uleb128 0x3
+ 598 0042 01       		.byte	0x1
+ 599 0043 06       		.byte	0x6
+ 600 0044 6A030000 		.4byte	.LASF3
+ 601 0048 03       		.uleb128 0x3
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 19
 
 
- 604 0052 14030000 		.4byte	.LASF5
- 605 0056 03       		.uleb128 0x3
- 606 0057 02       		.byte	0x2
- 607 0058 07       		.byte	0x7
- 608 0059 1C010000 		.4byte	.LASF6
- 609 005d 04       		.uleb128 0x4
- 610 005e C9000000 		.4byte	.LASF12
- 611 0062 02       		.byte	0x2
- 612 0063 3F       		.byte	0x3f
- 613 0064 68000000 		.4byte	0x68
- 614 0068 03       		.uleb128 0x3
- 615 0069 04       		.byte	0x4
- 616 006a 05       		.byte	0x5
- 617 006b 24030000 		.4byte	.LASF7
- 618 006f 03       		.uleb128 0x3
- 619 0070 04       		.byte	0x4
- 620 0071 07       		.byte	0x7
- 621 0072 0A010000 		.4byte	.LASF8
- 622 0076 03       		.uleb128 0x3
- 623 0077 08       		.byte	0x8
- 624 0078 07       		.byte	0x7
- 625 0079 37020000 		.4byte	.LASF9
- 626 007d 03       		.uleb128 0x3
- 627 007e 04       		.byte	0x4
- 628 007f 07       		.byte	0x7
- 629 0080 AA020000 		.4byte	.LASF10
- 630 0084 03       		.uleb128 0x3
- 631 0085 01       		.byte	0x1
- 632 0086 08       		.byte	0x8
- 633 0087 D8020000 		.4byte	.LASF11
- 634 008b 05       		.uleb128 0x5
- 635 008c 04       		.byte	0x4
- 636 008d 91000000 		.4byte	0x91
- 637 0091 06       		.uleb128 0x6
- 638 0092 04       		.uleb128 0x4
- 639 0093 A2020000 		.4byte	.LASF13
- 640 0097 03       		.byte	0x3
- 641 0098 2C       		.byte	0x2c
- 642 0099 5D000000 		.4byte	0x5d
- 643 009d 07       		.uleb128 0x7
- 644 009e 1E030000 		.4byte	.LASF14
- 645 00a2 04       		.byte	0x4
- 646 00a3 E401     		.2byte	0x1e4
- 647 00a5 48000000 		.4byte	0x48
- 648 00a9 07       		.uleb128 0x7
- 649 00aa DE010000 		.4byte	.LASF15
- 650 00ae 04       		.byte	0x4
- 651 00af E601     		.2byte	0x1e6
- 652 00b1 6F000000 		.4byte	0x6f
- 653 00b5 03       		.uleb128 0x3
- 654 00b6 04       		.byte	0x4
- 655 00b7 04       		.byte	0x4
- 656 00b8 E9000000 		.4byte	.LASF16
- 657 00bc 03       		.uleb128 0x3
- 658 00bd 08       		.byte	0x8
- 659 00be 04       		.byte	0x4
- 660 00bf 9B010000 		.4byte	.LASF17
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 20
+ 602 0049 01       		.byte	0x1
+ 603 004a 08       		.byte	0x8
+ 604 004b 0C010000 		.4byte	.LASF4
+ 605 004f 03       		.uleb128 0x3
+ 606 0050 02       		.byte	0x2
+ 607 0051 05       		.byte	0x5
+ 608 0052 31030000 		.4byte	.LASF5
+ 609 0056 03       		.uleb128 0x3
+ 610 0057 02       		.byte	0x2
+ 611 0058 07       		.byte	0x7
+ 612 0059 39010000 		.4byte	.LASF6
+ 613 005d 04       		.uleb128 0x4
+ 614 005e D0000000 		.4byte	.LASF12
+ 615 0062 02       		.byte	0x2
+ 616 0063 3F       		.byte	0x3f
+ 617 0064 68000000 		.4byte	0x68
+ 618 0068 03       		.uleb128 0x3
+ 619 0069 04       		.byte	0x4
+ 620 006a 05       		.byte	0x5
+ 621 006b 41030000 		.4byte	.LASF7
+ 622 006f 03       		.uleb128 0x3
+ 623 0070 04       		.byte	0x4
+ 624 0071 07       		.byte	0x7
+ 625 0072 27010000 		.4byte	.LASF8
+ 626 0076 03       		.uleb128 0x3
+ 627 0077 08       		.byte	0x8
+ 628 0078 07       		.byte	0x7
+ 629 0079 54020000 		.4byte	.LASF9
+ 630 007d 03       		.uleb128 0x3
+ 631 007e 04       		.byte	0x4
+ 632 007f 07       		.byte	0x7
+ 633 0080 C7020000 		.4byte	.LASF10
+ 634 0084 03       		.uleb128 0x3
+ 635 0085 01       		.byte	0x1
+ 636 0086 08       		.byte	0x8
+ 637 0087 F5020000 		.4byte	.LASF11
+ 638 008b 05       		.uleb128 0x5
+ 639 008c 04       		.byte	0x4
+ 640 008d 91000000 		.4byte	0x91
+ 641 0091 06       		.uleb128 0x6
+ 642 0092 04       		.uleb128 0x4
+ 643 0093 BF020000 		.4byte	.LASF13
+ 644 0097 03       		.byte	0x3
+ 645 0098 2C       		.byte	0x2c
+ 646 0099 5D000000 		.4byte	0x5d
+ 647 009d 07       		.uleb128 0x7
+ 648 009e 3B030000 		.4byte	.LASF14
+ 649 00a2 04       		.byte	0x4
+ 650 00a3 E401     		.2byte	0x1e4
+ 651 00a5 48000000 		.4byte	0x48
+ 652 00a9 07       		.uleb128 0x7
+ 653 00aa FB010000 		.4byte	.LASF15
+ 654 00ae 04       		.byte	0x4
+ 655 00af E601     		.2byte	0x1e6
+ 656 00b1 6F000000 		.4byte	0x6f
+ 657 00b5 03       		.uleb128 0x3
+ 658 00b6 04       		.byte	0x4
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 20
 
 
- 661 00c3 07       		.uleb128 0x7
- 662 00c4 FD000000 		.4byte	.LASF18
- 663 00c8 04       		.byte	0x4
- 664 00c9 8E02     		.2byte	0x28e
- 665 00cb CF000000 		.4byte	0xcf
- 666 00cf 08       		.uleb128 0x8
- 667 00d0 9D000000 		.4byte	0x9d
- 668 00d4 07       		.uleb128 0x7
- 669 00d5 00000000 		.4byte	.LASF19
- 670 00d9 04       		.byte	0x4
- 671 00da 9002     		.2byte	0x290
- 672 00dc E0000000 		.4byte	0xe0
- 673 00e0 08       		.uleb128 0x8
- 674 00e1 A9000000 		.4byte	0xa9
- 675 00e5 07       		.uleb128 0x7
- 676 00e6 66020000 		.4byte	.LASF20
- 677 00ea 04       		.byte	0x4
- 678 00eb A002     		.2byte	0x2a0
- 679 00ed 8B000000 		.4byte	0x8b
- 680 00f1 09       		.uleb128 0x9
- 681 00f2 09020000 		.4byte	.LASF21
- 682 00f6 01       		.byte	0x1
- 683 00f7 45       		.byte	0x45
- 684 00f8 00000000 		.4byte	.LFB63
- 685 00fc 20000000 		.4byte	.LFE63-.LFB63
- 686 0100 01       		.uleb128 0x1
- 687 0101 9C       		.byte	0x9c
- 688 0102 0A       		.uleb128 0xa
- 689 0103 E5010000 		.4byte	.LASF24
- 690 0107 01       		.byte	0x1
- 691 0108 70       		.byte	0x70
- 692 0109 00000000 		.4byte	.LFB64
- 693 010d 24000000 		.4byte	.LFE64-.LFB64
- 694 0111 01       		.uleb128 0x1
- 695 0112 9C       		.byte	0x9c
- 696 0113 26010000 		.4byte	0x126
- 697 0117 0B       		.uleb128 0xb
- 698 0118 02010000 		.4byte	.LASF26
- 699 011c 01       		.byte	0x1
- 700 011d 70       		.byte	0x70
- 701 011e E5000000 		.4byte	0xe5
- 702 0122 02       		.uleb128 0x2
- 703 0123 91       		.byte	0x91
- 704 0124 74       		.sleb128 -12
- 705 0125 00       		.byte	0
- 706 0126 09       		.uleb128 0x9
- 707 0127 8E020000 		.4byte	.LASF22
- 708 012b 01       		.byte	0x1
- 709 012c 8E       		.byte	0x8e
- 710 012d 00000000 		.4byte	.LFB65
- 711 0131 18000000 		.4byte	.LFE65-.LFB65
- 712 0135 01       		.uleb128 0x1
- 713 0136 9C       		.byte	0x9c
- 714 0137 09       		.uleb128 0x9
- 715 0138 1E020000 		.4byte	.LASF23
- 716 013c 01       		.byte	0x1
- 717 013d A8       		.byte	0xa8
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 21
+ 659 00b7 04       		.byte	0x4
+ 660 00b8 06010000 		.4byte	.LASF16
+ 661 00bc 03       		.uleb128 0x3
+ 662 00bd 08       		.byte	0x8
+ 663 00be 04       		.byte	0x4
+ 664 00bf B8010000 		.4byte	.LASF17
+ 665 00c3 07       		.uleb128 0x7
+ 666 00c4 1A010000 		.4byte	.LASF18
+ 667 00c8 04       		.byte	0x4
+ 668 00c9 8E02     		.2byte	0x28e
+ 669 00cb CF000000 		.4byte	0xcf
+ 670 00cf 08       		.uleb128 0x8
+ 671 00d0 9D000000 		.4byte	0x9d
+ 672 00d4 07       		.uleb128 0x7
+ 673 00d5 00000000 		.4byte	.LASF19
+ 674 00d9 04       		.byte	0x4
+ 675 00da 9002     		.2byte	0x290
+ 676 00dc E0000000 		.4byte	0xe0
+ 677 00e0 08       		.uleb128 0x8
+ 678 00e1 A9000000 		.4byte	0xa9
+ 679 00e5 07       		.uleb128 0x7
+ 680 00e6 83020000 		.4byte	.LASF20
+ 681 00ea 04       		.byte	0x4
+ 682 00eb A002     		.2byte	0x2a0
+ 683 00ed 8B000000 		.4byte	0x8b
+ 684 00f1 09       		.uleb128 0x9
+ 685 00f2 4F030000 		.4byte	.LASF44
+ 686 00f6 03       		.byte	0x3
+ 687 00f7 05       		.byte	0x5
+ 688 00f8 10       		.byte	0x10
+ 689 00f9 22010000 		.4byte	0x122
+ 690 00fd 0A       		.uleb128 0xa
+ 691 00fe F9000000 		.4byte	.LASF21
+ 692 0102 05       		.byte	0x5
+ 693 0103 12       		.byte	0x12
+ 694 0104 9D000000 		.4byte	0x9d
+ 695 0108 00       		.byte	0
+ 696 0109 0A       		.uleb128 0xa
+ 697 010a DA000000 		.4byte	.LASF22
+ 698 010e 05       		.byte	0x5
+ 699 010f 13       		.byte	0x13
+ 700 0110 9D000000 		.4byte	0x9d
+ 701 0114 01       		.byte	0x1
+ 702 0115 0A       		.uleb128 0xa
+ 703 0116 C9000000 		.4byte	.LASF23
+ 704 011a 05       		.byte	0x5
+ 705 011b 14       		.byte	0x14
+ 706 011c 9D000000 		.4byte	0x9d
+ 707 0120 02       		.byte	0x2
+ 708 0121 00       		.byte	0
+ 709 0122 0B       		.uleb128 0xb
+ 710 0123 26020000 		.4byte	.LASF24
+ 711 0127 01       		.byte	0x1
+ 712 0128 46       		.byte	0x46
+ 713 0129 00000000 		.4byte	.LFB63
+ 714 012d 20000000 		.4byte	.LFE63-.LFB63
+ 715 0131 01       		.uleb128 0x1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 21
 
 
- 718 013e 00000000 		.4byte	.LFB66
- 719 0142 28000000 		.4byte	.LFE66-.LFB66
- 720 0146 01       		.uleb128 0x1
- 721 0147 9C       		.byte	0x9c
- 722 0148 0C       		.uleb128 0xc
- 723 0149 A2010000 		.4byte	.LASF25
- 724 014d 01       		.byte	0x1
- 725 014e DB       		.byte	0xdb
- 726 014f 00000000 		.4byte	.LFB67
- 727 0153 24000000 		.4byte	.LFE67-.LFB67
- 728 0157 01       		.uleb128 0x1
- 729 0158 9C       		.byte	0x9c
- 730 0159 7A010000 		.4byte	0x17a
- 731 015d 0B       		.uleb128 0xb
- 732 015e 02010000 		.4byte	.LASF26
- 733 0162 01       		.byte	0x1
- 734 0163 DB       		.byte	0xdb
- 735 0164 E5000000 		.4byte	0xe5
- 736 0168 02       		.uleb128 0x2
- 737 0169 91       		.byte	0x91
- 738 016a 6C       		.sleb128 -20
- 739 016b 0D       		.uleb128 0xd
- 740 016c DD020000 		.4byte	.LASF27
- 741 0170 01       		.byte	0x1
- 742 0171 DD       		.byte	0xdd
- 743 0172 7A010000 		.4byte	0x17a
- 744 0176 02       		.uleb128 0x2
- 745 0177 91       		.byte	0x91
- 746 0178 74       		.sleb128 -12
- 747 0179 00       		.byte	0
- 748 017a 05       		.uleb128 0x5
- 749 017b 04       		.byte	0x4
- 750 017c E5000000 		.4byte	0xe5
- 751 0180 0E       		.uleb128 0xe
- 752 0181 B0000000 		.4byte	.LASF30
- 753 0185 01       		.byte	0x1
- 754 0186 F3       		.byte	0xf3
- 755 0187 E5000000 		.4byte	0xe5
- 756 018b 00000000 		.4byte	.LFB68
- 757 018f 20000000 		.4byte	.LFE68-.LFB68
- 758 0193 01       		.uleb128 0x1
- 759 0194 9C       		.byte	0x9c
- 760 0195 A8010000 		.4byte	0x1a8
- 761 0199 0D       		.uleb128 0xd
- 762 019a DD020000 		.4byte	.LASF27
- 763 019e 01       		.byte	0x1
- 764 019f F5       		.byte	0xf5
- 765 01a0 7A010000 		.4byte	0x17a
- 766 01a4 02       		.uleb128 0x2
- 767 01a5 91       		.byte	0x91
- 768 01a6 74       		.sleb128 -12
- 769 01a7 00       		.byte	0
- 770 01a8 0F       		.uleb128 0xf
- 771 01a9 2F010000 		.4byte	.LASF28
- 772 01ad 01       		.byte	0x1
- 773 01ae 1501     		.2byte	0x115
- 774 01b0 00000000 		.4byte	.LFB69
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 22
+ 716 0132 9C       		.byte	0x9c
+ 717 0133 0C       		.uleb128 0xc
+ 718 0134 02020000 		.4byte	.LASF27
+ 719 0138 01       		.byte	0x1
+ 720 0139 71       		.byte	0x71
+ 721 013a 00000000 		.4byte	.LFB64
+ 722 013e 24000000 		.4byte	.LFE64-.LFB64
+ 723 0142 01       		.uleb128 0x1
+ 724 0143 9C       		.byte	0x9c
+ 725 0144 57010000 		.4byte	0x157
+ 726 0148 0D       		.uleb128 0xd
+ 727 0149 1F010000 		.4byte	.LASF29
+ 728 014d 01       		.byte	0x1
+ 729 014e 71       		.byte	0x71
+ 730 014f E5000000 		.4byte	0xe5
+ 731 0153 02       		.uleb128 0x2
+ 732 0154 91       		.byte	0x91
+ 733 0155 74       		.sleb128 -12
+ 734 0156 00       		.byte	0
+ 735 0157 0B       		.uleb128 0xb
+ 736 0158 AB020000 		.4byte	.LASF25
+ 737 015c 01       		.byte	0x1
+ 738 015d 8F       		.byte	0x8f
+ 739 015e 00000000 		.4byte	.LFB65
+ 740 0162 18000000 		.4byte	.LFE65-.LFB65
+ 741 0166 01       		.uleb128 0x1
+ 742 0167 9C       		.byte	0x9c
+ 743 0168 0B       		.uleb128 0xb
+ 744 0169 3B020000 		.4byte	.LASF26
+ 745 016d 01       		.byte	0x1
+ 746 016e A9       		.byte	0xa9
+ 747 016f 00000000 		.4byte	.LFB66
+ 748 0173 2C000000 		.4byte	.LFE66-.LFB66
+ 749 0177 01       		.uleb128 0x1
+ 750 0178 9C       		.byte	0x9c
+ 751 0179 0E       		.uleb128 0xe
+ 752 017a BF010000 		.4byte	.LASF28
+ 753 017e 01       		.byte	0x1
+ 754 017f DD       		.byte	0xdd
+ 755 0180 00000000 		.4byte	.LFB67
+ 756 0184 24000000 		.4byte	.LFE67-.LFB67
+ 757 0188 01       		.uleb128 0x1
+ 758 0189 9C       		.byte	0x9c
+ 759 018a AB010000 		.4byte	0x1ab
+ 760 018e 0D       		.uleb128 0xd
+ 761 018f 1F010000 		.4byte	.LASF29
+ 762 0193 01       		.byte	0x1
+ 763 0194 DD       		.byte	0xdd
+ 764 0195 E5000000 		.4byte	0xe5
+ 765 0199 02       		.uleb128 0x2
+ 766 019a 91       		.byte	0x91
+ 767 019b 6C       		.sleb128 -20
+ 768 019c 0F       		.uleb128 0xf
+ 769 019d FA020000 		.4byte	.LASF30
+ 770 01a1 01       		.byte	0x1
+ 771 01a2 DF       		.byte	0xdf
+ 772 01a3 AB010000 		.4byte	0x1ab
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 22
 
 
- 775 01b4 24000000 		.4byte	.LFE69-.LFB69
- 776 01b8 01       		.uleb128 0x1
- 777 01b9 9C       		.byte	0x9c
- 778 01ba CE010000 		.4byte	0x1ce
- 779 01be 10       		.uleb128 0x10
- 780 01bf D5010000 		.4byte	.LASF29
- 781 01c3 01       		.byte	0x1
- 782 01c4 1501     		.2byte	0x115
- 783 01c6 9D000000 		.4byte	0x9d
- 784 01ca 02       		.uleb128 0x2
- 785 01cb 91       		.byte	0x91
- 786 01cc 77       		.sleb128 -9
- 787 01cd 00       		.byte	0
- 788 01ce 11       		.uleb128 0x11
- 789 01cf 73020000 		.4byte	.LASF31
- 790 01d3 01       		.byte	0x1
- 791 01d4 2B01     		.2byte	0x12b
- 792 01d6 9D000000 		.4byte	0x9d
- 793 01da 00000000 		.4byte	.LFB70
- 794 01de 20000000 		.4byte	.LFE70-.LFB70
- 795 01e2 01       		.uleb128 0x1
- 796 01e3 9C       		.byte	0x9c
- 797 01e4 F8010000 		.4byte	0x1f8
- 798 01e8 12       		.uleb128 0x12
- 799 01e9 D5010000 		.4byte	.LASF29
- 800 01ed 01       		.byte	0x1
- 801 01ee 2D01     		.2byte	0x12d
- 802 01f0 9D000000 		.4byte	0x9d
- 803 01f4 02       		.uleb128 0x2
- 804 01f5 91       		.byte	0x91
- 805 01f6 77       		.sleb128 -9
- 806 01f7 00       		.byte	0
- 807 01f8 13       		.uleb128 0x13
- 808 01f9 D3000000 		.4byte	.LASF32
- 809 01fd 01       		.byte	0x1
- 810 01fe 4601     		.2byte	0x146
- 811 0200 00000000 		.4byte	.LFB71
- 812 0204 18000000 		.4byte	.LFE71-.LFB71
- 813 0208 01       		.uleb128 0x1
- 814 0209 9C       		.byte	0x9c
- 815 020a 14       		.uleb128 0x14
- 816 020b 4E020000 		.4byte	.LASF39
- 817 020f 01       		.byte	0x1
- 818 0210 5B01     		.2byte	0x15b
- 819 0212 9D000000 		.4byte	0x9d
- 820 0216 00000000 		.4byte	.LFB72
- 821 021a 24000000 		.4byte	.LFE72-.LFB72
- 822 021e 01       		.uleb128 0x1
- 823 021f 9C       		.byte	0x9c
- 824 0220 13       		.uleb128 0x13
- 825 0221 B3020000 		.4byte	.LASF33
- 826 0225 01       		.byte	0x1
- 827 0226 7001     		.2byte	0x170
- 828 0228 00000000 		.4byte	.LFB73
- 829 022c 18000000 		.4byte	.LFE73-.LFB73
- 830 0230 01       		.uleb128 0x1
- 831 0231 9C       		.byte	0x9c
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 23
+ 773 01a7 02       		.uleb128 0x2
+ 774 01a8 91       		.byte	0x91
+ 775 01a9 74       		.sleb128 -12
+ 776 01aa 00       		.byte	0
+ 777 01ab 05       		.uleb128 0x5
+ 778 01ac 04       		.byte	0x4
+ 779 01ad E5000000 		.4byte	0xe5
+ 780 01b1 10       		.uleb128 0x10
+ 781 01b2 B0000000 		.4byte	.LASF33
+ 782 01b6 01       		.byte	0x1
+ 783 01b7 F5       		.byte	0xf5
+ 784 01b8 E5000000 		.4byte	0xe5
+ 785 01bc 00000000 		.4byte	.LFB68
+ 786 01c0 20000000 		.4byte	.LFE68-.LFB68
+ 787 01c4 01       		.uleb128 0x1
+ 788 01c5 9C       		.byte	0x9c
+ 789 01c6 D9010000 		.4byte	0x1d9
+ 790 01ca 0F       		.uleb128 0xf
+ 791 01cb FA020000 		.4byte	.LASF30
+ 792 01cf 01       		.byte	0x1
+ 793 01d0 F7       		.byte	0xf7
+ 794 01d1 AB010000 		.4byte	0x1ab
+ 795 01d5 02       		.uleb128 0x2
+ 796 01d6 91       		.byte	0x91
+ 797 01d7 74       		.sleb128 -12
+ 798 01d8 00       		.byte	0
+ 799 01d9 11       		.uleb128 0x11
+ 800 01da 4C010000 		.4byte	.LASF31
+ 801 01de 01       		.byte	0x1
+ 802 01df 1701     		.2byte	0x117
+ 803 01e1 00000000 		.4byte	.LFB69
+ 804 01e5 24000000 		.4byte	.LFE69-.LFB69
+ 805 01e9 01       		.uleb128 0x1
+ 806 01ea 9C       		.byte	0x9c
+ 807 01eb FF010000 		.4byte	0x1ff
+ 808 01ef 12       		.uleb128 0x12
+ 809 01f0 F2010000 		.4byte	.LASF32
+ 810 01f4 01       		.byte	0x1
+ 811 01f5 1701     		.2byte	0x117
+ 812 01f7 9D000000 		.4byte	0x9d
+ 813 01fb 02       		.uleb128 0x2
+ 814 01fc 91       		.byte	0x91
+ 815 01fd 77       		.sleb128 -9
+ 816 01fe 00       		.byte	0
+ 817 01ff 13       		.uleb128 0x13
+ 818 0200 90020000 		.4byte	.LASF34
+ 819 0204 01       		.byte	0x1
+ 820 0205 2D01     		.2byte	0x12d
+ 821 0207 9D000000 		.4byte	0x9d
+ 822 020b 00000000 		.4byte	.LFB70
+ 823 020f 20000000 		.4byte	.LFE70-.LFB70
+ 824 0213 01       		.uleb128 0x1
+ 825 0214 9C       		.byte	0x9c
+ 826 0215 29020000 		.4byte	0x229
+ 827 0219 14       		.uleb128 0x14
+ 828 021a F2010000 		.4byte	.LASF32
+ 829 021e 01       		.byte	0x1
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 23
 
 
- 832 0232 13       		.uleb128 0x13
- 833 0233 BB010000 		.4byte	.LASF34
- 834 0237 01       		.byte	0x1
- 835 0238 8B01     		.2byte	0x18b
- 836 023a 00000000 		.4byte	.LFB74
- 837 023e 18000000 		.4byte	.LFE74-.LFB74
- 838 0242 01       		.uleb128 0x1
- 839 0243 9C       		.byte	0x9c
- 840 0244 13       		.uleb128 0x13
- 841 0245 94000000 		.4byte	.LASF35
- 842 0249 01       		.byte	0x1
- 843 024a A401     		.2byte	0x1a4
- 844 024c 00000000 		.4byte	.LFB75
- 845 0250 18000000 		.4byte	.LFE75-.LFB75
- 846 0254 01       		.uleb128 0x1
- 847 0255 9C       		.byte	0x9c
- 848 0256 15       		.uleb128 0x15
- 849 0257 8E010000 		.4byte	.LASF40
- 850 025b 05       		.byte	0x5
- 851 025c 1207     		.2byte	0x712
- 852 025e 62020000 		.4byte	0x262
- 853 0262 08       		.uleb128 0x8
- 854 0263 92000000 		.4byte	0x92
- 855 0267 00       		.byte	0
- 856              		.section	.debug_abbrev,"",%progbits
- 857              	.Ldebug_abbrev0:
- 858 0000 01       		.uleb128 0x1
- 859 0001 11       		.uleb128 0x11
- 860 0002 01       		.byte	0x1
- 861 0003 25       		.uleb128 0x25
- 862 0004 0E       		.uleb128 0xe
- 863 0005 13       		.uleb128 0x13
- 864 0006 0B       		.uleb128 0xb
- 865 0007 03       		.uleb128 0x3
- 866 0008 0E       		.uleb128 0xe
- 867 0009 1B       		.uleb128 0x1b
- 868 000a 0E       		.uleb128 0xe
- 869 000b 55       		.uleb128 0x55
- 870 000c 17       		.uleb128 0x17
- 871 000d 11       		.uleb128 0x11
- 872 000e 01       		.uleb128 0x1
- 873 000f 10       		.uleb128 0x10
- 874 0010 17       		.uleb128 0x17
- 875 0011 00       		.byte	0
- 876 0012 00       		.byte	0
- 877 0013 02       		.uleb128 0x2
- 878 0014 24       		.uleb128 0x24
- 879 0015 00       		.byte	0
- 880 0016 0B       		.uleb128 0xb
- 881 0017 0B       		.uleb128 0xb
- 882 0018 3E       		.uleb128 0x3e
- 883 0019 0B       		.uleb128 0xb
- 884 001a 03       		.uleb128 0x3
- 885 001b 08       		.uleb128 0x8
- 886 001c 00       		.byte	0
- 887 001d 00       		.byte	0
- 888 001e 03       		.uleb128 0x3
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 24
+ 830 021f 2F01     		.2byte	0x12f
+ 831 0221 9D000000 		.4byte	0x9d
+ 832 0225 02       		.uleb128 0x2
+ 833 0226 91       		.byte	0x91
+ 834 0227 77       		.sleb128 -9
+ 835 0228 00       		.byte	0
+ 836 0229 15       		.uleb128 0x15
+ 837 022a E3000000 		.4byte	.LASF35
+ 838 022e 01       		.byte	0x1
+ 839 022f 4801     		.2byte	0x148
+ 840 0231 00000000 		.4byte	.LFB71
+ 841 0235 18000000 		.4byte	.LFE71-.LFB71
+ 842 0239 01       		.uleb128 0x1
+ 843 023a 9C       		.byte	0x9c
+ 844 023b 16       		.uleb128 0x16
+ 845 023c 6B020000 		.4byte	.LASF45
+ 846 0240 01       		.byte	0x1
+ 847 0241 5D01     		.2byte	0x15d
+ 848 0243 9D000000 		.4byte	0x9d
+ 849 0247 00000000 		.4byte	.LFB72
+ 850 024b 24000000 		.4byte	.LFE72-.LFB72
+ 851 024f 01       		.uleb128 0x1
+ 852 0250 9C       		.byte	0x9c
+ 853 0251 15       		.uleb128 0x15
+ 854 0252 D0020000 		.4byte	.LASF36
+ 855 0256 01       		.byte	0x1
+ 856 0257 7201     		.2byte	0x172
+ 857 0259 00000000 		.4byte	.LFB73
+ 858 025d 18000000 		.4byte	.LFE73-.LFB73
+ 859 0261 01       		.uleb128 0x1
+ 860 0262 9C       		.byte	0x9c
+ 861 0263 15       		.uleb128 0x15
+ 862 0264 D8010000 		.4byte	.LASF37
+ 863 0268 01       		.byte	0x1
+ 864 0269 8D01     		.2byte	0x18d
+ 865 026b 00000000 		.4byte	.LFB74
+ 866 026f 18000000 		.4byte	.LFE74-.LFB74
+ 867 0273 01       		.uleb128 0x1
+ 868 0274 9C       		.byte	0x9c
+ 869 0275 15       		.uleb128 0x15
+ 870 0276 94000000 		.4byte	.LASF38
+ 871 027a 01       		.byte	0x1
+ 872 027b A601     		.2byte	0x1a6
+ 873 027d 00000000 		.4byte	.LFB75
+ 874 0281 18000000 		.4byte	.LFE75-.LFB75
+ 875 0285 01       		.uleb128 0x1
+ 876 0286 9C       		.byte	0x9c
+ 877 0287 17       		.uleb128 0x17
+ 878 0288 AB010000 		.4byte	.LASF39
+ 879 028c 06       		.byte	0x6
+ 880 028d 1207     		.2byte	0x712
+ 881 028f 93020000 		.4byte	0x293
+ 882 0293 08       		.uleb128 0x8
+ 883 0294 92000000 		.4byte	0x92
+ 884 0298 18       		.uleb128 0x18
+ 885 0299 4A030000 		.4byte	.LASF40
+ 886 029d 05       		.byte	0x5
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 24
 
 
- 889 001f 24       		.uleb128 0x24
- 890 0020 00       		.byte	0
- 891 0021 0B       		.uleb128 0xb
- 892 0022 0B       		.uleb128 0xb
- 893 0023 3E       		.uleb128 0x3e
- 894 0024 0B       		.uleb128 0xb
- 895 0025 03       		.uleb128 0x3
- 896 0026 0E       		.uleb128 0xe
- 897 0027 00       		.byte	0
- 898 0028 00       		.byte	0
- 899 0029 04       		.uleb128 0x4
- 900 002a 16       		.uleb128 0x16
- 901 002b 00       		.byte	0
- 902 002c 03       		.uleb128 0x3
- 903 002d 0E       		.uleb128 0xe
- 904 002e 3A       		.uleb128 0x3a
- 905 002f 0B       		.uleb128 0xb
- 906 0030 3B       		.uleb128 0x3b
- 907 0031 0B       		.uleb128 0xb
- 908 0032 49       		.uleb128 0x49
- 909 0033 13       		.uleb128 0x13
- 910 0034 00       		.byte	0
- 911 0035 00       		.byte	0
- 912 0036 05       		.uleb128 0x5
- 913 0037 0F       		.uleb128 0xf
- 914 0038 00       		.byte	0
- 915 0039 0B       		.uleb128 0xb
- 916 003a 0B       		.uleb128 0xb
- 917 003b 49       		.uleb128 0x49
- 918 003c 13       		.uleb128 0x13
- 919 003d 00       		.byte	0
- 920 003e 00       		.byte	0
- 921 003f 06       		.uleb128 0x6
- 922 0040 15       		.uleb128 0x15
- 923 0041 00       		.byte	0
- 924 0042 27       		.uleb128 0x27
- 925 0043 19       		.uleb128 0x19
- 926 0044 00       		.byte	0
- 927 0045 00       		.byte	0
- 928 0046 07       		.uleb128 0x7
- 929 0047 16       		.uleb128 0x16
- 930 0048 00       		.byte	0
- 931 0049 03       		.uleb128 0x3
- 932 004a 0E       		.uleb128 0xe
- 933 004b 3A       		.uleb128 0x3a
- 934 004c 0B       		.uleb128 0xb
- 935 004d 3B       		.uleb128 0x3b
- 936 004e 05       		.uleb128 0x5
- 937 004f 49       		.uleb128 0x49
- 938 0050 13       		.uleb128 0x13
- 939 0051 00       		.byte	0
- 940 0052 00       		.byte	0
- 941 0053 08       		.uleb128 0x8
- 942 0054 35       		.uleb128 0x35
- 943 0055 00       		.byte	0
- 944 0056 49       		.uleb128 0x49
- 945 0057 13       		.uleb128 0x13
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 25
+ 887 029e 16       		.byte	0x16
+ 888 029f F1000000 		.4byte	0xf1
+ 889 02a3 05       		.uleb128 0x5
+ 890 02a4 03       		.byte	0x3
+ 891 02a5 00000000 		.4byte	Test
+ 892 02a9 00       		.byte	0
+ 893              		.section	.debug_abbrev,"",%progbits
+ 894              	.Ldebug_abbrev0:
+ 895 0000 01       		.uleb128 0x1
+ 896 0001 11       		.uleb128 0x11
+ 897 0002 01       		.byte	0x1
+ 898 0003 25       		.uleb128 0x25
+ 899 0004 0E       		.uleb128 0xe
+ 900 0005 13       		.uleb128 0x13
+ 901 0006 0B       		.uleb128 0xb
+ 902 0007 03       		.uleb128 0x3
+ 903 0008 0E       		.uleb128 0xe
+ 904 0009 1B       		.uleb128 0x1b
+ 905 000a 0E       		.uleb128 0xe
+ 906 000b 55       		.uleb128 0x55
+ 907 000c 17       		.uleb128 0x17
+ 908 000d 11       		.uleb128 0x11
+ 909 000e 01       		.uleb128 0x1
+ 910 000f 10       		.uleb128 0x10
+ 911 0010 17       		.uleb128 0x17
+ 912 0011 00       		.byte	0
+ 913 0012 00       		.byte	0
+ 914 0013 02       		.uleb128 0x2
+ 915 0014 24       		.uleb128 0x24
+ 916 0015 00       		.byte	0
+ 917 0016 0B       		.uleb128 0xb
+ 918 0017 0B       		.uleb128 0xb
+ 919 0018 3E       		.uleb128 0x3e
+ 920 0019 0B       		.uleb128 0xb
+ 921 001a 03       		.uleb128 0x3
+ 922 001b 08       		.uleb128 0x8
+ 923 001c 00       		.byte	0
+ 924 001d 00       		.byte	0
+ 925 001e 03       		.uleb128 0x3
+ 926 001f 24       		.uleb128 0x24
+ 927 0020 00       		.byte	0
+ 928 0021 0B       		.uleb128 0xb
+ 929 0022 0B       		.uleb128 0xb
+ 930 0023 3E       		.uleb128 0x3e
+ 931 0024 0B       		.uleb128 0xb
+ 932 0025 03       		.uleb128 0x3
+ 933 0026 0E       		.uleb128 0xe
+ 934 0027 00       		.byte	0
+ 935 0028 00       		.byte	0
+ 936 0029 04       		.uleb128 0x4
+ 937 002a 16       		.uleb128 0x16
+ 938 002b 00       		.byte	0
+ 939 002c 03       		.uleb128 0x3
+ 940 002d 0E       		.uleb128 0xe
+ 941 002e 3A       		.uleb128 0x3a
+ 942 002f 0B       		.uleb128 0xb
+ 943 0030 3B       		.uleb128 0x3b
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 25
 
 
- 946 0058 00       		.byte	0
- 947 0059 00       		.byte	0
- 948 005a 09       		.uleb128 0x9
- 949 005b 2E       		.uleb128 0x2e
- 950 005c 00       		.byte	0
- 951 005d 3F       		.uleb128 0x3f
- 952 005e 19       		.uleb128 0x19
- 953 005f 03       		.uleb128 0x3
- 954 0060 0E       		.uleb128 0xe
- 955 0061 3A       		.uleb128 0x3a
- 956 0062 0B       		.uleb128 0xb
- 957 0063 3B       		.uleb128 0x3b
- 958 0064 0B       		.uleb128 0xb
- 959 0065 27       		.uleb128 0x27
- 960 0066 19       		.uleb128 0x19
- 961 0067 11       		.uleb128 0x11
- 962 0068 01       		.uleb128 0x1
- 963 0069 12       		.uleb128 0x12
- 964 006a 06       		.uleb128 0x6
- 965 006b 40       		.uleb128 0x40
- 966 006c 18       		.uleb128 0x18
- 967 006d 9642     		.uleb128 0x2116
- 968 006f 19       		.uleb128 0x19
- 969 0070 00       		.byte	0
- 970 0071 00       		.byte	0
- 971 0072 0A       		.uleb128 0xa
- 972 0073 2E       		.uleb128 0x2e
- 973 0074 01       		.byte	0x1
- 974 0075 3F       		.uleb128 0x3f
- 975 0076 19       		.uleb128 0x19
- 976 0077 03       		.uleb128 0x3
- 977 0078 0E       		.uleb128 0xe
- 978 0079 3A       		.uleb128 0x3a
- 979 007a 0B       		.uleb128 0xb
- 980 007b 3B       		.uleb128 0x3b
- 981 007c 0B       		.uleb128 0xb
- 982 007d 27       		.uleb128 0x27
- 983 007e 19       		.uleb128 0x19
- 984 007f 11       		.uleb128 0x11
- 985 0080 01       		.uleb128 0x1
- 986 0081 12       		.uleb128 0x12
- 987 0082 06       		.uleb128 0x6
- 988 0083 40       		.uleb128 0x40
- 989 0084 18       		.uleb128 0x18
- 990 0085 9642     		.uleb128 0x2116
- 991 0087 19       		.uleb128 0x19
- 992 0088 01       		.uleb128 0x1
- 993 0089 13       		.uleb128 0x13
- 994 008a 00       		.byte	0
- 995 008b 00       		.byte	0
- 996 008c 0B       		.uleb128 0xb
- 997 008d 05       		.uleb128 0x5
- 998 008e 00       		.byte	0
- 999 008f 03       		.uleb128 0x3
- 1000 0090 0E       		.uleb128 0xe
- 1001 0091 3A       		.uleb128 0x3a
- 1002 0092 0B       		.uleb128 0xb
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 26
+ 944 0031 0B       		.uleb128 0xb
+ 945 0032 49       		.uleb128 0x49
+ 946 0033 13       		.uleb128 0x13
+ 947 0034 00       		.byte	0
+ 948 0035 00       		.byte	0
+ 949 0036 05       		.uleb128 0x5
+ 950 0037 0F       		.uleb128 0xf
+ 951 0038 00       		.byte	0
+ 952 0039 0B       		.uleb128 0xb
+ 953 003a 0B       		.uleb128 0xb
+ 954 003b 49       		.uleb128 0x49
+ 955 003c 13       		.uleb128 0x13
+ 956 003d 00       		.byte	0
+ 957 003e 00       		.byte	0
+ 958 003f 06       		.uleb128 0x6
+ 959 0040 15       		.uleb128 0x15
+ 960 0041 00       		.byte	0
+ 961 0042 27       		.uleb128 0x27
+ 962 0043 19       		.uleb128 0x19
+ 963 0044 00       		.byte	0
+ 964 0045 00       		.byte	0
+ 965 0046 07       		.uleb128 0x7
+ 966 0047 16       		.uleb128 0x16
+ 967 0048 00       		.byte	0
+ 968 0049 03       		.uleb128 0x3
+ 969 004a 0E       		.uleb128 0xe
+ 970 004b 3A       		.uleb128 0x3a
+ 971 004c 0B       		.uleb128 0xb
+ 972 004d 3B       		.uleb128 0x3b
+ 973 004e 05       		.uleb128 0x5
+ 974 004f 49       		.uleb128 0x49
+ 975 0050 13       		.uleb128 0x13
+ 976 0051 00       		.byte	0
+ 977 0052 00       		.byte	0
+ 978 0053 08       		.uleb128 0x8
+ 979 0054 35       		.uleb128 0x35
+ 980 0055 00       		.byte	0
+ 981 0056 49       		.uleb128 0x49
+ 982 0057 13       		.uleb128 0x13
+ 983 0058 00       		.byte	0
+ 984 0059 00       		.byte	0
+ 985 005a 09       		.uleb128 0x9
+ 986 005b 13       		.uleb128 0x13
+ 987 005c 01       		.byte	0x1
+ 988 005d 03       		.uleb128 0x3
+ 989 005e 0E       		.uleb128 0xe
+ 990 005f 0B       		.uleb128 0xb
+ 991 0060 0B       		.uleb128 0xb
+ 992 0061 3A       		.uleb128 0x3a
+ 993 0062 0B       		.uleb128 0xb
+ 994 0063 3B       		.uleb128 0x3b
+ 995 0064 0B       		.uleb128 0xb
+ 996 0065 01       		.uleb128 0x1
+ 997 0066 13       		.uleb128 0x13
+ 998 0067 00       		.byte	0
+ 999 0068 00       		.byte	0
+ 1000 0069 0A       		.uleb128 0xa
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 26
 
 
- 1003 0093 3B       		.uleb128 0x3b
- 1004 0094 0B       		.uleb128 0xb
- 1005 0095 49       		.uleb128 0x49
- 1006 0096 13       		.uleb128 0x13
- 1007 0097 02       		.uleb128 0x2
- 1008 0098 18       		.uleb128 0x18
- 1009 0099 00       		.byte	0
- 1010 009a 00       		.byte	0
- 1011 009b 0C       		.uleb128 0xc
- 1012 009c 2E       		.uleb128 0x2e
- 1013 009d 01       		.byte	0x1
- 1014 009e 3F       		.uleb128 0x3f
- 1015 009f 19       		.uleb128 0x19
- 1016 00a0 03       		.uleb128 0x3
- 1017 00a1 0E       		.uleb128 0xe
- 1018 00a2 3A       		.uleb128 0x3a
- 1019 00a3 0B       		.uleb128 0xb
- 1020 00a4 3B       		.uleb128 0x3b
- 1021 00a5 0B       		.uleb128 0xb
- 1022 00a6 27       		.uleb128 0x27
- 1023 00a7 19       		.uleb128 0x19
- 1024 00a8 11       		.uleb128 0x11
- 1025 00a9 01       		.uleb128 0x1
- 1026 00aa 12       		.uleb128 0x12
- 1027 00ab 06       		.uleb128 0x6
- 1028 00ac 40       		.uleb128 0x40
- 1029 00ad 18       		.uleb128 0x18
- 1030 00ae 9742     		.uleb128 0x2117
- 1031 00b0 19       		.uleb128 0x19
- 1032 00b1 01       		.uleb128 0x1
- 1033 00b2 13       		.uleb128 0x13
- 1034 00b3 00       		.byte	0
- 1035 00b4 00       		.byte	0
- 1036 00b5 0D       		.uleb128 0xd
- 1037 00b6 34       		.uleb128 0x34
- 1038 00b7 00       		.byte	0
- 1039 00b8 03       		.uleb128 0x3
- 1040 00b9 0E       		.uleb128 0xe
- 1041 00ba 3A       		.uleb128 0x3a
- 1042 00bb 0B       		.uleb128 0xb
- 1043 00bc 3B       		.uleb128 0x3b
- 1044 00bd 0B       		.uleb128 0xb
- 1045 00be 49       		.uleb128 0x49
- 1046 00bf 13       		.uleb128 0x13
- 1047 00c0 02       		.uleb128 0x2
- 1048 00c1 18       		.uleb128 0x18
- 1049 00c2 00       		.byte	0
- 1050 00c3 00       		.byte	0
- 1051 00c4 0E       		.uleb128 0xe
- 1052 00c5 2E       		.uleb128 0x2e
- 1053 00c6 01       		.byte	0x1
- 1054 00c7 3F       		.uleb128 0x3f
- 1055 00c8 19       		.uleb128 0x19
- 1056 00c9 03       		.uleb128 0x3
- 1057 00ca 0E       		.uleb128 0xe
- 1058 00cb 3A       		.uleb128 0x3a
- 1059 00cc 0B       		.uleb128 0xb
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 27
+ 1001 006a 0D       		.uleb128 0xd
+ 1002 006b 00       		.byte	0
+ 1003 006c 03       		.uleb128 0x3
+ 1004 006d 0E       		.uleb128 0xe
+ 1005 006e 3A       		.uleb128 0x3a
+ 1006 006f 0B       		.uleb128 0xb
+ 1007 0070 3B       		.uleb128 0x3b
+ 1008 0071 0B       		.uleb128 0xb
+ 1009 0072 49       		.uleb128 0x49
+ 1010 0073 13       		.uleb128 0x13
+ 1011 0074 38       		.uleb128 0x38
+ 1012 0075 0B       		.uleb128 0xb
+ 1013 0076 00       		.byte	0
+ 1014 0077 00       		.byte	0
+ 1015 0078 0B       		.uleb128 0xb
+ 1016 0079 2E       		.uleb128 0x2e
+ 1017 007a 00       		.byte	0
+ 1018 007b 3F       		.uleb128 0x3f
+ 1019 007c 19       		.uleb128 0x19
+ 1020 007d 03       		.uleb128 0x3
+ 1021 007e 0E       		.uleb128 0xe
+ 1022 007f 3A       		.uleb128 0x3a
+ 1023 0080 0B       		.uleb128 0xb
+ 1024 0081 3B       		.uleb128 0x3b
+ 1025 0082 0B       		.uleb128 0xb
+ 1026 0083 27       		.uleb128 0x27
+ 1027 0084 19       		.uleb128 0x19
+ 1028 0085 11       		.uleb128 0x11
+ 1029 0086 01       		.uleb128 0x1
+ 1030 0087 12       		.uleb128 0x12
+ 1031 0088 06       		.uleb128 0x6
+ 1032 0089 40       		.uleb128 0x40
+ 1033 008a 18       		.uleb128 0x18
+ 1034 008b 9642     		.uleb128 0x2116
+ 1035 008d 19       		.uleb128 0x19
+ 1036 008e 00       		.byte	0
+ 1037 008f 00       		.byte	0
+ 1038 0090 0C       		.uleb128 0xc
+ 1039 0091 2E       		.uleb128 0x2e
+ 1040 0092 01       		.byte	0x1
+ 1041 0093 3F       		.uleb128 0x3f
+ 1042 0094 19       		.uleb128 0x19
+ 1043 0095 03       		.uleb128 0x3
+ 1044 0096 0E       		.uleb128 0xe
+ 1045 0097 3A       		.uleb128 0x3a
+ 1046 0098 0B       		.uleb128 0xb
+ 1047 0099 3B       		.uleb128 0x3b
+ 1048 009a 0B       		.uleb128 0xb
+ 1049 009b 27       		.uleb128 0x27
+ 1050 009c 19       		.uleb128 0x19
+ 1051 009d 11       		.uleb128 0x11
+ 1052 009e 01       		.uleb128 0x1
+ 1053 009f 12       		.uleb128 0x12
+ 1054 00a0 06       		.uleb128 0x6
+ 1055 00a1 40       		.uleb128 0x40
+ 1056 00a2 18       		.uleb128 0x18
+ 1057 00a3 9642     		.uleb128 0x2116
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 27
 
 
- 1060 00cd 3B       		.uleb128 0x3b
- 1061 00ce 0B       		.uleb128 0xb
- 1062 00cf 27       		.uleb128 0x27
- 1063 00d0 19       		.uleb128 0x19
- 1064 00d1 49       		.uleb128 0x49
- 1065 00d2 13       		.uleb128 0x13
- 1066 00d3 11       		.uleb128 0x11
- 1067 00d4 01       		.uleb128 0x1
- 1068 00d5 12       		.uleb128 0x12
- 1069 00d6 06       		.uleb128 0x6
- 1070 00d7 40       		.uleb128 0x40
- 1071 00d8 18       		.uleb128 0x18
- 1072 00d9 9742     		.uleb128 0x2117
- 1073 00db 19       		.uleb128 0x19
- 1074 00dc 01       		.uleb128 0x1
- 1075 00dd 13       		.uleb128 0x13
- 1076 00de 00       		.byte	0
- 1077 00df 00       		.byte	0
- 1078 00e0 0F       		.uleb128 0xf
- 1079 00e1 2E       		.uleb128 0x2e
- 1080 00e2 01       		.byte	0x1
- 1081 00e3 3F       		.uleb128 0x3f
- 1082 00e4 19       		.uleb128 0x19
- 1083 00e5 03       		.uleb128 0x3
- 1084 00e6 0E       		.uleb128 0xe
- 1085 00e7 3A       		.uleb128 0x3a
- 1086 00e8 0B       		.uleb128 0xb
- 1087 00e9 3B       		.uleb128 0x3b
- 1088 00ea 05       		.uleb128 0x5
- 1089 00eb 27       		.uleb128 0x27
- 1090 00ec 19       		.uleb128 0x19
- 1091 00ed 11       		.uleb128 0x11
- 1092 00ee 01       		.uleb128 0x1
- 1093 00ef 12       		.uleb128 0x12
- 1094 00f0 06       		.uleb128 0x6
- 1095 00f1 40       		.uleb128 0x40
- 1096 00f2 18       		.uleb128 0x18
- 1097 00f3 9742     		.uleb128 0x2117
- 1098 00f5 19       		.uleb128 0x19
- 1099 00f6 01       		.uleb128 0x1
- 1100 00f7 13       		.uleb128 0x13
- 1101 00f8 00       		.byte	0
- 1102 00f9 00       		.byte	0
- 1103 00fa 10       		.uleb128 0x10
- 1104 00fb 05       		.uleb128 0x5
- 1105 00fc 00       		.byte	0
- 1106 00fd 03       		.uleb128 0x3
- 1107 00fe 0E       		.uleb128 0xe
- 1108 00ff 3A       		.uleb128 0x3a
- 1109 0100 0B       		.uleb128 0xb
- 1110 0101 3B       		.uleb128 0x3b
- 1111 0102 05       		.uleb128 0x5
- 1112 0103 49       		.uleb128 0x49
- 1113 0104 13       		.uleb128 0x13
- 1114 0105 02       		.uleb128 0x2
- 1115 0106 18       		.uleb128 0x18
- 1116 0107 00       		.byte	0
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 28
+ 1058 00a5 19       		.uleb128 0x19
+ 1059 00a6 01       		.uleb128 0x1
+ 1060 00a7 13       		.uleb128 0x13
+ 1061 00a8 00       		.byte	0
+ 1062 00a9 00       		.byte	0
+ 1063 00aa 0D       		.uleb128 0xd
+ 1064 00ab 05       		.uleb128 0x5
+ 1065 00ac 00       		.byte	0
+ 1066 00ad 03       		.uleb128 0x3
+ 1067 00ae 0E       		.uleb128 0xe
+ 1068 00af 3A       		.uleb128 0x3a
+ 1069 00b0 0B       		.uleb128 0xb
+ 1070 00b1 3B       		.uleb128 0x3b
+ 1071 00b2 0B       		.uleb128 0xb
+ 1072 00b3 49       		.uleb128 0x49
+ 1073 00b4 13       		.uleb128 0x13
+ 1074 00b5 02       		.uleb128 0x2
+ 1075 00b6 18       		.uleb128 0x18
+ 1076 00b7 00       		.byte	0
+ 1077 00b8 00       		.byte	0
+ 1078 00b9 0E       		.uleb128 0xe
+ 1079 00ba 2E       		.uleb128 0x2e
+ 1080 00bb 01       		.byte	0x1
+ 1081 00bc 3F       		.uleb128 0x3f
+ 1082 00bd 19       		.uleb128 0x19
+ 1083 00be 03       		.uleb128 0x3
+ 1084 00bf 0E       		.uleb128 0xe
+ 1085 00c0 3A       		.uleb128 0x3a
+ 1086 00c1 0B       		.uleb128 0xb
+ 1087 00c2 3B       		.uleb128 0x3b
+ 1088 00c3 0B       		.uleb128 0xb
+ 1089 00c4 27       		.uleb128 0x27
+ 1090 00c5 19       		.uleb128 0x19
+ 1091 00c6 11       		.uleb128 0x11
+ 1092 00c7 01       		.uleb128 0x1
+ 1093 00c8 12       		.uleb128 0x12
+ 1094 00c9 06       		.uleb128 0x6
+ 1095 00ca 40       		.uleb128 0x40
+ 1096 00cb 18       		.uleb128 0x18
+ 1097 00cc 9742     		.uleb128 0x2117
+ 1098 00ce 19       		.uleb128 0x19
+ 1099 00cf 01       		.uleb128 0x1
+ 1100 00d0 13       		.uleb128 0x13
+ 1101 00d1 00       		.byte	0
+ 1102 00d2 00       		.byte	0
+ 1103 00d3 0F       		.uleb128 0xf
+ 1104 00d4 34       		.uleb128 0x34
+ 1105 00d5 00       		.byte	0
+ 1106 00d6 03       		.uleb128 0x3
+ 1107 00d7 0E       		.uleb128 0xe
+ 1108 00d8 3A       		.uleb128 0x3a
+ 1109 00d9 0B       		.uleb128 0xb
+ 1110 00da 3B       		.uleb128 0x3b
+ 1111 00db 0B       		.uleb128 0xb
+ 1112 00dc 49       		.uleb128 0x49
+ 1113 00dd 13       		.uleb128 0x13
+ 1114 00de 02       		.uleb128 0x2
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 28
 
 
- 1117 0108 00       		.byte	0
- 1118 0109 11       		.uleb128 0x11
- 1119 010a 2E       		.uleb128 0x2e
- 1120 010b 01       		.byte	0x1
- 1121 010c 3F       		.uleb128 0x3f
- 1122 010d 19       		.uleb128 0x19
- 1123 010e 03       		.uleb128 0x3
- 1124 010f 0E       		.uleb128 0xe
- 1125 0110 3A       		.uleb128 0x3a
- 1126 0111 0B       		.uleb128 0xb
- 1127 0112 3B       		.uleb128 0x3b
- 1128 0113 05       		.uleb128 0x5
- 1129 0114 27       		.uleb128 0x27
- 1130 0115 19       		.uleb128 0x19
- 1131 0116 49       		.uleb128 0x49
- 1132 0117 13       		.uleb128 0x13
- 1133 0118 11       		.uleb128 0x11
- 1134 0119 01       		.uleb128 0x1
- 1135 011a 12       		.uleb128 0x12
- 1136 011b 06       		.uleb128 0x6
- 1137 011c 40       		.uleb128 0x40
- 1138 011d 18       		.uleb128 0x18
- 1139 011e 9742     		.uleb128 0x2117
- 1140 0120 19       		.uleb128 0x19
- 1141 0121 01       		.uleb128 0x1
- 1142 0122 13       		.uleb128 0x13
- 1143 0123 00       		.byte	0
- 1144 0124 00       		.byte	0
- 1145 0125 12       		.uleb128 0x12
- 1146 0126 34       		.uleb128 0x34
- 1147 0127 00       		.byte	0
- 1148 0128 03       		.uleb128 0x3
- 1149 0129 0E       		.uleb128 0xe
- 1150 012a 3A       		.uleb128 0x3a
- 1151 012b 0B       		.uleb128 0xb
- 1152 012c 3B       		.uleb128 0x3b
- 1153 012d 05       		.uleb128 0x5
- 1154 012e 49       		.uleb128 0x49
- 1155 012f 13       		.uleb128 0x13
- 1156 0130 02       		.uleb128 0x2
- 1157 0131 18       		.uleb128 0x18
- 1158 0132 00       		.byte	0
- 1159 0133 00       		.byte	0
- 1160 0134 13       		.uleb128 0x13
- 1161 0135 2E       		.uleb128 0x2e
- 1162 0136 00       		.byte	0
- 1163 0137 3F       		.uleb128 0x3f
- 1164 0138 19       		.uleb128 0x19
- 1165 0139 03       		.uleb128 0x3
- 1166 013a 0E       		.uleb128 0xe
- 1167 013b 3A       		.uleb128 0x3a
- 1168 013c 0B       		.uleb128 0xb
- 1169 013d 3B       		.uleb128 0x3b
- 1170 013e 05       		.uleb128 0x5
- 1171 013f 27       		.uleb128 0x27
- 1172 0140 19       		.uleb128 0x19
- 1173 0141 11       		.uleb128 0x11
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 29
+ 1115 00df 18       		.uleb128 0x18
+ 1116 00e0 00       		.byte	0
+ 1117 00e1 00       		.byte	0
+ 1118 00e2 10       		.uleb128 0x10
+ 1119 00e3 2E       		.uleb128 0x2e
+ 1120 00e4 01       		.byte	0x1
+ 1121 00e5 3F       		.uleb128 0x3f
+ 1122 00e6 19       		.uleb128 0x19
+ 1123 00e7 03       		.uleb128 0x3
+ 1124 00e8 0E       		.uleb128 0xe
+ 1125 00e9 3A       		.uleb128 0x3a
+ 1126 00ea 0B       		.uleb128 0xb
+ 1127 00eb 3B       		.uleb128 0x3b
+ 1128 00ec 0B       		.uleb128 0xb
+ 1129 00ed 27       		.uleb128 0x27
+ 1130 00ee 19       		.uleb128 0x19
+ 1131 00ef 49       		.uleb128 0x49
+ 1132 00f0 13       		.uleb128 0x13
+ 1133 00f1 11       		.uleb128 0x11
+ 1134 00f2 01       		.uleb128 0x1
+ 1135 00f3 12       		.uleb128 0x12
+ 1136 00f4 06       		.uleb128 0x6
+ 1137 00f5 40       		.uleb128 0x40
+ 1138 00f6 18       		.uleb128 0x18
+ 1139 00f7 9742     		.uleb128 0x2117
+ 1140 00f9 19       		.uleb128 0x19
+ 1141 00fa 01       		.uleb128 0x1
+ 1142 00fb 13       		.uleb128 0x13
+ 1143 00fc 00       		.byte	0
+ 1144 00fd 00       		.byte	0
+ 1145 00fe 11       		.uleb128 0x11
+ 1146 00ff 2E       		.uleb128 0x2e
+ 1147 0100 01       		.byte	0x1
+ 1148 0101 3F       		.uleb128 0x3f
+ 1149 0102 19       		.uleb128 0x19
+ 1150 0103 03       		.uleb128 0x3
+ 1151 0104 0E       		.uleb128 0xe
+ 1152 0105 3A       		.uleb128 0x3a
+ 1153 0106 0B       		.uleb128 0xb
+ 1154 0107 3B       		.uleb128 0x3b
+ 1155 0108 05       		.uleb128 0x5
+ 1156 0109 27       		.uleb128 0x27
+ 1157 010a 19       		.uleb128 0x19
+ 1158 010b 11       		.uleb128 0x11
+ 1159 010c 01       		.uleb128 0x1
+ 1160 010d 12       		.uleb128 0x12
+ 1161 010e 06       		.uleb128 0x6
+ 1162 010f 40       		.uleb128 0x40
+ 1163 0110 18       		.uleb128 0x18
+ 1164 0111 9742     		.uleb128 0x2117
+ 1165 0113 19       		.uleb128 0x19
+ 1166 0114 01       		.uleb128 0x1
+ 1167 0115 13       		.uleb128 0x13
+ 1168 0116 00       		.byte	0
+ 1169 0117 00       		.byte	0
+ 1170 0118 12       		.uleb128 0x12
+ 1171 0119 05       		.uleb128 0x5
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 29
 
 
- 1174 0142 01       		.uleb128 0x1
- 1175 0143 12       		.uleb128 0x12
- 1176 0144 06       		.uleb128 0x6
- 1177 0145 40       		.uleb128 0x40
- 1178 0146 18       		.uleb128 0x18
- 1179 0147 9742     		.uleb128 0x2117
- 1180 0149 19       		.uleb128 0x19
- 1181 014a 00       		.byte	0
- 1182 014b 00       		.byte	0
- 1183 014c 14       		.uleb128 0x14
- 1184 014d 2E       		.uleb128 0x2e
- 1185 014e 00       		.byte	0
- 1186 014f 3F       		.uleb128 0x3f
- 1187 0150 19       		.uleb128 0x19
- 1188 0151 03       		.uleb128 0x3
- 1189 0152 0E       		.uleb128 0xe
- 1190 0153 3A       		.uleb128 0x3a
- 1191 0154 0B       		.uleb128 0xb
- 1192 0155 3B       		.uleb128 0x3b
- 1193 0156 05       		.uleb128 0x5
- 1194 0157 27       		.uleb128 0x27
- 1195 0158 19       		.uleb128 0x19
- 1196 0159 49       		.uleb128 0x49
- 1197 015a 13       		.uleb128 0x13
- 1198 015b 11       		.uleb128 0x11
- 1199 015c 01       		.uleb128 0x1
- 1200 015d 12       		.uleb128 0x12
- 1201 015e 06       		.uleb128 0x6
- 1202 015f 40       		.uleb128 0x40
- 1203 0160 18       		.uleb128 0x18
- 1204 0161 9742     		.uleb128 0x2117
- 1205 0163 19       		.uleb128 0x19
- 1206 0164 00       		.byte	0
- 1207 0165 00       		.byte	0
- 1208 0166 15       		.uleb128 0x15
- 1209 0167 34       		.uleb128 0x34
- 1210 0168 00       		.byte	0
- 1211 0169 03       		.uleb128 0x3
- 1212 016a 0E       		.uleb128 0xe
- 1213 016b 3A       		.uleb128 0x3a
- 1214 016c 0B       		.uleb128 0xb
- 1215 016d 3B       		.uleb128 0x3b
- 1216 016e 05       		.uleb128 0x5
- 1217 016f 49       		.uleb128 0x49
- 1218 0170 13       		.uleb128 0x13
- 1219 0171 3F       		.uleb128 0x3f
- 1220 0172 19       		.uleb128 0x19
- 1221 0173 3C       		.uleb128 0x3c
- 1222 0174 19       		.uleb128 0x19
- 1223 0175 00       		.byte	0
- 1224 0176 00       		.byte	0
- 1225 0177 00       		.byte	0
- 1226              		.section	.debug_aranges,"",%progbits
- 1227 0000 7C000000 		.4byte	0x7c
- 1228 0004 0200     		.2byte	0x2
- 1229 0006 00000000 		.4byte	.Ldebug_info0
- 1230 000a 04       		.byte	0x4
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 30
+ 1172 011a 00       		.byte	0
+ 1173 011b 03       		.uleb128 0x3
+ 1174 011c 0E       		.uleb128 0xe
+ 1175 011d 3A       		.uleb128 0x3a
+ 1176 011e 0B       		.uleb128 0xb
+ 1177 011f 3B       		.uleb128 0x3b
+ 1178 0120 05       		.uleb128 0x5
+ 1179 0121 49       		.uleb128 0x49
+ 1180 0122 13       		.uleb128 0x13
+ 1181 0123 02       		.uleb128 0x2
+ 1182 0124 18       		.uleb128 0x18
+ 1183 0125 00       		.byte	0
+ 1184 0126 00       		.byte	0
+ 1185 0127 13       		.uleb128 0x13
+ 1186 0128 2E       		.uleb128 0x2e
+ 1187 0129 01       		.byte	0x1
+ 1188 012a 3F       		.uleb128 0x3f
+ 1189 012b 19       		.uleb128 0x19
+ 1190 012c 03       		.uleb128 0x3
+ 1191 012d 0E       		.uleb128 0xe
+ 1192 012e 3A       		.uleb128 0x3a
+ 1193 012f 0B       		.uleb128 0xb
+ 1194 0130 3B       		.uleb128 0x3b
+ 1195 0131 05       		.uleb128 0x5
+ 1196 0132 27       		.uleb128 0x27
+ 1197 0133 19       		.uleb128 0x19
+ 1198 0134 49       		.uleb128 0x49
+ 1199 0135 13       		.uleb128 0x13
+ 1200 0136 11       		.uleb128 0x11
+ 1201 0137 01       		.uleb128 0x1
+ 1202 0138 12       		.uleb128 0x12
+ 1203 0139 06       		.uleb128 0x6
+ 1204 013a 40       		.uleb128 0x40
+ 1205 013b 18       		.uleb128 0x18
+ 1206 013c 9742     		.uleb128 0x2117
+ 1207 013e 19       		.uleb128 0x19
+ 1208 013f 01       		.uleb128 0x1
+ 1209 0140 13       		.uleb128 0x13
+ 1210 0141 00       		.byte	0
+ 1211 0142 00       		.byte	0
+ 1212 0143 14       		.uleb128 0x14
+ 1213 0144 34       		.uleb128 0x34
+ 1214 0145 00       		.byte	0
+ 1215 0146 03       		.uleb128 0x3
+ 1216 0147 0E       		.uleb128 0xe
+ 1217 0148 3A       		.uleb128 0x3a
+ 1218 0149 0B       		.uleb128 0xb
+ 1219 014a 3B       		.uleb128 0x3b
+ 1220 014b 05       		.uleb128 0x5
+ 1221 014c 49       		.uleb128 0x49
+ 1222 014d 13       		.uleb128 0x13
+ 1223 014e 02       		.uleb128 0x2
+ 1224 014f 18       		.uleb128 0x18
+ 1225 0150 00       		.byte	0
+ 1226 0151 00       		.byte	0
+ 1227 0152 15       		.uleb128 0x15
+ 1228 0153 2E       		.uleb128 0x2e
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 30
 
 
- 1231 000b 00       		.byte	0
- 1232 000c 0000     		.2byte	0
- 1233 000e 0000     		.2byte	0
- 1234 0010 00000000 		.4byte	.LFB63
- 1235 0014 20000000 		.4byte	.LFE63-.LFB63
- 1236 0018 00000000 		.4byte	.LFB64
- 1237 001c 24000000 		.4byte	.LFE64-.LFB64
- 1238 0020 00000000 		.4byte	.LFB65
- 1239 0024 18000000 		.4byte	.LFE65-.LFB65
- 1240 0028 00000000 		.4byte	.LFB66
- 1241 002c 28000000 		.4byte	.LFE66-.LFB66
- 1242 0030 00000000 		.4byte	.LFB67
- 1243 0034 24000000 		.4byte	.LFE67-.LFB67
- 1244 0038 00000000 		.4byte	.LFB68
- 1245 003c 20000000 		.4byte	.LFE68-.LFB68
- 1246 0040 00000000 		.4byte	.LFB69
- 1247 0044 24000000 		.4byte	.LFE69-.LFB69
- 1248 0048 00000000 		.4byte	.LFB70
- 1249 004c 20000000 		.4byte	.LFE70-.LFB70
- 1250 0050 00000000 		.4byte	.LFB71
- 1251 0054 18000000 		.4byte	.LFE71-.LFB71
- 1252 0058 00000000 		.4byte	.LFB72
- 1253 005c 24000000 		.4byte	.LFE72-.LFB72
- 1254 0060 00000000 		.4byte	.LFB73
- 1255 0064 18000000 		.4byte	.LFE73-.LFB73
- 1256 0068 00000000 		.4byte	.LFB74
- 1257 006c 18000000 		.4byte	.LFE74-.LFB74
- 1258 0070 00000000 		.4byte	.LFB75
- 1259 0074 18000000 		.4byte	.LFE75-.LFB75
- 1260 0078 00000000 		.4byte	0
- 1261 007c 00000000 		.4byte	0
- 1262              		.section	.debug_ranges,"",%progbits
- 1263              	.Ldebug_ranges0:
- 1264 0000 00000000 		.4byte	.LFB63
- 1265 0004 20000000 		.4byte	.LFE63
- 1266 0008 00000000 		.4byte	.LFB64
- 1267 000c 24000000 		.4byte	.LFE64
- 1268 0010 00000000 		.4byte	.LFB65
- 1269 0014 18000000 		.4byte	.LFE65
- 1270 0018 00000000 		.4byte	.LFB66
- 1271 001c 28000000 		.4byte	.LFE66
- 1272 0020 00000000 		.4byte	.LFB67
- 1273 0024 24000000 		.4byte	.LFE67
- 1274 0028 00000000 		.4byte	.LFB68
- 1275 002c 20000000 		.4byte	.LFE68
- 1276 0030 00000000 		.4byte	.LFB69
- 1277 0034 24000000 		.4byte	.LFE69
- 1278 0038 00000000 		.4byte	.LFB70
- 1279 003c 20000000 		.4byte	.LFE70
- 1280 0040 00000000 		.4byte	.LFB71
- 1281 0044 18000000 		.4byte	.LFE71
- 1282 0048 00000000 		.4byte	.LFB72
- 1283 004c 24000000 		.4byte	.LFE72
- 1284 0050 00000000 		.4byte	.LFB73
- 1285 0054 18000000 		.4byte	.LFE73
- 1286 0058 00000000 		.4byte	.LFB74
- 1287 005c 18000000 		.4byte	.LFE74
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 31
+ 1229 0154 00       		.byte	0
+ 1230 0155 3F       		.uleb128 0x3f
+ 1231 0156 19       		.uleb128 0x19
+ 1232 0157 03       		.uleb128 0x3
+ 1233 0158 0E       		.uleb128 0xe
+ 1234 0159 3A       		.uleb128 0x3a
+ 1235 015a 0B       		.uleb128 0xb
+ 1236 015b 3B       		.uleb128 0x3b
+ 1237 015c 05       		.uleb128 0x5
+ 1238 015d 27       		.uleb128 0x27
+ 1239 015e 19       		.uleb128 0x19
+ 1240 015f 11       		.uleb128 0x11
+ 1241 0160 01       		.uleb128 0x1
+ 1242 0161 12       		.uleb128 0x12
+ 1243 0162 06       		.uleb128 0x6
+ 1244 0163 40       		.uleb128 0x40
+ 1245 0164 18       		.uleb128 0x18
+ 1246 0165 9742     		.uleb128 0x2117
+ 1247 0167 19       		.uleb128 0x19
+ 1248 0168 00       		.byte	0
+ 1249 0169 00       		.byte	0
+ 1250 016a 16       		.uleb128 0x16
+ 1251 016b 2E       		.uleb128 0x2e
+ 1252 016c 00       		.byte	0
+ 1253 016d 3F       		.uleb128 0x3f
+ 1254 016e 19       		.uleb128 0x19
+ 1255 016f 03       		.uleb128 0x3
+ 1256 0170 0E       		.uleb128 0xe
+ 1257 0171 3A       		.uleb128 0x3a
+ 1258 0172 0B       		.uleb128 0xb
+ 1259 0173 3B       		.uleb128 0x3b
+ 1260 0174 05       		.uleb128 0x5
+ 1261 0175 27       		.uleb128 0x27
+ 1262 0176 19       		.uleb128 0x19
+ 1263 0177 49       		.uleb128 0x49
+ 1264 0178 13       		.uleb128 0x13
+ 1265 0179 11       		.uleb128 0x11
+ 1266 017a 01       		.uleb128 0x1
+ 1267 017b 12       		.uleb128 0x12
+ 1268 017c 06       		.uleb128 0x6
+ 1269 017d 40       		.uleb128 0x40
+ 1270 017e 18       		.uleb128 0x18
+ 1271 017f 9742     		.uleb128 0x2117
+ 1272 0181 19       		.uleb128 0x19
+ 1273 0182 00       		.byte	0
+ 1274 0183 00       		.byte	0
+ 1275 0184 17       		.uleb128 0x17
+ 1276 0185 34       		.uleb128 0x34
+ 1277 0186 00       		.byte	0
+ 1278 0187 03       		.uleb128 0x3
+ 1279 0188 0E       		.uleb128 0xe
+ 1280 0189 3A       		.uleb128 0x3a
+ 1281 018a 0B       		.uleb128 0xb
+ 1282 018b 3B       		.uleb128 0x3b
+ 1283 018c 05       		.uleb128 0x5
+ 1284 018d 49       		.uleb128 0x49
+ 1285 018e 13       		.uleb128 0x13
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 31
 
 
- 1288 0060 00000000 		.4byte	.LFB75
- 1289 0064 18000000 		.4byte	.LFE75
- 1290 0068 00000000 		.4byte	0
- 1291 006c 00000000 		.4byte	0
- 1292              		.section	.debug_line,"",%progbits
- 1293              	.Ldebug_line0:
- 1294 0000 67020000 		.section	.debug_str,"MS",%progbits,1
- 1294      02005601 
- 1294      00000201 
- 1294      FB0E0D00 
- 1294      01010101 
- 1295              	.LASF19:
- 1296 0000 72656733 		.ascii	"reg32\000"
- 1296      3200
- 1297              	.LASF36:
- 1298 0006 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 1298      43313120 
- 1298      352E342E 
- 1298      31203230 
- 1298      31363036 
- 1299 0039 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 1299      20726576 
- 1299      6973696F 
- 1299      6E203233 
- 1299      37373135 
- 1300 006c 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
- 1300      66756E63 
- 1300      74696F6E 
- 1300      2D736563 
- 1300      74696F6E 
- 1301              	.LASF35:
- 1302 0094 6973725F 		.ascii	"isr_Timer_20ms_ClearPending\000"
- 1302      54696D65 
- 1302      725F3230 
- 1302      6D735F43 
- 1302      6C656172 
- 1303              	.LASF30:
- 1304 00b0 6973725F 		.ascii	"isr_Timer_20ms_GetVector\000"
- 1304      54696D65 
- 1304      725F3230 
- 1304      6D735F47 
- 1304      65745665 
- 1305              	.LASF12:
- 1306 00c9 5F5F696E 		.ascii	"__int32_t\000"
- 1306      7433325F 
- 1306      7400
- 1307              	.LASF32:
- 1308 00d3 6973725F 		.ascii	"isr_Timer_20ms_Enable\000"
- 1308      54696D65 
- 1308      725F3230 
- 1308      6D735F45 
- 1308      6E61626C 
- 1309              	.LASF16:
- 1310 00e9 666C6F61 		.ascii	"float\000"
- 1310      7400
- 1311              	.LASF4:
- 1312 00ef 756E7369 		.ascii	"unsigned char\000"
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 32
+ 1286 018f 3F       		.uleb128 0x3f
+ 1287 0190 19       		.uleb128 0x19
+ 1288 0191 3C       		.uleb128 0x3c
+ 1289 0192 19       		.uleb128 0x19
+ 1290 0193 00       		.byte	0
+ 1291 0194 00       		.byte	0
+ 1292 0195 18       		.uleb128 0x18
+ 1293 0196 34       		.uleb128 0x34
+ 1294 0197 00       		.byte	0
+ 1295 0198 03       		.uleb128 0x3
+ 1296 0199 0E       		.uleb128 0xe
+ 1297 019a 3A       		.uleb128 0x3a
+ 1298 019b 0B       		.uleb128 0xb
+ 1299 019c 3B       		.uleb128 0x3b
+ 1300 019d 0B       		.uleb128 0xb
+ 1301 019e 49       		.uleb128 0x49
+ 1302 019f 13       		.uleb128 0x13
+ 1303 01a0 3F       		.uleb128 0x3f
+ 1304 01a1 19       		.uleb128 0x19
+ 1305 01a2 02       		.uleb128 0x2
+ 1306 01a3 18       		.uleb128 0x18
+ 1307 01a4 00       		.byte	0
+ 1308 01a5 00       		.byte	0
+ 1309 01a6 00       		.byte	0
+ 1310              		.section	.debug_aranges,"",%progbits
+ 1311 0000 7C000000 		.4byte	0x7c
+ 1312 0004 0200     		.2byte	0x2
+ 1313 0006 00000000 		.4byte	.Ldebug_info0
+ 1314 000a 04       		.byte	0x4
+ 1315 000b 00       		.byte	0
+ 1316 000c 0000     		.2byte	0
+ 1317 000e 0000     		.2byte	0
+ 1318 0010 00000000 		.4byte	.LFB63
+ 1319 0014 20000000 		.4byte	.LFE63-.LFB63
+ 1320 0018 00000000 		.4byte	.LFB64
+ 1321 001c 24000000 		.4byte	.LFE64-.LFB64
+ 1322 0020 00000000 		.4byte	.LFB65
+ 1323 0024 18000000 		.4byte	.LFE65-.LFB65
+ 1324 0028 00000000 		.4byte	.LFB66
+ 1325 002c 2C000000 		.4byte	.LFE66-.LFB66
+ 1326 0030 00000000 		.4byte	.LFB67
+ 1327 0034 24000000 		.4byte	.LFE67-.LFB67
+ 1328 0038 00000000 		.4byte	.LFB68
+ 1329 003c 20000000 		.4byte	.LFE68-.LFB68
+ 1330 0040 00000000 		.4byte	.LFB69
+ 1331 0044 24000000 		.4byte	.LFE69-.LFB69
+ 1332 0048 00000000 		.4byte	.LFB70
+ 1333 004c 20000000 		.4byte	.LFE70-.LFB70
+ 1334 0050 00000000 		.4byte	.LFB71
+ 1335 0054 18000000 		.4byte	.LFE71-.LFB71
+ 1336 0058 00000000 		.4byte	.LFB72
+ 1337 005c 24000000 		.4byte	.LFE72-.LFB72
+ 1338 0060 00000000 		.4byte	.LFB73
+ 1339 0064 18000000 		.4byte	.LFE73-.LFB73
+ 1340 0068 00000000 		.4byte	.LFB74
+ 1341 006c 18000000 		.4byte	.LFE74-.LFB74
+ 1342 0070 00000000 		.4byte	.LFB75
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 32
 
 
- 1312      676E6564 
- 1312      20636861 
- 1312      7200
- 1313              	.LASF18:
- 1314 00fd 72656738 		.ascii	"reg8\000"
- 1314      00
- 1315              	.LASF26:
- 1316 0102 61646472 		.ascii	"address\000"
- 1316      65737300 
- 1317              	.LASF8:
- 1318 010a 6C6F6E67 		.ascii	"long unsigned int\000"
- 1318      20756E73 
- 1318      69676E65 
- 1318      6420696E 
- 1318      7400
- 1319              	.LASF6:
- 1320 011c 73686F72 		.ascii	"short unsigned int\000"
- 1320      7420756E 
- 1320      7369676E 
- 1320      65642069 
- 1320      6E7400
- 1321              	.LASF28:
- 1322 012f 6973725F 		.ascii	"isr_Timer_20ms_SetPriority\000"
- 1322      54696D65 
- 1322      725F3230 
- 1322      6D735F53 
- 1322      65745072 
- 1323              	.LASF38:
- 1324 014a 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\firm_F1-TestFixture\\"
- 1324      73657273 
- 1324      5C6D6172 
- 1324      74686E69 
- 1324      636B5C44 
- 1325 0179 46312D54 		.ascii	"F1-TestFixture.cydsn\000"
- 1325      65737446 
- 1325      69787475 
- 1325      72652E63 
- 1325      7964736E 
- 1326              	.LASF40:
- 1327 018e 49544D5F 		.ascii	"ITM_RxBuffer\000"
- 1327      52784275 
- 1327      66666572 
- 1327      00
- 1328              	.LASF17:
- 1329 019b 646F7562 		.ascii	"double\000"
- 1329      6C6500
- 1330              	.LASF25:
- 1331 01a2 6973725F 		.ascii	"isr_Timer_20ms_SetVector\000"
- 1331      54696D65 
- 1331      725F3230 
- 1331      6D735F53 
- 1331      65745665 
- 1332              	.LASF34:
- 1333 01bb 6973725F 		.ascii	"isr_Timer_20ms_SetPending\000"
- 1333      54696D65 
- 1333      725F3230 
- 1333      6D735F53 
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 33
+ 1343 0074 18000000 		.4byte	.LFE75-.LFB75
+ 1344 0078 00000000 		.4byte	0
+ 1345 007c 00000000 		.4byte	0
+ 1346              		.section	.debug_ranges,"",%progbits
+ 1347              	.Ldebug_ranges0:
+ 1348 0000 00000000 		.4byte	.LFB63
+ 1349 0004 20000000 		.4byte	.LFE63
+ 1350 0008 00000000 		.4byte	.LFB64
+ 1351 000c 24000000 		.4byte	.LFE64
+ 1352 0010 00000000 		.4byte	.LFB65
+ 1353 0014 18000000 		.4byte	.LFE65
+ 1354 0018 00000000 		.4byte	.LFB66
+ 1355 001c 2C000000 		.4byte	.LFE66
+ 1356 0020 00000000 		.4byte	.LFB67
+ 1357 0024 24000000 		.4byte	.LFE67
+ 1358 0028 00000000 		.4byte	.LFB68
+ 1359 002c 20000000 		.4byte	.LFE68
+ 1360 0030 00000000 		.4byte	.LFB69
+ 1361 0034 24000000 		.4byte	.LFE69
+ 1362 0038 00000000 		.4byte	.LFB70
+ 1363 003c 20000000 		.4byte	.LFE70
+ 1364 0040 00000000 		.4byte	.LFB71
+ 1365 0044 18000000 		.4byte	.LFE71
+ 1366 0048 00000000 		.4byte	.LFB72
+ 1367 004c 24000000 		.4byte	.LFE72
+ 1368 0050 00000000 		.4byte	.LFB73
+ 1369 0054 18000000 		.4byte	.LFE73
+ 1370 0058 00000000 		.4byte	.LFB74
+ 1371 005c 18000000 		.4byte	.LFE74
+ 1372 0060 00000000 		.4byte	.LFB75
+ 1373 0064 18000000 		.4byte	.LFE75
+ 1374 0068 00000000 		.4byte	0
+ 1375 006c 00000000 		.4byte	0
+ 1376              		.section	.debug_line,"",%progbits
+ 1377              	.Ldebug_line0:
+ 1378 0000 7F020000 		.section	.debug_str,"MS",%progbits,1
+ 1378      02006D01 
+ 1378      00000201 
+ 1378      FB0E0D00 
+ 1378      01010101 
+ 1379              	.LASF19:
+ 1380 0000 72656733 		.ascii	"reg32\000"
+ 1380      3200
+ 1381              	.LASF41:
+ 1382 0006 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1382      43313120 
+ 1382      352E342E 
+ 1382      31203230 
+ 1382      31363036 
+ 1383 0039 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ 1383      20726576 
+ 1383      6973696F 
+ 1383      6E203233 
+ 1383      37373135 
+ 1384 006c 30202D66 		.ascii	"0 -ffunction-sections -ffat-lto-objects\000"
+ 1384      66756E63 
+ 1384      74696F6E 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 33
 
 
- 1333      65745065 
- 1334              	.LASF29:
- 1335 01d5 7072696F 		.ascii	"priority\000"
- 1335      72697479 
- 1335      00
- 1336              	.LASF15:
- 1337 01de 75696E74 		.ascii	"uint32\000"
- 1337      333200
- 1338              	.LASF24:
- 1339 01e5 6973725F 		.ascii	"isr_Timer_20ms_StartEx\000"
- 1339      54696D65 
- 1339      725F3230 
- 1339      6D735F53 
- 1339      74617274 
- 1340              	.LASF0:
- 1341 01fc 756E7369 		.ascii	"unsigned int\000"
- 1341      676E6564 
- 1341      20696E74 
- 1341      00
- 1342              	.LASF21:
- 1343 0209 6973725F 		.ascii	"isr_Timer_20ms_Start\000"
- 1343      54696D65 
- 1343      725F3230 
- 1343      6D735F53 
- 1343      74617274 
- 1344              	.LASF23:
- 1345 021e 6973725F 		.ascii	"isr_Timer_20ms_Interrupt\000"
- 1345      54696D65 
- 1345      725F3230 
- 1345      6D735F49 
- 1345      6E746572 
- 1346              	.LASF9:
- 1347 0237 6C6F6E67 		.ascii	"long long unsigned int\000"
- 1347      206C6F6E 
- 1347      6720756E 
- 1347      7369676E 
- 1347      65642069 
- 1348              	.LASF39:
- 1349 024e 6973725F 		.ascii	"isr_Timer_20ms_GetState\000"
- 1349      54696D65 
- 1349      725F3230 
- 1349      6D735F47 
- 1349      65745374 
- 1350              	.LASF20:
- 1351 0266 63796973 		.ascii	"cyisraddress\000"
- 1351      72616464 
- 1351      72657373 
- 1351      00
- 1352              	.LASF31:
- 1353 0273 6973725F 		.ascii	"isr_Timer_20ms_GetPriority\000"
- 1353      54696D65 
- 1353      725F3230 
- 1353      6D735F47 
- 1353      65745072 
- 1354              	.LASF22:
- 1355 028e 6973725F 		.ascii	"isr_Timer_20ms_Stop\000"
- 1355      54696D65 
-ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccAAzrsT.s 			page 34
+ 1384      2D736563 
+ 1384      74696F6E 
+ 1385              	.LASF38:
+ 1386 0094 6973725F 		.ascii	"isr_Timer_20ms_ClearPending\000"
+ 1386      54696D65 
+ 1386      725F3230 
+ 1386      6D735F43 
+ 1386      6C656172 
+ 1387              	.LASF33:
+ 1388 00b0 6973725F 		.ascii	"isr_Timer_20ms_GetVector\000"
+ 1388      54696D65 
+ 1388      725F3230 
+ 1388      6D735F47 
+ 1388      65745665 
+ 1389              	.LASF23:
+ 1390 00c9 53746174 		.ascii	"Status\000"
+ 1390      757300
+ 1391              	.LASF12:
+ 1392 00d0 5F5F696E 		.ascii	"__int32_t\000"
+ 1392      7433325F 
+ 1392      7400
+ 1393              	.LASF22:
+ 1394 00da 54657374 		.ascii	"TestStep\000"
+ 1394      53746570 
+ 1394      00
+ 1395              	.LASF35:
+ 1396 00e3 6973725F 		.ascii	"isr_Timer_20ms_Enable\000"
+ 1396      54696D65 
+ 1396      725F3230 
+ 1396      6D735F45 
+ 1396      6E61626C 
+ 1397              	.LASF21:
+ 1398 00f9 53656C65 		.ascii	"SelectedTest\000"
+ 1398      63746564 
+ 1398      54657374 
+ 1398      00
+ 1399              	.LASF16:
+ 1400 0106 666C6F61 		.ascii	"float\000"
+ 1400      7400
+ 1401              	.LASF4:
+ 1402 010c 756E7369 		.ascii	"unsigned char\000"
+ 1402      676E6564 
+ 1402      20636861 
+ 1402      7200
+ 1403              	.LASF18:
+ 1404 011a 72656738 		.ascii	"reg8\000"
+ 1404      00
+ 1405              	.LASF29:
+ 1406 011f 61646472 		.ascii	"address\000"
+ 1406      65737300 
+ 1407              	.LASF8:
+ 1408 0127 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1408      20756E73 
+ 1408      69676E65 
+ 1408      6420696E 
+ 1408      7400
+ 1409              	.LASF6:
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 34
 
 
- 1355      725F3230 
- 1355      6D735F53 
- 1355      746F7000 
- 1356              	.LASF13:
- 1357 02a2 696E7433 		.ascii	"int32_t\000"
- 1357      325F7400 
- 1358              	.LASF10:
- 1359 02aa 73697A65 		.ascii	"sizetype\000"
- 1359      74797065 
- 1359      00
- 1360              	.LASF33:
- 1361 02b3 6973725F 		.ascii	"isr_Timer_20ms_Disable\000"
- 1361      54696D65 
- 1361      725F3230 
- 1361      6D735F44 
- 1361      69736162 
- 1362              	.LASF1:
- 1363 02ca 6C6F6E67 		.ascii	"long long int\000"
- 1363      206C6F6E 
- 1363      6720696E 
- 1363      7400
- 1364              	.LASF11:
- 1365 02d8 63686172 		.ascii	"char\000"
- 1365      00
- 1366              	.LASF27:
- 1367 02dd 72616D56 		.ascii	"ramVectorTable\000"
- 1367      6563746F 
- 1367      72546162 
- 1367      6C6500
- 1368              	.LASF37:
- 1369 02ec 47656E65 		.ascii	"Generated_Source\\PSoC5\\isr_Timer_20ms.c\000"
- 1369      72617465 
- 1369      645F536F 
- 1369      75726365 
- 1369      5C50536F 
- 1370              	.LASF5:
- 1371 0314 73686F72 		.ascii	"short int\000"
- 1371      7420696E 
- 1371      7400
- 1372              	.LASF14:
- 1373 031e 75696E74 		.ascii	"uint8\000"
- 1373      3800
- 1374              	.LASF7:
- 1375 0324 6C6F6E67 		.ascii	"long int\000"
- 1375      20696E74 
- 1375      00
- 1376              	.LASF2:
- 1377 032d 6C6F6E67 		.ascii	"long double\000"
- 1377      20646F75 
- 1377      626C6500 
- 1378              	.LASF3:
- 1379 0339 7369676E 		.ascii	"signed char\000"
- 1379      65642063 
- 1379      68617200 
- 1380              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ 1410 0139 73686F72 		.ascii	"short unsigned int\000"
+ 1410      7420756E 
+ 1410      7369676E 
+ 1410      65642069 
+ 1410      6E7400
+ 1411              	.LASF31:
+ 1412 014c 6973725F 		.ascii	"isr_Timer_20ms_SetPriority\000"
+ 1412      54696D65 
+ 1412      725F3230 
+ 1412      6D735F53 
+ 1412      65745072 
+ 1413              	.LASF43:
+ 1414 0167 433A5C55 		.ascii	"C:\\Users\\marthnick\\Desktop\\firm_F1-TestFixture\\"
+ 1414      73657273 
+ 1414      5C6D6172 
+ 1414      74686E69 
+ 1414      636B5C44 
+ 1415 0196 46312D54 		.ascii	"F1-TestFixture.cydsn\000"
+ 1415      65737446 
+ 1415      69787475 
+ 1415      72652E63 
+ 1415      7964736E 
+ 1416              	.LASF39:
+ 1417 01ab 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 1417      52784275 
+ 1417      66666572 
+ 1417      00
+ 1418              	.LASF17:
+ 1419 01b8 646F7562 		.ascii	"double\000"
+ 1419      6C6500
+ 1420              	.LASF28:
+ 1421 01bf 6973725F 		.ascii	"isr_Timer_20ms_SetVector\000"
+ 1421      54696D65 
+ 1421      725F3230 
+ 1421      6D735F53 
+ 1421      65745665 
+ 1422              	.LASF37:
+ 1423 01d8 6973725F 		.ascii	"isr_Timer_20ms_SetPending\000"
+ 1423      54696D65 
+ 1423      725F3230 
+ 1423      6D735F53 
+ 1423      65745065 
+ 1424              	.LASF32:
+ 1425 01f2 7072696F 		.ascii	"priority\000"
+ 1425      72697479 
+ 1425      00
+ 1426              	.LASF15:
+ 1427 01fb 75696E74 		.ascii	"uint32\000"
+ 1427      333200
+ 1428              	.LASF27:
+ 1429 0202 6973725F 		.ascii	"isr_Timer_20ms_StartEx\000"
+ 1429      54696D65 
+ 1429      725F3230 
+ 1429      6D735F53 
+ 1429      74617274 
+ 1430              	.LASF0:
+ 1431 0219 756E7369 		.ascii	"unsigned int\000"
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 35
+
+
+ 1431      676E6564 
+ 1431      20696E74 
+ 1431      00
+ 1432              	.LASF24:
+ 1433 0226 6973725F 		.ascii	"isr_Timer_20ms_Start\000"
+ 1433      54696D65 
+ 1433      725F3230 
+ 1433      6D735F53 
+ 1433      74617274 
+ 1434              	.LASF26:
+ 1435 023b 6973725F 		.ascii	"isr_Timer_20ms_Interrupt\000"
+ 1435      54696D65 
+ 1435      725F3230 
+ 1435      6D735F49 
+ 1435      6E746572 
+ 1436              	.LASF9:
+ 1437 0254 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 1437      206C6F6E 
+ 1437      6720756E 
+ 1437      7369676E 
+ 1437      65642069 
+ 1438              	.LASF45:
+ 1439 026b 6973725F 		.ascii	"isr_Timer_20ms_GetState\000"
+ 1439      54696D65 
+ 1439      725F3230 
+ 1439      6D735F47 
+ 1439      65745374 
+ 1440              	.LASF20:
+ 1441 0283 63796973 		.ascii	"cyisraddress\000"
+ 1441      72616464 
+ 1441      72657373 
+ 1441      00
+ 1442              	.LASF34:
+ 1443 0290 6973725F 		.ascii	"isr_Timer_20ms_GetPriority\000"
+ 1443      54696D65 
+ 1443      725F3230 
+ 1443      6D735F47 
+ 1443      65745072 
+ 1444              	.LASF25:
+ 1445 02ab 6973725F 		.ascii	"isr_Timer_20ms_Stop\000"
+ 1445      54696D65 
+ 1445      725F3230 
+ 1445      6D735F53 
+ 1445      746F7000 
+ 1446              	.LASF13:
+ 1447 02bf 696E7433 		.ascii	"int32_t\000"
+ 1447      325F7400 
+ 1448              	.LASF10:
+ 1449 02c7 73697A65 		.ascii	"sizetype\000"
+ 1449      74797065 
+ 1449      00
+ 1450              	.LASF36:
+ 1451 02d0 6973725F 		.ascii	"isr_Timer_20ms_Disable\000"
+ 1451      54696D65 
+ 1451      725F3230 
+ 1451      6D735F44 
+ 1451      69736162 
+ARM GAS  C:\Users\MARTHN~1\AppData\Local\Temp\ccfToeiu.s 			page 36
+
+
+ 1452              	.LASF1:
+ 1453 02e7 6C6F6E67 		.ascii	"long long int\000"
+ 1453      206C6F6E 
+ 1453      6720696E 
+ 1453      7400
+ 1454              	.LASF11:
+ 1455 02f5 63686172 		.ascii	"char\000"
+ 1455      00
+ 1456              	.LASF30:
+ 1457 02fa 72616D56 		.ascii	"ramVectorTable\000"
+ 1457      6563746F 
+ 1457      72546162 
+ 1457      6C6500
+ 1458              	.LASF42:
+ 1459 0309 47656E65 		.ascii	"Generated_Source\\PSoC5\\isr_Timer_20ms.c\000"
+ 1459      72617465 
+ 1459      645F536F 
+ 1459      75726365 
+ 1459      5C50536F 
+ 1460              	.LASF5:
+ 1461 0331 73686F72 		.ascii	"short int\000"
+ 1461      7420696E 
+ 1461      7400
+ 1462              	.LASF14:
+ 1463 033b 75696E74 		.ascii	"uint8\000"
+ 1463      3800
+ 1464              	.LASF7:
+ 1465 0341 6C6F6E67 		.ascii	"long int\000"
+ 1465      20696E74 
+ 1465      00
+ 1466              	.LASF40:
+ 1467 034a 54657374 		.ascii	"Test\000"
+ 1467      00
+ 1468              	.LASF44:
+ 1469 034f 73747275 		.ascii	"structTestInfo\000"
+ 1469      63745465 
+ 1469      7374496E 
+ 1469      666F00
+ 1470              	.LASF2:
+ 1471 035e 6C6F6E67 		.ascii	"long double\000"
+ 1471      20646F75 
+ 1471      626C6500 
+ 1472              	.LASF3:
+ 1473 036a 7369676E 		.ascii	"signed char\000"
+ 1473      65642063 
+ 1473      68617200 
+ 1474              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

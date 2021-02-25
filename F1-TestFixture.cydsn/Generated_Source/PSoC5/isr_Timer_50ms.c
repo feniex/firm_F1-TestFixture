@@ -202,6 +202,8 @@ CY_ISR(isr_Timer_50ms_Interrupt)
         CTest_Complete_50ms_isr();
     else if(CurrentTest.SelectedTest == 4)
         RTest_Complete_50ms_isr();
+    else if(CurrentTest.SelectedTest == 5)
+        CableTest_Complete_50ms_isr();
         
 //    LED1_Write(0);  // Red
 //    LED2_Write(0);  // Amber
