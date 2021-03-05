@@ -86,8 +86,8 @@ static uint8 rs2_value = 0;
 int main()
 {
     
-    TESTFIXTURE_TYPE = PCBA_TESTFIXTURE;                    //*** Define testfixture hardware type
-    //TESTFIXTURE_TYPE = FINAL_TESTFIXTURE;                   //*** Define testfixture hardware type
+    //TESTFIXTURE_TYPE = PCBA_TESTFIXTURE;                    //*** Define testfixture hardware type
+    TESTFIXTURE_TYPE = FINAL_TESTFIXTURE;                   //*** Define testfixture hardware type
     
     initializePeripherals();
     CyGlobalIntEnable; /* Enable global interrupts. */ 

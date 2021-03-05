@@ -18,9 +18,13 @@
 #include "UART_460800_Functions.h"
 #include "CD4051BPW_Driver.h"
 
-#define VOLTAGE_SYSTEM      120             // (Voltage * 10)
-#define TOLERANCE_VOLTAGE   6               // How many 0.1V off a reading can be and still be good
-#define CURRENT_LOAD        9              // (ohms)
+//#define VOLTAGE_SYSTEM      120             // (Voltage * 10)
+#define VOLTAGE_SYSTEM      138             // (Voltage * 10)
+
+//#define TOLERANCE_VOLTAGE   6               // How many 0.1V off a reading can be and still be good
+#define TOLERANCE_VOLTAGE   10               // How many 0.1V off a reading can be and still be good
+
+#define CURRENT_LOAD        10              // (ohms)
 #define TOLERANCE_CURRENT   2 
 #define CONFIRM_TIME        100            // How many msec to show pass/fail for each step
 
@@ -516,10 +520,20 @@ uint8 RTest_Test_QuadPorts(void)
 {
     for(uint8 i=0;i<8;i++)
     {
-        MUX_CTRL_460800_Write(RTEST_QUAD_1 + i);                // Select RX channel         
+        MUX_CTRL_460800_Write(RTEST_QUAD_1 + i);                // Select RX channel  
+        CyDelay(5);
         while( (!VerifyPacket_460800(CTEST_RTEST_QUAD)) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
         {}
     }
+    
+////    for(uint8 i=3;i<8;i++)
+////    {
+////        MUX_CTRL_460800_Write(RTEST_QUAD_1 + i);                // Select RX channel  
+//            MUX_CTRL_460800_Write(RTEST_QUAD_5);                // Select RX channel  
+//        CyDelay(5);
+//        while( (!VerifyPacket_460800(CTEST_RTEST_QUAD)) && (RTestStatus[CurrentTest.TestStep] != 'F') )    // Wait for test to complete or fail
+//        {}
+////    }
     
     return(1);
 

@@ -86,8 +86,8 @@ enum MUX_DEMUX_230400_CHANNEL
 };
 
 // --------------Test steps---------------
-#define NUMBER_TEST_STEPS       11
-static uint16 CTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,2000,100,50,50,50,50,50,50,50,50};    // Number of 20msec counts before failure timeout, for each step
+#define NUMBER_TEST_STEPS       7
+static uint16 CTest_TimeoutCount[NUMBER_TEST_STEPS] = {50,2000,50,50,50,50,50};    // Number of 20msec counts before failure timeout, for each step
 
 static uint8 CTestStatus[NUMBER_TEST_STEPS];
 
@@ -95,14 +95,14 @@ enum TestStep
 { 
     INITIALIZE_TEST,        // COMPLETE
     CONFIRM_BOOTUP,         // COMPLETE
-    CONFIG_FILE,            // COMPLETE (unused - the config file does not need to be manually programmed)
-    TEST_POWERMODES,        // COMPLETE (***not testing usb power only)(resets pushbuttons) 
-    OBDII,                  // COMPLETE (configfile) (***this is already tested by using it for ignition)
+    //CONFIG_FILE,            // COMPLETE (unused - the config file does not need to be manually programmed)
     PUSHBUTTONS,            // COMPLETE (configfile)
+    //TEST_POWERMODES,        // COMPLETE (***not testing usb power only)(resets pushbuttons) 
+    OBDII,                  // COMPLETE (configfile) (***this is already tested by using it for ignition)
     QUAD_STREAM,            // COMPLETE (configfile)
     LEDS_RGB,               // COMPLETE (***leds take up to 5 seconds to turn on)
-    AUDIO_STREAM,           // (not included)
-    DEBUG_PORT,             // (not included)
+    //AUDIO_STREAM,           // (not included)
+    //DEBUG_PORT,             // (not included)
     PASS                    // COMPLETE
 };
 
@@ -166,7 +166,8 @@ uint8 ControllerTest(void)
             else
             {
                 //CurrentTest.TestStep = INITIALIZE_TEST;
-                CurrentTest.TestStep = CONFIG_FILE;
+                //CurrentTest.TestStep = CONFIG_FILE;
+                CurrentTest.TestStep = PUSHBUTTONS;
                 //CurrentTest.TestStep = TEST_POWERMODES;
                 //CurrentTest.TestStep = QUAD_STREAM;
                 //CurrentTest.TestStep = LEDS_RGB;
@@ -174,106 +175,36 @@ uint8 ControllerTest(void)
         
         break;
             
-        case CONFIG_FILE:   // configfile is already programmed to the SOM by default
+//        case CONFIG_FILE:   // configfile is already programmed to the SOM by default
+//            
+//            CTestStatus[CurrentTest.TestStep] = 'U';           
+//            CurrentTest.Status = 'U'; 
+////            pTxPacket_Intermotive = getTxPacket_Intermotive();   // Send ignition on signal (OBDII)
+////            pTxPacket_Intermotive->Payload.Data5 = 0x02; 
+////            CTest_PB_WaitForAction();
+// 
+//            CyDelay(CONFIRM_TIME);
+//            
+//            //CurrentTest.TestStep = INITIALIZE_TEST;                   
+//            CurrentTest.TestStep = TEST_POWERMODES;
+//            //CurrentTest.TestStep = QUAD_STREAM;
+//            //CurrentTest.TestStep = LEDS_RGB;
+//        
+//        break;
             
-            CTestStatus[CurrentTest.TestStep] = 'U';           
-            CurrentTest.Status = 'U'; 
-//            pTxPacket_Intermotive = getTxPacket_Intermotive();   // Send ignition on signal (OBDII)
-//            pTxPacket_Intermotive->Payload.Data5 = 0x02; 
-//            CTest_PB_WaitForAction();
- 
-            CyDelay(CONFIRM_TIME);
-            
-            //CurrentTest.TestStep = INITIALIZE_TEST;                   
-            CurrentTest.TestStep = TEST_POWERMODES;
-            //CurrentTest.TestStep = QUAD_STREAM;
-            //CurrentTest.TestStep = LEDS_RGB;
-        
-        break;
-        
-        case TEST_POWERMODES:  // Test Vbatt detect and USB detect
+        case PUSHBUTTONS:  // configfile - Controller should have the config file setup to turn on all outputs with each pushbutton
 
-            MUX_CTRL_230400_Write(CTEST_RELAY);
+            CTestStatus[CurrentTest.TestStep] = 'W';
+            CurrentTest.Status = 'W';
             
-            pRxPacket_Controller = getRxPacket_Controller();        // 'I' packet - check powermode
-            pTxPacket_Intermotive = getTxPacket_Intermotive();      // '1' packet - set ignition 
-            //pTxPacket_Controller = getTxPacket_Controller();      // 'D' packet - set ignition (not used)
-            
-//            //CTest_StartAutomatedStep();
-//            //CTest_PB_WaitForAction();
-//         
-//            /**** Live Power Mode (Normal Mode) - Vbatt-on, USB_5V-on, Ignition-on ***/
-//            CTest_CONT_VBATT_EN_Write(1);                   
-//            CTest_USB_5V_EN_Write(1);
-//            pTxPacket_Intermotive->Payload.Data5 = 0x02;
-////            while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.TestStep] != 'F') )
-////            {}
-//            CyDelay(1000);
-//            CTest_PB_WaitForAction();
-//            
-////            CTest_CONT_VBATT_EN_Write(1);                   
-////            CTest_USB_5V_EN_Write(1);
-////            pTxPacket_Intermotive->Payload.Data5 = 0x00;
-////            CyDelay(1000);
-//
-//            /**** Low Power Mode (USB Power Only) - Vbatt-off, USB_5V-on, Ignition-off ***/
-//            CTest_CONT_VBATT_EN_Write(0);               
-//            CTest_USB_5V_EN_Write(1);
-//            pTxPacket_Intermotive->Payload.Data5 = 0x00;    
-////            while( (pRxPacket_Controller->Payload.PowerState != 0x00) && (CTestStatus[CurrentTest.TestStep] != 'F') )
-////            {}
-//            CyDelay(1000);             
-//            CTest_PB_WaitForAction();
-//            
-//            /**** Normal Power Mode - Vbatt-on, USB_5V-on, Ignition-on ***/
-//            CTest_CONT_VBATT_EN_Write(1);                                       
-//            CTest_USB_5V_EN_Write(1);
-//            pTxPacket_Intermotive->Payload.Data5 = 0x02;
-//            
-//            CyDelay(1000);   
-//            CTest_PB_WaitForAction();
-//            
-//            CTest_CONT_VBATT_EN_Write(1);                                    
-//            CTest_USB_5V_EN_Write(0);
-//            pTxPacket_Intermotive->Payload.Data5 = 0x02;
-////            while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.TestStep] != 'F') )
-////            {}
-//            CyDelay(1000);
-//            CTest_PB_WaitForAction();
-//            
-//            //CTest_StopAutomatedStep();
-            
-            CTest_StartAutomatedStep();
-            //CTest_PB_WaitForAction();
-         
-            /**** Low Power Mode - Vbatt-on, USB_5V-off, Ignition-off ***/
-            CTest_CONT_VBATT_EN_Write(1);                   
-            CTest_USB_5V_EN_Write(0);
-            pTxPacket_Intermotive->Payload.Data5 = 0x00;
-            while( (pRxPacket_Controller->Payload.PowerState != 0x00) && (CTestStatus[CurrentTest.TestStep] != 'F') )
+            while( (!CTest_ReadPushbuttons()) && (CTestStatus[CurrentTest.TestStep] != 'F') )   // Check that the packet is turning all Relay Outputs on
             {}
-//            CyDelay(1000);
-            //CTest_PB_WaitForAction();
             
-            /**** Low Power Mode (USB Power Only) - Vbatt-on, USB_5V-on, Ignition-on ***/
-            CTest_CONT_VBATT_EN_Write(1);               
-            CTest_USB_5V_EN_Write(1);
-            pTxPacket_Intermotive->Payload.Data5 = 0x02;    
-            while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.TestStep] != 'F') )
-            {}
-//            CyDelay(1000);             
-            //CTest_PB_WaitForAction();
-            
-            /**** Normal Power Mode - Vbatt-on, USB_5V-on, Ignition-on ***/
-            CTest_CONT_VBATT_EN_Write(1);                                       
-            CTest_USB_5V_EN_Write(0);
-            pTxPacket_Intermotive->Payload.Data5 = 0x02;
-            while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.TestStep] != 'F') )
-            {}
-//            CyDelay(1000);
-            //CTest_PB_WaitForAction();
-            
-            CTest_StopAutomatedStep();
+            if(CTestStatus[CurrentTest.TestStep] != 'F')       // If not failed, then pass
+            {
+                CTestStatus[CurrentTest.TestStep] = 'P';
+                CurrentTest.Status = 'P';
+            }
             
             CyDelay(CONFIRM_TIME);
             
@@ -282,14 +213,114 @@ uint8 ControllerTest(void)
                 CurrentTest.TestStep = PASS;
             }
             else
-            {
-                //CurrentTest.TestStep = INITIALIZE_TEST;
+            {    
+                //CurrentTest.TestStep = QUAD_STREAM;
+                //CurrentTest.TestStep = PASS;
                 //CurrentTest.TestStep = TEST_POWERMODES;
                 CurrentTest.TestStep = OBDII;
-                //CurrentTest.TestStep = PASS;
             }
-            
-        break;
+      
+        break;  
+        
+//        case TEST_POWERMODES:  // Test Vbatt detect and USB detect
+//
+//            MUX_CTRL_230400_Write(CTEST_RELAY);
+//            
+//            pRxPacket_Controller = getRxPacket_Controller();        // 'I' packet - check powermode
+//            pTxPacket_Intermotive = getTxPacket_Intermotive();      // '1' packet - set ignition 
+//            //pTxPacket_Controller = getTxPacket_Controller();      // 'D' packet - set ignition (not used)
+//            
+////            //CTest_StartAutomatedStep();
+////            //CTest_PB_WaitForAction();
+////         
+////            /**** Live Power Mode (Normal Mode) - Vbatt-on, USB_5V-on, Ignition-on ***/
+////            CTest_CONT_VBATT_EN_Write(1);                   
+////            CTest_USB_5V_EN_Write(1);
+////            pTxPacket_Intermotive->Payload.Data5 = 0x02;
+//////            while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.TestStep] != 'F') )
+//////            {}
+////            CyDelay(1000);
+////            CTest_PB_WaitForAction();
+////            
+//////            CTest_CONT_VBATT_EN_Write(1);                   
+//////            CTest_USB_5V_EN_Write(1);
+//////            pTxPacket_Intermotive->Payload.Data5 = 0x00;
+//////            CyDelay(1000);
+////
+////            /**** Low Power Mode (USB Power Only) - Vbatt-off, USB_5V-on, Ignition-off ***/
+////            CTest_CONT_VBATT_EN_Write(0);               
+////            CTest_USB_5V_EN_Write(1);
+////            pTxPacket_Intermotive->Payload.Data5 = 0x00;    
+//////            while( (pRxPacket_Controller->Payload.PowerState != 0x00) && (CTestStatus[CurrentTest.TestStep] != 'F') )
+//////            {}
+////            CyDelay(1000);             
+////            CTest_PB_WaitForAction();
+////            
+////            /**** Normal Power Mode - Vbatt-on, USB_5V-on, Ignition-on ***/
+////            CTest_CONT_VBATT_EN_Write(1);                                       
+////            CTest_USB_5V_EN_Write(1);
+////            pTxPacket_Intermotive->Payload.Data5 = 0x02;
+////            
+////            CyDelay(1000);   
+////            CTest_PB_WaitForAction();
+////            
+////            CTest_CONT_VBATT_EN_Write(1);                                    
+////            CTest_USB_5V_EN_Write(0);
+////            pTxPacket_Intermotive->Payload.Data5 = 0x02;
+//////            while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.TestStep] != 'F') )
+//////            {}
+////            CyDelay(1000);
+////            CTest_PB_WaitForAction();
+////            
+////            //CTest_StopAutomatedStep();
+//            
+//            CTest_StartAutomatedStep();
+//            //CTest_PB_WaitForAction();
+//         
+//            /**** Low Power Mode - Vbatt-on, USB_5V-off, Ignition-off ***/
+//            CTest_CONT_VBATT_EN_Write(1);                   
+//            CTest_USB_5V_EN_Write(0);
+//            pTxPacket_Intermotive->Payload.Data5 = 0x00;
+//            while( (pRxPacket_Controller->Payload.PowerState != 0x00) && (CTestStatus[CurrentTest.TestStep] != 'F') )
+//            {}
+////            CyDelay(1000);
+//            //CTest_PB_WaitForAction();
+//            
+//            /**** Low Power Mode (USB Power Only) - Vbatt-on, USB_5V-on, Ignition-on ***/
+//            CTest_CONT_VBATT_EN_Write(1);               
+//            CTest_USB_5V_EN_Write(1);
+//            pTxPacket_Intermotive->Payload.Data5 = 0x02;    
+//            while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.TestStep] != 'F') )
+//            {}
+////            CyDelay(1000);             
+//            //CTest_PB_WaitForAction();
+//            
+//            /**** Normal Power Mode - Vbatt-on, USB_5V-on, Ignition-on ***/
+//            CTest_CONT_VBATT_EN_Write(1);                                       
+//            CTest_USB_5V_EN_Write(0);
+//            pTxPacket_Intermotive->Payload.Data5 = 0x02;
+//            while( (pRxPacket_Controller->Payload.PowerState != 0x01) && (CTestStatus[CurrentTest.TestStep] != 'F') )
+//            {}
+////            CyDelay(1000);
+//            //CTest_PB_WaitForAction();
+//            
+//            CTest_StopAutomatedStep();
+//            
+//            CyDelay(CONFIRM_TIME);
+//            
+//            if(CTestStatus[CurrentTest.TestStep] == 'F')
+//            {
+//                CurrentTest.TestStep = PASS;
+//            }
+//            else
+//            {
+//                //CurrentTest.TestStep = INITIALIZE_TEST;
+//                //CurrentTest.TestStep = TEST_POWERMODES;
+//                CurrentTest.TestStep = OBDII;
+//                //CurrentTest.TestStep = PASS;
+//            }
+//            
+//        break;
             
         case OBDII: //configfile
             
@@ -318,35 +349,8 @@ uint8 ControllerTest(void)
             {
                 //CurrentTest.TestStep = INITIALIZE_TEST;
                 //CurrentTest.TestStep = LEDS_RGB;
-                CurrentTest.TestStep = PUSHBUTTONS;
-            }
-      
-        break;  
-            
-        case PUSHBUTTONS:  // configfile - Controller should have the config file setup to turn on all outputs with each pushbutton
-
-            CTestStatus[CurrentTest.TestStep] = 'W';
-            CurrentTest.Status = 'W';
-            
-            while( (!CTest_ReadPushbuttons()) && (CTestStatus[CurrentTest.TestStep] != 'F') )   // Check that the packet is turning all Relay Outputs on
-            {}
-            
-            if(CTestStatus[CurrentTest.TestStep] != 'F')       // If not failed, then pass
-            {
-                CTestStatus[CurrentTest.TestStep] = 'P';
-                CurrentTest.Status = 'P';
-            }
-            
-            CyDelay(CONFIRM_TIME);
-            
-            if(CTestStatus[CurrentTest.TestStep] == 'F')
-            {
-                CurrentTest.TestStep = PASS;
-            }
-            else
-            {    
+                //CurrentTest.TestStep = PUSHBUTTONS;
                 CurrentTest.TestStep = QUAD_STREAM;
-                //CurrentTest.TestStep = PASS;
             }
       
         break;  
@@ -418,39 +422,40 @@ uint8 ControllerTest(void)
             else
             {
                 //CurrentTest.TestStep = LEDS_RGB;
-                CurrentTest.TestStep = AUDIO_STREAM;
+                //CurrentTest.TestStep = AUDIO_STREAM;
                 //CurrentTest.TestStep = PUSHBUTTONS;
+                CurrentTest.TestStep = PASS;
             }
       
         break; 
                        
-        case AUDIO_STREAM:  // (not a priority)
-            
-            CTestStatus[CurrentTest.TestStep] = 'U';           
-            CurrentTest.Status = 'U'; 
-            CyDelay(CONFIRM_TIME);
-//            CTestStatus[CurrentTest.TestStep] = 'P';
-//            CurrentTest.Status = 'P';
+//        case AUDIO_STREAM:  // (not a priority)
+//            
+//            CTestStatus[CurrentTest.TestStep] = 'U';           
+//            CurrentTest.Status = 'U'; 
 //            CyDelay(CONFIRM_TIME);
-            
-            CurrentTest.TestStep = DEBUG_PORT;
-                
-        break;
-                         
-        case DEBUG_PORT:    // (not a priority)    
-            
-            CTestStatus[CurrentTest.TestStep] = 'U';           
-            CurrentTest.Status = 'U'; 
-            CyDelay(CONFIRM_TIME);
-//            CTestStatus[CurrentTest.TestStep] = 'P';
-//            CurrentTest.Status = 'P';
+////            CTestStatus[CurrentTest.TestStep] = 'P';
+////            CurrentTest.Status = 'P';
+////            CyDelay(CONFIRM_TIME);
+//            
+//            CurrentTest.TestStep = DEBUG_PORT;
+//                
+//        break;
+//                         
+//        case DEBUG_PORT:    // (not a priority)    
+//            
+//            CTestStatus[CurrentTest.TestStep] = 'U';           
+//            CurrentTest.Status = 'U'; 
 //            CyDelay(CONFIRM_TIME);
-            
-            //CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = OBDII;
-            CurrentTest.TestStep = PASS;
-      
-        break;  
+////            CTestStatus[CurrentTest.TestStep] = 'P';
+////            CurrentTest.Status = 'P';
+////            CyDelay(CONFIRM_TIME);
+//            
+//            //CurrentTest.TestStep = INITIALIZE_TEST;
+//            //CurrentTest.TestStep = OBDII;
+//            CurrentTest.TestStep = PASS;
+//      
+//        break;  
             
         case PASS:   
 
@@ -676,9 +681,9 @@ void CTest_50ms_isr(void)
     sendPacket_OBDII();
 
     if( (CurrentTest.TestStep == INITIALIZE_TEST) ||    // Send packet to controller if it applies to this step
-        (CurrentTest.TestStep == CONFIRM_BOOTUP) || 
-        (CurrentTest.TestStep == CONFIG_FILE) ||
-        (CurrentTest.TestStep == TEST_POWERMODES) )     // This is just to test relay ignition signal
+        (CurrentTest.TestStep == CONFIRM_BOOTUP) ) 
+        //(CurrentTest.TestStep == CONFIG_FILE) ||
+        //(CurrentTest.TestStep == TEST_POWERMODES)      // This is just to test relay ignition signal
     {      
         //sendPacket_OBDII();
         sendPacket_RelayToController();

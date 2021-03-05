@@ -86,8 +86,8 @@ enum MUX_DEMUX_230400_CHANNEL
 };
 
 // --------------Test steps---------------
-#define NUMBER_TEST_STEPS       11
-static uint16 CTest_Complete_TimeoutCount[NUMBER_TEST_STEPS] = {50,2000,100,50,100,50,50,50,50,50,50};    // Number of 20msec counts before failure timeout, for each step
+#define NUMBER_TEST_STEPS       8
+static uint16 CTest_Complete_TimeoutCount[NUMBER_TEST_STEPS] = {50,2000,100,50,100,50,50,50};    // Number of 20msec counts before failure timeout, for each step
 
 static uint8 CTest_CompleteStatus[NUMBER_TEST_STEPS];
 
@@ -102,9 +102,9 @@ enum TestStep
     PUSHBUTTONS,            // COMPLETE (configfile)
                         // Verify button beep with this step
     QUAD_STREAM,            // COMPLETE (configfile)
-    LEDS_RGB,               // *** remove this COMPLETE (***leds take up to 5 seconds to turn on)
-    AUDIO_STREAM,           // (unused - not included)
-    DEBUG_PORT,             // (unused - not included)
+    //LEDS_RGB,               // *** remove this COMPLETE (***leds take up to 5 seconds to turn on)
+    //AUDIO_STREAM,           // (unused - not included)
+    //DEBUG_PORT,             // (unused - not included)
     PASS                    // COMPLETE
 };
 
@@ -375,84 +375,84 @@ uint8 ControllerTest_Complete(void)
                 //CurrentTest.TestStep = INITIALIZE_TEST;
                 //CurrentTest.TestStep = AUDIO_STREAM;
                 //CurrentTest.TestStep = QUAD_STREAM;
-                CurrentTest.TestStep = LEDS_RGB;
-                //CurrentTest.TestStep = PASS;
-            }
-
-        break;
-            
-        case LEDS_RGB:   
-            
-            //CTest_PB_WaitForAction();
-            setLEDs(RED);
-            CTest_CompleteStatus[CurrentTest.TestStep] = 'B';
-            CurrentTest.Status = 'B';            
-            CyDelay(5000);
-            CTest_PB_WaitForAction();  
-            
-            setLEDs(BLUE);
-            CTest_CompleteStatus[CurrentTest.TestStep] = 'B';
-            CurrentTest.Status = 'B';            
-            CyDelay(5000);
-            CTest_PB_WaitForAction();
-            
-            setLEDs(GREEN);
-            CTest_CompleteStatus[CurrentTest.TestStep] = 'B';
-            CurrentTest.Status = 'B';
-            CyDelay(5000);
-            CTest_PB_WaitForAction();
-            
-//            setLEDs(OFF);
-//            CTest_CompleteStatus[CurrentTest.TestStep] = 'B';
-//            CurrentTest.Status = 'B';
-//            //CyDelay(5000);
-////            CTest_PB_WaitForAction();
-
-            CTest_CompleteStatus[CurrentTest.TestStep] = 'P';
-            CurrentTest.Status = 'P';
-            
-            CyDelay(CONFIRM_TIME);
-            
-            if(CTest_CompleteStatus[CurrentTest.TestStep] == 'F')
-            {
+                //CurrentTest.TestStep = LEDS_RGB;
                 CurrentTest.TestStep = PASS;
             }
-            else
-            {
-                //CurrentTest.TestStep = LEDS_RGB;
-                CurrentTest.TestStep = AUDIO_STREAM;
-                //CurrentTest.TestStep = PUSHBUTTONS;
-            }
-      
-        break; 
-                       
-        case AUDIO_STREAM:  // (not a priority)
-            
-            CTest_CompleteStatus[CurrentTest.TestStep] = 'U';           
-            CurrentTest.Status = 'U'; 
-            CyDelay(CONFIRM_TIME);
-//            CTestStatus[CurrentTest.TestStep] = 'P';
-//            CurrentTest.Status = 'P';
-//            CyDelay(CONFIRM_TIME);
-            
-            CurrentTest.TestStep = DEBUG_PORT;
-                
+
         break;
-                         
-        case DEBUG_PORT:    // (not a priority)    
             
-            CTest_CompleteStatus[CurrentTest.TestStep] = 'U';           
-            CurrentTest.Status = 'U'; 
-            CyDelay(CONFIRM_TIME);
-//            CTestStatus[CurrentTest.TestStep] = 'P';
+//        case LEDS_RGB:   
+//            
+//            //CTest_PB_WaitForAction();
+//            setLEDs(RED);
+//            CTest_CompleteStatus[CurrentTest.TestStep] = 'B';
+//            CurrentTest.Status = 'B';            
+//            CyDelay(5000);
+//            CTest_PB_WaitForAction();  
+//            
+//            setLEDs(BLUE);
+//            CTest_CompleteStatus[CurrentTest.TestStep] = 'B';
+//            CurrentTest.Status = 'B';            
+//            CyDelay(5000);
+//            CTest_PB_WaitForAction();
+//            
+//            setLEDs(GREEN);
+//            CTest_CompleteStatus[CurrentTest.TestStep] = 'B';
+//            CurrentTest.Status = 'B';
+//            CyDelay(5000);
+//            CTest_PB_WaitForAction();
+//            
+////            setLEDs(OFF);
+////            CTest_CompleteStatus[CurrentTest.TestStep] = 'B';
+////            CurrentTest.Status = 'B';
+////            //CyDelay(5000);
+//////            CTest_PB_WaitForAction();
+//
+//            CTest_CompleteStatus[CurrentTest.TestStep] = 'P';
 //            CurrentTest.Status = 'P';
+//            
 //            CyDelay(CONFIRM_TIME);
-            
-            //CurrentTest.TestStep = INITIALIZE_TEST;
-            //CurrentTest.TestStep = OBDII;
-            CurrentTest.TestStep = PASS;
-      
-        break;  
+//            
+//            if(CTest_CompleteStatus[CurrentTest.TestStep] == 'F')
+//            {
+//                CurrentTest.TestStep = PASS;
+//            }
+//            else
+//            {
+//                //CurrentTest.TestStep = LEDS_RGB;
+//                CurrentTest.TestStep = AUDIO_STREAM;
+//                //CurrentTest.TestStep = PUSHBUTTONS;
+//            }
+//      
+//        break; 
+//                       
+//        case AUDIO_STREAM:  // (not a priority)
+//            
+//            CTest_CompleteStatus[CurrentTest.TestStep] = 'U';           
+//            CurrentTest.Status = 'U'; 
+//            CyDelay(CONFIRM_TIME);
+////            CTestStatus[CurrentTest.TestStep] = 'P';
+////            CurrentTest.Status = 'P';
+////            CyDelay(CONFIRM_TIME);
+//            
+//            CurrentTest.TestStep = DEBUG_PORT;
+//                
+//        break;
+//                         
+//        case DEBUG_PORT:    // (not a priority)    
+//            
+//            CTest_CompleteStatus[CurrentTest.TestStep] = 'U';           
+//            CurrentTest.Status = 'U'; 
+//            CyDelay(CONFIRM_TIME);
+////            CTestStatus[CurrentTest.TestStep] = 'P';
+////            CurrentTest.Status = 'P';
+////            CyDelay(CONFIRM_TIME);
+//            
+//            //CurrentTest.TestStep = INITIALIZE_TEST;
+//            //CurrentTest.TestStep = OBDII;
+//            CurrentTest.TestStep = PASS;
+//      
+//        break;  
             
         case PASS:   
 
@@ -686,11 +686,11 @@ void CTest_Complete_50ms_isr(void)
         //sendPacket_OBDII();
         sendPacket_RelayToController();
     }
-    if( (CurrentTest.TestStep == LEDS_RGB) || (CurrentTest.TestStep == PASS) )
-    {      
-        //sendIgnition_OBDII();
-        sendPacket_RelayToController_Test();
-    }
+//    if( (CurrentTest.TestStep == LEDS_RGB) || (CurrentTest.TestStep == PASS) )
+//    {      
+//        //sendIgnition_OBDII();
+//        sendPacket_RelayToController_Test();
+//    }
     
     return;    
     
