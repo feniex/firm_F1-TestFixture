@@ -1,0 +1,121 @@
+{
+  "name": "electron-react",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "concurrently": "^4.1.1",
+    "electron": "^6.0.12",
+    "electron-builder": "^20.44.4",
+    "electron-log": "^3.0.9",
+    "electron-rebuild": "^1.8.6",
+    "electron-updater": "^4.3.1",
+    "eslint-plugin-prettier": "^3.1.0",
+    "foreman": "^2.0.0",
+    "node-sass": "^4.14.1",
+    "prettier": "1.16.4",
+    "react-scripts": "0.8.5",
+    "wait-on": "^3.3.0",
+    "yarn": "^1.17.3"
+  },
+  "dependencies": {
+    "debug": "^4.1.1",
+    "electron-is-dev": "^1.1.0",
+    "rc-slider": "^8.7.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-player": "^1.13.0",
+    "react-rectangle": "^1.3.3",
+    "serialport": "^7.1.5"
+  },
+  "main": "public/electron.js",
+  "homepage": "./",
+  "scripts": {
+    "start": "react-scripts start",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=src/images/icon/feniex_one.icns --prune=true --out=release-builds",
+    "package-win": "electron-packager . electron-tutorial-app --overwrite --asar=true --platform=win32 --arch=ia32 --icon=src/images/icon/feniex_one.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Feniex One\"",
+    "package-linux": "electron-packager . electron-tutorial-app --overwrite --asar=true --platform=linux --arch=x64 --icon=src/images/icon/feniex_one.png --prune=true --out=release-builds",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "electron": "electron --no-sandbox .",
+    "dev": "nf start -p 3000",
+    "install": "electron-rebuild",
+    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-pack": "build --arch=armv7l -c.extraMetadata.main=build/electron.jsbuild --arch=armv7l -c.extraMetadata.main=build/electron.js && mkdir -p /opt/external-resources && cp -a /home/ubuntu/Desktop/Software-Feniex_One-Controller/src/json/external.json /opt/external-resources/",
+    "preelectron-pack": "yarn build"
+  },
+  "build": {
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "aaron-feniex",
+        "repo": "AppImage-Feniex_One-Controller"
+      }
+    ],
+    "asar": false,
+    "appId": "com.example.electron-cra",
+    "files": [
+      "./build/**/*",
+      "./index.html",
+      "./src/*.js",
+      "./assets/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "extraFiles": [
+      "./src/json/external.json"
+    ],
+    "dmg": {
+      "backgroundColor": "#000000",
+      "icon": "./assets/icons/icon.ico",
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "mac": {
+      "icon": "./assets/icons/mac/icon.ico",
+      "target": [
+        "dmg"
+      ],
+      "category": "Development"
+    },
+    "linux": {
+      "icon": "./assets/icons/linux/icon.png",
+      "target": [
+        "appImage"
+      ],
+      "category": "Development"
+    },
+    "win": {
+      "icon": "./assets/icons/icon.icns",
+      "target": "nsis"
+    }
+  },
+  "author": {
+    "name": "Electron React Boilerplate Maintainers",
+    "email": "electronreactboilerplate@gmail.com",
+    "url": "https://electron-react-boilerplate.js.org"
+  },
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "jquery": true
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "react/jsx-uses-vars": [
+    2
+  ]
+}

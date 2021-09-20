@@ -1,0 +1,127 @@
+{
+  "name": "FOne_Test",
+  "description": "Emergency lighting configuration software",
+  "version": "1.1.74",
+  "private": true,
+  "devDependencies": {
+    "concurrently": "^4.1.1",
+    "electron": "^6.0.12",
+    "electron-builder": "^20.44.4",
+    "electron-log": "^4.2.1",
+    "electron-rebuild": "^1.11.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "foreman": "^3.0.1",
+    "prettier": "1.16.4",
+    "react-scripts": "3.4.4",
+    "wait-on": "^3.3.0"
+  },
+  "dependencies": {
+    "@drivetech/node-nmea": "^2.0.1",
+    "aws-iot-device-sdk": "^2.2.6",
+    "bufferutil": "^4.0.1",
+    "debug": "^4.1.1",
+    "electron-is-dev": "^1.1.0",
+    "electron-updater": "^4.3.1",
+    "location-utilities": "^1.0.3",
+    "mqtt": "^4.2.1",
+    "nanotimer": "^0.3.15",
+    "ntp-time-sync": "^0.2.0",
+    "rc-slider": "^8.7.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-json-to-table": "^0.1.7",
+    "react-swipeable": "^5.5.1",
+    "serialport": "^7.1.5",
+    "utf-8-validate": "^5.0.2"
+  },
+  "main": "public/electron.js",
+  "homepage": "./",
+  "scripts": {
+    "start": "react-scripts start",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=src/images/icon/feniex_one.icns --prune=true --out=release-builds",
+    "package-win": "electron-packager . electron-tutorial-app --overwrite --asar=true --platform=win32 --arch=ia32 --icon=src/images/icon/feniex_one.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Feniex One\"",
+    "package-linux": "electron-packager . electron-tutorial-app --overwrite --asar=true --platform=linux --arch=x64 --icon=src/images/icon/feniex_one.png --prune=true --out=release-builds",
+    "build": "react-scripts build",
+    "publish": "build --arch=armv7l -p always",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "electron": "electron --no-sandbox .",
+    "dev": "nf start -p 3000",
+    "install": "electron-rebuild",
+    "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-pack": "electron-builder -c.extraMetadata.main=build/electron.js",
+    "preelectron-pack": "yarn build"
+  },
+  "build": {
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "feniex",
+        "repo": "feniex_available"
+      }
+    ],
+    "asar": false,
+    "appId": "com.example.electron-cra",
+    "files": [
+      "./build/**/*",
+      "./index.html",
+      "./src/*.js",
+      "./assets/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "extraFiles": [
+      "./src/json/external.json"
+    ],
+    "dmg": {
+      "backgroundColor": "#000000",
+      "icon": "./assets/icons/icon.ico",
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "icon": "./assets/icons/icon.icns",
+      "target": "nsis"
+    }
+  },
+  "author": {
+    "name": "Electron React Boilerplate Maintainers",
+    "email": "electronreactboilerplate@gmail.com",
+    "url": "https://electron-react-boilerplate.js.org"
+  },
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "es6": true,
+    "jquery": true
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "react/jsx-uses-vars": [
+    2
+  ],
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
